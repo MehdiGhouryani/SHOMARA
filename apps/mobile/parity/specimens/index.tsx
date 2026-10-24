@@ -31,19 +31,6 @@ export const SPECIMENS: Record<string, Specimen> = {
   'tabbar-05': { render: () => <TabBar items={TABS} activeKey="path" /> },
   'button-amber': { render: () => <Button label="بریم!" /> },
   'guide-07': { render: () => <GuideBubble pose="number-front" tone="number" portraitLabel="نامبر" text="این سه مهره است." /> },
-  'tabbar-13': {
-    render: () => (
-      <TabBar
-        variant="soft"
-        activeKey="practice"
-        items={[
-          { key: 'path', label: 'مسیر', icon: 'route' },
-          { key: 'practice', label: 'تمرین', icon: 'bolt' },
-          { key: 'me', label: 'من', icon: 'person' },
-        ]}
-      />
-    ),
-  },
   'chip-06': { render: () => <Chip label="مرحله ۱" /> },
   'chip-icon-book-06': { render: () => <Chip icon="book" label="۵ بخش" /> },
   'chip-icon-clock-06': { render: () => <Chip icon="clock" label="حدود ۱۰ دقیقه" /> },

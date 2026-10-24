@@ -18,7 +18,7 @@ export { Portrait } from './Portrait';
 export type { PortraitTone } from './Portrait';
 export { GuideBubble } from './GuideBubble';
 export { TabBar } from './TabBar';
-export type { TabItem, TabBarVariant } from './TabBar';
+export type { TabItem } from './TabBar';
 export { useReduceMotion } from './useReduceMotion';
 export { Screen, Body, Foot, H1, Sub, Cap, Note, IconBadge } from './Layout';
 export { TextButton } from './TextButton';

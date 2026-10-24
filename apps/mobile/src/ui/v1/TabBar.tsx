@@ -7,20 +7,16 @@ import { C, UI, typeStyle } from './tokens';
 export type TabItem = { key: string; label: string; icon: IconName };
 
 /**
- * `soft`: pages 13 and 14 (84px bar, 64x36 pill, no border).
- * `outlined`: the newer path page, as it renders (106px bar, 68x44 pill with a 2px primary border; its CSS is
- * content-box). The app uses `outlined` on every tab so the bar does not change shape between tabs.
+ * The outlined bar of the newer path page (106px bar, 68x44 pill with a 2px primary border; its CSS is
+ * content-box). One bar on every tab so it never changes shape between tabs (D-011); the soft variant of
+ * pages 13/14 was removed in U8 as planned.
  */
-export type TabBarVariant = 'soft' | 'outlined';
+type Props = { items: readonly TabItem[]; activeKey: string; onSelect?: ((key: string) => void) | undefined };
 
-type Props = { items: readonly TabItem[]; activeKey: string; onSelect?: ((key: string) => void) | undefined; variant?: TabBarVariant };
-
-/** `.tabs`: 84px bar; the active item gets a 64x36 primary-container pill behind its icon. */
-export function TabBar({ items, activeKey, onSelect, variant = 'outlined' }: Props) {
-  const outlined = variant === 'outlined';
+export function TabBar({ items, activeKey, onSelect }: Props) {
   const T = UI.path.tabOutlined;
   return (
-    <View style={[styles.bar, outlined ? { height: T.barHeight } : null]} accessibilityRole="tablist">
+    <View style={[styles.bar, { height: T.barHeight }]} accessibilityRole="tablist">
       {items.map((item) => {
         const on = item.key === activeKey;
         return (
@@ -30,14 +26,14 @@ export function TabBar({ items, activeKey, onSelect, variant = 'outlined' }: Pro
             accessibilityLabel={item.label}
             accessibilityState={{ selected: on }}
             onPress={() => onSelect?.(item.key)}
-            style={[styles.tab, outlined ? { minHeight: T.itemHeight } : null]}
+            style={[styles.tab, { minHeight: T.itemHeight }]}
           >
             <View
               style={[
                 styles.pill,
-                outlined ? { width: T.width, height: T.height, borderRadius: T.radius, borderWidth: T.border, borderColor: 'transparent' } : null,
+                { width: T.width, height: T.height, borderRadius: T.radius, borderWidth: T.border, borderColor: 'transparent' },
                 on ? { backgroundColor: C.primaryC } : null,
-                on && outlined ? { borderColor: C.primary } : null,
+                on ? { borderColor: C.primary } : null,
               ]}
             >
               <Icon name={item.icon} size={26} color={on ? C.primary : C.ink2} />

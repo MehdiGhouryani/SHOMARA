@@ -36,15 +36,6 @@
     "note": "guide bubble with Number portrait"
   },
   {
-    "id": "tabbar-13",
-    "page": "13",
-    "selector": ".tabs",
-    "index": 0,
-    "pad": 0,
-    "maxDiffPercent": 0.15,
-    "note": "tab bar, practice active"
-  },
-  {
     "id": "chip-06",
     "page": "06",
     "selector": ".chip",

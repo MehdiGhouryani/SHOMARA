@@ -34,7 +34,7 @@ check('screen-content-states', screen.includes("'offline'") && screen.includes('
 // Tabs use the approved tab bar.
 check('tabs-use-ChildTabBar', read('apps/mobile/app/(tabs)/_layout.tsx').includes('ChildTabBar') && read('apps/mobile/src/navigation/ChildTabBar.tsx').includes('<TabBar'));
 const tabBar = read('apps/mobile/src/ui/v1/TabBar.tsx');
-check('tabbar-variants', /'soft'/.test(tabBar) && /'outlined'/.test(tabBar) && tabBar.includes('barHeight'));
+check('tabbar-variants', !/variant?:/.test(tabBar) && !/TabBarVariant/.test(tabBar) && tabBar.includes('tabOutlined') && tabBar.includes('barHeight'), 'one outlined bar on every tab (D-011); the variant prop is gone');
 
 // Rendering rules.
 check('node-icon-above-face', /<View pointerEvents="none">\s*\n?\s*<Icon/.test(read('apps/mobile/src/path/PathNode.tsx')), 'a bare web <svg> is static and would paint under the absolute face');
