@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { rmSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 
 const root = resolve(process.cwd());
 const require = createRequire(import.meta.url);
@@ -13,7 +14,7 @@ const pkg = resolve(root, 'packages/learning-runtime');
 // build broke later gates (web build, mobile export) because @math/learning-runtime resolves to dist/.
 const distExisted = existsSync(pkg + '/dist');
 execFileSync(process.execPath, [tscPath, '-p', resolve(pkg, 'tsconfig.build.json')], { stdio: 'inherit' });
-const runtime = await import(resolve(pkg, 'dist/index.js'));
+const runtime = await import(pathToFileURL(resolve(pkg, 'dist/index.js')).href);
 
 function makeContent(id = 'cv-st01-check') {
   return {

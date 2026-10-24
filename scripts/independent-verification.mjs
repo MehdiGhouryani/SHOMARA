@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 
 const root = resolve(process.cwd());
 const require = createRequire(import.meta.url);
@@ -15,7 +16,7 @@ async function runIndependentVerification() {
 
   // 1. Learning Runtime TS Evaluation Verification
   const runtimePkg = resolve(root, 'packages/learning-runtime/dist/index.js');
-  const runtime = await import(runtimePkg);
+  const runtime = await import(pathToFileURL(runtimePkg).href);
 
   console.log('[1/7] Testing Learning Engine: 5/5, 4/5, 3/5, Recovery, 2-Session Rule & Idempotency...');
 
@@ -180,27 +181,27 @@ async function runIndependentVerification() {
   console.log('  ✅ Case 5 (Idempotent Replay): Duplicate submission returns original attempt without re-executing');
 
   console.log('\n[2/7] Testing DB Migrations Integrity (44 files)...');
-  await import(resolve(root, 'scripts/verify-migrations-static.mjs'));
+  await import(pathToFileURL(resolve(root, 'scripts/verify-migrations-static.mjs')).href);
   console.log('  ✅ Migrations 0001 through 0044 verified sequentially');
 
   console.log('\n[3/7] Testing Production Auth / RLS Boundary...');
-  await import(resolve(root, 'scripts/verify-phase11-auth.mjs'));
+  await import(pathToFileURL(resolve(root, 'scripts/verify-phase11-auth.mjs')).href);
   console.log('  ✅ Auth and RLS static policies verified');
 
   console.log('\n[4/7] Testing Postgres Learning Runtime RPC Contracts...');
-  await import(resolve(root, 'scripts/verify-phase12-postgres-runtime.mjs'));
+  await import(pathToFileURL(resolve(root, 'scripts/verify-phase12-postgres-runtime.mjs')).href);
   console.log('  ✅ PostgreSQL RPCs (start_session, create_encounter, submit_attempt) verified');
 
   console.log('\n[5/7] Testing Deep Remediation & Content Pinning (ST01 12+8 Variants)...');
-  await import(resolve(root, 'scripts/verify-phase14-deep-remediation.mjs'));
+  await import(pathToFileURL(resolve(root, 'scripts/verify-phase14-deep-remediation.mjs')).href);
   console.log('  ✅ 12 logical + 8 hidden variants and package checksum verified');
 
   console.log('\n[6/7] Testing Adversarial Check Group and Evidence Provenance...');
-  await import(resolve(root, 'scripts/verify-phase15-deep-remediation.mjs'));
+  await import(pathToFileURL(resolve(root, 'scripts/verify-phase15-deep-remediation.mjs')).href);
   console.log('  ✅ Provenance fields, check group ordering and hypothesis tracking verified');
 
   console.log('\n[7/7] Testing Fail-Closed Production Readiness Gates...');
-  await import(resolve(root, 'scripts/verify-phase16-deep-audit.mjs'));
+  await import(pathToFileURL(resolve(root, 'scripts/verify-phase16-deep-audit.mjs')).href);
   console.log('  ✅ All verification gates executed successfully');
 
   console.log('\n🎉 =======================================================');

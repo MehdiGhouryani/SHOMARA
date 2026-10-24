@@ -2,6 +2,7 @@
 // same region of the approved page's golden screenshot. Usage: node scripts/parity-run.mjs [specimenId ...]
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
@@ -43,7 +44,7 @@ for (const spec of manifest.filter((s) => only.length === 0 || only.includes(s.i
   page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text().slice(0, 200)));
   const hash = `id=${spec.id}&x=${r.x}&y=${r.y}&w=${r.w}${spec.bg ? `&bg=${encodeURIComponent(spec.bg)}` : ''}${spec.sy ? `&sy=${spec.sy}` : ''}`;
-  await page.goto(`file://${path.join(P, 'dist/index.html')}#${hash}`);
+  await page.goto(`${pathToFileURL(path.join(P, 'dist/index.html')).href}#${hash}`);
   await page.waitForSelector('html[data-ready="1"]', { timeout: 15000 });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(400);

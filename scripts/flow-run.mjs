@@ -3,6 +3,7 @@
 // static verifiers cannot see. Usage: node scripts/flow-run.mjs
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { launchChromium } from './lib/browser.mjs';
 
@@ -23,7 +24,7 @@ async function open() {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
-  await page.goto(`file://${path.join(DIST, 'index.html')}`);
+  await page.goto(pathToFileURL(path.join(DIST, 'index.html')).href);
   await page.waitForSelector('html[data-ready="1"]', { timeout: 15000 });
   await page.evaluate(() => document.fonts.ready);
   return { page, errors };

@@ -42,7 +42,7 @@ function walk(dir) {
 }
 walk(mobile);
 for (const file of sourceFiles) {
-  const rel = path.relative(root, file);
+  const rel = path.relative(root, file).split(path.sep).join('/');
   const text = fs.readFileSync(file, 'utf8');
   if (rel !== 'apps/mobile/src/config/runtime.ts' && /http:\/\/localhost(?::\d+)?/.test(text)) failures.push(`LOCALHOST_OUTSIDE_RUNTIME_CONFIG:${rel}`);
   if (rel.endsWith('.tsx') && /[\u{1F300}-\u{1FAFF}]/u.test(text)) failures.push(`EMOJI_IN_UI_SOURCE:${rel}`);

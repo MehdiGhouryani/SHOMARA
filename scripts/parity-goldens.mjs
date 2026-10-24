@@ -1,8 +1,17 @@
 // Renders each approved page (pages-v1) at 390x844 and stores a golden PNG plus the bounding boxes of
 // the elements that components are compared against. Animations are frozen so output is deterministic.
+// Deliberate-only tool (it REWRITES every golden and rects.json): `npm run parity:goldens` passes --write.
+// After a deliberate regeneration, review the git diff and refresh the immutability pin with
+// `node scripts/verify-parity-goldens-pinned.mjs --update-pin`.
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { launchChromium } from './lib/browser.mjs';
+
+if (!process.argv.includes('--write')) {
+  console.error('parity-goldens rewrites every golden and rects.json; run it deliberately via `npm run parity:goldens`.');
+  process.exit(1);
+}
 
 const ROOT = process.cwd();
 const V1 = path.join(ROOT, 'docs/design-handoff-2026-10/pages-v1');
@@ -17,7 +26,7 @@ const browser = await launchChromium();
 const rects = {};
 for (const page of pages) {
   const tab = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
-  await tab.goto('file://' + path.join(V1, page.file));
+  await tab.goto(pathToFileURL(path.join(V1, page.file)).href);
   await tab.waitForSelector('.scr', { timeout: 15000 });
   await tab.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
   await tab.evaluate(() => document.fonts.ready);

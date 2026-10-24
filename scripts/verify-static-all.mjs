@@ -9,7 +9,10 @@ import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 
 const root = process.cwd();
-const excluded = new Set(['dev.mjs', 'generate-design-system-css.mjs', 'run-p02-gates.mjs', 'verify-static-all.mjs']);
+// Excluded: dev.mjs is a dev server, generate-design-system-css.mjs and parity-goldens.mjs are GENERATORS (they
+// rewrite generated output; goldens must only change deliberately via `npm run parity:goldens`, guarded by
+// verify-parity-goldens-pinned.mjs), run-p02-gates.mjs is orchestrated separately, and this file cannot run itself.
+const excluded = new Set(['dev.mjs', 'generate-design-system-css.mjs', 'parity-goldens.mjs', 'run-p02-gates.mjs', 'verify-static-all.mjs']);
 const needsDist = ['learning-runtime', 'offline-sync', 'adult-projections', 'assignment-runtime']
   .filter((p) => !existsSync(join(root, 'packages', p, 'dist', 'index.js')));
 if (needsDist.length) {
@@ -17,8 +20,13 @@ if (needsDist.length) {
   process.exit(2);
 }
 const scripts = readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.mjs') && !excluded.has(f)).sort();
+// Some verifiers import contracts .ts source directly (type stripping). That is unflagged on Node >= 22.18
+// (the documented toolchain, see AGENTS.md); older 22.x needs the experimental flag to run the same checks.
+const [major, minor] = process.versions.node.split('.').map(Number);
+const nodeFlags = major === 22 && minor < 18 ? ['--experimental-strip-types'] : [];
+if (nodeFlags.length) console.log(`note: Node ${process.versions.node} < 22.18 — running verifiers with --experimental-strip-types`);
 const results = scripts.map((file) => {
-  const r = spawnSync(process.execPath, [join('scripts', file)], { cwd: root, encoding: 'utf8', timeout: 120_000 });
+  const r = spawnSync(process.execPath, [...nodeFlags, join('scripts', file)], { cwd: root, encoding: 'utf8', timeout: 120_000 });
   const ok = r.status === 0;
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${file}`);
   if (!ok) console.log((r.stdout + r.stderr).split('\n').slice(-12).join('\n'));

@@ -3,6 +3,7 @@
 // Usage: node scripts/flow-station-run.mjs
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { launchChromium } from './lib/browser.mjs';
 
@@ -28,7 +29,7 @@ async function open(scenario) {
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text().slice(0, 200)));
-  await page.goto(`file://${path.join(DIST, 'index.html')}#scenario=${scenario}`);
+  await page.goto(`${pathToFileURL(path.join(DIST, 'index.html')).href}#scenario=${scenario}`);
   await page.waitForSelector('html[data-ready="1"]', { timeout: 15000 });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(700);
