@@ -1,0 +1,177 @@
+{
+  "phase": "UX-P04",
+  "date": "2026-10-03",
+  "status": "IMPLEMENTED",
+  "files": [
+    {
+      "path": "packages/contracts/src/onboarding.ts",
+      "bytes": 4905,
+      "sha256": "1e669a7d659089c15568b6b3c53d8170617cec76152ee9041a1c8eda4b034717"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "bytes": 201,
+      "sha256": "4e297a6cd0f7c375043c1e8e3a02a41cd4f936baf754f8f5b23edda79ae659c3"
+    },
+    {
+      "path": "apps/web/components/AuthFlowScreen.tsx",
+      "bytes": 20653,
+      "sha256": "50c2228de65baec55fc7bda5580d92e86ab6a93fd3597d549b503a64993acede"
+    },
+    {
+      "path": "apps/web/components/ChildAvatar.tsx",
+      "bytes": 991,
+      "sha256": "174abd4915b380ae76400a06358a11ae86796f2a9bede27616af6492c1c239f7"
+    },
+    {
+      "path": "apps/web/components/OnboardingFlow.module.css",
+      "bytes": 7740,
+      "sha256": "9d537a68265d1fa618bca40508e2da297120b89448e6e8d3d38ea33d89629f8d"
+    },
+    {
+      "path": "apps/web/components/PlacementFlow.tsx",
+      "bytes": 4611,
+      "sha256": "d5ea100e21a5687c2e24c9776758a80156c4b5b49e1c1118799b3b050aa81199"
+    },
+    {
+      "path": "apps/web/components/ParentGate.tsx",
+      "bytes": 6882,
+      "sha256": "4d1f989d47dc3ecc948377d31ac15d1da6b56cf188e1c416637aedee5fc3e7e7"
+    },
+    {
+      "path": "apps/web/lib/auth-provider.ts",
+      "bytes": 1353,
+      "sha256": "9131c9c7a71014aa6d1d57ff543231a6c590c9190f7d705553b3811d199ea259"
+    },
+    {
+      "path": "apps/web/app/page.tsx",
+      "bytes": 12447,
+      "sha256": "db219b79aa6f279407d6a49af6fbac3e054456eee7de24632a25c883decb8cc9"
+    },
+    {
+      "path": "apps/web/app/welcome/page.tsx",
+      "bytes": 361,
+      "sha256": "fdc74fc13e757deeb92e093bbae997cf7d08b32ad97c8cb2b6396083f8b0761d"
+    },
+    {
+      "path": "apps/web/app/auth/page.tsx",
+      "bytes": 317,
+      "sha256": "d0d35deefc54057dd1a5748067fd3c0f15d66897f26b1c76ec5fc85afbe99b04"
+    },
+    {
+      "path": "apps/web/app/auth/code/page.tsx",
+      "bytes": 323,
+      "sha256": "3f92e4f78a6ece907eabb226bc74250ddbc08d098ffd528c25e24c7d11807f84"
+    },
+    {
+      "path": "apps/web/app/grade/page.tsx",
+      "bytes": 319,
+      "sha256": "dc71351d38e774472d0de81783a9c89f2dbddd7b7be57b6242c912114ecad80b"
+    },
+    {
+      "path": "apps/web/app/child/page.tsx",
+      "bytes": 336,
+      "sha256": "c1d4d71d4fc8b055c25a17ff58d535077d3ea83267d4f0f778e4d48555ef9576"
+    },
+    {
+      "path": "apps/web/app/start-check/page.tsx",
+      "bytes": 328,
+      "sha256": "5d892449c2462a648fa967312d9b62970ad7ba52b2ab227d38f0000be43a7f81"
+    },
+    {
+      "path": "apps/web/app/api/v1/auth/otp/start/route.ts",
+      "bytes": 1297,
+      "sha256": "efce5181a52e3d10e6500d2de80fcf4a8de2420ddace5e625284a4002f325c74"
+    },
+    {
+      "path": "apps/web/app/api/v1/auth/otp/verify/route.ts",
+      "bytes": 1417,
+      "sha256": "fdad7db573758d545a7ffd0a07fee0f3455e70cc2ec9c240f521299b6146da49"
+    },
+    {
+      "path": "apps/mobile/app/onboarding.tsx",
+      "bytes": 19853,
+      "sha256": "7e92029041f8b5dc8e51bece4f3b2ba8c3be26daa5220f95dd13b9f6cdf8d8eb"
+    },
+    {
+      "path": "apps/mobile/src/components/ChildAvatar.tsx",
+      "bytes": 1649,
+      "sha256": "c3eed9d5701c98e3d8de44944466a615088d804824f0ba2e7891047526de1b47"
+    },
+    {
+      "path": "apps/mobile/src/components/ParentGate.tsx",
+      "bytes": 4192,
+      "sha256": "927df139fef8af0b5fbf62e66f427a075a81391db711a7bc161d164ed62fc7ca"
+    },
+    {
+      "path": "apps/mobile/src/onboarding/catalog.ts",
+      "bytes": 137,
+      "sha256": "4d24332f30638345bc9d4f54d4ede07744126f3ebc3a75c179c93fb27669ef0f"
+    },
+    {
+      "path": "apps/mobile/src/onboarding/flow.ts",
+      "bytes": 934,
+      "sha256": "98a8e0ef826a7036273b5013c878ad2610bb75d5b359499d051f3a1c6e0e18a6"
+    },
+    {
+      "path": "apps/mobile/src/onboarding/flow.test.ts",
+      "bytes": 1761,
+      "sha256": "31e67c9eefbb50f8fe24f46838b88795bec7c23ea94c39785933d62bb0824abe"
+    },
+    {
+      "path": "apps/mobile/src/state/appStateCore.ts",
+      "bytes": 9187,
+      "sha256": "c954c8c1be7c71b1e164e326b4904ae769d3c002e1c2db852e7576dbfa48a5f8"
+    },
+    {
+      "path": "apps/mobile/src/state/appStateCore.test.ts",
+      "bytes": 7474,
+      "sha256": "cbb264b90b13da15f34b21c1bbc9c332a8b527a926934cec5f44cad73987814a"
+    },
+    {
+      "path": "docs/reference/ONBOARDING_CONTRACT.md",
+      "bytes": 1635,
+      "sha256": "340390464a17583900180b896ec668557af877f4b233c6000a05a27d6d3a4a22"
+    },
+    {
+      "path": "docs/phases/PHASE_4_UI_UX_ONBOARDING.md",
+      "bytes": 1954,
+      "sha256": "1c0dcae32be0676221d8db4910cdadc925ed95359f03cf7d29886a9b5dbd95a5"
+    },
+    {
+      "path": "docs/audits/AUDIT_UIUX_PHASE_4_2026-10-03.md",
+      "bytes": 587,
+      "sha256": "9067eb59ead3f37bc5ea39c50047f67d99e41e73ad6d5351d3436f5b8c4b2ad9"
+    },
+    {
+      "path": "docs/audits/AUDIT_UIUX_PHASE_4_2026-10-03.json",
+      "bytes": 649,
+      "sha256": "3d41b5cc92982bcc814e37f35ae70f8e83120c08e2db0ef7bd06f38852572d22"
+    },
+    {
+      "path": "scripts/verify-uiux-phase4.mjs",
+      "bytes": 4607,
+      "sha256": "b6a1145f1d3b3651e23b56441f37ec1674aa79f0b64ad48529e8f4f0c16d2763"
+    },
+    {
+      "path": "package.json",
+      "bytes": 3068,
+      "sha256": "ee69e9ac3e33ae8209d93f7677c3e727122743785fdf69c4b7d66cee965504f8"
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 2989,
+      "sha256": "4c1843ab80605329d6723d079237a5d35fb418d9b72616feff7d212deeac1b34"
+    },
+    {
+      "path": "docs/phases/UX_ROADMAP_10_PHASES.md",
+      "bytes": 2144,
+      "sha256": "4f8dbfe1b07909b9f5b545eb9c62797e2e98804d72753a391662b79566f47542"
+    },
+    {
+      "path": "docs/history/REVISION_NOTES_UX_P04.md",
+      "bytes": 1303,
+      "sha256": "aff0b9b31ce43bd6778a271ea9af027570bafa6785141fbb90290a695e362779"
+    }
+  ]
+}

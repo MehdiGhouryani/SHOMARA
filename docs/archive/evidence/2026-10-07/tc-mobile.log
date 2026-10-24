@@ -1,0 +1,64 @@
+
+> @math/mobile@0.1.0 typecheck
+> tsc --noEmit
+
+app/(tabs)/index.tsx(242,148): error TS18048: 'target' is possibly 'undefined'.
+app/(tabs)/profile.tsx(226,19): error TS2551: Property 'absoluteFillObject' does not exist on type 'typeof StyleSheet'. Did you mean 'absoluteFill'?
+app/avatar.tsx(223,93): error TS2339: Property 'dangerSoft' does not exist on type '{ success: string; successSoft: string; warning: string; warningSoft: string; error: string; errorSoft: string; info: string; infoSoft: string; disabled: string; disabledSoft: string; }'.
+app/avatar.tsx(224,38): error TS2339: Property 'danger' does not exist on type '{ success: string; successSoft: string; warning: string; warningSoft: string; error: string; errorSoft: string; info: string; infoSoft: string; disabled: string; disabledSoft: string; }'.
+app/onboarding.tsx(648,42): error TS2339: Property 'secondaryDark' does not exist on type '{ bg: { canvas: string; subtle: string; surface: string; elevated: string; inverse: string; }; brand: { primary: string; primaryDark: string; primarySoft: string; secondary: string; secondaryDark: string; ... 12 more ...; violetSoft: string; }; ... 4 more ...; overlay: { ...; }; }'.
+app/parent.tsx(43,46): error TS2379: Argument of type '{ gradeId: string | undefined; completedStationIds: string[]; }' is not assignable to parameter of type '{ gradeId?: string | null; completedStationIds: readonly string[]; stations?: readonly { id: string; number: number; title: string; estimatedMinutes: number; }[]; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'gradeId' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string | null'.
+      Type 'undefined' is not assignable to type 'string | null'.
+app/station/[stationId]/start.tsx(45,18): error TS2341: Property 'api' is private and only accessible within class 'MobileContentManager'.
+app/unit/[unitId]/jump.tsx(71,37): error TS2339: Property 'unlockGranted' does not exist on type 'AssessmentResult & { code?: string; }'.
+src/content/ContentManager.ts(222,75): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/content/bootstrap.ts(46,36): error TS2339: Property 'getManifest' does not exist on type 'MobileContentManager'.
+src/station/LessonPlayerChrome.tsx(50,50): error TS2322: Type '{ borderColor: string; backgroundColor: string; } | null' is not assignable to type 'ViewStyle'.
+  Type 'null' is not assignable to type 'ViewStyle'.
+src/station/LessonPlayerChrome.tsx(50,92): error TS2322: Type '{ borderColor: string; backgroundColor: string; } | null' is not assignable to type 'ViewStyle'.
+  Type 'null' is not assignable to type 'ViewStyle'.
+src/station/SignatureChallengeView.tsx(96,31): error TS2379: Argument of type '{ sessionId: string; challengeDefinitionId: string | undefined; stationId: string | undefined; onDone: (result: ChallengeResult) => void; }' is not assignable to parameter of type 'SignatureChallengeViewProps' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'challengeDefinitionId' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/station/SignatureChallengeView.tsx(205,45): error TS2322: Type '{ children: (Element | null)[]; elevated: true; style: { marginTop: number; gap: number; }; accessibilityLabel: string; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; style?: ViewStyle | ViewStyle[]; elevated?: boolean; }'.
+  Property 'accessibilityLabel' does not exist on type 'IntrinsicAttributes & { children: ReactNode; style?: ViewStyle | ViewStyle[]; elevated?: boolean; }'.
+src/station/StationFlow.tsx(532,14): error TS2375: Type '{ sessionId: string; stationId: string; challengeDefinitionId: string | undefined; onDone: (result: { result: "COMPLETED" | "ABANDONED" | "COMPLETED_WITH_SUPPORT" | "NOT_YET"; semanticEvent: "RECOVERY" | ... 1 more ... | null; ... 5 more ...; setsStationCompletion: false; } | null) => void; }' is not assignable to type 'SignatureChallengeViewProps' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'challengeDefinitionId' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/ui/PracticeHubScreen.tsx(27,46): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/ui/PracticeHubScreen.tsx(34,26): error TS18047: 'state' is possibly 'null'.
+src/ui/PracticeHubScreen.tsx(35,6): error TS18047: 'state' is possibly 'null'.
+../../packages/contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../../packages/contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path /home/claude/proj/work/src/apps/mobile
+npm error workspace @math/mobile@0.1.0
+npm error location /home/claude/proj/work/src/apps/mobile
+npm error command failed
+npm error command sh -c tsc --noEmit

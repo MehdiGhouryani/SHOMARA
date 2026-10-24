@@ -1,0 +1,107 @@
+{
+  "phase": "UX-P08",
+  "date": "2026-10-03",
+  "status": "IMPLEMENTED",
+  "files": {
+    "packages/contracts/src/profile.ts": {
+      "sha256": "ed1ea86c5d13e8ad15a5d800d3ff52687538a2ac95dc8c48f1a4307af5c97d35",
+      "bytes": 1416
+    },
+    "packages/contracts/src/product-surface.ts": {
+      "sha256": "e4c286f146ed336f106e66218014d690e8fbc5436b5d32b8cfb93407c3ce54d7",
+      "bytes": 4278
+    },
+    "packages/contracts/src/navigation.ts": {
+      "sha256": "5262c43a3f8e3de57d4dfc9a9876d3d4beb8fc13bf79e8ebf5fc10f26ea156f2",
+      "bytes": 2866
+    },
+    "packages/contracts/src/index.ts": {
+      "sha256": "bf97613a215fba11cff55232c3c54d98f719c7316c6611decd5b8c68fbec4f53",
+      "bytes": 352
+    },
+    "apps/web/components/ProfileView.tsx": {
+      "sha256": "dac47e5d171d08540455a714e3125db53f525925f56d13105e05fbafc5ce5324",
+      "bytes": 6278
+    },
+    "apps/web/components/ProfileView.module.css": {
+      "sha256": "ef088e4aa383513aa8f1195ba67cf07f68bd2e0cb396197efd5b59970793d828",
+      "bytes": 4200
+    },
+    "apps/web/components/AvatarWorkshopView.tsx": {
+      "sha256": "d94bf1c933f2d948bf8d352d7b9a7371ac8a67272531718f1a655273b385979f",
+      "bytes": 2342
+    },
+    "apps/web/components/AvatarWorkshopView.module.css": {
+      "sha256": "2b07c279c567a87634c0fa075ccfa012314e2713b306634eb659c96abc50d5e0",
+      "bytes": 1529
+    },
+    "apps/web/app/profile/avatar/page.tsx": {
+      "sha256": "12f873636c2431139a53d5685395b5c4f6d58236d9c8260581945fb01d682e59",
+      "bytes": 1272
+    },
+    "apps/mobile/app/(tabs)/profile.tsx": {
+      "sha256": "917ca2b74693f19674717f4a6d26497faf5022e48468288b8fc13df4d06d2cfd",
+      "bytes": 9467
+    },
+    "apps/mobile/app/avatar.tsx": {
+      "sha256": "5d355c900920bf48488c3b62d7340a4ce614eaf2b82b49653b9785642136514f",
+      "bytes": 4485
+    },
+    "apps/mobile/src/state/appStateCore.ts": {
+      "sha256": "726326a9efb6db90314e1e87b38522ee80609c7da16d2f5b03a44dce950930bc",
+      "bytes": 9435
+    },
+    "apps/mobile/src/state/appStateCore.test.ts": {
+      "sha256": "9ab4962a201f5ed186ddaf83d483a633f1f6129142ce5b5fbedaef5a8ac9d08c",
+      "bytes": 8145
+    },
+    "apps/mobile/src/state/AppStateContext.tsx": {
+      "sha256": "c0a3a477901c3dacb0c43f7c2b6edcd6d15e3f93efa29382f31698a855fe5375",
+      "bytes": 4202
+    },
+    "docs/reference/PROFILE_ACHIEVEMENT_AVATAR_CONTRACT.md": {
+      "sha256": "44e1254094d8b732d5b3e8f6522675a523e159a997d42ebfaed8c3acca625068",
+      "bytes": 1860
+    },
+    "docs/reference/CHILD_PRODUCT_SURFACE.md": {
+      "sha256": "35a885f4f478c2a41eb0d01a24e05c095a161e58362f01396ba2bef52e2a865d",
+      "bytes": 3540
+    },
+    "docs/phases/PHASE_8_UI_UX_PROFILE_ACHIEVEMENTS_AVATAR.md": {
+      "sha256": "db689ecb59622ede6fc011e8454cd436ad83c9b54872e2e7f21d2994eae357d7",
+      "bytes": 832
+    },
+    "docs/phases/UX_ROADMAP_10_PHASES.md": {
+      "sha256": "5dd9db4f1d2a1535308b8150368eb707c4bd209ce1364ae803ee007ef2c8eee1",
+      "bytes": 2618
+    },
+    "docs/audits/AUDIT_UIUX_PHASE_8_2026-10-03.md": {
+      "sha256": "d1606fe45eb3e1088d6a4db77243d6d54da81c2ad7558073269ef923faef3b34",
+      "bytes": 1003
+    },
+    "docs/audits/AUDIT_UIUX_PHASE_8_2026-10-03.json": {
+      "sha256": "64032291f117c455ce57a2707b8b64241e4af5bb23998590ea66b67d3c196f31",
+      "bytes": 962
+    },
+    "docs/history/REVISION_NOTES_UX_P08.md": {
+      "sha256": "568c5da79a8daca71d685038913d6a8cbfed3aec30d142d18db41ca94ae953fa",
+      "bytes": 495
+    },
+    "docs/history/SNAPSHOT_MANIFEST_UX_P08.json": {
+      "sha256": "34d5df9a932389445e956171f5d7a472b30d429c79e64430b71e0bd4d8ff4f1d",
+      "bytes": 2822
+    },
+    "scripts/verify-uiux-phase8.mjs": {
+      "sha256": "0e078af563f50da1e6db7746555c2063325f55f80416f0b6c6ed0cd1b71e8195",
+      "bytes": 2992
+    },
+    "package.json": {
+      "sha256": "b14e8c92a4195360fbe328c54a2cfcdd672227a6de742cc28b7244c5ce471b10",
+      "bytes": 3377
+    },
+    "CHANGELOG_v2.md": {
+      "sha256": "4c52c6d2410e6329416154925bf1d4558579299db4ed16dda8e029c184aba74f",
+      "bytes": 6766
+    }
+  }
+}

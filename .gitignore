@@ -1,0 +1,33 @@
+# ---- dependencies ----
+node_modules/
+
+# ---- build & generated output ----
+dist/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
+
+# ---- environment: real secrets never committed; the template is kept ----
+.env
+.env.*
+!.env.example
+
+# ---- test & tooling output ----
+coverage/
+playwright-report/
+test-results/
+.expo/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# NOTE: docs/archive/**/*.log are intentional evidence records and stay tracked.
+
+# visual-parity harness output (rebuilt by `npm run parity`)
+apps/mobile/parity/dist/
+apps/mobile/parity/dist-flow/
+apps/mobile/parity/out/

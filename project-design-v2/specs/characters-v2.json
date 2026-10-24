@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "2.0.0",
+  "status": "design-locked-pending-child-test",
+  "supersedes": "legacy cast v1.3 (historical; source path removed from working tree)",
+  "source": "source/shomara-cast.mjs",
+  "canvas": {
+    "viewBox": "0 0 224 256",
+    "groundY": 241,
+    "bustViewBox": "per-character, see source"
+  },
+  "stableIds": [
+    "aria",
+    "qbo",
+    "dana",
+    "jiko"
+  ],
+  "idPolicy": "ids are data/event keys and never change; only presentation (species, art, assetKey) changed in v2",
+  "cast": [
+    {
+      "id": "aria",
+      "assetKey": "aria-dragon-v2",
+      "displayNameFa": "آریا",
+      "tier": "main",
+      "species": "baby-dragon",
+      "silhouette": "pear body + big round head + stubby wings + curled tail",
+      "shapeLanguage": "round",
+      "palette": {
+        "body": "#239AA0",
+        "bodyDark": "#16707A",
+        "belly": "#F6B93B",
+        "horn": "#F6E4B6"
+      },
+      "relativeHeight": 1.0,
+      "quirk": "cannot breathe fire yet; sneezes star sparkles when delighted",
+      "catchphraseFa": "قدم‌به‌قدم با هم!",
+      "allowedScenes": [
+        "splash",
+        "home",
+        "lesson-intro",
+        "hint",
+        "recovery",
+        "outcome",
+        "profile-brand"
+      ]
+    },
+    {
+      "id": "qbo",
+      "assetKey": "qbo-cubes-v2",
+      "displayNameFa": "کیوبو",
+      "tier": "supporting",
+      "species": "cube-robot",
+      "silhouette": "stacked rectangle of linking cubes + screen head + antenna",
+      "shapeLanguage": "square",
+      "palette": {
+        "saffron": "#F2AE1C",
+        "teal": "#239A92",
+        "plum": "#9A3B69",
+        "screen": "#16232E",
+        "glow": "#5DF2E2"
+      },
+      "relativeHeight": 1.1,
+      "quirk": "one cube always slightly crooked; clicks straight when the child solves it",
+      "mathAffordance": "can split into and rebuild from unit cubes (composition/decomposition)",
+      "catchphraseFa": "بیا یکی‌یکی بسازیمش!",
+      "allowedScenes": [
+        "counting-intro",
+        "grouping",
+        "decomposition",
+        "hint",
+        "recovery",
+        "outcome"
+      ]
+    },
+    {
+      "id": "dana",
+      "assetKey": "dana-squirrel-v2",
+      "displayNameFa": "دانا",
+      "tier": "supporting",
+      "species": "squirrel",
+      "silhouette": "small body + giant S-curved tail rising above head",
+      "shapeLanguage": "s-curve",
+      "palette": {
+        "fur": "#CB6B2E",
+        "cream": "#F7E1BC",
+        "tailBand": "#8F3963",
+        "bag": "#3F7F5B",
+        "lensRing": "#E3A93A"
+      },
+      "relativeHeight": 0.95,
+      "quirk": "tail fluffs up when a pattern is found; lines up acorns in AB order",
+      "mathAffordance": "tail is a literal repeating AB pattern (stroke-dasharray 24/22)",
+      "catchphraseFa": "چی دوباره تکرار می‌شه؟",
+      "allowedScenes": [
+        "pattern-intro",
+        "shape-intro",
+        "space",
+        "symmetry",
+        "hint",
+        "recovery",
+        "outcome"
+      ]
+    },
+    {
+      "id": "jiko",
+      "assetKey": "jiko-bird-v2",
+      "displayNameFa": "جیکو",
+      "tier": "supporting",
+      "species": "songbird",
+      "silhouette": "small round ball + three-feather spring crest",
+      "shapeLanguage": "circle",
+      "palette": {
+        "body": "#F26A3E",
+        "bodyDark": "#CF4A26",
+        "belly": "#FFC93C",
+        "beak": "#F7931E"
+      },
+      "relativeHeight": 0.62,
+      "quirk": "sings a three-note tune; sometimes perches on Aria's head",
+      "catchphraseFa": "جیک‌جیک! جشن بگیریم!",
+      "allowedScenes": [
+        "station-pass",
+        "milestone",
+        "reward",
+        "transfer-intro"
+      ]
+    }
+  ],
+  "states": [
+    "idle",
+    "think",
+    "encourage",
+    "correct",
+    "celebrate",
+    "recovery"
+  ],
+  "eventToState": "packages/contracts/src/animation.ts CHARACTER_STATE_BY_EVENT (unchanged)",
+  "layers": {
+    "order": [
+      "contact-shadow",
+      "back(tail|wings)",
+      "body-group(legs, torso, belly, limbs)",
+      "head(crest|horns|ears, skull, face(eyes, brows, mouth, cheeks))",
+      "front(magnifier|float-cube)",
+      "fx"
+    ],
+    "requiredIds": [
+      "contact-shadow",
+      "body-group",
+      "head",
+      "face",
+      "eye-l",
+      "eye-r"
+    ],
+    "pivotRule": "every animatable group carries style transform-origin in view-box px",
+    "requiredIdExceptions": [
+      {
+        "character": "qbo",
+        "states": [
+          "think"
+        ],
+        "layers": [
+          "eye-l",
+          "eye-r"
+        ],
+        "reason": "intentional: Qbo's screen shows the loading ring instead of eyes while thinking (decided P01, 2026-10-02)"
+      }
+    ],
+    "selectorPolicy": "motion targets layers by class sh-<layer>; on-disk SVG keeps layer ids for Rive import; inline web markup drops layer ids and scopes gradient ids per instance (INSTANCE_UID_TOKEN)"
+  },
+  "placement": {
+    "assessment": {
+      "renderGuide": false
+    },
+    "lesson": {
+      "maxGuideDp": 96,
+      "staticIdle": true,
+      "outsideCountedArea": true,
+      "oneSpeakerAtATime": true
+    },
+    "smallSize": {
+      "under72dp": "bust",
+      "under40dp": "bust-only, no fx"
+    }
+  },
+  "acceptance": [
+    "silhouette test: 4 black silhouettes identified by species >= 80% of 8-12 children aged 6-9",
+    "all 28 SVG (24 states + 4 busts) render without error in browser and cairo",
+    "eyes readable at 40dp bust",
+    "no sharp teeth, claws, fire or angry brows in any state (Dana's rounded incisors: see toothPolicy)",
+    "assessment screens render no guide"
+  ],
+  "toothPolicy": {
+    "rule": "no sharp teeth in any character",
+    "exception": "dana: two rounded, blunt front incisors (layer #teeth) are a squirrel species marker and are allowed; must stay rounded, never pointed",
+    "decidedIn": "P01 2026-10-02",
+    "reversible": "remove the teeth layer in source/shomara-cast.mjs and rebuild if the child test or design lead rejects it"
+  }
+}

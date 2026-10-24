@@ -1,0 +1,18 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "baseUrl": ".",
+    "paths": {
+      "@math/learning-runtime": ["../../packages/learning-runtime/src"],
+      "@math/contracts": ["../../packages/contracts/src"],
+      "@math/content-delivery": ["../../packages/content-delivery/src"],
+      "@math/assignment-runtime": ["../../packages/assignment-runtime/src"],
+      "@math/adult-projections": ["../../packages/adult-projections/src"],
+      "@math/offline-sync": ["../../packages/offline-sync/src"],
+      "@math/design-system": ["../../packages/design-system/src/index.ts"]
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "phase": "UX-P10",
+  "generatedAt": "2026-10-03",
+  "status": "STATIC_PASS_DEVICE_GATE_OPEN",
+  "files": {
+    "apps/mobile/app.json": {
+      "sha256": "ad43746914c0267fb8c2e74b3cd8b672bf211246b76791fb228f7de7d24626e3",
+      "bytes": 1545
+    },
+    "apps/mobile/eas.json": {
+      "sha256": "65851349dd72e9e8ae8e7ce0d29445d38c4184100f839234fc71a65dfabacbc8",
+      "bytes": 857
+    },
+    "apps/mobile/package.json": {
+      "sha256": "6048d9c229f2c5bd90c556fb385e61ce4af737fce9030aa02e3afb843dd6d858",
+      "bytes": 1534
+    },
+    "apps/mobile/app/_layout.tsx": {
+      "sha256": "4517d21c71728711d5f0f157f8d7b1ed6ea210cb14ad24b82c510876fe0f665b",
+      "bytes": 2869
+    },
+    "apps/mobile/app/onboarding.tsx": {
+      "sha256": "846fd9faf228f1ac5b0f94dfe6bd303e6a0a53a5b33bd904b1293a0bdb8415a4",
+      "bytes": 20157
+    },
+    "apps/mobile/app/settings.tsx": {
+      "sha256": "98d97ae60b88a862beba6b84264f37cf38893dda3fdfc02746348aeaf16805da",
+      "bytes": 5179
+    },
+    "apps/mobile/src/config/runtime.ts": {
+      "sha256": "22168e18ea0cc6550a18870f4a295258ddc9aa5af5b3ab68594ccaf8c1e240ef",
+      "bytes": 931
+    },
+    "apps/mobile/src/auth/AuthSession.ts": {
+      "sha256": "761ba7cba989c8fefcc128af35c2009f45e61bdc131f63c0201d9fe7ef461c25",
+      "bytes": 1098
+    },
+    "apps/mobile/src/auth/authApi.ts": {
+      "sha256": "fa43d174f21dc5943464fc0b1349f5a1f45f68ee6d308d0b1052835bf0ba9be7",
+      "bytes": 2962
+    },
+    "apps/mobile/src/state/appStateCore.ts": {
+      "sha256": "3c0ac1edd89140112216da515d7fa5fe863210a2a882fe7ba11d255020622044",
+      "bytes": 11219
+    },
+    "apps/mobile/src/state/AppStateContext.tsx": {
+      "sha256": "bb542fdc90df92ccfa854bb4872894919a9df1e1fd6a95ee120cc0ab7de80ff3",
+      "bytes": 5069
+    },
+    "apps/mobile/src/station/StationFlow.tsx": {
+      "sha256": "4bd4525ab94d599ecec0378d5b54e2ad47bed150717534f9babe42cbdcd331c4",
+      "bytes": 31509
+    },
+    "apps/mobile/src/components/AnimatedCharacter.tsx": {
+      "sha256": "c63aed9c5ff7f147881ed6333550d338cb9ba64c29de562809f3815fcc372eb9",
+      "bytes": 5174
+    },
+    "scripts/verify-mobile-release.mjs": {
+      "sha256": "cce8035c1ae2bdd5399eba14a1576d66f212e943be904103e58a3c5fcf7a5263",
+      "bytes": 4910
+    },
+    "scripts/verify-ux-p10-final.mjs": {
+      "sha256": "b65a2cafebbd7276cf6edac2a73608e53f2fb6d0108a2aa85301dd8f323ad00e",
+      "bytes": 1150
+    },
+    "docs/qa/P10_MOBILE_RELEASE_GATE.md": {
+      "sha256": "7306f17b25ff122734beace58d2cc93d089113d95de09d03abe8a1d8de9ce984",
+      "bytes": 1962
+    },
+    "docs/qa/ANDROID_STORE_RELEASE_CHECKLIST.md": {
+      "sha256": "ced1e93dcb4f34d6701a4ae3dba6040141d5af6163bf08b226687518c5cd8e3c",
+      "bytes": 2332
+    },
+    "docs/qa/MOBILE_SCREEN_REFERENCE_MATRIX.md": {
+      "sha256": "451a2ba600c2e6ee5af8fd283cdba4f13d1c18067e15ed21397d2c0659af4ea2",
+      "bytes": 2223
+    },
+    "docs/qa/DUOLINGO_REFERENCE_NOTES.md": {
+      "sha256": "d82e24c6226d836e9d2ed8eb483a14eeb39c31e7c453939a7e386a81117382c7",
+      "bytes": 1131
+    },
+    "docs/qa/DUOLINGO_SCREEN_CAPTURE_PROTOCOL.md": {
+      "sha256": "429f0f6e7a2e410c344364cfcc5e77eb85b57c96bd84cd84f58b0942eeffce0b",
+      "bytes": 1536
+    },
+    "docs/reference/MOBILE_LOCAL_STATE.md": {
+      "sha256": "997fdab1be0b96f0651f7050a5c9eecc906179f96541a5e929d577c08b94540a",
+      "bytes": 952
+    },
+    "docs/research/P10_PALETTE_RESEARCH.md": {
+      "sha256": "edfdca24f82cc7aa087a02b0c72fa94f086faf165563b7e9f74dafd89a3c172c",
+      "bytes": 2350
+    },
+    "docs/phases/PHASE_10_UI_UX_MOBILE_RELEASE.md": {
+      "sha256": "366695b28dcb89d187d85fcd1b5e463144ac5f7e760513e159f91826c13e3c72",
+      "bytes": 1838
+    }
+  }
+}

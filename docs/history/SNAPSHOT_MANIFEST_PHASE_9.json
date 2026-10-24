@@ -1,0 +1,14 @@
+{
+  "snapshot": "math-learning-product-v1-phase9-complete-2026-09-24",
+  "phase": 9,
+  "fileCount": 229,
+  "verification": [
+    "PHASE9_STATIC_VERIFICATION_PASS",
+    "PHASE9_RUNTIME_VERIFICATION_PASS"
+  ],
+  "newPackages": [
+    "@math/offline-sync"
+  ],
+  "nativeBuild": "NOT_RUN",
+  "nativeBuildReason": "Working environment does not have project dependencies installed; Node 22 is present while repository target is Node 24."
+}

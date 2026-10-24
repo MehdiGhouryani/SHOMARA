@@ -1,0 +1,6 @@
+{
+  "name": "Math Learning Product",
+  "description": "Primary-school personal math learning platform with learning runtime and adult projections",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

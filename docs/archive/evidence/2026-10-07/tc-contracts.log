@@ -1,0 +1,27 @@
+
+> @math/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path /home/claude/proj/work/src/packages/contracts
+npm error workspace @math/contracts@0.1.0
+npm error location /home/claude/proj/work/src/packages/contracts
+npm error command failed
+npm error command sh -c tsc --noEmit -p tsconfig.json

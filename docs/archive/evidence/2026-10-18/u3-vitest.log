@@ -1,0 +1,68 @@
+
+ RUN  v5.0.3 /home/claude/shomara/shomara_math_app
+
+ ✓ apps/web/lib/__tests__/assignment-routes.test.ts (3 tests) 2213ms
+   ✓ assignment and sync routes (3)
+     ✓ retires the child-facing outcome endpoint (410) 1969ms
+ ✓ apps/mobile/src/path/layout.test.ts (8 tests) 237ms
+ ✓ apps/web/lib/__tests__/auth-hardening.test.ts (6 tests) 80ms
+ ✓ apps/mobile/src/ui/uiText.test.ts (62 tests) 31ms
+ ✓ packages/contracts/src/engagement-policy.test.ts (18 tests) 48ms
+ ✓ apps/mobile/src/sync/MobileSyncTransport.test.ts (8 tests) 50ms
+ ✓ packages/contracts/src/missions.test.ts (9 tests) 25ms
+ ✓ packages/challenge-runtime/src/__tests__/challenge.test.ts (15 tests) 43ms
+ ✓ packages/contracts/src/learning-rhythm.test.ts (3 tests) 22ms
+ ✓ apps/mobile/src/ui/v1/v1.test.ts (8 tests) 11ms
+ ✓ packages/contracts/src/p10-depth-quality.test.ts (4 tests) 17ms
+ ✓ apps/mobile/src/state/appStateCore.test.ts (34 tests) 16ms
+ ✓ apps/mobile/src/path/pathModel.test.ts (13 tests) 21ms
+ ✓ apps/mobile/src/ui/touchTargets.test.ts (22 tests) 11ms
+ ✓ apps/mobile/src/ui/noQuotedTokens.test.ts (1 test) 12ms
+ ✓ packages/contracts/src/grade-experience.test.ts (11 tests) 9ms
+ ✓ packages/contracts/src/game-feel.test.ts (9 tests) 13ms
+ ✓ packages/assignment-runtime/src/__tests__/service.test.ts (6 tests) 9ms
+ ✓ packages/contracts/src/collection.test.ts (10 tests) 12ms
+ ✓ packages/design-system/src/digits.test.ts (8 tests) 6ms
+ ✓ apps/web/lib/__tests__/rate-limit-otp.test.ts (3 tests) 10ms
+ ✓ apps/mobile/src/sync/queueParse.test.ts (4 tests) 5ms
+ ✓ packages/learning-runtime/src/__tests__/policies.test.ts (10 tests) 8ms
+ ✓ packages/learning-runtime/src/__tests__/p02-golden.test.ts (7 tests) 6ms
+ ✓ packages/contracts/src/path-focus.test.ts (4 tests) 5ms
+ ✓ packages/contracts/src/session-feel.test.ts (5 tests) 5ms
+ ✓ apps/mobile/src/onboarding/flow.test.ts (9 tests) 8ms
+ ✓ apps/mobile/src/game-feel/DragDropController.test.ts (7 tests) 6ms
+ ✓ packages/contracts/src/challenge-presentation.test.ts (8 tests) 14ms
+ ✓ packages/offline-sync/src/__tests__/manager.test.ts (5 tests) 8ms
+ ✓ packages/contracts/src/p10-batch-e.test.ts (3 tests) 7ms
+ ✓ apps/mobile/src/game-feel/feedback.test.ts (4 tests) 6ms
+ ✓ packages/contracts/src/engagement.test.ts (8 tests) 8ms
+ ✓ apps/mobile/src/auth/phone.test.ts (4 tests) 8ms
+ ✓ packages/contracts/src/p10-batch-d.test.ts (2 tests) 4ms
+ ✓ packages/contracts/src/p10-batch-e-depth.test.ts (2 tests) 5ms
+ ✓ apps/mobile/src/onboarding/steps.test.ts (6 tests) 10ms
+ ✓ apps/mobile/src/station/macro.test.ts (6 tests) 7ms
+ ✓ packages/contracts/src/worlds.test.ts (4 tests) 7ms
+ ✓ packages/contracts/src/p10-batch-a-depth.test.ts (3 tests) 13ms
+ ✓ packages/contracts/src/avatar-customization.test.ts (7 tests) 7ms
+ ✓ apps/mobile/src/game-feel/GameFeelController.test.ts (8 tests) 6ms
+ ✓ packages/learning-runtime/src/__tests__/engine.test.ts (2 tests) 6ms
+ ✓ packages/contracts/src/p10-batch-a.test.ts (4 tests) 7ms
+ ✓ apps/web/lib/characterScenes.test.ts (5 tests) 6ms
+ ✓ packages/contracts/src/p10-batch-b.test.ts (2 tests) 4ms
+ ✓ apps/mobile/src/ui/digits.test.ts (4 tests) 5ms
+ ✓ apps/mobile/src/game-feel/haptics.test.ts (4 tests) 5ms
+ ✓ packages/contracts/src/p10-batch-b-depth.test.ts (1 test) 5ms
+ ✓ packages/contracts/src/p10-batch-c.test.ts (2 tests) 4ms
+ ✓ packages/contracts/src/p10-batch-c-depth.test.ts (1 test) 5ms
+ ✓ packages/contracts/src/p10-batch-d-depth.test.ts (1 test) 5ms
+ ✓ packages/learning-runtime/src/__tests__/evaluator.test.ts (3 tests) 5ms
+
+ Test Files  53 passed (53)
+      Tests  406 passed (406)
+   Start at  08:31:03
+   Duration  13.43s (tests 48%, import 23%, transform 23%, worker 6%)
+
+    Isolate  53 workers spawned · ~123ms startup each (spawn + environment, per file)
+             at least ~6.37s faster with isolate: false — reuses workers across files instead of one per file
+
+vitest exit=0

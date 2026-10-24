@@ -1,0 +1,232 @@
+{
+  "version": "v1",
+  "source_delivery": "shomara-all-pages.zip (2026-10-14)",
+  "verified": "00-all-pages-original-bundle == 01..15 (15/15 identical)",
+  "font": {
+    "family": "Vazirmatn",
+    "weights_used_in_designs": [
+      400,
+      500,
+      600
+    ],
+    "note": "طرح‌های وب فونت متغیر ۱۰۰–۹۰۰ دارند؛ در موبایل از فایل‌های ثابت ۴۰۰ و ۶۰۰ استفاده می‌شود"
+  },
+  "removed_in_v1": {
+    "stat_fire": "streak (روز پیاپی)",
+    "stat_star": "ستاره (XP/امتیاز)",
+    "stat_heart": "جان",
+    "node_stars": "ستارهٔ رتبه‌بندی زیر گره‌های کامل",
+    "current_node_star_glyph": "ستاره روی گرهٔ جاری → کتاب خطی"
+  },
+  "tokens_from_guide": {
+    "canvas": "#F5F7F8",
+    "surface": "#FFFFFF",
+    "ink": "#1B2A36",
+    "ink2": "#4D5F6D",
+    "line": "#E4EAEE",
+    "line2": "#D3DBE0",
+    "outline": "#6B7C88",
+    "primary": "#2B5C7A",
+    "primary-edge": "#1F4459",
+    "primary-c": "#D5E5EF",
+    "on-primary-c": "#163A4F",
+    "surface-v": "#E9EEF1",
+    "amber": "#E3A33B",
+    "amber-edge": "#B07A2A",
+    "on-amber": "#1B2A36",
+    "neutral-c": "#EEE3CF",
+    "error": "#A94438",
+    "error-c": "#F7E1DD",
+    "violet": "#7462E6",
+    "violet-c": "#E3DCFC",
+    "on-violet-c": "#2F2470"
+  },
+  "pages": [
+    {
+      "id": "01",
+      "file": "01-welcome.html",
+      "title_fa": "خوش‌آمد",
+      "app_target": "onboarding/welcome",
+      "phase": 2,
+      "characters": [
+        "Main/Main_10_pose_wave"
+      ],
+      "notes": [],
+      "sha256": "ea724c63a5841f013fc5943179a61b96dce9b842ab39f8ec4ff9c709222ee3b8"
+    },
+    {
+      "id": "02",
+      "file": "02-phone.html",
+      "title_fa": "شماره موبایل",
+      "app_target": "onboarding/phone",
+      "phase": 2,
+      "characters": [
+        "Main/Main_07_expression_thinking"
+      ],
+      "notes": [],
+      "sha256": "0f207f344f87438a14b3563ba56ed30b9ff877b101e328f46b357c75c20a637d"
+    },
+    {
+      "id": "03",
+      "file": "03-verify-code.html",
+      "title_fa": "کد تأیید",
+      "app_target": "onboarding/verify",
+      "phase": 2,
+      "characters": [],
+      "notes": [],
+      "sha256": "ca17d358022b643c81e449bf1cdfa46408110ddff888a4c9d13aef32235dd321"
+    },
+    {
+      "id": "04",
+      "file": "04-profile.html",
+      "title_fa": "نام، آواتار و پایه",
+      "app_target": "onboarding/profile",
+      "phase": 2,
+      "characters": [
+        "Main/Main_01_front"
+      ],
+      "notes": [
+        "آواتارها SVG هستند (خورشید، برگ، ابر، ماه)، نه شخصیت"
+      ],
+      "sha256": "7a27077b540fedeb2100d42f55a0fd6029df6a6600113666e23a514a52ad5ad6"
+    },
+    {
+      "id": "05",
+      "file": "05-path.html",
+      "title_fa": "مسیر (v1)",
+      "app_target": "(tabs)/index",
+      "phase": 3,
+      "characters": [
+        "Dana/Dana_01_front"
+      ],
+      "notes": [
+        "نسخه v1: نوار آمار فقط پایهٔ ۱؛ ستاره‌های گره‌ها حذف شد؛ گرهٔ جاری کتاب خطی است (مثل طرح قدیمی، بدون کلاس fi)"
+      ],
+      "sha256": "d4e6cdceff19d9c18b615f067b22333d1a4630838dbe514a71d571cb05f102c4"
+    },
+    {
+      "id": "06",
+      "file": "06-stage-intro.html",
+      "title_fa": "معرفی مرحله",
+      "app_target": "station/[stationId]/start",
+      "phase": 4,
+      "characters": [
+        "Number/Number_17_pose_pointing"
+      ],
+      "notes": [
+        "تناقض: alt می‌گوید «با دست اشاره می‌کند» ولی تصویر خوابآلود است؛ تأیید مالک لازم"
+      ],
+      "sha256": "a6f78e21b13f145286cbd15785cbac6cd21eaf5216020370db4e212c04464c33"
+    },
+    {
+      "id": "07",
+      "file": "07-lesson.html",
+      "title_fa": "آموزش (بخش ۱)",
+      "app_target": "station/[stationId]/play (teach)",
+      "phase": 4,
+      "characters": [
+        "Number/Number_01_front"
+      ],
+      "notes": [
+        "دکمهٔ «دوباره بشنو» در طرح است"
+      ],
+      "sha256": "a29ff1d0ce71a243bb00e78f31d922707abf2238cd2f284786b5ef24c62a0cf6"
+    },
+    {
+      "id": "08",
+      "file": "08-question.html",
+      "title_fa": "سؤال",
+      "app_target": "station/[stationId]/play (question)",
+      "phase": 5,
+      "characters": [],
+      "notes": [
+        "طرح فقط سؤال شمارش مهره‌ها دارد"
+      ],
+      "sha256": "2dbfecbbdb8ecda37ccd9fd3d6f757a6f373b3d526edb4304d1880eb5432b678"
+    },
+    {
+      "id": "09",
+      "file": "09-correct.html",
+      "title_fa": "پاسخ درست",
+      "app_target": "station/[stationId]/play (feedback)",
+      "phase": 5,
+      "characters": [],
+      "notes": [],
+      "sha256": "27a871c53296e73021774d20abe1b7d1514d4fb58ce0c567e5bd0ad50aa4fde2"
+    },
+    {
+      "id": "10",
+      "file": "10-retry.html",
+      "title_fa": "پاسخ نادرست، دوباره",
+      "app_target": "station/[stationId]/play (feedback)",
+      "phase": 5,
+      "characters": [],
+      "notes": [],
+      "sha256": "3b52713b4cb70b810f0dcc7b34cf0fc3c60fd46992578eef2c9c3c5a10121513"
+    },
+    {
+      "id": "11",
+      "file": "11-stage-result.html",
+      "title_fa": "نتیجهٔ مرحله",
+      "app_target": "station/[stationId]/result (جدید)",
+      "phase": 6,
+      "characters": [
+        "Main/Main_12_state_celebrate"
+      ],
+      "notes": [
+        "دستاورد «شمارش‌گر» نمایش داده می‌شود"
+      ],
+      "sha256": "10b40b9a08123f266a9a50a5abf1887a06d071b6d2f591bbb14abfd3e91f10c5"
+    },
+    {
+      "id": "12",
+      "file": "12-challenge.html",
+      "title_fa": "چالش آخر مرحله",
+      "app_target": "challenge (جدید)",
+      "phase": 6,
+      "characters": [
+        "Roka/Roka_15_pose_determined"
+      ],
+      "notes": [],
+      "sha256": "773a2ccedb6d00c5fd9d19c6e2ca00cbc9901e9f5d3e0a85c27e20e840df5d4c"
+    },
+    {
+      "id": "13",
+      "file": "13-practice.html",
+      "title_fa": "تمرین",
+      "app_target": "(tabs)/practice",
+      "phase": 7,
+      "characters": [
+        "Fandogh/Fandogh_11_pose_cheer"
+      ],
+      "notes": [
+        "دارایی‌های Dana و Fandogh پس‌زمینهٔ پخته دارند (فقط نوار بالا/پایین شفاف است)؛ طرح از نسخهٔ برش‌خوردهٔ ۳۲۰ پیکسلی داخل دایره استفاده می‌کند. همان برش‌ها منبع پرتره در اپ هستند"
+      ],
+      "sha256": "3eb998550d448e9d90c5fdd90e43ce494b8c5413416cb5c5a7c222337205ac03"
+    },
+    {
+      "id": "14",
+      "file": "14-me.html",
+      "title_fa": "من",
+      "app_target": "(tabs)/profile",
+      "phase": 7,
+      "characters": [],
+      "notes": [
+        "پیشرفت «۰ از ۲۵ ایستگاه»، سه دستاورد قفل‌شده"
+      ],
+      "sha256": "af89e0ade119c3f00dd0d2cc2cedff1932411e6a273b616130c840a294fc4f08"
+    },
+    {
+      "id": "15",
+      "file": "15-design-guide.html",
+      "title_fa": "راهنمای طراحی (مرجع توکن‌ها)",
+      "app_target": "reference only",
+      "phase": 0,
+      "characters": [],
+      "notes": [
+        "منبع رنگ، فاصله، دکمه و نوشته؛ در اپ استفاده نمی‌شود"
+      ],
+      "sha256": "09c87e8829f64221e53edf8a46ac153c941c189bfd4102ca8bcf82bc63164987"
+    }
+  ]
+}

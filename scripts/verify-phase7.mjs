@@ -1,0 +1,8 @@
+import fs from 'node:fs'; import path from 'node:path';
+const root=process.cwd(); const required=['packages/assignment-runtime/src/service.ts','packages/assignment-runtime/src/types.ts','supabase/migrations/0024_assignment_targets_recheck.sql','apps/web/app/api/v1/assignments/route.ts','apps/web/app/api/v1/assignment-instances/[instanceId]/recheck/route.ts','apps/web/app/api/v1/assignment-instances/[instanceId]/outcome/route.ts','apps/web/app/api/v1/assignment-instances/[instanceId]/recheck/complete/route.ts','apps/web/app/api/v1/learning-identities/[learningIdentityId]/assignments/route.ts','docs/api/API_ASSIGNMENT_CONTRACT.md'];
+for(const f of required) if(!fs.existsSync(path.join(root,f))) throw new Error(`Missing ${f}`);
+const migration=fs.readFileSync(path.join(root,'supabase/migrations/0024_assignment_targets_recheck.sql'),'utf8'); for(const m of ['assignment_targets','assignment_rechecks','adaptation_mode','completion_rule']) if(!migration.includes(m)) throw new Error(`Migration marker missing: ${m}`);
+const service=fs.readFileSync(path.join(root,'packages/assignment-runtime/src/service.ts'),'utf8'); for(const m of ['createDraft','publish','listForLearner','recordStationPass','requestRecheck','completeRecheck']) if(!service.includes(`async ${m}`)) throw new Error(`Service method missing: ${m}`);
+if(service.includes('applyLearningOutcome')) throw new Error('Learner-reported outcome must not exist: completion is server-authoritative');
+const outcomeRoute=fs.readFileSync(path.join(root,'apps/web/app/api/v1/assignment-instances/[instanceId]/outcome/route.ts'),'utf8'); if(!/status:\s*410/.test(outcomeRoute)) throw new Error('Child-facing outcome endpoint must stay retired (410)');
+console.log('Current assignment runtime verification: PASS');

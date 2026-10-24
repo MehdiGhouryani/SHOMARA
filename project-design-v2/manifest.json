@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "2.0.0",
+  "generatedFrom": "source/shomara-cast.mjs",
+  "viewBox": "0 0 224 256",
+  "cast": {
+    "aria": {
+      "states": [
+        "assets/characters/aria/idle.svg",
+        "assets/characters/aria/think.svg",
+        "assets/characters/aria/encourage.svg",
+        "assets/characters/aria/correct.svg",
+        "assets/characters/aria/celebrate.svg",
+        "assets/characters/aria/recovery.svg"
+      ],
+      "bust": "assets/characters/aria/bust.svg",
+      "bytes": {
+        "idle": 6378,
+        "think": 6301,
+        "encourage": 6386,
+        "correct": 5885,
+        "celebrate": 7005,
+        "recovery": 6464,
+        "bust": 6403
+      }
+    },
+    "qbo": {
+      "states": [
+        "assets/characters/qbo/idle.svg",
+        "assets/characters/qbo/think.svg",
+        "assets/characters/qbo/encourage.svg",
+        "assets/characters/qbo/correct.svg",
+        "assets/characters/qbo/celebrate.svg",
+        "assets/characters/qbo/recovery.svg"
+      ],
+      "bust": "assets/characters/qbo/bust.svg",
+      "bytes": {
+        "idle": 8242,
+        "think": 7715,
+        "encourage": 8251,
+        "correct": 7852,
+        "celebrate": 8968,
+        "recovery": 8149,
+        "bust": 8268
+      }
+    },
+    "dana": {
+      "states": [
+        "assets/characters/dana/idle.svg",
+        "assets/characters/dana/think.svg",
+        "assets/characters/dana/encourage.svg",
+        "assets/characters/dana/correct.svg",
+        "assets/characters/dana/celebrate.svg",
+        "assets/characters/dana/recovery.svg"
+      ],
+      "bust": "assets/characters/dana/bust.svg",
+      "bytes": {
+        "idle": 6035,
+        "think": 5943,
+        "encourage": 5700,
+        "correct": 5729,
+        "celebrate": 5921,
+        "recovery": 5709,
+        "bust": 6061
+      }
+    },
+    "jiko": {
+      "states": [
+        "assets/characters/jiko/idle.svg",
+        "assets/characters/jiko/think.svg",
+        "assets/characters/jiko/encourage.svg",
+        "assets/characters/jiko/correct.svg",
+        "assets/characters/jiko/celebrate.svg",
+        "assets/characters/jiko/recovery.svg"
+      ],
+      "bust": "assets/characters/jiko/bust.svg",
+      "bytes": {
+        "idle": 4350,
+        "think": 4345,
+        "encourage": 4428,
+        "correct": 4004,
+        "celebrate": 5638,
+        "recovery": 4514,
+        "bust": 4376
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@math/challenge-runtime",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@math/contracts": "*",
+    "@math/learning-runtime": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

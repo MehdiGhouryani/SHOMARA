@@ -1,0 +1,62 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.3 [39m[90m/home/claude/p/work/src[39m
+
+ [32m✓[39m apps/web/lib/__tests__/assignment-routes.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 462[2mms[22m[39m
+   [32m✓[39m assignment and sync routes [2m(3)[22m
+     [33m[2m✓[22m[39m sync/batch never acknowledges unimplemented operations[33m 348[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/engagement-policy.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 70[2mms[22m[39m
+ [32m✓[39m apps/web/lib/__tests__/auth-hardening.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 75[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/sync/MobileSyncTransport.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m packages/challenge-runtime/src/__tests__/challenge.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-depth-quality.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/missions.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/ui/uiText.test.ts [2m([22m[2m34 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/state/appStateCore.test.ts [2m([22m[2m34 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/learning-rhythm.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/game-feel.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m packages/offline-sync/src/__tests__/manager.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/collection.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/ui/touchTargets.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/game-feel/haptics.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/grade-experience.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m apps/web/lib/__tests__/rate-limit-otp.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/station/macro.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/ui/noQuotedTokens.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m packages/learning-runtime/src/__tests__/engine.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/engagement.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/challenge-presentation.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-a.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m packages/assignment-runtime/src/__tests__/service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/session-feel.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-c.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-e-depth.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/onboarding/flow.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/sync/queueParse.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/auth/phone.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m packages/learning-runtime/src/__tests__/policies.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/avatar-customization.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-a-depth.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/game-feel/DragDropController.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/game-feel/GameFeelController.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-d-depth.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/worlds.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m packages/learning-runtime/src/__tests__/evaluator.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m packages/learning-runtime/src/__tests__/p02-golden.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-c-depth.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m apps/web/lib/characterScenes.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/path-focus.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/game-feel/feedback.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-b-depth.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m apps/mobile/src/ui/digits.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-b.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m packages/contracts/src/p10-batch-d.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m48 passed[39m[22m[90m (48)[39m
+[2m      Tests [22m [1m[32m327 passed[39m[22m[90m (327)[39m
+[2m   Start at [22m 09:07:18
+[2m   Duration [22m 14.50s[2m (transform 34%, import 32%, tests 24%, worker 10%)[22m
+
+[2m    Isolate [22m [33m48 workers spawned[39m[2m · ~177ms startup each (spawn + environment, per file)[22m
+[2m            [22m [2mat least ~8.33s faster with [22m[33misolate: false[39m[2m — reuses workers across files instead of one per file[22m
+

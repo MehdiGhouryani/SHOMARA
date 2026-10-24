@@ -1,0 +1,74 @@
+{
+  "phase": "UX-P07",
+  "createdAt": "2026-10-03",
+  "files": {
+    "packages/contracts/src/practice.ts": {
+      "sha256": "e1950069fd059ef67d608118ff8b239b679ff45e57e27624cf6a117e58f530fd",
+      "bytes": 6803
+    },
+    "packages/contracts/src/index.ts": {
+      "sha256": "ebe3e60cd83fc1acc7d5a2b11ad8dc6f9e2ccdf86e6f2ad8475cfea9c422966f",
+      "bytes": 288
+    },
+    "apps/web/components/PracticeHubView.tsx": {
+      "sha256": "99e5455b69fb0d8f433ad1eb1670589a74bb46af25116cb0cf78a29ead4e3af7",
+      "bytes": 7694
+    },
+    "apps/web/components/PracticeHubView.module.css": {
+      "sha256": "a1663b1ffab97c4f36523351844a759dd5e6771b5c759d444f639ac77e5734ad",
+      "bytes": 4684
+    },
+    "apps/web/app/page.tsx": {
+      "sha256": "1f70366cd95de109adf7708109aa7c2fe6ecdf339c2ec2afffa6f608dcd1177c",
+      "bytes": 13220
+    },
+    "apps/mobile/src/ui/PracticeHubScreen.tsx": {
+      "sha256": "9c8da7072bfee19a3899750ec4c7de73e5364fad2445ec9b6d5c8c05a28b8f3a",
+      "bytes": 14475
+    },
+    "apps/mobile/app/(tabs)/practice.tsx": {
+      "sha256": "42ddd1ca778d5f591dd69a3b89880befa047d1f2a5140a6bfefb967d39bf0e76",
+      "bytes": 146
+    },
+    "apps/mobile/app/(tabs)/skills.tsx": {
+      "sha256": "cc2b7941ef9498bc637c70d497767809a145069a320bfdfac65935efd9d6e7c1",
+      "bytes": 151
+    },
+    "package.json": {
+      "sha256": "b05c480f3af9a6b398985cb8b7975871a3d4bd23ab965c9ebfda516bb0f399bb",
+      "bytes": 3251
+    },
+    "scripts/verify-uiux-phase7.mjs": {
+      "sha256": "e634f91bf9a31b704813f79304443d83d1ca48ebb442de9b16b1e1c126ca2a1f",
+      "bytes": 2435
+    },
+    "docs/reference/PRACTICE_HUB_CONTRACT.md": {
+      "sha256": "68cf804347fa782a8068f12afd13a0aee7dbddc0d20dc82289eacd3c9de793bd",
+      "bytes": 1092
+    },
+    "docs/reference/PRACTICE_CONTRACT_README.md": {
+      "sha256": "eb8377e1ec97206647ee14b57db908eb7bb0a3c802a5c18e7ad2a931018d5a52",
+      "bytes": 250
+    },
+    "docs/phases/PHASE_7_UI_UX_PRACTICE_HUB.md": {
+      "sha256": "70ed34f9b0253ff19ea3da256c2ed0e3ab15379836fa7b9d59876aff4cd79ed6",
+      "bytes": 1439
+    },
+    "docs/phases/UX_ROADMAP_10_PHASES.md": {
+      "sha256": "bc5238e32b8181afa28a7e645f41ff38fbd9a25a2676a10ce34ab97140abf50c",
+      "bytes": 2242
+    },
+    "docs/audits/AUDIT_UIUX_PHASE_7_2026-10-03.md": {
+      "sha256": "074b5c0bb137745751e4f8bc9793ca6a52e80ae2bb8f7065c79c9f2b3f1ccd53",
+      "bytes": 1105
+    },
+    "docs/audits/AUDIT_UIUX_PHASE_7_2026-10-03.json": {
+      "sha256": "3c41a833f47bd5068ae3c25a70473b0766742c698e056bd36383a8d2bb3ec600",
+      "bytes": 1266
+    },
+    "docs/history/REVISION_NOTES_UX_P07.md": {
+      "sha256": "13c2574775dca35549e8daa22e82d8faf5d4e22b9e06645032ec25e454b90686",
+      "bytes": 504
+    }
+  }
+}

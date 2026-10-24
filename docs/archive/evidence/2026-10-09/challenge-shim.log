@@ -1,0 +1,19 @@
+# packages/challenge-runtime/src/__tests__/challenge.test.ts
+PASS  P04 challenge contract › rejects answer keys and accepts a valid definition
+PASS  P04 challenge contract › flags hard timer, mastery role, skill drift, reward-on-NOT_YET and leaked answer keys
+PASS  P04 challenge contract › client view carries no content ids per level and no evaluator data
+PASS  P04 challenge contract › makes offline keys deterministic and fingerprints payload order canonically
+PASS  P04 challenge contract › difficulty steps up after first-try streaks and resets (never demotes) after a scaffold
+PASS  P04 challenge runtime › composes Learning Runtime, is idempotent, and grants eligibility without mastery
+PASS  P04 challenge runtime › runs a second template (G1-GAME-001, option index) through the same engine path
+PASS  P04 challenge runtime › rejects key reuse with a different payload and out-of-order rounds (retryable)
+PASS  P04 challenge runtime › start is idempotent per key and rejects a context mismatch
+PASS  P04 challenge runtime › scaffolds after two wrong attempts, tags scaffolded evidence, and completes WITH_SUPPORT
+PASS  P04 challenge runtime › closes an unsolved round after the scaffold, continues, and ends NOT_YET without reward
+PASS  P04 challenge runtime › grants reward eligibility once per learner; a replay run never grants again
+PASS  P04 challenge runtime › early exit is ABANDONED, keeps earlier evidence, and blocks further rounds
+PASS  P04 challenge runtime › hints are idempotent, ordered, never reveal the answer and never reduce reward
+PASS  P04 challenge runtime › refuses MASTERY_CHECK content and other learners
+
+15/15 tests passed
+{"gate":"P04-CHALLENGE-RUNTIME-TESTS","status":"PASS","failed":0}

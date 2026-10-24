@@ -1,0 +1,31 @@
+parity bundle built: apps/mobile/parity/dist-flow
+PASS fresh: first chapter band (world name and kicker)
+PASS fresh: grade chip is shown
+PASS fresh: 25 stations and 5 chests are on the trail
+PASS fresh: start bubble on the current node
+PASS fresh: current station opens its start page
+PASS fresh: locked station shows the notice and does not navigate
+PASS fresh: notice disappears by itself
+PASS fresh: grade chip explains other grades are coming
+PASS fresh: that note disappears by itself
+PASS fresh: guide button shows then hides the chapter story
+PASS fresh: jump button is hidden at the top
+PASS scroll: band switches to the second chapter
+PASS scroll: chapter dividers are announced as headings
+PASS scroll: jump-to-current button appears after 300px
+PASS scroll: jump button returns to the current station
+PASS scroll: first chapter band is back
+PASS no runtime errors (fresh)
+PASS mid: opens on the chapter of the current station
+PASS mid: the current station is on screen without scrolling
+PASS mid: resuming a started station goes to its play page
+PASS mid: a finished station is not locked (no notice)
+PASS no runtime errors (mid)
+PASS jump: offer appears under the second chapter divider
+PASS jump: offer opens the jump assessment of that unit
+PASS no runtime errors (jump)
+PASS offline: warning strip explains the situation
+PASS offline: the current station is marked as being prepared
+PASS offline: the path is still fully shown
+PASS no runtime errors (offline)
+FLOW_PATH: PASS (29/29)

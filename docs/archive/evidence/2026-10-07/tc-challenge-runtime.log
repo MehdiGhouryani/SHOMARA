@@ -1,0 +1,31 @@
+
+> @math/challenge-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+src/service.ts(338,7): error TS2375: Type '{ prompt: string | null; interactionType: string | undefined; title: string | null; options: readonly string[]; display: string | null; sequence: readonly string[] | null; visualCount: number | null; }' is not assignable to type '{ prompt?: string | null; interactionType?: string; title?: string | null; options?: readonly string[]; display?: string | null; sequence?: readonly string[] | null; visualCount?: number | null; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'interactionType' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+../contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(44,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(45,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(46,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthChallengeSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthRoundSeed'. Consider explicitly re-exporting to resolve the ambiguity.
+../contracts/src/index.ts(47,1): error TS2308: Module './p10-batch-a-depth' has already exported a member named 'DepthVariantPresentation'. Consider explicitly re-exporting to resolve the ambiguity.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path /home/claude/proj/work/src/packages/challenge-runtime
+npm error workspace @math/challenge-runtime@0.1.0
+npm error location /home/claude/proj/work/src/packages/challenge-runtime
+npm error command failed
+npm error command sh -c tsc --noEmit -p tsconfig.json

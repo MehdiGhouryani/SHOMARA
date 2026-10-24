@@ -1,0 +1,36 @@
+
+> @math/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/design-system@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/learning-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/challenge-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/assignment-runtime@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @math/adult-projections@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @math/offline-sync@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @math/mobile@0.1.0 typecheck
+> tsc --noEmit
+

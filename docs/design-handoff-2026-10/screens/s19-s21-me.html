@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>S19 تا S21 · من، ظاهر، تنظیمات</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --canvas:#F5F7F8; --surface:#FFFFFF; --ink:#1B2A36; --muted:#4D5F6D; --outline:#6B7C88; --line:#E4EAEE;
+  --primary:#2B5C7A; --on-primary:#FFFFFF; --primary-edge:#1F4459; --pc:#D5E5EF; --on-pc:#163A4F; --sv:#E9EEF1;
+  --tertiary:#E3A33B; --on-tertiary:#1B2A36; --tedge:#B07A2A; --err:#A94438; --errc:#F7E1DD; --onerrc:#5C1F17;
+  --font:Vazirmatn, system-ui, "Segoe UI", sans-serif;
+}
+*,*::before,*::after { box-sizing:border-box; }
+body { margin:0; background:var(--canvas); color:var(--ink); font-family:var(--font); padding:20px 12px 40px; display:flex; flex-direction:column; align-items:center; gap:20px; }
+.label { font-size:14px; color:var(--muted); text-align:center; max-width:720px; }
+.row { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; align-items:flex-start; }
+.phone { position:relative; width:360px; max-width:100%; height:800px; background:var(--canvas); border:1px solid var(--line); border-radius:28px; overflow:hidden; }
+.scroll { position:absolute; inset:0 0 88px 0; overflow-y:auto; padding:16px 20px 24px; }
+.scroll.full { inset:0; }
+.topbar { display:flex; align-items:center; justify-content:space-between; height:56px; padding:0 8px; }
+.ib { width:44px; height:44px; border:0; background:none; color:var(--ink); border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.ib svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.ibtn svg { width:20px; height:20px; }
+h1 { font-size:24px; line-height:32px; font-weight:600; margin:6px 0 10px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:16px; }
+.id { position:relative; background:var(--pc); border-radius:24px; padding:20px 18px 22px; text-align:center; overflow:visible; }
+.av { width:112px; height:112px; border-radius:50%; background:var(--surface); margin:0 auto; display:flex; align-items:center; justify-content:center; border:4px solid var(--canvas); }
+.av svg { width:76px; height:76px; }
+.nm { font-size:22px; font-weight:600; margin:12px 0 4px; color:var(--on-pc); }
+.gr { display:inline-block; background:var(--surface); color:var(--on-pc); border-radius:999px; padding:4px 12px; font-size:14px; }
+.sec-t { font-size:14px; color:var(--muted); margin:18px 2px 8px; }
+.prog { display:flex; align-items:center; gap:12px; }
+.bar { flex:1; height:12px; border-radius:999px; background:var(--sv); overflow:hidden; }
+.bar i { display:block; height:100%; width:0%; background:var(--primary); }
+.pn { font-size:15px; color:var(--ink); min-width:88px; text-align:left; direction:ltr; }
+.ach { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:18px; background:var(--surface); border:1px solid var(--line); margin-bottom:8px; }
+.medal { width:48px; height:48px; flex:0 0 48px; border-radius:50%; background:var(--sv); color:var(--outline); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; }
+.ach.on .medal { background:var(--pc); color:var(--on-pc); }
+.atxt { display:flex; flex-direction:column; }
+.atxt b { font-size:16px; font-weight:600; }
+.atxt small { font-size:13px; color:var(--muted); }
+.lock { margin-inline-start:auto; width:20px; height:20px; color:var(--outline); }
+.lock svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; }
+.acts { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+.act { min-height:56px; border-radius:18px; border:2px solid var(--line); background:var(--surface); display:flex; align-items:center; gap:12px; padding:0 16px; font-family:var(--font); font-size:16px; font-weight:600; color:var(--ink); cursor:pointer; width:100%; text-align:right; }
+.act.primary { background:var(--primary); color:var(--on-primary); border-color:var(--primary); box-shadow:0 4px 0 var(--primary-edge); }
+.act .ico { width:24px; height:24px; color:inherit; }
+.act .ico svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.act .go { margin-inline-start:auto; color:var(--muted); }
+.act.primary .go { color:var(--on-primary); }
+.act.locked { color:var(--muted); }
+.tabs { position:absolute; left:0; right:0; bottom:0; height:88px; background:var(--surface); border-top:1px solid var(--line); display:flex; justify-content:space-around; align-items:center; padding:0 12px; }
+.tab { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:13px; color:var(--muted); min-width:72px; min-height:56px; justify-content:center; border:0; background:none; font-family:var(--font); }
+.tab.active { color:var(--primary); font-weight:600; }
+.tab .ti { width:56px; height:40px; border-radius:16px; display:flex; align-items:center; justify-content:center; }
+.tab.active .ti { background:var(--pc); color:var(--on-pc); }
+.tab svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.preset-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:8px; }
+.pr { position:relative; background:var(--surface); border:2px solid var(--line); border-radius:22px; height:112px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; font-family:var(--font); color:var(--ink); }
+.pr svg { width:52px; height:52px; }
+.pr span { font-size:14px; }
+.pr.sel { border:3px solid var(--primary); }
+.pr .ck { position:absolute; top:8px; inset-inline-start:8px; width:26px; height:26px; border-radius:50%; background:var(--primary); color:#fff; display:none; align-items:center; justify-content:center; }
+.pr.sel .ck { display:flex; }
+.pr .ck svg { width:16px; height:16px; fill:none; stroke:#fff; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.bigav { width:150px; height:150px; border-radius:50%; background:var(--pc); margin:8px auto 4px; display:flex; align-items:center; justify-content:center; }
+.bigav svg { width:104px; height:104px; }
+.btn { width:100%; min-height:56px; border:0; border-radius:20px; background:var(--tertiary); color:var(--on-tertiary); font-family:var(--font); font-size:18px; font-weight:600; box-shadow:0 3px 0 var(--tedge); cursor:pointer; }
+.btn.sec { background:var(--surface); color:var(--primary); box-shadow:none; border:2px solid var(--line); }
+.btns { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+.set { display:flex; align-items:center; justify-content:space-between; min-height:64px; padding:0 4px; border-bottom:1px solid var(--line); font-size:17px; }
+.sw { width:52px; height:30px; border-radius:999px; background:var(--primary); position:relative; flex:0 0 52px; }
+.sw::after { content:""; position:absolute; top:3px; inset-inline-end:3px; width:24px; height:24px; border-radius:50%; background:#fff; }
+.sw.off { background:var(--sv); border:2px solid var(--line); }
+.sw.off::after { inset-inline-end:auto; inset-inline-start:3px; background:var(--outline); }
+.seg { display:flex; background:var(--sv); border-radius:14px; padding:4px; gap:4px; }
+.seg span { min-height:40px; min-width:76px; display:flex; align-items:center; justify-content:center; border-radius:10px; font-size:15px; color:var(--muted); }
+.seg span.on { background:var(--surface); color:var(--ink); font-weight:600; box-shadow:0 1px 0 var(--line); }
+.banner { padding:12px 16px; border-radius:18px; font-size:15px; line-height:24px; background:var(--sv); margin-top:12px; }
+.banner.err { background:var(--errc); color:var(--onerrc); }
+.skel { height:72px; border-radius:20px; background:var(--sv); margin-bottom:10px; }
+.sheet { position:absolute; left:0; right:0; bottom:0; background:var(--surface); border-radius:28px 28px 0 0; padding:20px 20px 28px; box-shadow:0 -6px 24px rgba(27,42,54,0.12); }
+.grab { width:44px; height:5px; border-radius:999px; background:var(--line); margin:0 auto 12px; }
+.dlg { position:absolute; inset:0; background:rgba(27,42,54,0.36); display:flex; align-items:center; justify-content:center; padding:24px; }
+.dlgbox { background:var(--surface); border-radius:24px; padding:20px; width:100%; }
+.dlgbox h3 { margin:0 0 8px; font-size:18px; }
+.dlgbox p { margin:0; font-size:15px; line-height:24px; color:var(--muted); }
+.cap { width:100%; max-width:900px; font-size:14px; color:var(--muted); text-align:center; }
+.states { display:flex; flex-direction:column; gap:12px; width:360px; max-width:100%; }
+.sc { background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:16px; display:flex; flex-direction:column; gap:10px; }
+.sc p { margin:0; font-size:14px; color:var(--muted); }
+@media all {
+  :root[data-theme="dark"] {
+    --canvas: #0F1A22;
+    --surface: #17242E;
+    --on-surface: #E6EDF2;
+    --on-surface-variant: #B3C0CA;
+    --outline: #8795A0;
+    --outline-variant: #2A3A46;
+    --primary: #8DB9D6;
+    --on-primary: #0E2535;
+    --primary-edge: #5D8FAE;
+    --primary-container: #1D3A4E;
+    --on-primary-container: #CFE5F2;
+    --surface-variant: #213140;
+    --tertiary: #E8B458;
+    --on-tertiary: #2B1E00;
+    --tertiary-edge: #B8862F;
+    --error: #F2A093;
+    --error-container: #3A221E;
+    --on-error-container: #F8D3CC;
+    --violet: #B3A6FF;
+    --violet-container: #2D2750;
+    --on-violet-container: #E6E1FF;
+    --neutral: #B8A58C;
+    --neutral-container: #2E2A24;
+    --sv: #213140;
+  }
+}
+</style>
+</head>
+<body>
+<div class="label">S19 تا S21 · من، تغییر ظاهر، تنظیمات. پالت فعلی موقتی است. آواتار فقط شکل است؛ پیش‌تنظیم‌ها همان چهار موتیف‌اند.</div>
+
+<div class="row">
+
+<!-- S19 · من -->
+<main class="phone" aria-label="من (S19)">
+  <div class="topbar"><span class="ib" aria-hidden="true"></span><span style="font-size:15px;color:var(--muted)">من</span><button class="ib" type="button" aria-label="تنظیمات"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
+  <div class="scroll">
+    <div class="id">
+      <div class="av"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="13" fill="#E3A33B"/><g stroke="#E3A33B" stroke-width="4" stroke-linecap="round"><path d="M32 6v7M32 51v7M6 32h7M51 32h7M13.6 13.6l5 5M45.4 45.4l5 5M13.6 50.4l5-5M45.4 18.6l5-5"/></g></svg></div>
+      <div class="nm">نیما</div>
+      <span class="gr">پایهٔ اول</span>
+    </div>
+
+    <div class="sec-t">پیشرفت</div>
+    <div class="card">
+      <div class="prog"><div class="bar"><i style="width:0%"></i></div><span class="pn">۰ از ۲۵ ایستگاه</span></div>
+    </div>
+
+    <div class="sec-t">دستاوردها</div>
+    <div class="ach locked"><span class="medal"><span>●●●</span></span><span class="atxt"><b>شمارش‌گر</b><small>ایستگاه ۱ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>→</span></span><span class="atxt"><b>جهت‌یاب</b><small>ایستگاه ۲ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>۳</span></span><span class="atxt"><b>عددساز</b><small>ایستگاه ۳ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>▲</span></span><span class="atxt"><b>شکل‌شناس</b><small>ایستگاه ۴ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>+−</span></span><span class="atxt"><b>حسابگر</b><small>ایستگاه ۵ را کامل کن</small></span></div>
+
+    <div class="sec-t">کارها</div>
+    <div class="acts">
+      <button class="act primary" type="button"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg></span>تغییر ظاهر<span class="go">›</span></button>
+      <button class="act" type="button"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span>تنظیمات<span class="go">›</span></button>
+      <button class="act locked" type="button"><span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>والدین (فقط بزرگ‌سال)<span class="go">›</span></button>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="ناوبری اصلی">
+    <button class="tab" type="button"><span class="ti"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg></span>مسیر</button>
+    <button class="tab" type="button"><span class="ti"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg></span>تمرین</button>
+    <button class="tab active" type="button"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span>من</button>
+  </nav>
+</main>
+
+<!-- S18 · جزئیات دستاورد (برگه) روی S19 -->
+<main class="phone" aria-label="جزئیات دستاورد (S18)">
+  <div class="topbar"><span class="ib" aria-hidden="true"></span><span style="font-size:15px;color:var(--muted)">من</span><button class="ib" type="button" aria-label="تنظیمات"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></button></div>
+  <div class="scroll" style="opacity:0.45">
+    <div class="id"><div class="av"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="13" fill="#E3A33B"/><g stroke="#E3A33B" stroke-width="4" stroke-linecap="round"><path d="M32 6v7M32 51v7M6 32h7M51 32h7M13.6 13.6l5 5M45.4 45.4l5 5M13.6 50.4l5-5M45.4 18.6l5-5"/></g></svg></div><div class="nm">نیما</div><span class="gr">پایهٔ اول</span></div>
+    <div class="sec-t">دستاوردها</div>
+    <div class="ach locked"><span class="medal"><span>●●●</span></span><span class="atxt"><b>شمارش‌گر</b><small>ایستگاه ۱ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>→</span></span><span class="atxt"><b>جهت‌یاب</b><small>ایستگاه ۲ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>۳</span></span><span class="atxt"><b>عددساز</b><small>ایستگاه ۳ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>▲</span></span><span class="atxt"><b>شکل‌شناس</b><small>ایستگاه ۴ را کامل کن</small></span></div><div class="ach locked"><span class="medal"><span>+−</span></span><span class="atxt"><b>حسابگر</b><small>ایستگاه ۵ را کامل کن</small></span></div>
+  </div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div class="ach on" style="margin:0"><span class="medal"><span>●●●</span></span><span class="atxt"><b>شمارش‌گر</b><small>ایستگاه ۱ را کامل کن</small></span></div>
+    <p style="font-size:15px;line-height:24px;color:var(--muted);margin:12px 0 0">این دستاورد وقتی باز می‌شود که «شمارش و الگو» (ایستگاه ۱) کامل شود.</p>
+    <div class="btns"><button class="btn sec" type="button">بستن</button></div>
+  </div>
+</main>
+
+<!-- S20 · تغییر ظاهر -->
+<main class="phone" aria-label="تغییر ظاهر (S20)">
+  <div class="topbar"><button class="ib" type="button" aria-label="برگشت"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span style="font-size:16px;font-weight:600">تغییر ظاهر</span><span style="width:44px"></span></div>
+  <div class="scroll">
+    <div class="bigav" id="preview" aria-label="پیش‌نمایش آواتار"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="13" fill="#E3A33B"/><g stroke="#E3A33B" stroke-width="4" stroke-linecap="round"><path d="M32 6v7M32 51v7M6 32h7M51 32h7M13.6 13.6l5 5M45.4 45.4l5 5M13.6 50.4l5-5M45.4 18.6l5-5"/></g></svg></div>
+    <p style="text-align:center;font-size:14px;color:var(--muted);margin:0 0 14px">پیش‌نمایش</p>
+    <div class="preset-grid" role="radiogroup" aria-label="آواتارها">
+      <button class="pr sel" type="button" role="radio" aria-checked="true"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="13" fill="#E3A33B"/><g stroke="#E3A33B" stroke-width="4" stroke-linecap="round"><path d="M32 6v7M32 51v7M6 32h7M51 32h7M13.6 13.6l5 5M45.4 45.4l5 5M13.6 50.4l5-5M45.4 18.6l5-5"/></g></svg><span>خورشیدی</span></button>
+      <button class="pr" type="button" role="radio" aria-checked="false"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><path d="M12 52C12 26 30 12 52 12C52 38 38 54 12 52Z" fill="#2B5C7A"/><path d="M14 50L40 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/></svg><span>برگ</span></button>
+      <button class="pr" type="button" role="radio" aria-checked="false"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><circle cx="24" cy="34" r="10" fill="#8DB9D6"/><circle cx="37" cy="27" r="14" fill="#8DB9D6"/><circle cx="48" cy="36" r="9" fill="#8DB9D6"/><rect x="13" y="34" width="44" height="14" rx="7" fill="#8DB9D6"/></svg><span>ابری</span></button>
+      <button class="pr" type="button" role="radio" aria-checked="false"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><path d="M40 10A24 24 0 1 0 54 44A19 19 0 1 1 40 10Z" fill="#7462E6"/></svg><span>ماه</span></button>
+    </div>
+    <div class="btns">
+      <button class="btn" type="button">ذخیره</button>
+      <button class="btn sec" type="button">لغو</button>
+    </div>
+  </div>
+</main>
+
+<!-- S20 · خروج بدون ذخیره -->
+<main class="phone" aria-label="خروج بدون ذخیره (S20)">
+  <div class="topbar"><button class="ib" type="button" aria-label="برگشت"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span style="font-size:16px;font-weight:600">تغییر ظاهر</span><span style="width:44px"></span></div>
+  <div class="scroll">
+    <div class="bigav"><svg viewBox="0 0 64 64"><path d="M12 52C12 26 30 12 52 12C52 38 38 54 12 52Z" fill="#2B5C7A"/><path d="M14 50L40 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/></svg></div>
+    <p style="text-align:center;font-size:14px;color:var(--muted);margin:0 0 14px">پیش‌نمایش</p>
+    <div class="preset-grid">
+      <button class="pr" type="button"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="13" fill="#E3A33B"/><g stroke="#E3A33B" stroke-width="4" stroke-linecap="round"><path d="M32 6v7M32 51v7M6 32h7M51 32h7M13.6 13.6l5 5M45.4 45.4l5 5M13.6 50.4l5-5M45.4 18.6l5-5"/></g></svg><span>خورشیدی</span></button>
+      <button class="pr sel" type="button"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><path d="M12 52C12 26 30 12 52 12C52 38 38 54 12 52Z" fill="#2B5C7A"/><path d="M14 50L40 24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/></svg><span>برگ</span></button>
+      <button class="pr" type="button"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><circle cx="24" cy="34" r="10" fill="#8DB9D6"/><circle cx="37" cy="27" r="14" fill="#8DB9D6"/><circle cx="48" cy="36" r="9" fill="#8DB9D6"/><rect x="13" y="34" width="44" height="14" rx="7" fill="#8DB9D6"/></svg><span>ابری</span></button>
+      <button class="pr" type="button"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><svg viewBox="0 0 64 64"><path d="M40 10A24 24 0 1 0 54 44A19 19 0 1 1 40 10Z" fill="#7462E6"/></svg><span>ماه</span></button>
+    </div>
+  </div>
+  <div class="dlg">
+    <div class="dlgbox">
+      <h3>ذخیره نکردی</h3>
+      <p>اگر خارج شوی، آواتار جدیدت ذخیره نمی‌شود.</p>
+      <div class="btns"><button class="btn" type="button">ادامه بده</button><button class="btn sec" type="button">خروج</button></div>
+    </div>
+  </div>
+</main>
+
+<!-- S21 · تنظیمات -->
+<main class="phone" aria-label="تنظیمات (S21)">
+  <div class="topbar"><button class="ib" type="button" aria-label="برگشت"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span style="font-size:16px;font-weight:600">تنظیمات</span><span style="width:44px"></span></div>
+  <div class="scroll">
+    <div class="set"><span>صدا</span><span class="sw" role="switch" aria-checked="true" aria-label="صدا"></span></div>
+    <div class="set"><span>حرکت</span><span class="sw" role="switch" aria-checked="true" aria-label="حرکت"></span></div>
+    <div class="set" style="border-bottom:0"><span>اندازهٔ متن</span>
+      <div class="seg" role="radiogroup" aria-label="اندازهٔ متن"><span class="on">عادی</span><span>بزرگ</span></div>
+    </div>
+    <div class="set" style="border-bottom:0"><span>تم</span><div class="seg" role="radiogroup" aria-label="تم"><span class="on" data-t="light" role="radio" aria-checked="true">روشن</span><span data-t="dark" role="radio" aria-checked="false">تیره</span></div></div>
+    <p style="font-size:14px;line-height:22px;color:var(--muted);margin:18px 2px 0">این‌ها روی تجربهٔ یادگیری اثر می‌گذارند، نه روی پیشرفت.</p>
+  </div>
+</main>
+
+<!-- حالت‌های S19 و S20 و S21 -->
+<section class="states" aria-label="حالت‌ها">
+  <div class="sc"><p>من · بارگذاری</p><div class="skel"></div><div class="skel" style="height:44px"></div></div>
+  <div class="sc"><p>من · هنوز ایستگاهی کامل نشده (خالی)</p><div class="banner">هنوز ایستگاهی کامل نکرده‌ای. اولین ایستگاه را در مسیر شروع کن.</div></div>
+  <div class="sc"><p>تغییر ظاهر · ذخیره نشد</p><div class="banner err" role="alert">ذخیره نشد. دوباره امتحان کن. آواتار قبلی‌ات هنوز همین است.</div><button class="btn" type="button">تلاش دوباره</button></div>
+  <div class="sc"><p>تنظیمات · آفلاین</p><div class="banner">تنظیمات روی همین دستگاه ذخیره می‌شوند و بدون اینترنت هم کار می‌کنند.</div></div>
+</section>
+
+</div>
+<script>(function(){var btns=document.querySelectorAll("[data-t]");btns.forEach(function(b){b.addEventListener("click",function(){document.documentElement.setAttribute("data-theme",b.getAttribute("data-t"));btns.forEach(function(x){var on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-checked",on?"true":"false");});});});})();</script>
+</body>
+</html>

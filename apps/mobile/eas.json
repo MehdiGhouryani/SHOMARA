@@ -1,0 +1,44 @@
+{
+  "cli": {
+    "version": ">= 12.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EAS_NO_FROZEN_LOCKFILE": "1",
+        "MOBILE_RELEASE_CHANNEL": "preview"
+      }
+    },
+    "production": {
+      "distribution": "store",
+      "autoIncrement": "version",
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "MOBILE_RELEASE_CHANNEL": "production"
+      }
+    },
+    "market-apk": {
+      "distribution": "store",
+      "autoIncrement": "version",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "MOBILE_RELEASE_CHANNEL": "market-apk"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

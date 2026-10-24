@@ -1,0 +1,10 @@
+-- Static contract tests are executed by scripts/verify-phase2.mjs.
+-- These assertions are intentionally non-destructive and are not run automatically in production.
+-- Expected invariants:
+-- 1. accounts / learning_identities stay separate.
+-- 2. teacher access is class/relationship scoped.
+-- 3. parent access is relationship scoped.
+-- 4. historical evidence is never deleted by ordinary client policy.
+-- 5. admin is the only broad write role.
+-- 6. entitlements do not mutate learning state.
+-- 7. assignments do not create content copies.
