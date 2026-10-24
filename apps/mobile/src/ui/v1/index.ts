@@ -27,4 +27,6 @@ export { GradeCell } from './GradeCell';
 export { CodeInput } from './CodeInput';
 export { Bead, BeadTray } from './Bead';
 export { OptionButton, type OptionState } from './OptionButton';
+export { Confetti } from './Confetti';
+export { AchievementRow } from './AchievementRow';
 export { FeedbackSheet } from './FeedbackSheet';

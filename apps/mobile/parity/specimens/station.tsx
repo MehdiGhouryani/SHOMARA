@@ -1,4 +1,6 @@
+import { ChallengeIntroView } from '../../src/station/views/ChallengeIntroView';
 import { StageIntroView } from '../../src/station/views/StageIntroView';
+import { StageResultView } from '../../src/station/views/StageResultView';
 import { QuestionView, type QuestionPhase } from '../../src/station/views/QuestionView';
 import { TeachView } from '../../src/station/views/TeachView';
 
@@ -72,3 +74,35 @@ const question = (phase: QuestionPhase, selectedIndex: number) => (
 export const Question = () => question('choose', 1);
 export const Correct = () => question('correct', 1);
 export const Retry = () => question('retry', 2);
+
+export const StageResult = () => (
+  <StageResultView
+    heroLabel="شخصیت اصلی در حال جشن گرفتن"
+    title="آفرین!"
+    subtitle="مرحلهٔ «شمارش و الگو» را کامل کردی."
+    done={1}
+    total={5}
+    progressLabel="۱ از ۵ مرحله"
+    achievement={{ kicker: 'دستاورد جدید', title: 'شمارش‌گر' }}
+    continueLabel="ادامه"
+    onContinue={noop}
+  />
+);
+
+export const ChallengeIntro = () => (
+  <ChallengeIntroView
+    caption={{ label: 'مهارتت را نشان بده', position: '۵ از ۵' }}
+    progress={0.8}
+    progressLabel="بخش ۵ از ۵"
+    closeLabel="بستن"
+    title="مهارتت را نشان بده"
+    subtitle="چهار سؤال کوتاه. این بار بدون کمک."
+    kindChip="چالش آخر"
+    kindChipIcon="trophy"
+    questionsChip="۴ سؤال"
+    heroLabel="روکا، روباه شجاع، آمادهٔ چالش"
+    startLabel="شروع چالش"
+    onStart={noop}
+    onClose={noop}
+  />
+);

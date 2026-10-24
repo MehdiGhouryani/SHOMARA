@@ -51,6 +51,21 @@ export const S = {
     retryTitle: 'اشکالی ندارد',
     retrySub: 'با هم یک بار دیگر امتحان می‌کنیم.',
   },
+  stationDone: {
+    title: 'آفرین!',
+    subtitle: (stageTitle: string) => `مرحلهٔ «${stageTitle}» را کامل کردی.`,
+    progressLabel: (done: string, total: string) => `${done} از ${total} مرحله`,
+    newAchievement: 'دستاورد جدید',
+    heroA11y: 'شخصیت اصلی در حال جشن گرفتن',
+  },
+  challengeIntro: {
+    subtitle: 'چهار سؤال کوتاه. این بار بدون کمک.',
+    kindChip: 'چالش آخر',
+    questionsChip: (n: string) => `${n} سؤال`,
+    start: 'شروع چالش',
+    heroA11y: 'روکا، روباه شجاع، آمادهٔ چالش',
+    playerLabel: 'چالش',
+  },
   complete: {
     title: 'ایستگاه را تمام کردی!',
     subPassed: 'آفرین، یک قدم بزرگ جلو رفتی.',

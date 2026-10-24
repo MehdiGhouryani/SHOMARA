@@ -5,6 +5,7 @@ import { DS, RN_SHADOW } from '../ui/design-system/theme';
 import { ProgressFill } from '../game-feel';
 import { DSButton, DSSurface } from '../ui/design-system/components';
 import { LESSON_STAGE_META, type LessonFeedbackState, type LessonStage } from '@math/contracts';
+import { S } from '../ui/strings.fa';
 
 function CloseIcon() {
   return <Text style={styles.icon} accessibilityElementsHidden>×</Text>;
@@ -17,7 +18,9 @@ export function LessonPlayerChrome({ stage, progress, onExit, children, feedback
   children: ReactNode;
   feedback?: ReactNode;
 }) {
-  const meta = LESSON_STAGE_META[stage];
+  // SIGNATURE_CHALLENGE is not a lesson stage in the shared contract; without a fallback the header
+  // crashed on every challenge-first station (caught by the station flow test in U6).
+  const meta = LESSON_STAGE_META[stage] ?? { label: S.challengeIntro.playerLabel, kind: 'ASSESSMENT' as const, showCharacter: false, primaryAction: 'CHECK' as const };
   return (
     <View style={styles.root}>
       <View style={styles.header}>

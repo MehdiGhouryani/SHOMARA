@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { BeadTray, Button, Character, Chip, GuideBubble, Portrait, TabBar } from '../../src/ui/v1';
 import { Code, Phone, Profile, Welcome } from './onboarding';
 import { PathPage, TABS } from './path';
-import { Correct, Lesson, Question, Retry, StageIntro } from './station';
+import { ChallengeIntro, Correct, Lesson, Question, Retry, StageIntro, StageResult } from './station';
 
 export type Specimen = { full?: boolean; render: (params: { sy: number }) => ReactElement };
 
@@ -22,6 +22,8 @@ export const SPECIMENS: Record<string, Specimen> = {
   question: { full: true, render: () => <Question /> },
   correct: { full: true, render: () => <Correct /> },
   retry: { full: true, render: () => <Retry /> },
+  'stage-result': { full: true, render: () => <StageResult /> },
+  'challenge-intro': { full: true, render: () => <ChallengeIntro /> },
   'tray-07': { render: () => <BeadTray count={3} label="۳ مهره" /> },
   'tabbar-05': { render: () => <TabBar items={TABS} activeKey="path" /> },
   'button-amber': { render: () => <Button label="بریم!" /> },

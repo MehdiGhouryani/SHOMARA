@@ -19,16 +19,22 @@ import { toFa } from '../ui/digits';
 import type { AnswerPayload, StationContent, StationStage, SubmitOutcome } from './types';
 import {
   challengeDefinitionIdForStation,
+  G1_PATH_ACHIEVEMENTS,
+  G1_STATIONS,
+  G1_UNITS,
   hasStationChallenge,
   normalizeStationCode,
   sessionAttemptFeel,
   sessionCompleteFeel,
+  ST01_SIGNATURE_CHALLENGE,
   type LessonStage,
   type SessionCompleteKind,
 } from '@math/contracts';
 import { SignatureChallengeView } from './SignatureChallengeView';
 import { TeachView } from './views/TeachView';
 import { QuestionView, type QuestionPhase } from './views/QuestionView';
+import { StageResultView } from './views/StageResultView';
+import { ChallengeIntroView } from './views/ChallengeIntroView';
 import { MACRO_LABELS, macroFilled, macroLabel } from './macro';
 import { speakFa, stopSpeaking } from './speech';
 import { C } from '../ui/v1';
@@ -50,6 +56,19 @@ function isQuestionEncounter(content: StationContent | null): content is Station
 /** The wrong-answer sheet follows the server's decision (D-002): RECOVERY/RECHECK redirects, CONTINUE may retry the same item. */
 function questionSheetAllowsRetry(outcome: SubmitOutcome): boolean {
   return outcome.selectedStep === 'CONTINUE' || outcome.selectedStep === 'STATION_PASS';
+}
+
+/** Page 11 data: the station's display title and its chapter's station codes. */
+function stationChapter(stationCode: string) {
+  const station = G1_STATIONS.find((s) => s.id === stationCode) ?? null;
+  const unit = G1_UNITS.find((u) => u.stationIds.includes(stationCode)) ?? null;
+  return { station, unit };
+}
+
+/** The path achievement a finished station earns (`شمارش‌گر` for ST01), or null when there is none. */
+function pathAchievementTitle(stationCode: string): string | null {
+  const found = G1_PATH_ACHIEVEMENTS.find((a) => a.trigger.type === 'STATION_COMPLETED' && a.trigger.targetRef === stationCode);
+  return found?.titleFa ?? null;
 }
 
 /** ST01 keeps the full vertical-slice lesson engine; other stations use challenge-first path when seeded. */
@@ -80,6 +99,8 @@ export function StationFlow({ stationId }: { stationId: string }) {
   // Question pages 08 to 10 (D-001): tap only selects, «بررسی» submits once, the sheet's action moves on.
   const [questionSelection, setQuestionSelection] = useState<number | null>(null);
   const [questionOutcome, setQuestionOutcome] = useState<SubmitOutcome | null>(null);
+  // Page 12: the challenge invitation shows once; the run itself keeps the player chrome.
+  const [challengeIntroDone, setChallengeIntroDone] = useState(false);
 
   // Consume the placement fast-track the first time the station really starts
   // (stage leaves ENTRY). Done here, not in start(), so a failed network call at
@@ -378,6 +399,9 @@ export function StationFlow({ stationId }: { stationId: string }) {
     setSessionId(null);
     setAuthoritativeContent(null);
     setLessonStage(null);
+    setQuestionSelection(null);
+    setQuestionOutcome(null);
+    setChallengeIntroDone(false);
     try {
       const releaseConfigError = productionConfigError();
       if (releaseConfigError) {
@@ -618,6 +642,57 @@ export function StationFlow({ stationId }: { stationId: string }) {
     );
   }
 
+  // Page 11: the calm celebration when the station was actually passed (the other complete kinds keep the legacy card).
+  if (stage === 'COMPLETE' && stationPassAchieved) {
+    const stationCode = normalizeStationCode(stationId) ?? stationId;
+    const { station, unit } = stationChapter(stationCode);
+    const unitStations = unit ? [...unit.stationIds] : [stationCode];
+    // The pass of THIS station lands in the store one commit later; count it right away so the
+    // celebration never flashes a lower number.
+    const passedCount = unitStations.filter((code) => app.state?.progress[code]?.passed).length;
+    const done = Math.min(unitStations.length, passedCount + (stationPassAchieved && !app.state?.progress[stationCode]?.passed ? 1 : 0));
+    const achievementTitle = pathAchievementTitle(stationCode);
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
+        <StageResultView
+          heroLabel={S.stationDone.heroA11y}
+          title={S.stationDone.title}
+          subtitle={S.stationDone.subtitle(station?.title ?? stationCode)}
+          done={done}
+          total={unitStations.length}
+          progressLabel={S.stationDone.progressLabel(toFa(done), toFa(unitStations.length))}
+          achievement={achievementTitle ? { kicker: S.stationDone.newAchievement, title: achievementTitle } : undefined}
+          continueLabel={S.lesson.continue}
+          onContinue={leave}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // Page 12: the challenge invitation; «شروع چالش» opens the player (which has no approved page yet).
+  if (stage === 'SIGNATURE_CHALLENGE' && !challengeIntroDone && sessionId) {
+    const total = toFa(MACRO_LABELS.length);
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
+        <ChallengeIntroView
+          caption={{ label: macroLabel(stage, null), position: S.lesson.sectionOf(total, total) }}
+          progress={(MACRO_LABELS.length - 1) / MACRO_LABELS.length}
+          progressLabel={S.lesson.sectionA11y(total, total)}
+          closeLabel={S.lesson.close}
+          title={macroLabel(stage, null)}
+          subtitle={S.challengeIntro.subtitle}
+          kindChip={S.challengeIntro.kindChip}
+          kindChipIcon="trophy"
+          questionsChip={S.challengeIntro.questionsChip(toFa(ST01_SIGNATURE_CHALLENGE.rounds.length))}
+          heroLabel={S.challengeIntro.heroA11y}
+          startLabel={S.challengeIntro.start}
+          onStart={() => setChallengeIntroDone(true)}
+          onClose={confirmExit}
+        />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safe}>
       <FeedbackBurst feedback={feedback} />
@@ -647,7 +722,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
               {message ? <PrimaryButton label={S.lesson.retry} onPress={() => void start(false)} /> : <Text style={styles.story}>در حال آماده‌سازی</Text>}
             </Card>
           )}
-          {content && (stage !== 'ENTRY' && stage !== 'RESULT' && stage !== 'COMPLETE') && (
+          {content && (stage !== 'ENTRY' && stage !== 'RESULT' && stage !== 'COMPLETE' && stage !== 'SIGNATURE_CHALLENGE') && (
             <Card title={content.title} subtitle={content.prompt}>
               {content.id === 'G1-ST01-E01' ? <LearnScene /> : null}
               {content.id === 'G1-ST01-E02' ? <OptionRow options={content.options ?? []} onPick={(index) => void answerContent(content, index)} disabled={busy || inputBlocked} /> : null}

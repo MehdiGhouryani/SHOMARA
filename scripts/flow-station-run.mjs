@@ -49,6 +49,7 @@ const gone = async (page, t, ms = 4000) => {
 };
 const button = (page, name) => page.getByRole('button', { name, exact: true }).first();
 const isDisabled = async (page, name) => (await button(page, name).getAttribute('aria-disabled')) === 'true';
+const option = (page, label) => page.getByRole('button', { name: label, exact: true }).first();
 const tap = (locator) => locator.click({ timeout: 3000 }).then(() => true, () => false);
 const shot = (page, name) => page.screenshot({ path: path.join(OUT, `flow-station-${name}.png`) });
 
@@ -131,7 +132,6 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('07: continue stops speech and moves to the next section', moved && f.stops > stopsBefore && (await visible(page, 'گروهی را انتخاب کن که ۳ مهره دارد')), `${moved} ${f.stops}/${stopsBefore}`);
 
   // ================= pages 08 to 10: the question interaction (D-001 to D-003) =================
-  const option = (page, label) => page.getByRole('button', { name: label, exact: true }).first();
   const optionDisabled = async (page, label) => (await option(page, label).getAttribute('aria-disabled')) === 'true';
 
   check('08: caption from the macro labels and question progress 2/5', (await visible(page, 'با هم تمرین می‌کنیم · ۲ از ۵')) && (await page.getByRole('progressbar').first().getAttribute('aria-label')) === 'سؤال ۲ از ۵');
@@ -170,6 +170,76 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('10: continue follows the server decision into recovery', await visible(page, 'با هم دوباره'));
   if (results.some((r) => !r.ok)) await shot(page, 'play-fail');
   check('no runtime errors (07)', errors.length === 0, errors.join(' | '));
+  await page.close();
+}
+
+// ================= pages 11 and 12: the whole happy path (checks, challenge intro, celebration) =================
+{
+  const { page, errors } = await open('play-pass');
+  const pick = (qi, oi) => page.getByRole('button').nth(1 + qi * 4 + oi).click();
+  // LEARN → E02 (question) correct
+  await button(page, 'ادامه').click();
+  await visible(page, 'گروهی را انتخاب کن که ۳ مهره دارد');
+  await option(page, '۳').click();
+  await button(page, 'بررسی').click();
+  await visible(page, 'درست است!');
+  await button(page, 'ادامه').click();
+  // E03 pattern (legacy, submits on tap) → E04 question correct → E05 question correct
+  await visible(page, 'مسیر الگو');
+  await option(page, 'آبی').click();
+  await visible(page, 'چند مهره می‌بینی؟');
+  await option(page, '۳').click();
+  await button(page, 'بررسی').click();
+  await visible(page, 'درست است!');
+  await button(page, 'ادامه').click();
+  await visible(page, 'بدون کمک، تعداد شکل‌ها را پیدا کن');
+  await option(page, '۳').click();
+  await button(page, 'بررسی').click();
+  await visible(page, 'درست است!');
+  await button(page, 'ادامه').click();
+  // E06 review pattern (legacy) → E07 check A (5 questions, 4 options each)
+  await visible(page, 'مرور الگو');
+  await option(page, 'آبی').click();
+  await visible(page, 'چالش اول');
+  for (const [qi, oi] of [[0, 1], [1, 2], [2, 1], [3, 1], [4, 3]]) await pick(qi, oi);
+  await button(page, 'تمام شد').click();
+  // E08 check B (5 questions, 3 options each) — all correct is the station pass
+  await visible(page, 'چالش دوم');
+  for (const [qi, oi] of [[0, 1], [1, 1], [2, 2], [3, 1], [4, 1]]) await page.getByRole('button').nth(1 + qi * 3 + oi).click();
+  await button(page, 'تمام شد').click();
+  // E11 transfer (legacy options) → E12 final mastery check
+  await visible(page, 'در دنیای واقعی');
+  await option(page, 'الگو B').click();
+  await visible(page, 'چالش نهایی مهارت');
+  for (const [qi, oi] of [[0, 1], [1, 2], [2, 2], [3, 1], [4, 0]]) await page.getByRole('button').nth(1 + qi * 3 + oi).click();
+  await button(page, 'تمام شد').click();
+  // Page 12: the challenge invitation
+  check('12: title, subtitle and chips from the page', (await visible(page, 'مهارتت را نشان بده')) && (await visible(page, 'چهار سؤال کوتاه. این بار بدون کمک.')) && (await visible(page, 'چالش آخر')) && (await visible(page, '۳ سؤال'), 'the chip counts the real rounds of the definition (the page sample says ۴)'));
+  check('12: the bar announces section 5 of 5', (await page.getByRole('progressbar').first().getAttribute('aria-label')) === 'بخش ۵ از ۵');
+  await tap(button(page, 'بستن'));
+  let f = await flow(page);
+  check('12: close asks before leaving (no silent exit)', f.alerts.length === 1 && f.alerts[0].title === 'خارج می‌شوی؟' && f.backed === 0, JSON.stringify(f.alerts.map((a) => a.title)));
+  await page.evaluate(() => {
+    const stay = window.__flow.alerts[0].buttons.find((b) => b.text === 'می‌مانم');
+    if (stay?.onPress) stay.onPress();
+  });
+  await visible(page, 'شروع چالش');
+  await tap(button(page, 'شروع چالش'));
+  check('12: starting opens the challenge player (no approved page yet)', await visible(page, 'چالش الگو'));
+  // Four correct rounds finish the run; the celebration page follows.
+  for (let round = 0; round < 3; round++) {
+    await option(page, 'آبی').click();
+    await page.waitForTimeout(250);
+  }
+  check('11: the celebration page with the station title', (await visible(page, 'آفرین!')) && (await visible(page, 'مرحلهٔ «شمارش و الگو» را کامل کردی.')));
+  check('11: chapter progress 1 of 5 and the new achievement', (await visible(page, '۱ از ۵ مرحله')) && (await visible(page, 'دستاورد جدید')) && (await visible(page, 'شمارش‌گر')));
+  await tap(button(page, 'ادامه'));
+  f = await flow(page);
+  check('11: continue leaves the lesson', f.backed >= 1, String(f.backed));
+  const submitKeys = (await flow(page)).submits.map((x) => x.idempotencyKey);
+  check('11: every submit stayed idempotent-unique along the whole station', new Set(submitKeys).size === submitKeys.length, `${submitKeys.length} submits`);
+  check('no runtime errors (11/12)', errors.length === 0, errors.join(' | '));
+  if (results.some((r) => !r.ok)) await shot(page, 'result-fail');
   await page.close();
 }
 

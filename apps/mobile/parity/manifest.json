@@ -241,5 +241,23 @@
     "pad": 0,
     "maxDiffPercent": 0.5,
     "note": "10 retry feedback: real QuestionView, retry phase (warm, never red)"
+  },
+  {
+    "id": "stage-result",
+    "page": "11",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "11 stage result: real StageResultView (celebration, achievement row)"
+  },
+  {
+    "id": "challenge-intro",
+    "page": "12",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "12 challenge intro: real ChallengeIntroView"
   }
 ]

@@ -39,15 +39,29 @@ const CONTENT: Record<string, { id: string; title: string; prompt: string; optio
   [C(19)]: { id: 'G1-ST01-E10', title: 'بررسی دوباره الگو', prompt: 'الگو را در پنج موقعیت تازه بررسی کن.', questions: [{ prompt: 'چه رنگی می‌آید؟', options: ['زرد', 'آبی', 'سبز'] }] },
   [C(20)]: { id: 'G1-ST01-E10', title: 'بررسی دوباره قانون الگو', prompt: 'قانون الگو را در پنج موقعیت تازه بررسی کن.', questions: [{ prompt: 'قانون درست چیست؟', options: ['A', 'B', 'C'] }] },
 };
-// The mock server owns the answer key: which option index is correct for each encounter.
-const ANSWER_KEY: Record<string, number> = { [C(1)]: 0, [C(2)]: 1, [C(3)]: 1, [C(4)]: 1, [C(5)]: 1, [C(6)]: 1, [C(9)]: 2, [C(11)]: 1, [C(13)]: 2, [C(14)]: 1, [C(15)]: 1, [C(16)]: 1 };
+// The mock server owns the answer key: the correct option index per encounter (or per question for checks).
+const ANSWER_KEY: Record<string, number | number[]> = {
+  [C(1)]: 0, [C(2)]: 1, [C(3)]: 1, [C(4)]: 1, [C(5)]: 1, [C(6)]: 1, [C(9)]: 2, [C(11)]: 1,
+  [C(13)]: 2, [C(14)]: 1, [C(15)]: 1, [C(16)]: 1,
+  [C(7)]: [1, 2, 1, 1, 3], // check A: count each group
+  [C(8)]: [1, 1, 2, 1, 1], // check B: continue each pattern
+  [C(10)]: [1, 1, 1, 1, 1], [C(17)]: [1], [C(18)]: [1], [C(19)]: [1], [C(20)]: [1],
+  [C(12)]: [1, 2, 2, 1, 0], // final mastery check
+};
+// A fully correct answer on one of these checks is what this simplified policy treats as a Station Pass
+// (the real two-check 4-of-5 policy lives in the learning runtime; the client only follows the decision).
+const PASS_GRANTING_CHECKS = new Set([C(8), C(10), C(12), C(18), C(19), C(20)]);
 
 type FlowRecorder = { submits: Array<{ contentVersionId: string; attemptNumber: number; answerIndex: number; idempotencyKey: string }> };
+
+  const chRound = (roundIndex: number) => ({ encounterId: `ch-enc-${roundIndex}`, roundIndex, attemptNumber: 1, level: 'CORE' as const, skillId: 'G1-SK009', contentVersionId: C(3), interactionType: 'SINGLE_CHOICE', prompt: 'کدام مهره ادامه الگوست؟', title: 'چالش الگو', options: ['زرد', 'آبی', 'سبز'], display: null, sequence: null, content: null });
 
 function installMockLearningServer() {
   const flow = () => (window as unknown as { __flow: FlowRecorder }).__flow;
   const encounters = new Map<string, { contentVersionId: string; wrongCount: number }>();
   const seenKeys = new Set<string>();
+  let sessionCounter = 0;
+  let challengeRound = 0;
   const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
   const realFetch = window.fetch.bind(window);
@@ -57,11 +71,14 @@ function installMockLearningServer() {
     const body = init?.body ? (JSON.parse(String(init.body)) as Record<string, unknown>) : {};
 
     if (path.endsWith('/client/installations')) return json({});
-    if (path === '/api/v1/learning/sessions' && init?.method === 'POST') return json({ id: 'sess-mock-1', learningIdentityId: 'dev-child-001' });
+    if (path === '/api/v1/learning/sessions' && init?.method === 'POST') {
+      sessionCounter += 1;
+      return json({ id: `sess-${sessionCounter}`, learningIdentityId: 'dev-child-001' });
+    }
     if (/^\/api\/v1\/learning\/sessions\/[^/]+\/encounters$/.test(path) && init?.method === 'POST') {
       const contentVersionId = String(body.contentVersionId ?? '');
       const sequence = Number(body.sequence ?? 1);
-      const encounterId = `enc-${sequence}`;
+      const encounterId = `enc-s${sessionCounter}-${sequence}`;
       encounters.set(encounterId, { contentVersionId, wrongCount: 0 });
       const content = CONTENT[contentVersionId];
       if (!content) return json({ error: 'MOCK_CONTENT_MISSING' }, 404);
@@ -73,10 +90,11 @@ function installMockLearningServer() {
       const contentVersionId = record?.contentVersionId ?? '';
       const attemptNumber = Number(body.attemptNumber ?? 1);
       const idempotencyKey = String(body.clientIdempotencyKey ?? '');
-      const answerIndex = Number((body.answers as Array<{ answerIndex: number }> | undefined)?.[0]?.answerIndex ?? -1);
-      const correct = ANSWER_KEY[contentVersionId] === answerIndex;
+      const answers = ((body.answers as Array<{ answerIndex: number }> | undefined) ?? []).map((a) => Number(a.answerIndex));
+      const key = ANSWER_KEY[contentVersionId];
+      const correct = Array.isArray(key) ? answers.length > 0 && answers.every((a, i) => a === key[i]) : key === answers[0];
       if (record && !correct) record.wrongCount += 1;
-      flow().submits.push({ contentVersionId, attemptNumber, answerIndex, idempotencyKey });
+      flow().submits.push({ contentVersionId, attemptNumber, answerIndex: answers[0] ?? -1, idempotencyKey });
       if (seenKeys.has(idempotencyKey)) throw new Error(`MOCK_IDEMPOTENCY_REPLAY:${idempotencyKey}`);
       seenKeys.add(idempotencyKey);
       // Wrong answers: the first may be retried on the same item; a second wrong answer is redirected to
@@ -86,11 +104,33 @@ function installMockLearningServer() {
         idempotent: false,
         decision: { selectedStep, ...(selectedStep === 'RECOVERY' ? { target_skill_id: 'G1-SK001' } : {}) },
         learningState: { state: 'IN_PROGRESS' },
-        stationPass: false,
+        stationPass: correct && PASS_GRANTING_CHECKS.has(contentVersionId),
         semanticEvent: correct ? 'ANSWER_CORRECT' : 'ANSWER_WRONG',
         evidence: { id: `ev-${flow().submits.length}` },
         attempt: { evaluation: { correct, score: correct ? 1 : 0, maxScore: 1 } },
       });
+    }
+    // The Signature Challenge run (page 12 leads into it; the player itself has no approved page).
+    if (path === '/api/v1/challenges/runs' && init?.method === 'POST') {
+      challengeRound = 0;
+      return json({ idempotent: true, runId: 'ch-run-1', status: 'ACTIVE', challenge: { challengeId: 'ch-def-1', code: 'G1-ST01-CH-01', version: 1, stationId: 'ST01', gameCode: 'pattern-path', objective: 'الگو را ادامه بده', plannedRounds: 3, timerPolicy: { policy: 'NONE' }, hintLadder: [], finalMoment: 'SUMMARY_CELEBRATION', contractVersion: 'mock-v1' }, currentRoundIndex: 0, plannedRounds: 3, next: chRound(0), result: null });
+    }
+    if (/^\/api\/v1\/challenges\/runs\/[^/]+\/rounds$/.test(path) && init?.method === 'POST') {
+      const answerIndex = Number((body.answers as Array<{ answerPayload: number }> | undefined)?.[0]?.answerPayload ?? -1);
+      const correct = answerIndex === 1; // آبی continues the pattern
+      const roundIndex = Number(body.roundIndex ?? 0);
+      const done = roundIndex >= 2;
+      challengeRound = roundIndex + 1;
+      return json({
+        idempotent: false, runId: 'ch-run-1', roundIndex, attemptNumber: 1, correct, score: correct ? 1 : 0, maxScore: 1, evaluatorVersion: 'mock',
+        semanticEvent: correct ? 'ANSWER_CORRECT' : 'ANSWER_WRONG', roundClosed: true, roundSolved: correct, scaffoldNext: false, offerHint: false, evidenceId: null,
+        next: done ? null : chRound(challengeRound),
+        runStatus: done ? 'COMPLETED' : 'ACTIVE',
+        result: done ? { result: 'COMPLETED' as const, semanticEvent: 'MILESTONE' as const, solvedRounds: 3, plannedRounds: 3, rewardEligible: false, rewardGrantKey: null, setsMastery: false as const, setsStationCompletion: false as const } : null,
+      });
+    }
+    if (/^\/api\/v1\/challenges\/runs\/[^/]+\/hints$/.test(path) && init?.method === 'POST') {
+      return json({ idempotent: true, runId: 'ch-run-1', roundIndex: Number(body.roundIndex ?? 0), hintLevel: 'STRATEGY', hintsUsed: 1, reducesReward: false as const, revealsFinalAnswer: false as const });
     }
     return realFetch(input, init);
   };
