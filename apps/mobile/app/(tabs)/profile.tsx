@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,12 +11,15 @@ import {
   profileActionDensity,
   sessionLengthHintFa,
 } from '@math/contracts';
-import { ChildAvatar } from '../../src/components/ChildAvatar';
 import { Text } from '../../src/ui/AppText';
 import { DS } from '../../src/ui/design-system';
 import { toFa } from '../../src/ui/digits';
+import { C } from '../../src/ui/v1';
+import type { IconName } from '../../src/ui/v1/icons';
+import { MeView, type AchievementRowItem, type ActionRowItem } from '../../src/profile/views/MeView';
 import { useAppState } from '../../src/state/AppStateContext';
 import { DEFAULT_CHILD_AVATAR_PRESET_ID, isStationPassed } from '../../src/state/appStateCore';
+import { S } from '../../src/ui/strings.fa';
 
 const achievementIcon: Record<string, keyof typeof Ionicons.glyphMap> = {
   A01: 'grid-outline',
@@ -26,6 +29,14 @@ const achievementIcon: Record<string, keyof typeof Ionicons.glyphMap> = {
   A05: 'add-circle-outline',
 };
 
+const presetIcon: Record<string, IconName> = { sun: 'sun', leaf: 'leaf', cloud: 'cloud', moon: 'moon' };
+
+/**
+ * The «من» tab on UI v1 (page 14, ADR-0035): identity card, chapter-free progress over the 25 stations and
+ * the achievement rows. The action rows (تغییر ظاهر / والدین) are not on the page but the profile contract
+ * requires them; they stay as derived rows (pinned in scripts/lib/tabs-waivers.mjs). The achievement detail
+ * sheet (S18) stays exactly as it was.
+ */
 export default function ProfileScreen() {
   const router = useRouter();
   const { state } = useAppState();
@@ -43,87 +54,46 @@ export default function ProfileScreen() {
   const unlockedCount = CHILD_ACHIEVEMENTS.filter((item) =>
     isAchievementUnlocked(item, completedStationIds),
   ).length;
+  const achievements: AchievementRowItem[] = CHILD_ACHIEVEMENTS.map((item) => {
+    const unlocked = isAchievementUnlocked(item, completedStationIds);
+    const stationNumber = G1_STATIONS.find((station) => station.id === item.stationId)?.number ?? 1;
+    return {
+      id: item.id,
+      title: item.title,
+      kicker: unlocked ? S.me.achievementDone : S.me.completeStation(toFa(stationNumber)),
+      unlocked,
+    };
+  });
+  const actions: ActionRowItem[] = [
+    { id: 'avatar', title: S.me.changeLook, subtitle: S.me.changeLookSub, icon: 'person' },
+    { id: 'parent', title: S.me.parents, subtitle: S.me.parentsSub, icon: 'guide' },
+  ];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = CHILD_ACHIEVEMENTS.find((item) => item.id === selectedId) ?? null;
   const selectedUnlocked = selected ? isAchievementUnlocked(selected, completedStationIds) : false;
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.identity}>
-          <ChildAvatar presetId={presetId} name={name} size={density === 'MINIMAL' ? 112 : 104} />
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.grade}>{grade}</Text>
-          <Text style={styles.sessionHint}>پیشنهاد هر بار: {sessionHint}</Text>
-        </View>
-
-        <View style={styles.metrics} accessibilityLabel="پیشرفت یادگیری">
-          <View style={styles.metric}>
-            <Text style={styles.metricValue}>{toFa(completedStationIds.length)}</Text>
-            <Text style={styles.metricLabel}>ایستگاه کامل</Text>
-          </View>
-          <View style={styles.metric}>
-            <Text style={styles.metricValue}>{toFa(unlockedCount)}</Text>
-            <Text style={styles.metricLabel}>دستاورد واقعی</Text>
-          </View>
-        </View>
-
-        <View style={styles.sectionHeader}>
-          <View>
-            <Text style={styles.sectionTitle}>دستاوردها</Text>
-            <Text style={styles.sectionMeta}>
-              {toFa(unlockedCount)} از {toFa(CHILD_ACHIEVEMENTS.length)} · فقط با تمام کردن ایستگاه
-            </Text>
-          </View>
-        </View>
-        <View style={styles.achievementGrid} accessibilityLabel="مجموعه دستاوردها">
-          {CHILD_ACHIEVEMENTS.map((achievement) => {
-            const unlocked = isAchievementUnlocked(achievement, completedStationIds);
-            return (
-              <Pressable
-                key={achievement.id}
-                accessibilityRole="button"
-                accessibilityLabel={`${achievement.title}، ${unlocked ? 'گرفته شده' : 'باز نشده'}`}
-                onPress={() => setSelectedId(achievement.id)}
-                style={[styles.achievement, unlocked ? styles.achievementUnlocked : styles.achievementLocked]}
-              >
-                <View style={[styles.iconCircle, unlocked ? styles.iconUnlocked : styles.iconLocked]}>
-                  <Ionicons
-                    name={achievementIcon[achievement.id] ?? 'ribbon-outline'}
-                    size={28}
-                    color={unlocked ? DS.color.brand.secondaryDark : DS.color.text.muted}
-                  />
-                </View>
-                <Text style={styles.achievementTitle}>{achievement.title}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <View style={styles.actions}>
-          <Pressable accessibilityRole="button" style={styles.actionRow} onPress={() => router.push('/avatar')}>
-            <View style={styles.actionCopy}>
-              <Text style={styles.actionTitle}>تغییر ظاهر</Text>
-              <Text style={styles.actionSub}>با پیشرفت مسیر باز می‌شود</Text>
-            </View>
-            <Ionicons name="chevron-back" size={22} color={DS.color.text.muted} />
-          </Pressable>
-          <Pressable accessibilityRole="button" style={styles.actionRow} onPress={() => router.push('/settings')}>
-            <View style={styles.actionCopy}>
-              <Text style={styles.actionTitle}>تنظیمات</Text>
-              <Text style={styles.actionSub}>صدا و یادآور ملایم</Text>
-            </View>
-            <Ionicons name="chevron-back" size={22} color={DS.color.text.muted} />
-          </Pressable>
-          <Pressable accessibilityRole="button" style={styles.actionRow} onPress={() => router.push('/parent')}>
-            <View style={styles.actionCopy}>
-              <Text style={styles.actionTitle}>والدین</Text>
-              <Text style={styles.actionSub}>گزارش ساده پیشرفت</Text>
-            </View>
-            <Ionicons name="chevron-back" size={22} color={DS.color.text.muted} />
-          </Pressable>
-        </View>
-      </ScrollView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
+      <MeView
+        settingsLabel={S.me.settingsA11y}
+        onSettings={() => router.push('/settings')}
+        avatarIcon={presetIcon[presetId] ?? 'sun'}
+        avatarLabel={name}
+        name={name}
+        gradeLabel={grade}
+        progressLabel={S.me.stations(toFa(completedStationIds.length), toFa(G1_STATIONS.length))}
+        progress={completedStationIds.length / G1_STATIONS.length}
+        progressFieldLabel={S.me.progress}
+        achievementsFieldLabel={S.me.achievements}
+        achievementsA11y={`${S.me.progress}. ${S.me.achievementsA11y(toFa(unlockedCount), toFa(CHILD_ACHIEVEMENTS.length))}. پیشنهاد هر بار: ${sessionHint}`}
+        achievements={achievements}
+        actions={actions}
+        onAchievement={(id) => setSelectedId(id)}
+        onAction={(id) => {
+          if (id === 'avatar') router.push('/avatar');
+          if (id === 'parent') router.push('/parent');
+        }}
+      />
 
       {selected && (
         <View style={styles.modalBackdrop} accessibilityViewIsModal>
@@ -131,7 +101,7 @@ export default function ProfileScreen() {
             <View style={[styles.dialogIcon, selectedUnlocked ? styles.iconUnlocked : styles.iconLocked]}>
               <Ionicons
                 name={achievementIcon[selected.id] ?? 'ribbon-outline'}
-                size={32}
+                size={density === 'MINIMAL' ? 28 : 32}
                 color={selectedUnlocked ? DS.color.brand.secondaryDark : DS.color.text.muted}
               />
             </View>
@@ -153,69 +123,8 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: DS.color.bg.canvas },
-  container: { padding: DS.space[4], paddingBottom: DS.space[12], gap: DS.space[4] },
-  identity: { alignItems: 'center', gap: 4 },
-  name: {
-    color: DS.color.text.primary,
-    fontSize: DS.type.displaySm.fontSize,
-    lineHeight: DS.type.displaySm.lineHeight,
-    fontWeight: '900',
-    marginTop: 4,
-  },
-  grade: { color: DS.color.text.muted, fontSize: DS.type.sm.fontSize, fontWeight: '700' },
-  sessionHint: { color: DS.color.text.muted, fontSize: DS.type.xs.fontSize, fontWeight: '600', marginTop: 2 },
-  metrics: { flexDirection: 'row-reverse', gap: DS.space[2], marginTop: DS.space[3] },
-  metric: {
-    flex: 1,
-    minHeight: 74,
-    borderRadius: DS.radius.xl,
-    backgroundColor: DS.color.bg.surface,
-    borderWidth: 1,
-    borderColor: DS.color.border.subtle,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  metricValue: { color: DS.color.text.primary, fontSize: DS.type.title.fontSize, fontWeight: '900' },
-  metricLabel: { color: DS.color.text.muted, fontSize: DS.type.xs.fontSize, fontWeight: '700', marginTop: 2 },
-  sectionHeader: { marginTop: DS.space[2], alignItems: 'flex-end' },
-  sectionTitle: { color: DS.color.text.primary, fontSize: DS.type.title.fontSize, fontWeight: '900', textAlign: 'right' },
-  sectionMeta: { color: DS.color.text.muted, fontSize: DS.type.xs.fontSize, fontWeight: '700', textAlign: 'right', marginTop: 2 },
-  achievementGrid: { flexDirection: 'row-reverse', flexWrap: 'wrap', gap: DS.space[2] },
-  achievement: {
-    width: '30%',
-    minWidth: 96,
-    minHeight: DS.size.touchPrimary,
-    flexGrow: 1,
-    padding: DS.space[3],
-    borderRadius: DS.radius.xl,
-    borderWidth: 1,
-    alignItems: 'center',
-    gap: 6,
-  },
-  achievementUnlocked: { backgroundColor: DS.color.brand.secondarySoft, borderColor: DS.color.brand.secondary },
-  achievementLocked: { backgroundColor: DS.color.bg.surface, borderColor: DS.color.border.subtle, opacity: 0.85 },
-  iconCircle: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
-  iconUnlocked: { backgroundColor: DS.color.bg.surface },
-  iconLocked: { backgroundColor: DS.color.state.disabledSoft },
-  achievementTitle: { color: DS.color.text.primary, fontSize: 11, fontWeight: '800', textAlign: 'center' },
-  actions: { gap: DS.space[2], marginTop: DS.space[2] },
-  actionRow: {
-    minHeight: 64,
-    paddingHorizontal: DS.space[3],
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: DS.radius.xl,
-    backgroundColor: DS.color.bg.surface,
-    borderWidth: 1,
-    borderColor: DS.color.border.subtle,
-  },
-  actionCopy: { flex: 1, alignItems: 'flex-end' },
-  actionTitle: { color: DS.color.text.primary, fontSize: DS.type.sm.fontSize, fontWeight: '900', textAlign: 'right' },
-  actionSub: { color: DS.color.text.muted, fontSize: DS.type.xs.fontSize, marginTop: 2, textAlign: 'right' },
   modalBackdrop: {
-    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, // absoluteFillObject was removed from newer React Native
+    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.35)',
     justifyContent: 'center',
     padding: DS.space[4],
@@ -228,6 +137,8 @@ const styles = StyleSheet.create({
     gap: DS.space[2],
   },
   dialogIcon: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
+  iconUnlocked: { backgroundColor: DS.color.bg.surface },
+  iconLocked: { backgroundColor: DS.color.state.disabledSoft },
   dialogKicker: { color: DS.color.text.muted, fontSize: DS.type.xs.fontSize, fontWeight: '800' },
   dialogTitle: { color: DS.color.text.primary, fontSize: DS.type.title.fontSize, fontWeight: '900', textAlign: 'center' },
   dialogBody: { color: DS.color.text.secondary, fontSize: DS.type.sm.fontSize, textAlign: 'center', lineHeight: 22 },

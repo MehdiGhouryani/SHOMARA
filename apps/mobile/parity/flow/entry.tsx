@@ -33,7 +33,8 @@ const allIds = G1_STATIONS.map((s) => s.id);
     resume: scenario === 'mid' ? { [allIds[7]!]: { stage: 'GUIDED' } } : {},
     jumpUnlockedStationIds: [],
     // Fields the real appStateCore reads (lesson player); the path flow's stubbed core ignores them.
-    progress: {},
+    // The practice tab shows its locked third row only once the first station is passed.
+    progress: scenario === 'tabs-practice' ? { ST01: { passed: true } } : {},
     placementFastTrack: false,
     preferences: { sound: true, motion: false, largeText: false, haptics: false, gentleReminders: false },
   },

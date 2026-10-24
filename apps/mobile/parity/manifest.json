@@ -259,5 +259,23 @@
     "pad": 0,
     "maxDiffPercent": 0.5,
     "note": "12 challenge intro: real ChallengeIntroView"
+  },
+  {
+    "id": "practice",
+    "page": "13",
+    "selector": ".body",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "13 practice tab: real PracticeView; the tab bar is compared separately (outlined bar app-wide, D-011)"
+  },
+  {
+    "id": "me",
+    "page": "14",
+    "selector": ".body",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "14 me tab: real MeView; tab bar outside the comparison (U-Q9)"
   }
 ]

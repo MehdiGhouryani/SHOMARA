@@ -1,13 +1,13 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 15
+file_version: 16
 last_updated: 2026-10-24
-snapshot_id: SNAP-20261024-04
+snapshot_id: SNAP-20261024-05
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
 current_stage: Stage A (امنیت و Learning Truth) -> A1/A4/A5/A8 انجام شد؛ A2 (مسیر مرکزی ۴۰۱)، A3/A6/A7 (بخش باقی‌مانده)، persistence واقعی assignment/adult و O-1 باز است
-ui_v1_stage: U4 و U5a و U5b و U6 (نتیجهٔ مرحله ۱۱ و چالش ۱۲) DONE؛ U7 (تمرین و من ۱۳ و ۱۴) بعدی؛ ADR-0035؛ جزئیات §5 «Stage U» و §6.13
+ui_v1_stage: U4 تا U7 DONE (آخرین: تمرین ۱۳ و من ۱۴، SNAP-20261024-05)؛ U8 (صفحهٔ ۱۵ و بستن) بعدی؛ ADR-0035؛ جزئیات §5 و §6.14
 phase_4_final_work: محتوا، APK/AAB، live backend، device/child/educational QA، release  # فعلاً ممنوع
 official_roadmap: ROADMAP_PHASES.md  (next_eligible_phase: P12 ؛ هیچ gate رسمی در این ZIP PASS نشد)
 ```
@@ -110,6 +110,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 | `next build` (web) | FAIL (useSearchParams بدون Suspense) | **exit 0** |
 
 **شمارش‌های اصلاح‌شده (با دستور شمرده شد):** `route.ts` = 43 (نه 46)؛ فایل تست = 50 (49 در vitest، بعد از SNAP-20261014-04)؛ `scripts/verify-*` = 55 فایل؛ `static-all` = 58 جزء. `challenge-runtime` اکنون هم در vitest اجرا می‌شود (shim قدیمی `scripts/test-challenge-runtime.mjs` کد+پیام خطا را با هم می‌سنجید و دو تست واقعی را پنهان می‌کرد).
+
+**اجرای ۲۰۲۶-۱۰-۲۴ (SNAP-20261024-05، بعد از U7؛ لاگ‌ها در `docs/archive/evidence/2026-10-24/`):** typecheck هر ۹ workspace exit 0؛ vitest ۴۲۰/۴۲۰؛ static ۷۴/۷۴ (+`verify-ui-v1-tabs` و اسکریپت flow:tabs)؛ parity ۳۰/۳۰ (practice ۰٫۱۹٪ و me ۰٫۱۵٪ روی ناحیهٔ body)؛ `flow:tabs` ۱۴/۱۴؛ web build exit 0؛ bundle واقعی Metro exit 0.
 
 **اجرای ۲۰۲۶-۱۰-۲۴ (SNAP-20261024-04، بعد از U6؛ لاگ‌ها در `docs/archive/evidence/2026-10-24/`):** `build:packages` exit 0؛ typecheck هر ۹ workspace exit 0؛ `vitest run` ۴۱۷/۴۱۷ (۴ تست جدید به‌خاطر فایل‌های U6)؛ `verify-static-all` ۷۲/۷۲ (+`verify-ui-v1-result`)؛ `npm run parity` ۲۸/۲۸ (+stage-intro صفحهٔ ۱۱ ۰٫۰۶٪ و challenge صفحهٔ ۱۲ ۰٫۳۱٪)؛ `flow:station` **۴۸/۴۸** (مسیر کامل شاد: آموزش ← سؤال‌ها ← دو چک ۵سؤالی ← انتقال ← چک نهایی ← مقدمهٔ چالش ← ۳ round چالش ← جشن صفحهٔ ۱۱ با «۱ از ۵» و دستاورد)؛ flow آنبوردینگ ۲۸/۲۸ و مسیر ۲۹/۲۹؛ `next build` exit 0؛ bundle واقعی Metro exit 0.
 
@@ -312,7 +314,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 **U5a** `DONE (SNAP-20261024-01)` — نمای خالص سؤال و بازخورد: `QuestionView` (فازهای `choose`=۰۸، `correct`=۰۹، `retry`=۱۰)، `OptionButton`، `FeedbackSheet`، `BeadTray` بدون عدد؛ parity سه صفحه ۰٫۰۶٪.
 **U5b** `DONE (SNAP-20261024-03، تصمیم‌های D-001 تا D-003)` — `QuestionView` در `StationFlow` برای سه encounter تک‌انتخابی تأییدشده (E02 راهنمایی‌شده، E04 شمارش، E05 مستقل) وصل شد: لمس فقط انتخاب می‌کند، «بررسی» همان `submitAttempt` قبلی را یک بار می‌فرستد، «ادامه/دوباره امتحان کن» در برگه جلو می‌برد؛ برگهٔ غلط از `selectedStep` سرور پیروی می‌کند (D-002). محتوای محلی «مهره» شد (D-004). سناریوی واقعی با **سرور mock یادگیری** در مرورگر تست شد (§6.12).
 **U6** `DONE (SNAP-20261024-04)` — نتیجه و چالش: `StageResultView` (۱۱: کانفتی ثابت، جشن آرام Main، «۱ از ۵ مرحله»، ردیف دستاورد بنفش «دستاورد جدید/شمارش‌گر») و `ChallengeIntroView` (۱۲: روکا، چیپ‌ها، «شروع چالش»؛ تعداد سؤال از تعریف واقعی می‌آید، D-015). دو باگ پنهان گرفته شد (کرش هدر پخش‌کنندهٔ چالش؛ کارت محتوای کهنه زیر چالش). parity ۰٫۰۶٪ و ۰٫۳۱٪؛ flow:station ۴۸ بررسی با مسیر کامل شاد تا جشن.
-**U7** `PLANNED` — تمرین و من: ۱۳ و ۱۴.
+**U7** `DONE (SNAP-20261024-05)` — تمرین و من: `PracticeView` (۱۳: راهنمای فندق، ردیف‌های بازی از قرارداد تمرین با چیپ «تمرین» و ردیف قفل «بعد از مرحلهٔ n») و `MeView` (۱۴: کارت هویت، نوار «n از ۲۵ ایستگاه»، پنج ردیف دستاورد) + ردیف‌های اقدام قراردادی (تغییر ظاهر/والدین) به‌عنوان حالت مشتق. پنج استثنای قفل‌شده در `scripts/lib/tabs-waivers.mjs`. parity فقط ناحیهٔ body (تب‌بار outlined طبق D-011).
 **U8** `PLANNED` — بستن: ROADMAP، START_HERE، verifierها، تست روی اندروید.
 
 **سؤال‌های باز (منتظر مالک):**
@@ -353,6 +355,14 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 - **مستندات**: ادغام md-ها در همین فایل؛ `src/README.md` اصلاح شد.
 
 ---
+
+### 6.14) U7 — تمرین (۱۳) و من (۱۴) — SNAP-20261024-05
+- **اجزا/نماها:** `ui/v1/ListRow.tsx` (ردیف `.row` با حالت off، آیکون انتهایی، چیپ از طریق children و ارتفاع کمینهٔ توکنی ۷۲ روی خود Pressable — تست touchTargets مستقیم مسیر `UI.` را می‌خواند)؛ `practice/views/PracticeView.tsx` و `profile/views/MeView.tsx` (خالص)؛ توکن‌های `ui.practice`/`ui.me` از CSS صفحات.
+- **کانتینرها همان فایل‌های قبلی** تا verifierها متصل بمانند: `PracticeHubScreen` منطق قرارداد را نگه دارد (پیشنهاد، habit برای صفحه‌خوان، برچسب شروع از قرارداد = «شروع همین حالا» برای G1 — نمونهٔ طرح «شروع تمرین» می‌گفت؛ دادهٔ واقعی مقدم، همان قاعدهٔ D-012)؛ `profile.tsx` نقشهٔ CHILD_ACHIEVEMENTS، شیت جزئیات S18، ردیف‌های والدین/تغییر ظاهر/تنظیمات. شمارش «n از ۲۵» از progress واقعی؛ kicker دستاورد قفل = «ایستگاه n را کامل کن» با شمارهٔ ایستگاه.
+- **اصلاح واقعی:** `practiceListLimit` تعداد ردیف‌های «ثانویه» است (۲ برای G1)؛ ردیف پیشنهادی جدا از آن می‌آید → سه ردیف مثل صفحهٔ ۱۳ (کد قبلی cap را کل می‌گرفت).
+- **استثناها (۵ مورد، قفل‌شده در `scripts/lib/tabs-waivers.mjs` با stillVerified و restore):** کارت یک‌لمس habit و habitLine (صفحهٔ ۱۳ ندارد)، literalهای DS در تب تمرین (همه از ui/v1)، لینک «دیدن مسیر» (سه تب جایگزینش کردند)، متن شمارندهٔ «دستاورد واقعی» (به a11y و strings رفت)، literal «با پیشرفت مسیر» (به strings رفت). verifierهای phase-d/7/7-5/phase-e الگوی waiver همانند phase-a گرفتند.
+- **flow:tabs ۱۴ بررسی:** تمرین (راهنما، سه ردیف با چیپ و قفل «بعد از مرحلهٔ ۳»، دکمهٔ قراردادی، پوش به start ایستگاه) و من (نام/پایه/۰ از ۲۵، پنج دستاورد، شیت S18 باز/بسته، تنظیمات/والدین).
+- **اثبات‌نشده:** دستگاه واقعی؛ تب‌بار در parity مقایسه نشد (outlined همه‌جا طبق D-011؛ golden صفحات ۱۳/۱۴ تب‌بار soft دارند — U-Q9).
 
 ### 6.13) U6 — نتیجهٔ مرحله (۱۱) و چالش (۱۲) — SNAP-20261024-04
 - **توکن‌ها** (`ui.result`، `ui.challenge` از CSS/DOM صفحات): دیسک ۲۶۰/قهرمان ۲۲۰/حاشیهٔ پایین ۱۶/تیتر ۳۶–۴۸/نوار ۱۲ با فاصلهٔ ۶/کانفتی ۱۰×۲۶ در شش موقعیت ثابت با سه رنگ (کهربایی، بنفش، آبی `#9EC3DB`)/ردیف دستاورد (شعاع ۲۰، پدینگ ۱۲/۱۶، آیکون ۴۸ با گلیف ۲۶، سایهٔ `#C9BEF5`، برچسب `#4A3C99`)؛ چالش: دیسک ۲۴۰/قهرمان ۲۳۰/فاصلهٔ چیپ ۸.
@@ -525,6 +535,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-18 | SNAP-20261018-01 | U3: مسیر روی UI v1 (ادامهٔ کار چت قبلی `src/path/*`)، `pathModel` + تست جریان واقعی ۲۹ بررسی، parity ۲۰ نمونه شامل چهار موقعیت اسکرول، تب‌بار طرح، پنج استثنای شفاف verifier، تصمیم‌های U-Q8 تا U-Q13؛ ۴۰۶/۴۰۶ تست، static 68/68، bundle واقعی Metro موفق |
 | 2026-10-23 | SNAP-20261023-01 | U4: شروع مرحله ۰۶ و بخش اول آموزش ۰۷ روی UI v1 با «دوباره بشنو» (TTS)، `Bead`/`BeadTray`، `LessonChrome`، تست جریان واقعی ۲۵ بررسی (`flow:station`)، parity ۲۳ نمونه، استثنای شفاف `station-start-session-hint`، `verify-ui-v1-station`، سؤال‌های U-Q14 تا U-Q19؛ ۴۰۹/۴۰۹ تست، static 70/70، bundle واقعی Metro موفق |
 | 2026-10-24 | SNAP-20261024-01 | U5a: نمای خالص سؤال و بازخورد ۰۸ تا ۱۰ (`QuestionView`، `OptionButton`، `FeedbackSheet`)، parity ۲۶ نمونه، `verify-ui-v1-question`، سؤال‌های U-Q20 تا U-Q22 برای اتصال (U5b)؛ ۴۱۳/۴۱۳ تست، static 71/71، bundle واقعی Metro موفق |
+| 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |
 | 2026-10-24 | SNAP-20261024-02 | بستهٔ تحویل: `AGENTS.md`، `docs/handoff/PROMPTS.md` (پرامپت‌های بازنگری و فاز)، `.gitattributes`، `.github` (CI و قالب PR)، اسکریپت `typecheck:all`، اصلاح README؛ ممیزی clone تمیز: `npm ci` ۶۴۹ بسته، build:packages، ۹ typecheck، vitest 413/413، static 71/71 |

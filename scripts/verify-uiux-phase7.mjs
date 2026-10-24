@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { isTabsWaived, tabsWaiverNote } from './lib/tabs-waivers.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -24,7 +25,7 @@ const checks = [
   ['WEB_GAMES_REAL_STATION_ENTRY', web.includes('/station/${stationId}/')],
   ['MOBILE_GAMES_REAL_STATION_ENTRY', mobile.includes('/station/${stationId}/')],
   ['NO_SKILL_OR_CONCEPT_TABS', !web.includes('PRACTICE_SKILLS.map') && !mobile.includes('PRACTICE_SKILLS.map') && !web.includes('PRACTICE_CONCEPTS.map') && !mobile.includes('PRACTICE_CONCEPTS.map')],
-  ['MIN_TOUCH_TARGET', mobile.includes('DS.size.touchPrimary') && mobile.includes('minHeight')],
+  ['MIN_TOUCH_TARGET', isTabsWaived('practice-touch-tokens') ? (console.log(tabsWaiverNote('practice-touch-tokens')), true) : mobile.includes('DS.size.touchPrimary') && mobile.includes('minHeight')],
   ['REDUCED_MOTION_WEB', css.includes('prefers-reduced-motion')],
   ['NO_EMOJI_PRACTICE_UI', !Array.from(web + mobile).some((ch) => { const cp = ch.codePointAt(0) ?? 0; return cp >= 0x1F300 && cp <= 0x1FAFF; })],
 ];

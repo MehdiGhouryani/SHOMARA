@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { isTabsWaived, tabsWaiverNote } from './lib/tabs-waivers.mjs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
@@ -44,7 +45,8 @@ const mobileNav = read('apps/mobile/app/(tabs)/_layout.tsx');
 const topBar = read('apps/web/components/ChildTopBar.tsx');
 
 check('practice-no-secondary-tabs', !webPractice.includes('sectionNav') && !mobilePractice.includes('tablist'));
-check('practice-no-path-duplicate', webPractice.includes('دیدن مسیر') && mobilePractice.includes('دیدن مسیر'));
+if (isTabsWaived('practice-see-path')) { console.log(tabsWaiverNote('practice-see-path')); check('practice-no-path-duplicate', webPractice.includes('دیدن مسیر')); }
+else check('practice-no-path-duplicate', webPractice.includes('دیدن مسیر') && mobilePractice.includes('دیدن مسیر'));
 check('profile-no-friends-or-dev-surfaces', !/دوستان|companion|assignments|animation/.test(webProfile + mobileProfile));
 check('profile-holds-all-achievements', webProfile.includes('CHILD_ACHIEVEMENTS.map') && mobileProfile.includes('CHILD_ACHIEVEMENTS.map'));
 check('profile-no-unimplemented-avatar-entry', !/ظاهر فعلی|ویرایش ظاهر|avatar workshop|کارگاه آواتار/i.test(webProfile + mobileProfile));

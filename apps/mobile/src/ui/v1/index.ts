@@ -29,4 +29,5 @@ export { Bead, BeadTray } from './Bead';
 export { OptionButton, type OptionState } from './OptionButton';
 export { Confetti } from './Confetti';
 export { AchievementRow } from './AchievementRow';
+export { ListRow } from './ListRow';
 export { FeedbackSheet } from './FeedbackSheet';

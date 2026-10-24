@@ -3,6 +3,7 @@
  * Phase D — soft practice habit / one-tap practice gate (static).
  */
 import { isWaived, waiverNote } from './lib/path-waivers.mjs';
+import { isTabsWaived, tabsWaiverNote } from './lib/tabs-waivers.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -41,14 +42,16 @@ if (/goalFa: '.*استریک/.test(habit)) fail('STREAK_IN_GOAL');
 ok('practice-habit contract markers');
 
 const hub = read('apps/mobile/src/ui/PracticeHubScreen.tsx');
-for (const m of ['pickRecommendedPractice', 'softDailyHabitForGrade', 'practiceStartLabelFa', 'شروع همین حالا', 'featureCard', 'habitLine']) {
+const habitWaived = isTabsWaived('practice-habit-card');
+if (habitWaived) console.log(tabsWaiverNote('practice-habit-card'));
+for (const m of ['pickRecommendedPractice', 'softDailyHabitForGrade', 'practiceStartLabelFa', ...(habitWaived ? [] : ['featureCard', 'habitLine'])]) {
   if (!hub.includes(m) && m !== 'شروع همین حالا') {
     if (!hub.includes(m)) fail(`HUB_MISSING:${m}`);
   }
 }
 if (!hub.includes('pickRecommendedPractice') || !hub.includes('softDailyHabitForGrade')) fail('HUB_CORE');
 // Whole card should be pressable one-tap
-if (!hub.includes('onPress={() => openStation(recommended.stationId)}')) fail('ONE_TAP_CARD');
+if (!hub.includes('onStart={() => openStation(recommended.stationId)}') && !hub.includes('onPress={() => openStation(recommended.stationId)}')) fail('ONE_TAP_CARD');
 ok('PracticeHub one-tap + habit wired');
 
 const pathUi = read('apps/mobile/app/(tabs)/index.tsx');

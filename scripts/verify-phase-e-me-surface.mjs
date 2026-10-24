@@ -3,6 +3,7 @@
  * Phase E — Me / Parent / Avatar presentation gate (static).
  */
 import fs from 'node:fs';
+import { isTabsWaived, tabsWaiverNote } from './lib/tabs-waivers.mjs';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -38,9 +39,15 @@ for (const m of ['buildParentProgressSummary', 'profileActionDensity', 'reminder
 ok('me-surface contract markers');
 
 const profile = read('apps/mobile/app/(tabs)/profile.tsx');
-for (const m of ['profileActionDensity', 'G1_STATIONS', 'دستاورد واقعی', 'با پیشرفت مسیر']) {
+const stringsFa = read('apps/mobile/src/ui/strings.fa.ts');
+if (isTabsWaived('profile-counter-copy')) console.log(tabsWaiverNote('profile-counter-copy'));
+if (isTabsWaived('profile-action-subtitle')) console.log(tabsWaiverNote('profile-action-subtitle'));
+for (const m of ['profileActionDensity', 'G1_STATIONS']) {
   if (!profile.includes(m)) fail(`PROFILE_MISSING:${m}`);
 }
+if (!profile.includes('CHILD_ACHIEVEMENTS.map')) fail('PROFILE_MISSING:CHILD_ACHIEVEMENTS.map');
+if (!stringsFa.includes('دستاورد واقعی')) fail('STRINGS_MISSING:دستاورد واقعی');
+if (!stringsFa.includes('با پیشرفت مسیر')) fail('STRINGS_MISSING:با پیشرفت مسیر');
 ok('profile wired');
 
 const parent = read('apps/mobile/app/parent.tsx');
