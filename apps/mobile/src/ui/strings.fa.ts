@@ -29,6 +29,9 @@ export const S = {
     sectionA11y: (n: string, total: string) => `بخش ${n} از ${total}`,
     guideA11y: 'نامبر',
     beadsA11y: (n: string) => `${n} مهره`,
+    check: 'بررسی',
+    correctFeedback: 'درست است!',
+    retryFeedback: 'نزدیک بود. دوباره امتحان کنیم؟',
   },
   stage: {
     word: 'مرحله',

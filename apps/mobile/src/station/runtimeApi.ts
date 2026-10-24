@@ -76,16 +76,16 @@ class NetworkRequestError extends Error {
 
 const localContent: Record<string, StationContent> = {
   learn: {
-    id: 'G1-ST01-E01', contentVersionId: CONTENT_01, title: 'اول بشماریم', prompt: 'هر ستاره را یکی‌یکی ببین. آخرین عددی که می‌گویی، تعداد همه‌ی ستاره‌هاست.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'INSTRUCTION', experienceForm: 'CONVERSATION_EXPLANATION',
+    id: 'G1-ST01-E01', contentVersionId: CONTENT_01, title: 'اول بشماریم', prompt: 'هر مهره را یکی‌یکی ببین. آخرین عددی که می‌گویی، تعداد همه‌ی مهره‌هاست.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'INSTRUCTION', experienceForm: 'CONVERSATION_EXPLANATION',
   },
   guided: {
-    id: 'G1-ST01-E02', contentVersionId: CONTENT_02, title: 'یه انتخاب کوچولو', prompt: 'گروهی را انتخاب کن که ۳ ستاره دارد.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'GUIDED_PRACTICE', experienceForm: 'PUZZLE', options: ['★ ★', '★ ★ ★', '★ ★ ★ ★'],
+    id: 'G1-ST01-E02', contentVersionId: CONTENT_02, title: 'یه انتخاب کوچولو', prompt: 'گروهی را انتخاب کن که ۳ مهره دارد.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'GUIDED_PRACTICE', experienceForm: 'PUZZLE', options: ['۲', '۳', '۴'], visualCount: 3,
   },
   pattern: {
     id: 'G1-ST01-E03', contentVersionId: CONTENT_03, title: 'مسیر الگو', prompt: 'کدام مهره باید جای علامت سؤال بیاید؟', stationId: 'G1-ST01', skillId: 'G1-SK009', learningRole: 'GUIDED_PRACTICE', experienceForm: 'MINI_GAME', options: ['زرد', 'آبی', 'سبز'],
   },
   count: {
-    id: 'G1-ST01-E04', contentVersionId: CONTENT_04, title: 'شکار شمارش', prompt: 'چند ستاره می‌بینی؟', stationId: 'G1-ST01', skillId: 'G1-SK003', learningRole: 'GUIDED_PRACTICE', experienceForm: 'MINI_GAME', options: ['۲', '۳', '۴'], visualCount: 3,
+    id: 'G1-ST01-E04', contentVersionId: CONTENT_04, title: 'شکار شمارش', prompt: 'چند مهره می‌بینی؟', stationId: 'G1-ST01', skillId: 'G1-SK003', learningRole: 'GUIDED_PRACTICE', experienceForm: 'MINI_GAME', options: ['۲', '۳', '۴'], visualCount: 3,
   },
   independent: {
     id: 'G1-ST01-E05', contentVersionId: '26000000-0000-4000-8000-000000000005', title: 'تمرین مستقل', prompt: 'بدون کمک، تعداد شکل‌ها را پیدا کن.', stationId: 'G1-ST01', skillId: 'G1-SK003', learningRole: 'INDEPENDENT_PRACTICE', experienceForm: 'PUZZLE', options: ['۲','۳','۴'], visualCount: 3,
@@ -96,11 +96,11 @@ const localContent: Record<string, StationContent> = {
   checkA: {
     id: 'G1-ST01-E07', contentVersionId: CONTENT_07, title: 'چالش اول', prompt: 'در ۵ مأموریت کوتاه، شمارش و تعداد را بررسی کن.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'MASTERY_CHECK', experienceForm: 'CHALLENGE',
     questions: [
-      { prompt: 'چند ستاره؟', options: ['۲','۳','۴','۵'], visualCount: 3 },
-      { prompt: 'چند ستاره؟', options: ['۱','۲','۳','۴'], visualCount: 3 },
-      { prompt: 'چند ستاره؟', options: ['۳','۴','۵','۶'], visualCount: 4 },
-      { prompt: 'چند ستاره؟', options: ['۱','۲','۳','۴'], visualCount: 2 },
-      { prompt: 'چند ستاره؟', options: ['۳','۴','۵','۶'], visualCount: 5 },
+      { prompt: 'چند مهره؟', options: ['۲','۳','۴','۵'], visualCount: 3 },
+      { prompt: 'چند مهره؟', options: ['۱','۲','۳','۴'], visualCount: 3 },
+      { prompt: 'چند مهره؟', options: ['۳','۴','۵','۶'], visualCount: 4 },
+      { prompt: 'چند مهره؟', options: ['۱','۲','۳','۴'], visualCount: 2 },
+      { prompt: 'چند مهره؟', options: ['۳','۴','۵','۶'], visualCount: 5 },
     ],
   },
   checkB: {
@@ -114,15 +114,15 @@ const localContent: Record<string, StationContent> = {
     ],
   },
   recovery: {
-    id: 'G1-ST01-E09', contentVersionId: RECOVERY_001, title: 'با هم دوباره', prompt: 'این بار آهسته‌تر: هر ستاره را یکی‌یکی لمس کن و تا ۳ بشمار.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'RECOVERY', experienceForm: 'BUILD_EXPLORE', options: ['۱', '۲', '۳'], visualCount: 3,
+    id: 'G1-ST01-E09', contentVersionId: RECOVERY_001, title: 'با هم دوباره', prompt: 'این بار آهسته‌تر: هر مهره را یکی‌یکی لمس کن و تا ۳ بشمار.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'RECOVERY', experienceForm: 'BUILD_EXPLORE', options: ['۱', '۲', '۳'], visualCount: 3,
   },
   recheck: {
     id: 'G1-ST01-E10', contentVersionId: RECHECK_001, title: 'بررسی دوباره', prompt: 'بعد از تمرین بازیابی، یک بررسی تازه انجام بده.', stationId: 'G1-ST01', skillId: 'G1-SK001', learningRole: 'MASTERY_CHECK', experienceForm: 'MINI_GAME', questions: [
-      { prompt: 'چند ستاره داریم؟', options: ['۲','۳','۴'], visualCount: 3 },
-      { prompt: 'چند ستاره داریم؟', options: ['۱','۲','۳'], visualCount: 1 },
-      { prompt: 'چند ستاره داریم؟', options: ['۱','۲','۳'], visualCount: 2 },
-      { prompt: 'چند ستاره داریم؟', options: ['۱','۲','۳'], visualCount: 3 },
-      { prompt: 'چند ستاره داریم؟', options: ['۱','۲','۳'], visualCount: 2 },
+      { prompt: 'چند مهره داریم؟', options: ['۲','۳','۴'], visualCount: 3 },
+      { prompt: 'چند مهره داریم؟', options: ['۱','۲','۳'], visualCount: 1 },
+      { prompt: 'چند مهره داریم؟', options: ['۱','۲','۳'], visualCount: 2 },
+      { prompt: 'چند مهره داریم؟', options: ['۱','۲','۳'], visualCount: 3 },
+      { prompt: 'چند مهره داریم؟', options: ['۱','۲','۳'], visualCount: 2 },
     ],
   },
   recoveryPattern: {

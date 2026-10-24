@@ -1,0 +1,41 @@
+
+> math-learning-product@0.1.0 typecheck:all
+> npm --workspace @math/contracts run typecheck && npm --workspace @math/design-system run typecheck && npm --workspace @math/learning-runtime run typecheck && npm --workspace @math/challenge-runtime run typecheck && npm --workspace @math/assignment-runtime run typecheck && npm --workspace @math/adult-projections run typecheck && npm --workspace @math/offline-sync run typecheck && npm --workspace @math/web run typecheck && npm --workspace @math/mobile run typecheck
+
+
+> @math/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/design-system@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/learning-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/challenge-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/assignment-runtime@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @math/adult-projections@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @math/offline-sync@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @math/mobile@0.1.0 typecheck
+> tsc --noEmit
+
+EXIT=0

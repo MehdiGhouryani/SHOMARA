@@ -28,12 +28,29 @@ import {
 } from '@math/contracts';
 import { SignatureChallengeView } from './SignatureChallengeView';
 import { TeachView } from './views/TeachView';
+import { QuestionView, type QuestionPhase } from './views/QuestionView';
 import { MACRO_LABELS, macroFilled, macroLabel } from './macro';
 import { speakFa, stopSpeaking } from './speech';
 import { C } from '../ui/v1';
 
 /** Page 07 shows three beads; the E01 content has no `visualCount`, so the teach scene keeps the count the old scene showed. */
 const TEACH_DEFAULT_BEADS = 3;
+
+/**
+ * Encounters whose single-choice interaction is the approved question page (08 to 10, D-001 to D-003):
+ * tap selects, «بررسی» submits once, the sheet's action moves on. Other single-choice encounters
+ * (pattern games, E11 transfer) have no approved page yet and keep the legacy rendering.
+ */
+const QUESTION_ENCOUNTER_IDS = new Set(['G1-ST01-E02', 'G1-ST01-E04', 'G1-ST01-E05']);
+
+function isQuestionEncounter(content: StationContent | null): content is StationContent {
+  return Boolean(content && QUESTION_ENCOUNTER_IDS.has(content.id));
+}
+
+/** The wrong-answer sheet follows the server's decision (D-002): RECOVERY/RECHECK redirects, CONTINUE may retry the same item. */
+function questionSheetAllowsRetry(outcome: SubmitOutcome): boolean {
+  return outcome.selectedStep === 'CONTINUE' || outcome.selectedStep === 'STATION_PASS';
+}
 
 /** ST01 keeps the full vertical-slice lesson engine; other stations use challenge-first path when seeded. */
 function isSt01Station(stationId: string): boolean {
@@ -60,6 +77,9 @@ export function StationFlow({ stationId }: { stationId: string }) {
   const [localPassedChecks, setLocalPassedChecks] = useState(0);
   const [stationPassAchieved, setStationPassAchieved] = useState(false);
   const [authoritativeContent, setAuthoritativeContent] = useState<StationContent | null>(null);
+  // Question pages 08 to 10 (D-001): tap only selects, «بررسی» submits once, the sheet's action moves on.
+  const [questionSelection, setQuestionSelection] = useState<number | null>(null);
+  const [questionOutcome, setQuestionOutcome] = useState<SubmitOutcome | null>(null);
 
   // Consume the placement fast-track the first time the station really starts
   // (stage leaves ENTRY). Done here, not in start(), so a failed network call at
@@ -129,6 +149,8 @@ export function StationFlow({ stationId }: { stationId: string }) {
       setSequence((value) => value + 1);
       setActiveSkillId(nextContent.skillId);
       setStage(nextStage);
+      setQuestionSelection(null);
+      setQuestionOutcome(null);
       const semantic = nextStage === 'LEARN' ? 'EXPLAIN' : 'HINT_OPENED';
       dispatch(makeAnimationEvent(semantic, { sessionId: session, stationId }));
     } finally {
@@ -158,7 +180,40 @@ export function StationFlow({ stationId }: { stationId: string }) {
       const answerSemantic = semanticEventForOutcome(outcome);
       dispatch(makeAnimationEvent(answerSemantic, { sessionId: session, stationId }));
 
-      if (target.id === 'G1-ST01-E03') await beginEncounter(getLocalContent('count'), 'GAME_COUNT');
+      // Question encounters (D-001/U-Q20) hold this stage until the feedback sheet's action;
+      // what was submitted above is byte-for-byte what the old immediate answer sent.
+      if (isQuestionEncounter(target)) {
+        setQuestionOutcome(outcome);
+        return;
+      }
+      await advanceAfterAnswer(target, outcome);
+    } catch {
+      setMessage(S.lesson.submitFailed);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** The stage transition that used to run inside answerContent; the question sheet's action triggers it (D-001). */
+  async function advanceAfterAnswer(target: StationContent, outcome: SubmitOutcome) {
+    const session = await ensureSession();
+    setBusy(true);
+    try {
+      // D-002/U-Q21: when the server redirects a wrong answer (RECOVERY/RECHECK), the client follows it.
+      if (!outcome.correct && isQuestionEncounter(target)) {
+        if (outcome.selectedStep === 'RECOVERY') {
+          await beginEncounter(getRecoveryContent(outcome.decisionTargetSkillId ?? target.skillId), 'RECOVERY');
+          return;
+        }
+        if (outcome.selectedStep === 'RECHECK') {
+          await beginFreshCheckEncounter(getRecheckContent(outcome.decisionTargetSkillId ?? target.skillId), 'RECHECK');
+          return;
+        }
+      }
+      // The guided question used to route through the RESULT screen's continue button; the sheet's «ادامه» now
+      // goes straight to the next section (same content sequence, one intermediate screen fewer).
+      if (target.id === 'G1-ST01-E02') await beginEncounter(getLocalContent('pattern'), 'GAME_PATTERN');
+      else if (target.id === 'G1-ST01-E03') await beginEncounter(getLocalContent('count'), 'GAME_COUNT');
       else if (target.id === 'G1-ST01-E04') await beginEncounter(getLocalContent('independent'), 'INDEPENDENT');
       else if (target.id === 'G1-ST01-E05') await beginEncounter(getLocalContent('review'), 'REVIEW');
       else if (target.id === 'G1-ST01-E06') await beginEncounter(getLocalContent('checkA'), 'CHECK_A');
@@ -280,6 +335,8 @@ export function StationFlow({ stationId }: { stationId: string }) {
         setActiveSkillId(nextContent.skillId);
       }
       setStage(nextStage);
+      setQuestionSelection(null);
+      setQuestionOutcome(null);
       dispatch(makeAnimationEvent('EXPLAIN', { sessionId: freshSessionId ?? undefined, stationId }));
     } finally {
       setBusy(false);
@@ -510,6 +567,51 @@ export function StationFlow({ stationId }: { stationId: string }) {
           busy={busy || inputBlocked}
           onReplay={() => speakFa(content.prompt)}
           onContinue={() => { stopSpeaking(); void beginEncounter(getLocalContent('guided'), 'GUIDED'); }}
+          onClose={confirmExit}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // Pages 08 to 10 (D-001 to D-003): tap selects, «بررسی» submits once, the sheet's action moves on.
+  if (isQuestionEncounter(content) && !message) {
+    const total = toFa(MACRO_LABELS.length);
+    const filled = macroFilled(stage, null);
+    const beadCount = content.visualCount ?? TEACH_DEFAULT_BEADS;
+    const phase: QuestionPhase = questionOutcome ? (questionOutcome.correct ? 'correct' : 'retry') : 'choose';
+    const sheetDirectsElsewhere = questionOutcome !== null && !questionOutcome.correct && !questionSheetAllowsRetry(questionOutcome);
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
+        <QuestionView
+          caption={{ label: macroLabel(stage, null), position: S.lesson.sectionOf(toFa(filled), total) }}
+          progress={filled / MACRO_LABELS.length}
+          progressLabel={S.lesson.questionOf(toFa(filled), total)}
+          closeLabel={S.lesson.close}
+          prompt={content.prompt}
+          beadCount={beadCount}
+          beadsLabel={S.lesson.beadsA11y(toFa(beadCount))}
+          replayLabel={S.lesson.replay}
+          options={content.options ?? []}
+          selectedIndex={questionSelection}
+          phase={phase}
+          checkLabel={S.lesson.check}
+          feedbackText={phase === 'correct' ? S.lesson.correctFeedback : S.lesson.retryFeedback}
+          feedbackActionLabel={phase === 'correct' || sheetDirectsElsewhere ? S.lesson.continue : S.lesson.retry}
+          busy={busy || inputBlocked}
+          onReplay={() => speakFa(content.prompt)}
+          onSelect={setQuestionSelection}
+          onCheck={() => { if (questionSelection !== null) void answerContent(content, questionSelection); }}
+          onFeedbackAction={() => {
+            if (phase === 'choose') return;
+            if (phase === 'correct' || sheetDirectsElsewhere) {
+              stopSpeaking();
+              void advanceAfterAnswer(content, questionOutcome!);
+            } else {
+              // The server allowed another attempt on the same item (D-002); choose again.
+              setQuestionSelection(null);
+              setQuestionOutcome(null);
+            }
+          }}
           onClose={confirmExit}
         />
       </SafeAreaView>

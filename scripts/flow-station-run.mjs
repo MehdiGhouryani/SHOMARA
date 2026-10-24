@@ -48,6 +48,7 @@ const gone = async (page, t, ms = 4000) => {
   return false;
 };
 const button = (page, name) => page.getByRole('button', { name, exact: true }).first();
+const isDisabled = async (page, name) => (await button(page, name).getAttribute('aria-disabled')) === 'true';
 const tap = (locator) => locator.click({ timeout: 3000 }).then(() => true, () => false);
 const shot = (page, name) => page.screenshot({ path: path.join(OUT, `flow-station-${name}.png`) });
 
@@ -100,7 +101,7 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
 {
   const { page, errors } = await open('play');
   check('07: section caption and position', (await visible(page, 'کشف می‌کنیم')) && (await visible(page, '۱ از ۵')));
-  check('07: the guide bubble shows the lesson prompt', await visible(page, 'هر ستاره را یکی‌یکی ببین'));
+  check('07: the guide bubble shows the lesson prompt', await visible(page, 'هر مهره را یکی‌یکی ببین'));
   const bar = page.getByRole('progressbar', { name: 'بخش ۱ از ۵' });
   const track = await bar.boundingBox();
   const fill = await bar.locator('> div').first().boundingBox();
@@ -110,7 +111,7 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('07: hear-again and continue buttons are present', (await replay.isVisible().catch(() => false)) && (await button(page, 'ادامه').isVisible().catch(() => false)));
   await tap(replay);
   let f = await flow(page);
-  check('07: hear again reads the prompt in Persian', f.spoken.length === 1 && f.spoken[0].language === 'fa-IR' && f.spoken[0].text.startsWith('هر ستاره را یکی‌یکی ببین'), JSON.stringify(f.spoken));
+  check('07: hear again reads the prompt in Persian', f.spoken.length === 1 && f.spoken[0].language === 'fa-IR' && f.spoken[0].text.startsWith('هر مهره را یکی‌یکی ببین'), JSON.stringify(f.spoken));
   await tap(replay);
   f = await flow(page);
   check('07: pressing again restarts the speech (stop, then speak)', f.spoken.length === 2 && f.stops >= 2, `${f.spoken.length} spoken, ${f.stops} stops`);
@@ -125,9 +126,48 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('07: confirming leaves the lesson', f.backed === 1, String(f.backed));
   const stopsBefore = f.stops;
   await tap(button(page, 'ادامه'));
-  const moved = await gone(page, 'هر ستاره را یکی‌یکی ببین');
+  const moved = await gone(page, 'هر مهره را یکی‌یکی ببین');
   f = await flow(page);
-  check('07: continue stops speech and moves to the next section', moved && f.stops > stopsBefore && (await visible(page, 'یه انتخاب کوچولو')), `${moved} ${f.stops}/${stopsBefore}`);
+  check('07: continue stops speech and moves to the next section', moved && f.stops > stopsBefore && (await visible(page, 'گروهی را انتخاب کن که ۳ مهره دارد')), `${moved} ${f.stops}/${stopsBefore}`);
+
+  // ================= pages 08 to 10: the question interaction (D-001 to D-003) =================
+  const option = (page, label) => page.getByRole('button', { name: label, exact: true }).first();
+  const optionDisabled = async (page, label) => (await option(page, label).getAttribute('aria-disabled')) === 'true';
+
+  check('08: caption from the macro labels and question progress 2/5', (await visible(page, 'با هم تمرین می‌کنیم · ۲ از ۵')) && (await page.getByRole('progressbar').first().getAttribute('aria-label')) === 'سؤال ۲ از ۵');
+  check('08: check is disabled until an option is selected', await isDisabled(page, 'بررسی'));
+  await tap(option(page, '۲'));
+  check('08: selecting an option enables check (no submit yet)', !(await isDisabled(page, 'بررسی')));
+  let submits = () => flow(page).then((x) => x.submits);
+  check('08: selecting sends nothing to the server (D-001)', (await submits()).length === 0, JSON.stringify(await submits()));
+  await tap(button(page, 'بررسی'));
+  check('10: warm sheet with retry copy, never red', (await visible(page, 'نزدیک بود. دوباره امتحان کنیم؟')) && (await visible(page, 'دوباره امتحان کن')));
+  check('10: options lock while the sheet is open', (await optionDisabled(page, '۳')) && (await optionDisabled(page, '۴')));
+  f = await flow(page);
+  check('08: check submits exactly one attempt with attemptNumber 1', f.submits.length === 1 && f.submits[0].attemptNumber === 1 && f.submits[0].answerIndex === 0, JSON.stringify(f.submits));
+  await tap(button(page, 'دوباره امتحان کن'));
+  check('10: retry re-opens the same question and clears the selection', (await gone(page, 'نزدیک بود. دوباره امتحان کنیم؟')) && (await isDisabled(page, 'بررسی')));
+  await tap(option(page, '۳'));
+  await tap(button(page, 'بررسی'));
+  check('09: correct sheet', (await visible(page, 'درست است!')) && (await visible(page, 'ادامه')));
+  f = await flow(page);
+  check('08: the retry is a second honest attempt (attemptNumber 2, fresh idempotency key)', f.submits.length === 2 && f.submits[1].attemptNumber === 2 && f.submits[0].idempotencyKey !== f.submits[1].idempotencyKey, JSON.stringify(f.submits.map((x) => [x.attemptNumber, x.answerIndex])));
+  await tap(button(page, 'ادامه'));
+  check('09: continue moves straight to the next section (pattern game)', (await visible(page, 'مسیر الگو')) && (await visible(page, 'کدام مهره باید جای علامت سؤال بیاید؟')));
+  // The legacy pattern stage still submits on tap and auto-advances to the counting question (E04).
+  await tap(option(page, 'آبی'));
+  check('08: the counting question opens after the pattern game', (await visible(page, 'بازی می‌کنیم · ۳ از ۵')) && (await visible(page, 'چند مهره می‌بینی؟')));
+  // A second wrong answer is redirected by the server: the sheet says continue and recovery opens (D-002).
+  await tap(option(page, '۲'));
+  await tap(button(page, 'بررسی'));
+  await visible(page, 'نزدیک بود. دوباره امتحان کنیم؟');
+  await tap(button(page, 'دوباره امتحان کن'));
+  await tap(option(page, '۲'));
+  await tap(button(page, 'بررسی'));
+  const retryButtonsAfterRedirect = await page.getByRole('button', { name: 'دوباره امتحان کن', exact: true }).count();
+  check('10: a server redirect shows continue, not retry', (await visible(page, 'ادامه')) && retryButtonsAfterRedirect === 0, `retry buttons: ${retryButtonsAfterRedirect}`);
+  await tap(button(page, 'ادامه'));
+  check('10: continue follows the server decision into recovery', await visible(page, 'با هم دوباره'));
   if (results.some((r) => !r.ok)) await shot(page, 'play-fail');
   check('no runtime errors (07)', errors.length === 0, errors.join(' | '));
   await page.close();

@@ -22,6 +22,7 @@ const allIds = G1_STATIONS.map((s) => s.id);
   passedStations: [],
   spoken: [],
   stops: 0,
+  submits: [],
   alerts: [],
   cacheEntries: scenario === 'cached' ? [{ packageId: 'pkg-ST01', version: '1' }] : [],
   manifest: scenario === 'error' ? null : { current: [{ id: 'pkg-ST01', version: '1', stationId: 'G1-ST01' }], next: [], recent: [], future: [] },
