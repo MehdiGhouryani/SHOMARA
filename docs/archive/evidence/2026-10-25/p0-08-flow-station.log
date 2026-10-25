@@ -1,0 +1,55 @@
+
+> math-learning-product@0.1.0 flow:station
+> node scripts/flow-station-run.mjs
+
+parity bundle built: apps\mobile\parity\dist-flow
+parity bundle built: apps\mobile\parity\dist-flow
+PASS 06 cached: stage chip, title, subtitle and chips come from the station
+PASS 06 cached: empty progress bar is announced
+PASS 06 cached: the bar is 10px high, not a pill
+PASS 06 cached: no session hint line (waived, U-Q15)
+PASS 06 cached: start button is the primary action
+PASS 06 cached: start opens the lesson route
+PASS 06 cached: close and "back to path" both return to the path tab
+PASS no runtime errors (06 cached)
+PASS 06 uncached: the primary action asks to prepare the content
+PASS 06 uncached: preparing downloads the package, then the button becomes start
+PASS no runtime errors (06 uncached)
+PASS 06 error: a calm alert explains that preparing did not finish
+PASS 06 error: the prepare button is disabled without a package
+PASS no runtime errors (06 error)
+PASS 07: section caption and position
+PASS 07: the guide bubble shows the lesson prompt
+PASS 07: progress bar is 16px high and 1 of 5 sections (20%) filled
+PASS 07: three numbered beads
+PASS 07: hear-again and continue buttons are present
+PASS 07: hear again reads the prompt in Persian
+PASS 07: pressing again restarts the speech (stop, then speak)
+PASS 07: close asks before leaving (no silent exit)
+PASS 07: confirming leaves the lesson
+PASS 07: continue stops speech and moves to the next section
+PASS 08: caption from the macro labels and question progress 2/5
+PASS 08: check is disabled until an option is selected
+PASS 08: selecting an option enables check (no submit yet)
+PASS 08: selecting sends nothing to the server (D-001)
+PASS 10: warm sheet with retry copy, never red
+PASS 10: options lock while the sheet is open
+PASS 08: check submits exactly one attempt with attemptNumber 1
+PASS 10: retry re-opens the same question and clears the selection
+PASS 09: correct sheet
+PASS 08: the retry is a second honest attempt (attemptNumber 2, fresh idempotency key)
+PASS 09: continue moves straight to the next section (pattern game)
+PASS 08: the counting question opens after the pattern game
+PASS 10: a server redirect shows continue, not retry
+PASS 10: continue follows the server decision into recovery
+PASS no runtime errors (07)
+PASS 12: title, subtitle and chips from the page
+PASS 12: the bar announces section 5 of 5
+PASS 12: close asks before leaving (no silent exit)
+PASS 12: starting opens the challenge player (no approved page yet)
+PASS 11: the celebration page with the station title
+PASS 11: chapter progress 1 of 5 and the new achievement
+PASS 11: continue leaves the lesson
+PASS 11: every submit stayed idempotent-unique along the whole station
+PASS no runtime errors (11/12)
+FLOW_STATION: PASS (48/48)

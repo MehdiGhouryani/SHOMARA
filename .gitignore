@@ -31,3 +31,9 @@ Thumbs.db
 apps/mobile/parity/dist/
 apps/mobile/parity/dist-flow/
 apps/mobile/parity/out/
+parity/dist/
+parity/dist-flow/
+parity/out/
+
+# exported Metro/Expo bundles (rebuildable via `expo export`; review R-1)
+parity-out-expo/

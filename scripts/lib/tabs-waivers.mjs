@@ -41,10 +41,17 @@ export const TABS_UI_WAIVERS = [
     stillVerified: 'the تغییر ظاهر action row and its subtitle are still rendered on the Me tab',
     restoreIn: 'not needed while the copy lives in strings.fa.ts',
   },
+  {
+    id: 'tabbar-outlined-vs-soft-goldens',
+    verifier: 'verify-ui-v1-tabs.mjs',
+    feature: 'the pixel comparison of pages 13 and 14 excludes the tab-bar region: their goldens draw the 84px soft bar, while D-011 made the app render the 106px outlined bar on every tab',
+    stillVerified: 'the outlined bar itself is pixel-pinned by the tabbar-05 specimen against page 05 (the newest approved page), verify-ui-v1-path locks the single outlined variant in code, and the 13/14 body regions are still compared at ≤0.5%',
+    restoreIn: 'the owner reversing D-011 (re-introducing a per-page soft variant): re-include the tab-bar region in the 13/14 parity entries and remove this waiver in the same change',
+  },
 ];
 
 export const isTabsWaived = (id) => TABS_UI_WAIVERS.some((w) => w.id === id);
 export const tabsWaiverNote = (id) => {
   const w = TABS_UI_WAIVERS.find((x) => x.id === id);
-  return w ? `WAIVED ${w.id} (ADR-0035 U7): ${w.feature}; still verified: ${w.stillVerified}; restore: ${w.restoreIn}` : '';
+  return w ? `WAIVED ${w.id} (ADR-0035): ${w.feature}; still verified: ${w.stillVerified}; restore: ${w.restoreIn}` : '';
 };

@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { useRouter } from 'expo-router';
-import { G1_STATIONS, PRACTICE_GAMES, canOpenPracticeStation, pickRecommendedPractice, practiceListLimit, practiceStartLabelFa, softDailyHabitForGrade } from '@math/contracts';
+import { G1_STATIONS, canOpenPracticeStation, pickRecommendedPractice, practiceStartLabelFa, softDailyHabitForGrade } from '@math/contracts';
 import { toFa } from './digits';
 import { S } from './strings.fa';
 import { PracticeView, type PracticeRowItem } from '../practice/views/PracticeView';
+import { practiceRowGames } from '../practice/rows';
 import { useAppState } from '../state/AppStateContext';
 
 function canonicalCompletedStationIds(ids: readonly string[]): string[] {
@@ -38,11 +39,8 @@ export function PracticeHubScreen() {
     [completedStationIds],
   );
   const habit = softDailyHabitForGrade(gradeId);
-  const listCap = practiceListLimit(gradeId);
   const startLabel = practiceStartLabelFa(gradeId);
-  // practiceListLimit counts the SECONDARY rows (contract); the recommended row comes on top of it.
-  const others = PRACTICE_GAMES.filter((g) => g.id !== recommended.id).slice(0, Math.max(listCap, 0));
-  const rows: PracticeRowItem[] = [recommended, ...others].map((game) => {
+  const rows: PracticeRowItem[] = practiceRowGames(gradeId, recommended).map((game) => {
     const locked = !canOpenPracticeStation(game.stationId, completedStationIds);
     return {
       id: game.id,

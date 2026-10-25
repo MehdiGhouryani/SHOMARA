@@ -67,7 +67,9 @@ if (!profileSrc.includes('sessionLengthHintFa') || !profileSrc.includes('ONBOARD
 } else ok('profile wired');
 
 const practiceSrc = read('apps/mobile/src/ui/PracticeHubScreen.tsx');
-if (!practiceSrc.includes('practiceListLimit')) fail('PRACTICE_LIMIT');
+// practiceListLimit moved into the pure helper src/practice/rows.ts (review R-3); the hub must consume it.
+const practiceRowsSrc = read('apps/mobile/src/practice/rows.ts');
+if (!practiceSrc.includes("from '../practice/rows'") || !practiceRowsSrc.includes('practiceListLimit')) fail('PRACTICE_LIMIT');
 else ok('practice list capped by band');
 
 const parentSrc = read('apps/mobile/app/parent.tsx');

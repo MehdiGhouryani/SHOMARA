@@ -1,9 +1,9 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 17
+file_version: 18
 last_updated: 2026-10-25
-snapshot_id: SNAP-20261025-01
+snapshot_id: SNAP-20261025-02
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
 current_stage: Stage A (امنیت و Learning Truth) -> A1/A4/A5/A8 انجام شد؛ A2 (مسیر مرکزی ۴۰۱)، A3/A6/A7 (بخش باقی‌مانده)، persistence واقعی assignment/adult و O-1 باز است
@@ -111,6 +111,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 
 **شمارش‌های اصلاح‌شده (با دستور شمرده شد):** `route.ts` = 43 (نه 46)؛ فایل تست = 50 (49 در vitest، بعد از SNAP-20261014-04)؛ `scripts/verify-*` = 55 فایل؛ `static-all` = 58 جزء. `challenge-runtime` اکنون هم در vitest اجرا می‌شود (shim قدیمی `scripts/test-challenge-runtime.mjs` کد+پیام خطا را با هم می‌سنجید و دو تست واقعی را پنهان می‌کرد).
 
+**اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-02، P0 بستن بازبینی؛ لاگ‌های `p0-*` در `docs/archive/evidence/2026-10-25/`):** بازبینی مستقل پذیرفته شد با دو اصلاح اعمال‌شده (R-1: `parity-out-expo` از گیت خارج و ignore شد؛ R-2: انحراف تب‌بار D-011 استثنای پین‌شدهٔ `tabbar-outlined-vs-soft-goldens` شد). بررسی قرارداد D-002: ارسال دوبارهٔ تلاش پس از پاسخ غلط با CONTINUE **مجاز** است (سند `docs/archive/review/D-002-contract-check.md`؛ بدون D-016). R-3: ترکیب ردیف‌های تمرین به تابع خالص `practiceRowGames` رفت + ۵ تست (vitest ۴۲۰→**۴۲۵**). همهٔ گیت‌ها سبز: typecheck ۹/۹، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/48/14، web build و باندل Metro exit 0. محیط: Node 22.16.0 (زیر ۲۲.18؛ static-all پرچم `--experimental-strip-types` می‌گذارد — نصب Node ≥22.18 کار مالک، بلاکِر ثبت شد).
+
 **اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-01، بعد از U8؛ لاگ‌ها در `docs/archive/evidence/2026-10-25/`):** typecheck هر ۹ workspace exit 0؛ vitest ۴۲۰/۴۲۰؛ static ۷۴/۷۴؛ parity **۲۹/۲۹** (tabbar-13 حذف شد چون variant soft رفت)؛ flow آنبوردینگ ۲۸/۲۸، مسیر ۲۹/۲۹، ایستگاه ۴۸/۴۸، تب‌ها ۱۴/۱۴؛ web build exit 0؛ bundle واقعی Metro exit 0.
 
 **اجرای ۲۰۲۶-۱۰-۲۴ (SNAP-20261024-05، بعد از U7؛ لاگ‌ها در `docs/archive/evidence/2026-10-24/`):** typecheck هر ۹ workspace exit 0؛ vitest ۴۲۰/۴۲۰؛ static ۷۴/۷۴ (+`verify-ui-v1-tabs` و اسکریپت flow:tabs)؛ parity ۳۰/۳۰ (practice ۰٫۱۹٪ و me ۰٫۱۵٪ روی ناحیهٔ body)؛ `flow:tabs` ۱۴/۱۴؛ web build exit 0؛ bundle واقعی Metro exit 0.
@@ -156,7 +158,7 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 | D-008 | E11 (انتقال) و بازی‌های الگو/بازیابی: صفحهٔ طرح ندارند | (الف) رندر قدیمی بماند تا صفحهٔ تأییدشده · (ب) نسخهٔ بدون سینی از QuestionView ساخته شود | الف | ساخت UI بدون صفحهٔ طرح ممنوع است؛ صفحات ۰۸–۱۰ همیشه سینی مهره دارند | `QUESTION_ENCOUNTER_IDS` (افزودن شناسه‌ها وقتی صفحه آمد) |
 | D-009 | U-Q5 تعیین سطح/نتیجه/همگام‌سازی بدون طرح | محتوا و منطق فعلی با نوار و cast جدید · بازطراحی حدسی | فعلی بماند | بدون صفحهٔ تأییدشده UI ساخته نمی‌شود؛ بازطراحی DEFERRED تا طرح | — |
 | D-010 | U-Q8 جای ماموریت‌ها/آهنگ یادگیری | تب تمرین (پیشنهاد U7) · تب من · هیچ‌جا | ورودی در U7 روی تب تمرین بررسی شود | تمرین طبیعی‌ترین میزبان عادت روزانه است؛ تصمیم نهایی هنگام ساخت صفحهٔ ۱۳ | خنثی تا U7 |
-| D-011 | U-Q9 دو تب‌بار در طرح | نسخهٔ outlined (۱۰۶px) همه‌جا · soft برای ۱۳/۱۴ | outlined همه‌جا؛ `soft` در U8 حذف می‌شود | تب‌بار یک کامپوننت است و صفحهٔ مسیر جدیدتر است | `TabBar` variant |
+| D-011 | U-Q9 دو تب‌بار در طرح | نسخهٔ outlined (۱۰۶px) همه‌جا · soft برای ۱۳/۱۴ | outlined همه‌جا؛ `soft` در U8 حذف می‌شود | تب‌بار یک کامپوننت است و صفحهٔ مسیر جدیدتر است | `TabBar` variant + استثنای پین‌شدهٔ `tabbar-outlined-vs-soft-goldens` در `tabs-waivers.mjs` (خارج‌شدن ناحیهٔ تب‌بار ۱۳/۱۴ از parity چون طلایی‌ها soft دارند) |
 | D-012 | U-Q10 نام فصل‌ها | نام واقعی قرارداد + رنگ به ترتیب فصل طرح · متن طرح | نام واقعی قرارداد | دادهٔ واقعی بر متن نمونهٔ طرح مقدم است | `pathModel/chapterTheme` |
 | D-013 | U-Q11 گنج | فقط تزئینی و قفل (مطابق طرح) · قفل‌شونده واقعی | تزئینی قفل | چک‌پوینت قرارداد بعد از ایستگاه ۵ است؛ قفل‌سازی واقعی به موتور وابسته است | — |
 | D-014 | U-Q12/U-Q13 رفتارهای مشتق‌شده و متن حباب | حفظ رفتارهای فعلی · حذف | حفظ | حدس جدید ممنوع؛ چیزهایی که طرح تعریف نکرده همان می‌مانند | — |
@@ -358,6 +360,16 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 
 ---
 
+### 6.16) P0 — بستن بازبینی مستقل `ui/u8-closing` — SNAP-20261025-02
+- **بازبینی مستقل** (read-only در ورک‌تری جدا، گزارش در `docs/archive/review/2026-10-25-stage-u-review.md`): حکم «ACCEPT WITH FIXES»؛ همهٔ اعداد گیت‌ها دوباره تولید شد و یکی بود. دو اصلاح لازم اعمال شد:
+  - **R-1:** خروجی بیلد `parity-out-expo/` (۱۲۵ فایل) از گیت خارج و در `.gitignore` رفت (همچنین الگوهای `parity/dist*` و `parity/out`).
+  - **R-2:** انحراف عمدی تب‌بار (D-011: طلایی ۱۳/۱۴ soft است، اپ همه‌جا outlined می‌کشد) استثنای نام‌دار و پین‌شدهٔ ششمی شد: `tabbar-outlined-vs-soft-goldens` در `scripts/lib/tabs-waivers.mjs` (فهرست پین در `verify-ui-v1-tabs` به ۶ آی‌دی به‌روز شد؛ ستون بازگشت D-011 ارجاع می‌دهد).
+- **بررسی قرارداد D-002** (`docs/archive/review/D-002-contract-check.md`): قرارداد ارسال چند تلاش در هر encounter را مجاز می‌داند (`attemptNumber` مثبت، idempotency به‌ازای کلید، بدون سقف تلاش؛ چالش همین الگو را per-round دارد). سیاست واقعی سرور امروز غلط→RECOVERY می‌دهد، پس شاخهٔ retry فقط با mock تمرین می‌شود — تصمیم سرور است، حدس کلاینت نیست. **بدون تغییر کلاینت، بدون D-016.**
+- **R-3 اعمال شد:** ترکیب ردیف‌های تب تمرین به تابع خالص `apps/mobile/src/practice/rows.ts` (`practiceRowGames`) + ۵ تست در `rows.test.ts`؛ دو verifier فقط جابه‌جایی marker گرفتند (قصد حفظ شد: phase-a `PRACTICE_LIMIT` و tabs `practice:wiring-kept` حالا hub+rows را می‌خوانند).
+- **R-4:** پوشهٔ `docs/content-spec/` در تاریخ بازبینی در گیت نبود؛ اکنون به‌صورت untracked در کارگاه هست (۹ فایل + README، بدون stage-1) و در فاز P4 روی شاخهٔ content کامیت می‌شود. **R-5:** بدون اقدام؛ تأیید D-001 تا D-015 با مالک باقی است.
+- **گیت‌ها (لاگ‌های `p0-*`):** vitest ۴۲۵/۴۲۵ (+۵)، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/48/14، web build و باندل Metro exit 0.
+- **ادغام:** `ui/u8-closing` به‌صورت fast-forward در `main` (محلی، بدون push) و تگ `v1-candidate-ui`.
+
 ### 6.15) U8 — بستن Stage U — SNAP-20261025-01
 - **تب‌بار یکتا:** `TabBar` فقط outlined شد (variant و `TabBarVariant` حذف؛ توکن soft نبود)، specimen `tabbar-13` و مدخل manifestش حذف شد (parity ۳۰→۲۹) و `verify-ui-v1-path` به‌جای فهرست variantها حالا نبودِ prop variant را قفل می‌کند (D-011).
 - **صفحهٔ ۱۵:** راهنمای طراحی است (منبع توکن‌ها از U1)؛ صفحهٔ اپ نیست و چیزی برای ساخت ندارد.
@@ -544,6 +556,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-23 | SNAP-20261023-01 | U4: شروع مرحله ۰۶ و بخش اول آموزش ۰۷ روی UI v1 با «دوباره بشنو» (TTS)، `Bead`/`BeadTray`، `LessonChrome`، تست جریان واقعی ۲۵ بررسی (`flow:station`)، parity ۲۳ نمونه، استثنای شفاف `station-start-session-hint`، `verify-ui-v1-station`، سؤال‌های U-Q14 تا U-Q19؛ ۴۰۹/۴۰۹ تست، static 70/70، bundle واقعی Metro موفق |
 | 2026-10-24 | SNAP-20261024-01 | U5a: نمای خالص سؤال و بازخورد ۰۸ تا ۱۰ (`QuestionView`، `OptionButton`، `FeedbackSheet`)، parity ۲۶ نمونه، `verify-ui-v1-question`، سؤال‌های U-Q20 تا U-Q22 برای اتصال (U5b)؛ ۴۱۳/۴۱۳ تست، static 71/71، bundle واقعی Metro موفق |
 | 2026-10-25 | SNAP-20261025-01 | U8: بستن Stage U — تب‌بار outlined یکتا (حذف soft طبق D-011)، صفحهٔ ۱۵ = راهنما نه اپ؛ parity ۲۹/۲۹، static ۷۴/۷۴، همهٔ flowها سبز؛ فهرست کامل DEFERRED در §6.15 |
+| 2026-10-25 | SNAP-20261025-02 | P0: بستن بازبینی مستقل (ACCEPT WITH FIXES) — R-1 ignore خروجی بیلد، R-2 استثنای پین‌شدهٔ تب‌بار D-011، بررسی قرارداد D-002 (ارسال دوباره مجاز، بدون D-016)، R-3 تابع خالص ردیف‌های تمرین + ۵ تست؛ ff-merge به main + تگ v1-candidate-ui |
 | 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |
@@ -552,13 +565,9 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 ## 12) Prompt آمادهٔ چت بعدی
 
 ```
-ZIP پروژه (shomara_math_app.zip) ضمیمه است. START_HERE.md در ریشهٔ ZIP تنها منبع وضعیت است؛ کامل بخوان و پروتکل §0 را اجرا کن: unzip، npm install، build:packages، و gateها با اعداد §0 مقایسه شود. هر ادعا را با کد واقعی تأیید کن و هیچ‌چیز را حدس نزن. قبل از ساختن هر فایل با ls ببین از قبل هست یا نه. محیط ویندوز هم حالا پشتیبانی می‌شود (کروم سیستمی، file-URLها، Node <22.18 با پرچم خودکار).
+ریپوی شمارا (same checkout). START_HERE.md را کامل بخوان (پروتکل §0) و AGENTS.md.binding. الان روی شاخهٔ chore/p0-review-close هستیم (P0 تمام؛ main = ui/u8-closing با تگ v1-candidate-ui).
 
-وضعیت: محصول «شمارا» (ریاضی کودکان، پایهٔ اول، اندروید-اول، فارسی). **Stage U کامل شد**: هر ۱۴ صفحهٔ اپ طرح ۲۰۲۶-۱۰ (۰۱ تا ۱۴) روی UI v1 پیاده و پیکسلی تأیید شده‌اند (ADR-0035)؛ صفحهٔ ۱۵ راهنمای طراحی است. تعامل سؤال طبق D-001 تا D-003 (بررسی یک‌تایی، برگهٔ دنبال تصمیم سرور)، جشن/چالش طبق U6، تب‌ها طبق U7 با تب‌بار outlined یکتا. سرور mock یادگیری در harness جریان ایستگاه هست (48 بررسی).
+مأموریت فعلی (به ترتیب): P1 ابزار و بهداشت ریپو (Node 22.18+ در .nvmrc/engines، اجرای PowerShell، اسکن امنیتی باندل، مجوزهای app.json، دکمهٔ back سخت‌افزاری با stub واقعی در harness، docs/reference/DESIGN_INSPIRATION.md و پیش‌نویس docs/testing/DEVICE_TEST_CHECKLIST.md) → P2 ماتریس حالت‌ها و تست‌های جریان → P3 صدا/لرزش/جشن طبق بخش‌های ۲–۵ grade1/shomara-stage5-shared-references.md (فقط همین بخش‌ها؛ محتوای spec پیشنهاد است نه منبع تصمیم) → P4 خط محتوا (verify-content-spec.mjs با ۱۱ قاعدهٔ stage6 §5، DIN negative fixtures، آداپتر ST07 dev-pack پشت پرچم بیلد) → P5 بستن DEFERRED های UI → P6 مسدود (نویسندگی ایستگاه) → P7 چک‌لیست دستگاه → P8 READINESS.
 
-گیت‌های پایه (اعداد §3): static ۷۴/۷۴، vitest ۴۲۰/۴۲۰، parity ۲۹/۲۹، flowها 28/29/48/14، bundle Metro سبز.
-
-کارهای بعدی ممکن: (۱) بازبینی مالک روی تصمیم‌های D-001 تا D-015 و پنج استثنای tabs-waivers و بازگرداندن موارد DEFERRED (§6.15)؛ (۲) ادامه Stage A (A2 مسیر مرکزی ۴۰۱، A6، A7) یا B؛ (۳) آماده‌سازی Phase 4 (دستگاه واقعی، محتوا، APK) که فعلاً ممنوع است.
-
-قوانین: دقیق مطابق طرح؛ حدس نزن و در START_HERE ثبت کن؛ ستاره/جان/streak ممنوع؛ gate را بدون استثنای نام‌دار ضعیف نکن (D5)؛ رنگ و اندازه فقط از توکن؛ متن فقط از strings.fa.ts.
+گیت‌های پایه (§3): vitest ۴۲۵/۴۲۵، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/48/14. شش استثنای tabs-waivers پین است. حدس نزن؛ تصمیم تازه = ردیف D جدید در §4؛ DEFERRED با دلیل. نصب Node ≥22.18 روی ماشین، کار مالک است (بلاکِر ثبت شده).
 ```
