@@ -1,0 +1,82 @@
+
+> math-learning-product@0.1.0 verify:static:all
+> node scripts/verify-static-all.mjs
+
+note: Node 22.16.0 < 22.18 — running verifiers with --experimental-strip-types
+PASS  flow-largetext-run.mjs
+PASS  flow-path-run.mjs
+PASS  flow-run.mjs
+PASS  flow-station-run.mjs
+PASS  flow-tabs-run.mjs
+PASS  gen-path-fixture.mjs
+PASS  independent-verification.mjs
+PASS  parity-build.mjs
+PASS  parity-run.mjs
+PASS  runtime-tests.mjs
+PASS  test-challenge-runtime.mjs
+PASS  test-phase9.mjs
+PASS  verify-backend-b0-foundation.mjs
+PASS  verify-migrations-static.mjs
+PASS  verify-mobile-release.mjs
+PASS  verify-p01-prototype-isolation.mjs
+PASS  verify-p06-mission-engine.mjs
+PASS  verify-p07-collection.mjs
+PASS  verify-p08-avatar.mjs
+PASS  verify-p09-worlds.mjs
+PASS  verify-p10-batch-a-depth.mjs
+PASS  verify-p10-batch-a.mjs
+PASS  verify-p10-batch-b-depth.mjs
+PASS  verify-p10-batch-b.mjs
+PASS  verify-p10-batch-c-depth.mjs
+PASS  verify-p10-batch-c.mjs
+PASS  verify-p10-batch-d-depth.mjs
+PASS  verify-p10-batch-d.mjs
+PASS  verify-p10-batch-e-depth.mjs
+PASS  verify-p10-batch-e.mjs
+PASS  verify-p11-rhythm.mjs
+PASS  verify-parity-goldens-pinned.mjs
+PASS  verify-phase-a-grade-experience.mjs
+PASS  verify-phase-b-path-focus.mjs
+PASS  verify-phase-c-session-feel.mjs
+PASS  verify-phase-d-practice-habit.mjs
+PASS  verify-phase-e-me-surface.mjs
+PASS  verify-phase-f-ux-a11y.mjs
+PASS  verify-phase1-product-lock.mjs
+PASS  verify-phase10.mjs
+PASS  verify-phase11-auth.mjs
+PASS  verify-phase12-postgres-runtime.mjs
+PASS  verify-phase14-deep-remediation.mjs
+PASS  verify-phase15-deep-remediation.mjs
+PASS  verify-phase16-deep-audit.mjs
+PASS  verify-phase2-foundation.mjs
+PASS  verify-phase2.mjs
+PASS  verify-phase3-game-feel.mjs
+PASS  verify-phase3.mjs
+PASS  verify-phase4-challenge-foundation.mjs
+PASS  verify-phase4.mjs
+PASS  verify-phase5.mjs
+PASS  verify-phase6.mjs
+PASS  verify-phase7.mjs
+PASS  verify-phase8.mjs
+PASS  verify-phase9.mjs
+PASS  verify-production-readiness-static.mjs
+PASS  verify-ui-v1-foundation.mjs
+PASS  verify-ui-v1-onboarding.mjs
+PASS  verify-ui-v1-path.mjs
+PASS  verify-ui-v1-question.mjs
+PASS  verify-ui-v1-result.mjs
+PASS  verify-ui-v1-scope.mjs
+PASS  verify-ui-v1-station.mjs
+PASS  verify-ui-v1-tabs.mjs
+PASS  verify-uiux-path2.mjs
+PASS  verify-uiux-phase3.mjs
+PASS  verify-uiux-phase4.mjs
+PASS  verify-uiux-phase5.mjs
+PASS  verify-uiux-phase6.mjs
+PASS  verify-uiux-phase7-5.mjs
+PASS  verify-uiux-phase7.mjs
+PASS  verify-uiux-phase8.mjs
+PASS  verify-uiux-phase9.mjs
+PASS  verify-ux-p10-final.mjs
+
+STATIC_ALL: PASS (75/75)

@@ -20,11 +20,11 @@ const check = (name, ok, detail = '') => results.push({ name, ok: Boolean(ok), d
 
 const browser = await launchChromium();
 
-async function open() {
+async function open(hash = '') {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
-  await page.goto(pathToFileURL(path.join(DIST, 'index.html')).href);
+  await page.goto(`${pathToFileURL(path.join(DIST, 'index.html')).href}${hash}`);
   await page.waitForSelector('html[data-ready="1"]', { timeout: 15000 });
   await page.evaluate(() => document.fonts.ready);
   return { page, errors };
@@ -133,6 +133,27 @@ async function toProfile(page) {
   if (results.some((r) => !r.ok)) await page.screenshot({ path: path.join(OUT, 'flow-fail-B.png') });
   await page.close();
 }
+
+// ---------- Scenario C: network conditions from the onboarding contract (provider unavailable / rate limit) ----------
+{
+  const { page, errors } = await open('#otp=netfail');
+  await btn(page, 'بریم!').click();
+  await page.locator('input[aria-label="شماره موبایل"]').fill('۰۹۱۲۳۴۵۶۷۸۹');
+  await btn(page, 'ارسال کد').click();
+  check('netfail: provider unavailable shows the calm retry message and stays on the phone page', (await visible(page, 'اتصال به سرویس ورود برقرار نشد. دوباره تلاش کن.')) && (await visible(page, 'شماره‌ات را بنویس')));
+  check('netfail: nothing was requested successfully beyond the failed call', (await flow(page)).otpRequests.length === 1, JSON.stringify((await flow(page)).otpRequests));
+  await page.close();
+}
+{
+  const { page, errors } = await open('#otp=ratelimit');
+  await toCode(page).catch(() => undefined);
+  await page.locator('input[aria-label="کد تأیید شش رقمی"]').fill('۰۰۰۰۰۰');
+  await btn(page, 'تأیید').click();
+  check('ratelimit: the server rate-limit message shows on the code page', (await visible(page, 'برای درخواست کد جدید کمی صبر کن و دوباره تلاش کن.')) && (await visible(page, 'کد را وارد کن')));
+  check('ratelimit: retrying the same wrong code is not silently accepted', (await visible(page, 'کد را وارد کن')) && (await flow(page)).verifications.length === 1, JSON.stringify((await flow(page)).verifications));
+  await page.close();
+}
+
 await browser.close();
 
 for (const r of results) console.log(`${r.ok ? 'PASS' : 'FAIL'} ${r.name}${!r.ok && r.detail ? ` — ${r.detail}` : ''}`);

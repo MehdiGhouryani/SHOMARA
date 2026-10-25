@@ -60,7 +60,7 @@ export default function SettingsScreen() {
 }
 
 function SettingRow({ title, description, value, onPress, last = false }: { title: string; description: string; value: boolean; onPress: () => void; last?: boolean }) {
-  return <Pressable accessibilityRole="switch" accessibilityState={{ checked: value }} onPress={onPress} style={({ pressed }) => [styles.row, !last && styles.rowBorder, pressed && styles.pressed]}>
+  return <Pressable accessibilityRole="switch" accessibilityLabel={title} accessibilityState={{ checked: value }} onPress={onPress} style={({ pressed }) => [styles.row, !last && styles.rowBorder, pressed && styles.pressed]}>
     <View style={[styles.switch, value && styles.switchOn]}><View style={[styles.thumb, value && styles.thumbOn]} /></View>
     <View style={styles.copy}><Text style={styles.rowTitle}>{title}</Text><Text style={styles.rowDesc}>{description}</Text></View>
   </Pressable>;

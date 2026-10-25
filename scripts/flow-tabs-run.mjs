@@ -79,6 +79,42 @@ build('apps/mobile/app/(tabs)/profile.tsx');
   if (results.some((r) => !r.ok)) await shot(page, 'me-fail');
   await page.close();
 }
+
+// ================= settings (no design page; ADULT_SURFACE scope) =================
+build('apps/mobile/app/settings.tsx');
+{
+  const { page, errors } = await open();
+  const switches = ['صدا', 'حرکت و انیمیشن', 'لرزش لمسی', 'متن بزرگ‌تر'];
+  let allVisible = true;
+  for (const name of switches) allVisible = allVisible && (await page.getByRole('switch', { name, exact: true }).first().isVisible().catch(() => false));
+  check('settings: the four learning/accessibility switches are present', allVisible, switches.join('،'));
+  check('settings: only preference switches — nothing else is offered (ADULT_SURFACE)', (await page.getByRole('switch').count()) === 6, `${await page.getByRole('switch').count()} switches: sound, motion, haptics, gentle reminder, large text, reduced motion`);
+  await page.getByRole('switch', { name: 'صدا', exact: true }).first().click();
+  await page.getByRole('switch', { name: 'لرزش لمسی', exact: true }).first().click();
+  await page.getByRole('switch', { name: 'متن بزرگ‌تر', exact: true }).first().click();
+  const f = await flow(page);
+  check('settings: toggling records exactly the touched preferences', JSON.stringify(f.preferenceSets) === JSON.stringify([['sound', false], ['haptics', true], ['largeText', true]]), JSON.stringify(f.preferenceSets));
+  check('no runtime errors (settings)', errors.length === 0, errors.join(' | '));
+  await page.close();
+}
+
+// ================= avatar workshop (no design page; child identity preset) =================
+build('apps/mobile/app/avatar.tsx');
+{
+  const { page, errors } = await open();
+  check('avatar: the workshop opens with its header', (await visible(page, 'کارگاه آواتار')) && (await visible(page, 'ظاهر من')));
+  const items = await page.getByLabel(/، هنوز باز نشده$|انتخاب آیتم/).count();
+  check('avatar: item grid announces ownership in Persian', items > 0, `${items} labelled entries`);
+  check('avatar: the workshop view arrived (remote line, offline fallback absent)', await visible(page, 'ظاهر تازه با پیشرفت مسیر باز می‌شود — خریدنی نیست.'));
+  const save = button(page, 'ذخیره');
+  check('avatar: save is the primary action', await save.isVisible().catch(() => false));
+  await tap(save);
+  await visible(page, 'ذخیره شد');
+  const f = await flow(page);
+  check('avatar: saving posts the appearance exactly once (remote path)', f.avatarSaves.length === 1, JSON.stringify(f.avatarSaves));
+  check('no runtime errors (avatar)', errors.length === 0, errors.join(' | '));
+  await page.close();
+}
 await browser.close();
 
 for (const r of results) console.log(`${r.ok ? 'PASS' : 'FAIL'} ${r.name}${!r.ok && r.detail ? ` — ${r.detail}` : ''}`);

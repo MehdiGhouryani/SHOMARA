@@ -84,7 +84,8 @@
     "flow:onboarding": "node scripts/flow-run.mjs",
     "flow:path": "node scripts/flow-path-run.mjs",
     "flow:station": "node scripts/flow-station-run.mjs",
-    "flow:tabs": "node scripts/flow-tabs-run.mjs"
+    "flow:tabs": "node scripts/flow-tabs-run.mjs",
+    "flow:largetext": "node scripts/flow-largetext-run.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

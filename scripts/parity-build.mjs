@@ -62,6 +62,10 @@ const flowStubs = {
       [/content\/bootstrap$/, 'bootstrap.ts'],
       [/^react-native-safe-area-context$/, 'safe-area.tsx'],
       [/^@expo\/vector-icons\/Ionicons$/, 'ionicons.tsx'],
+      // Inert for every flow target (screens that never animate simply never call them); without the stub any
+      // transitive reanimated import drags react-native-nitro-modules into the web bundle and fails to resolve.
+      [/^react-native-reanimated$/, 'reanimated.ts'],
+      [/^@rive-app\/react-native$/, 'rive.tsx'],
     ];
     for (const [filter, file] of map) build.onResolve({ filter }, () => ({ path: path.join(STUBS, file) }));
     // The screen under test (override with FLOW_TARGET to probe another copy of the screen).
