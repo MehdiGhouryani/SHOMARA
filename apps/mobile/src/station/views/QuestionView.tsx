@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { Body, BeadTray, Button, FeedbackSheet, Foot, H1, OptionButton, Screen, UI, type OptionState } from '../../ui/v1';
+import { Body, BeadTray, Button, Cap, FeedbackSheet, Foot, H1, OptionButton, Screen, UI, type OptionState } from '../../ui/v1';
 import { LessonCaption, LessonTopBar } from './LessonChrome';
 
 /** `choose` = page 08, `correct` = page 09, `retry` = page 10. */
@@ -20,6 +20,8 @@ type Props = {
   checkLabel: string;
   feedbackText: string;
   feedbackActionLabel: string;
+  /** Calm no-pressure line shown after a long idle on the choosing phase (stage-5 §5.1, visual only). */
+  idleHint?: string | null;
   /** Check and the sheet action are disabled or busy while an answer is being sent. */
   busy?: boolean;
   onReplay: () => void;
@@ -43,6 +45,7 @@ export function QuestionView(p: Props) {
       <Body gap={UI.lesson.bodyGap} paddingTop={UI.lesson.bodyTop}>
         <LessonCaption label={p.caption.label} position={p.caption.position} />
         <H1 style={styles.prompt}>{p.prompt}</H1>
+        {choosing && p.idleHint ? <Cap style={styles.idleHint}>{p.idleHint}</Cap> : null}
         <BeadTray count={p.beadCount} label={p.beadsLabel} numbered={false} />
         {choosing ? <Button variant="secondary" compact icon="speaker" label={p.replayLabel} onPress={p.onReplay} /> : null}
         <View style={[styles.options, { marginBottom: choosing ? UI.question.optionsBottomChoose : UI.question.optionsBottomFeedback }]}>
@@ -70,5 +73,6 @@ export function QuestionView(p: Props) {
 
 const styles = StyleSheet.create({
   prompt: { marginTop: UI.intro.titleTop },
+  idleHint: { alignSelf: 'flex-start' },
   options: { flexDirection: 'row', gap: UI.question.optionsGap, width: '100%', marginTop: 'auto' },
 });

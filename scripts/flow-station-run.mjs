@@ -166,6 +166,7 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('09: correct sheet', (await visible(page, 'درست است!')) && (await visible(page, 'ادامه')));
   f = await flow(page);
   check('08: the retry is a second honest attempt (attemptNumber 2, fresh idempotency key)', f.submits.length === 2 && f.submits[1].attemptNumber === 2 && f.submits[0].idempotencyKey !== f.submits[1].idempotencyKey, JSON.stringify(f.submits.map((x) => [x.attemptNumber, x.answerIndex])));
+  check('haptics: with the preference off nothing vibrates (settings gate end-to-end)', f.vibrations.length === 0, JSON.stringify(f.vibrations));
   await tap(button(page, 'ادامه'));
   check('09: continue moves straight to the next section (pattern game)', (await visible(page, 'مسیر الگو')) && (await visible(page, 'کدام مهره باید جای علامت سؤال بیاید؟')));
   // The legacy pattern stage still submits on tap and auto-advances to the counting question (E04).
@@ -184,6 +185,28 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('10: continue follows the server decision into recovery', await visible(page, 'با هم دوباره'));
   if (results.some((r) => !r.ok)) await shot(page, 'play-fail');
   check('no runtime errors (07)', errors.length === 0, errors.join(' | '));
+  await page.close();
+}
+
+// ================= haptics channel (stage-5 §3) with the preference ON =================
+{
+  const { page, errors } = await open('play-haptics');
+  await button(page, 'ادامه').click();
+  await visible(page, 'گروهی را انتخاب کن که ۳ مهره دارد');
+  const vibrations = () => flow(page).then((x) => x.vibrations);
+  check('haptics: nothing vibrates before any interaction', (await vibrations()).length === 0, JSON.stringify(await vibrations()));
+  await tap(option(page, '۲'));
+  check('haptics: selecting an option is one light TAP (8ms)', JSON.stringify(await vibrations()) === '[8]', JSON.stringify(await vibrations()));
+  await tap(button(page, 'بررسی'));
+  await visible(page, 'نزدیک بود. دوباره امتحان کنیم؟');
+  check('haptics: a wrong answer is the soft nudge (10ms), never an alarm', JSON.stringify(await vibrations()) === '[8,10]', JSON.stringify(await vibrations()));
+  await tap(button(page, 'دوباره امتحان کن'));
+  await tap(option(page, '۳'));
+  check('haptics: re-selecting is another light TAP', JSON.stringify(await vibrations()) === '[8,10,8]', JSON.stringify(await vibrations()));
+  await tap(button(page, 'بررسی'));
+  await visible(page, 'درست است!');
+  check('haptics: a correct answer is the short SUCCESS pattern', JSON.stringify(await vibrations()) === '[8,10,8,[0,12,50,18]]', JSON.stringify(await vibrations()));
+  check('no runtime errors (haptics)', errors.length === 0, errors.join(' | '));
   await page.close();
 }
 

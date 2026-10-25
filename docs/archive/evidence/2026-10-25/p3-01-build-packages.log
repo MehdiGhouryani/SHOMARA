@@ -1,0 +1,24 @@
+
+> math-learning-product@0.1.0 build:packages
+> npm --workspace @math/learning-runtime run build && npm --workspace @math/assignment-runtime run build && npm --workspace @math/adult-projections run build && npm --workspace @math/offline-sync run build && npm --workspace @math/challenge-runtime run typecheck
+
+
+> @math/learning-runtime@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @math/assignment-runtime@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @math/adult-projections@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @math/offline-sync@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @math/challenge-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+

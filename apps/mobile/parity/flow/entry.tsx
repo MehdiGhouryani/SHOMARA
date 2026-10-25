@@ -3,12 +3,12 @@
  * by recording stubs, so a script can click, type and scroll through it. The scenario comes from the URL
  * hash (#scenario=fresh|mid|jump|offline) and only matters for the path screen.
  */
-import { Alert, AppRegistry, BackHandler, View } from 'react-native';
+import { Alert, AppRegistry, BackHandler, Vibration, View } from 'react-native';
 import { G1_STATIONS } from '@math/contracts';
 import Screen from 'onboarding-under-test';
 
 const scenario = new URLSearchParams(window.location.hash.slice(1)).get('scenario') ?? 'fresh';
-const passedCount = { fresh: 0, offline: 0, mid: 7, jump: 5 }[scenario as 'fresh'] ?? 0;
+const passedCount = { fresh: 0, offline: 0, mid: 7, jump: 5, play: 0, 'play-haptics': 0 }[scenario as 'fresh'] ?? 0;
 const allIds = G1_STATIONS.map((s) => s.id);
 
 (window as unknown as { __flow: unknown }).__flow = {
@@ -27,6 +27,7 @@ const allIds = G1_STATIONS.map((s) => s.id);
   preferenceSets: [],
   avatarPresetSets: [],
   avatarSaves: [],
+  vibrations: [],
   cacheEntries: scenario === 'cached' ? [{ packageId: 'pkg-ST01', version: '1' }] : [],
   manifest: scenario === 'error' ? null : { current: [{ id: 'pkg-ST01', version: '1', stationId: 'G1-ST01' }], next: [], recent: [], future: [] },
   content: scenario === 'offline' ? null : { ids: allIds },
@@ -39,8 +40,14 @@ const allIds = G1_STATIONS.map((s) => s.id);
     // The practice tab shows its locked third row only once the first station is passed.
     progress: scenario === 'tabs-practice' ? { ST01: { passed: true } } : {},
     placementFastTrack: false,
-    preferences: { sound: true, motion: false, largeText: false, haptics: false, gentleReminders: false },
+    // `play-haptics` turns the haptics preference on so the Vibration recorder sees the real patterns;
+    // every other scenario keeps it off, which is itself asserted (the settings gate is part of the proof).
+    preferences: { sound: true, motion: false, largeText: false, haptics: scenario === 'play-haptics', gentleReminders: false },
   },
+};
+// react-native-web's Vibration is a no-op; record the patterns the feedback adapter asks for (stage-5 §3).
+Vibration.vibrate = (pattern?: number | number[]) => {
+  (window as unknown as { __flow: { vibrations: unknown[] } }).__flow.vibrations.push(pattern ?? 0);
 };
 // react-native-web's Alert is a no-op; record what the screen asks so a script can answer it.
 Alert.alert = (title, message, buttons) => {

@@ -9,7 +9,8 @@ const flow = () => (window as unknown as { __flow: Flow }).__flow;
 export function useAppState() {
   return {
     entry: { kind: 'NEW' as const },
-    preferences: { sound: true, motion: false, largeText: false, haptics: false, gentleReminders: false },
+    // The entry (__flow.state.preferences) owns the scenario: e.g. `play-haptics` turns haptics on.
+    preferences: (flow().state as { preferences?: Record<string, boolean> }).preferences ?? { sound: true, motion: false, largeText: false, haptics: false, gentleReminders: false },
     // Wiring recorders for the settings/avatar screens; the value flip itself is React state mechanics.
     setPreference: (key: string, value: boolean) => { flow().preferenceSets.push([key, value]); },
     updateAvatarPreset: (id: string) => { flow().avatarPresetSets.push(id); },

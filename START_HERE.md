@@ -1,9 +1,9 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 20
+file_version: 21
 last_updated: 2026-10-25
-snapshot_id: SNAP-20261025-04
+snapshot_id: SNAP-20261025-05
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
 current_stage: Stage A (امنیت و Learning Truth) -> A1/A4/A5/A8 انجام شد؛ A2 (مسیر مرکزی ۴۰۱)، A3/A6/A7 (بخش باقی‌مانده)، persistence واقعی assignment/adult و O-1 باز است
@@ -111,6 +111,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 
 **شمارش‌های اصلاح‌شده (با دستور شمرده شد):** `route.ts` = 43 (نه 46)؛ فایل تست = 50 (49 در vitest، بعد از SNAP-20261014-04)؛ `scripts/verify-*` = 55 فایل؛ `static-all` = 58 جزء. `challenge-runtime` اکنون هم در vitest اجرا می‌شود (shim قدیمی `scripts/test-challenge-runtime.mjs` کد+پیام خطا را با هم می‌سنجید و دو تست واقعی را پنهان می‌کرد).
 
+**اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-05، P3 بازخورد؛ لاگ‌های `p3-*` در `docs/archive/evidence/2026-10-25/`):** کانال لرزش لمسی سرتاسری اثبات شد: flow:station سناریوی `play-haptics` (۵۰→**۵۷**) — انتخاب = یک TAP سبک (8ms)، غلط = SOFT_NUDGE (10ms)، درست = الگوی SUCCESS؛ و در سناریوی عادی با تنظیم خاموش، صفر لرزش (گیت تنظیم‌ها سرتاسری). جملهٔ آرام بی‌فشار پس از ۳۰ ثانیه بی‌کاری در سؤال (D-017، فقط بصری؛ تایمر با انتخاب ریست می‌شود؛ verifier `verify-ui-v1-question` قفلش کرد). صدای TTS فقط همان مسیر expo-speech است؛ فایل‌های SFX/موسیقی **DEFERRED** (مجوز صدا نامشخص، stage5 §2). جشن‌ها بدون تغییر (U6). static ۷۵/۷۵ (یک بررسی جدید در verify-ui-v1-question)، vitest ۴۲۵، parity ۲۹/۲۹، flowها 32/29/**57**/24/20.
+
 **اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-04، P2 حالت‌ها؛ لاگ‌های `p2-*` در `docs/archive/evidence/2026-10-25/`):** ماتریس حالت‌ها نوشته شد (`docs/testing/STATE_MATRIX.md`؛ هر خانه تست نام‌دار/DEFERRED/N-A با دلیل). تست‌های تازه: آنبوردینگ ۲۸→**۳۲** (قطع سرویس و rate-limit با stub سناریویی)، تب‌ها ۱۴→**۲۴** (تنظیمات: شش سوییچ + ثبت ترجیحات؛ آواتار: برچسب مالکیت + ذخیرهٔ یکتا) و اسکریپت جدید `flow:largetext` (**۲۰** بررسی؛ ۱۳۰٪ و ۲۰۰٪ بدون هم‌پوشانی/برش جدید در ۰۵/۰۷-۰۸/۱۳/تنظیمات — RNW مقیاس فونت ندارد، هارنس از پایه ضرب می‌کند). برچسب دسترس‌پذیری صریح به ردیف‌های تنظیمات اضافه شد (نام سوییچ‌ها قبلاً چسبیده بود). static-all خودکار ۷۴→**۷۵** شد (اسکریپت جدید). حرکت‌کم: هر ۸ مؤلفهٔ متحرک گیت دارند؛ کانفتی ایستاست. گیت‌ها: vitest ۴۲۵، static ۷۵/۷۵، parity ۲۹/۲۹، flowها 32/29/50/24/20.
 
 **اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-03، P1 ابزار؛ لاگ‌های `p1-*` در `docs/archive/evidence/2026-10-25/`):** Node هدف در `.nvmrc` (22.18.0) و `engines.node` (>=22.18) قفل شد — **نصب Node ≥22.18 روی این ماشین (22.16.0) بلاکِر مالک است**؛ گیت‌های این اجرا با پرچم خودکار `--experimental-strip-types` (اجرای موقت/علامت‌دار) سبزند و CI از `.nvmrc` می‌خواند. دکمهٔ back اندروید در درس با stub واقعی BackHandler در harness اثبات شد (registry واقعی + `__flow.back()`؛ flow:station ۴۸→**۵۰**). اسکن امنیتی باندل ۴٫۶MB صفر یافت (لاگ `p1-bundle-security-scan.log`؛ سه اثر «password» مربوط به string-table هرمس است). app.json فقط INTERNET+ACCESS_NETWORK_STATE؛ بدون cleartext/debuggable؛ eas production = store/app-bundle بدون پرچم دیباگ. PowerShell 5.1 اثبات شد (`p1-12-ps51-check.log`)؛ **PS 7 روی این ماشین نصب نیست** (ثبت شد). سند `docs/testing/GATE_RUN_ORDER.md` نوشته شد. vitest ۴۲۵/۴۲۵، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/50/14.
@@ -167,6 +169,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 | D-013 | U-Q11 گنج | فقط تزئینی و قفل (مطابق طرح) · قفل‌شونده واقعی | تزئینی قفل | چک‌پوینت قرارداد بعد از ایستگاه ۵ است؛ قفل‌سازی واقعی به موتور وابسته است | — |
 | D-014 | U-Q12/U-Q13 رفتارهای مشتق‌شده و متن حباب | حفظ رفتارهای فعلی · حذف | حفظ | حدس جدید ممنوع؛ چیزهایی که طرح تعریف نکرده همان می‌مانند | — |
 | D-015 | چیپ «N سؤال» صفحهٔ ۱۲: طرح نمونه ۴ می‌گوید، تعریف واقعی چالش ST01 سه round دارد | متن طرح · شمارش واقعی | شمارش واقعی (`rounds.length`) | دادهٔ واقعی بر متن نمونهٔ طرح مقدم است (همان قاعدهٔ U-Q19)؛ specimen مقایسهٔ پیکسلی متن نمونهٔ طرح را نگه می‌دارد | `ST01_SIGNATURE_CHALLENGE.rounds.length` |
+| D-016 | لرزش لمسی: پیش‌فرض و الگوها (spec مرحله۵ §۳) | خاموش پیش‌فرض · روشنِ سبک پیش‌فرض | روشنِ سبک (وضع موجود کد) | «لرزش کوتاه و سبک، اختیاری در تنظیمات» از فهرست مجاز DESIGN_INSPIRATION؛ الگوها از قرارداد game-feel (LIGHT=8ms، SOFT_NUDGE=10ms، SUCCESS=[0,12,50,18]، CELEBRATE) و با تنظیم کاملاً خاموش می‌شوند؛ اثبات هارنس: flow:station سناریو `play-haptics` | `DEFAULT_APP_PREFERENCES` در appStateCore و `game-feel/haptics.ts` |
+| D-017 | نردبان بی‌کاری §۵.۱ spec (پخش دوبارهٔ دستور پس از ۸ث، سرنخ ۱۶ث، جملهٔ ۳۰ث) | کامل · فقط جملهٔ ۳۰ث به‌صورت بصری · هیچ | فقط جملهٔ ۳۰ث بصری | پخش خودکار دوباره با D-007 در تضاد است («هیچ چیز خودکار پخش نمی‌شود») و سرنخ‌های h1–h3 محتوای سرور می‌خواهند (DEFERRED تا قرارداد محتوا)؛ جملهٔ آرام فقط متن است، بدون تصمیم یادگیری و بدون تایمر تنبیهی؛ تایمر با هر انتخاب ریست می‌شود | `S.lesson.idleReassurance` + تایمر ۳۰ثانیه در StationFlow (D-017) |
 
 **تصمیم‌های باز طراحی (مالک، از ایمپورت handoff در `docs/design-handoff-2026-10/`):**
 - **O-4 cast شخصیت‌ها.** handoff شخصیت‌های Main، Number، Dana، Fandogh و Roka را «قطعی» می‌داند، اما cast فعلی در `project-design-v2` و `docs/reference` (aria / qbo / dana / jiko، با شناسه‌های قفل‌شده در CHARACTER-BIBLE-v2) است. نام Dana در هر دو وجود دارد ولی طرح متفاوت است: در کد سنجاب است و در handoff پرندهٔ فیروزه‌ای. تا تصمیم مالک، هیچ asset شخصیتی از handoff وارد اپ یا `characterArt.generated.ts` نمی‌شود. **→ بسته شد (مالک، ۲۰۲۶-۱۰-۱۴):** cast جدید Main/Number/Dana/Fandogh/Roka در ADR-0035 پذیرفته شد؛ جزئیات نگاشت در `pages-v1/manifest.json`.
@@ -363,6 +367,14 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 - **مستندات**: ادغام md-ها در همین فایل؛ `src/README.md` اصلاح شد.
 
 ---
+
+### 6.19) P3 — تجربهٔ یادگیری و بازخورد — SNAP-20261025-05 (شاخهٔ `feat/p3-feedback`)
+- **لرزش (stage5 §۳، D-016):** انتقال انتخاب به `playInteraction('TAP')` در مسیر سؤال (اداپتر game-feel، بی‌وابسته به view). اثبات: stub واقعی `Vibration.vibrate` در هارنس (ثبت الگوها در `__flow.vibrations`) + سناریو `play-haptics` (تنظیم روشن) و چک «گیت تنظیم خاموش = صفر» در سناریوی عادی. ترتیب اثبات‌شده: [8] → [8,10] → [8,10,8] → [8,10,8,[0,12,50,18]].
+- **جملهٔ بی‌فشار (stage5 §۵.۱، D-017):** «هر وقت آماده بودی، ادامه می‌دهیم.» پس از ۳۰ ثانیه بی‌کاریِ فاز انتخاب، فقط متن (پخش خودکار دوباره و سرنخ‌های h1–h3 رد شدند: تضاد با D-007 و محتوای سرور). `verify-ui-v1-question` بررسی `wiring:interaction-haptic-and-idle-line` گرفت.
+- **صدا:** TTS همان `expo-speech` («دوباره بشنو»)؛ فایل صوتی SFX/موسیقی **DEFERRED** (مجوز هر افکت باید صریح باشد؛ پالت stage5 §۲ فقط طرح است). هیچ پخش خودکاری اضافه نشد.
+- **جشن:** صفحه‌های ۱۱/۱۲ دست‌نخورده (حرکت کانفتی طبق U6 DEFERRED)؛ لرزش CELEBRATE از همان کانال dispatch می‌آید (قرارداد game-feel).
+- **تنظیم‌ها:** دامنهٔ ADULT_SURFACE نگه داشته شد (شش ترجیح یادگیری/دسترس‌پذیری؛ یادآور پیش‌فرض خاموش). پیاده‌سازیِ تغییر پیش‌فرض‌ها در این فاز لازم نشد (D-16 وضع موجود را ثبت کرد).
+- **گیت‌ها:** static ۷۵/۷۵، vitest ۴۲۵/۴۲۵، parity ۲۹/۲۹، flowها 32/29/57/24/20، وب و باندل سبز.
 
 ### 6.18) P2 — ماتریس حالت‌ها و تست‌های جریان — SNAP-20261025-04 (شاخهٔ `feat/p2-states`)
 - **`docs/testing/STATE_MATRIX.md`:** هر صفحهٔ ۰۱ تا ۱۴ + سطوح بدون صفحهٔ طرح (تعیین سطح، تنظیمات، آواتار، والدین، ماموریت‌ها، واحد/پرش، پخش‌کنندهٔ چالش، مراحل قدیمی) در برابر هشت حالت (default/loading/empty/error/offline/retry/returning/success). ارجاع هر خانهٔ ✅ به نام تست واقعی؛ 🔶 = پیاده‌شده بدون گیت (با یادداشت)؛ DEFERRED/N-A با دلیل. شکست‌های صادقانه: پیام متمایز expired-OTP (BLOCKED live)، خطای وسط درس (DEFERRED تا A2)، محتوای والدین/ماموریت‌ها (تصمیم مالک).
@@ -577,7 +589,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-24 | SNAP-20261024-01 | U5a: نمای خالص سؤال و بازخورد ۰۸ تا ۱۰ (`QuestionView`، `OptionButton`، `FeedbackSheet`)، parity ۲۶ نمونه، `verify-ui-v1-question`، سؤال‌های U-Q20 تا U-Q22 برای اتصال (U5b)؛ ۴۱۳/۴۱۳ تست، static 71/71، bundle واقعی Metro موفق |
 | 2026-10-25 | SNAP-20261025-01 | U8: بستن Stage U — تب‌بار outlined یکتا (حذف soft طبق D-011)، صفحهٔ ۱۵ = راهنما نه اپ؛ parity ۲۹/۲۹، static ۷۴/۷۴، همهٔ flowها سبز؛ فهرست کامل DEFERRED در §6.15 |
 | 2026-10-25 | SNAP-20261025-02 | P0: بستن بازبینی مستقل (ACCEPT WITH FIXES) — R-1 ignore خروجی بیلد، R-2 استثنای پین‌شدهٔ تب‌بار D-011، بررسی قرارداد D-002 (ارسال دوباره مجاز، بدون D-016)، R-3 تابع خالص ردیف‌های تمرین + ۵ تست؛ ff-merge به main + تگ v1-candidate-ui |
-| 2026-10-25 | SNAP-20261025-04 | P2: ماتریس حالت‌ها (STATE_MATRIX.md) + تست‌های netfail/ratelimit آنبوردینگ (۳۲) و تنظیمات/آواتار (۲۴) و `flow:largetext` (۲۰؛ ۱۳۰/۲۰۰٪)؛ برچسب a11y تنظیمات؛ static ۷۵ | 2026-10-25 | SNAP-20261025-03 | P1: ابزار — Node 22.18 در .nvmrc/engines (نصب روی ماشین = بلاکِر مالک)، back سخت‌افزاری با stub واقعی (flow:station ۵۰)، اسکن امنیتی باندل صفر، app.json/eas پاک، PS 5.1 اثبات/PS7 غایب، DESIGN_INSPIRATION + DEVICE_TEST_CHECKLIST (پیش‌نویس) + GATE_RUN_ORDER |
+| 2026-10-25 | SNAP-20261025-05 | P3: کانال لرزش اثبات‌شده (flow:station ۵۷؛ TAP/ناج/موفقیت + گیت تنظیم)، جملهٔ ۳۰ثانیه‌ای بی‌فشار (D-017)، صدای TTS بدون تغییر، SFX DEFERRED؛ D-016/D-017 | 2026-10-25 | SNAP-20261025-04 | P2: ماتریس حالت‌ها (STATE_MATRIX.md) + تست‌های netfail/ratelimit آنبوردینگ (۳۲) و تنظیمات/آواتار (۲۴) و `flow:largetext` (۲۰؛ ۱۳۰/۲۰۰٪)؛ برچسب a11y تنظیمات؛ static ۷۵ | 2026-10-25 | SNAP-20261025-03 | P1: ابزار — Node 22.18 در .nvmrc/engines (نصب روی ماشین = بلاکِر مالک)، back سخت‌افزاری با stub واقعی (flow:station ۵۰)، اسکن امنیتی باندل صفر، app.json/eas پاک، PS 5.1 اثبات/PS7 غایب، DESIGN_INSPIRATION + DEVICE_TEST_CHECKLIST (پیش‌نویس) + GATE_RUN_ORDER |
 | 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |

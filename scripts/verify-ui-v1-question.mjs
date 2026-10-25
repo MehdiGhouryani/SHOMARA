@@ -57,6 +57,8 @@ const strings = read('apps/mobile/src/ui/strings.fa.ts');
 check('wiring:copy-matches-pages', strings.includes("check: 'بررسی'") && strings.includes("correctFeedback: 'درست است!'") && strings.includes("retryFeedback: 'نزدیک بود. دوباره امتحان کنیم؟'"), 'generic copy per D-003');
 const runtime = read('apps/mobile/src/station/runtimeApi.ts');
 check('wiring:bead-copy-in-local-content', !/ستاره/.test(runtime) && runtime.includes('چند مهره می‌بینی؟'), 'local lesson content counts beads (U-Q16); the server content migration stays deferred');
+// Stage-5 §3/§5.1 as adopted by D-016/D-017: selection haptic through the interaction adapter, calm idle line.
+check('wiring:interaction-haptic-and-idle-line', flowSrc.includes("playInteraction('TAP')") && flowSrc.includes('S.lesson.idleReassurance') && flowSrc.includes('30_000') && view.includes('idleHint?: string | null'), 'selection TAP haptic + the 30s visual-only reassurance (D-016/D-017)');
 check('wiring:runtimeApi-untouched-semantics', runtime.includes('const clientIdempotencyKey = `station01:v2:') && runtime.includes('attemptNumber: input.attemptNumber'), 'submitAttempt idempotency and attemptNumber semantics unchanged');
 
 if (failures.length) {

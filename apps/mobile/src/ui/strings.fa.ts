@@ -32,6 +32,8 @@ export const S = {
     check: 'بررسی',
     correctFeedback: 'درست است!',
     retryFeedback: 'نزدیک بود. دوباره امتحان کنیم؟',
+    /** Calm no-pressure line after a long idle on a question (stage-5 §5.1, visual only; D-017). */
+    idleReassurance: 'هر وقت آماده بودی، ادامه می‌دهیم.',
   },
   stage: {
     word: 'مرحله',

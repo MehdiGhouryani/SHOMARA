@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CharacterSays } from '../components/CharacterAvatar';
 import { CHARACTERS, speakerForContent, type CharacterId } from '../characters/characters';
 import { makeAnimationEvent } from '../animation';
-import { FeedbackBurst, HintReveal, RewardReveal, TactileChoice, semanticEventForOutcome, useGameFeel } from '../game-feel';
+import { FeedbackBurst, HintReveal, RewardReveal, TactileChoice, semanticEventForOutcome, useFeedbackEffects, useGameFeel } from '../game-feel';
 import { createEncounter, getLocalContent, getRecoveryContent, getRecheckContent, resumeStationSession, shouldUseRemoteRuntime, startStationSession, submitAttempt, type AuthoritativeEncounterContent } from './runtimeApi';
 import { useAppState } from '../state/AppStateContext';
 import { RESUMABLE_STAGES, getResume, shouldFastTrack, type ResumableStage } from '../state/appStateCore';
@@ -78,6 +78,8 @@ function isSt01Station(stationId: string): boolean {
 
 export function StationFlow({ stationId }: { stationId: string }) {
   const { dispatch, feedback, characterState, inputBlocked, clearFeedback } = useGameFeel();
+  // Local interaction channel (selection haptic, stage-5 §3); the answer haptic comes from `dispatch` above.
+  const { playInteraction } = useFeedbackEffects();
   const app = useAppState();
   const gradeId = app.state?.profile.gradeId;
   const [completeKind, setCompleteKind] = useState<SessionCompleteKind>('PRACTICED');
@@ -101,6 +103,19 @@ export function StationFlow({ stationId }: { stationId: string }) {
   const [questionOutcome, setQuestionOutcome] = useState<SubmitOutcome | null>(null);
   // Page 12: the challenge invitation shows once; the run itself keeps the player chrome.
   const [challengeIntroDone, setChallengeIntroDone] = useState(false);
+  // Calm no-pressure line after a long idle on a question (stage-5 §5.1, visual only; D-017).
+  const [questionIdle, setQuestionIdle] = useState(false);
+
+  // The calm line appears only after a long, untouched choosing phase (stage-5 §5.1, visual only; D-017).
+  const questionChoosing = questionOutcome === null && questionSelection === null && !busy;
+  useEffect(() => {
+    if (!questionChoosing) {
+      setQuestionIdle(false);
+      return undefined;
+    }
+    const timer = setTimeout(() => setQuestionIdle(true), 30_000);
+    return () => clearTimeout(timer);
+  }, [questionChoosing]);
 
   // Consume the placement fast-track the first time the station really starts
   // (stage leaves ENTRY). Done here, not in start(), so a failed network call at
@@ -172,6 +187,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
       setStage(nextStage);
       setQuestionSelection(null);
       setQuestionOutcome(null);
+      setQuestionIdle(false);
       const semantic = nextStage === 'LEARN' ? 'EXPLAIN' : 'HINT_OPENED';
       dispatch(makeAnimationEvent(semantic, { sessionId: session, stationId }));
     } finally {
@@ -358,6 +374,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
       setStage(nextStage);
       setQuestionSelection(null);
       setQuestionOutcome(null);
+      setQuestionIdle(false);
       dispatch(makeAnimationEvent('EXPLAIN', { sessionId: freshSessionId ?? undefined, stationId }));
     } finally {
       setBusy(false);
@@ -401,6 +418,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
     setLessonStage(null);
     setQuestionSelection(null);
     setQuestionOutcome(null);
+    setQuestionIdle(false);
     setChallengeIntroDone(false);
     try {
       const releaseConfigError = productionConfigError();
@@ -618,12 +636,17 @@ export function StationFlow({ stationId }: { stationId: string }) {
           options={content.options ?? []}
           selectedIndex={questionSelection}
           phase={phase}
+          idleHint={questionIdle && phase === 'choose' ? S.lesson.idleReassurance : null}
           checkLabel={S.lesson.check}
           feedbackText={phase === 'correct' ? S.lesson.correctFeedback : S.lesson.retryFeedback}
           feedbackActionLabel={phase === 'correct' || sheetDirectsElsewhere ? S.lesson.continue : S.lesson.retry}
           busy={busy || inputBlocked}
           onReplay={() => speakFa(content.prompt)}
-          onSelect={setQuestionSelection}
+          onSelect={(index) => {
+            playInteraction('TAP');
+            setQuestionIdle(false);
+            setQuestionSelection(index);
+          }}
           onCheck={() => { if (questionSelection !== null) void answerContent(content, questionSelection); }}
           onFeedbackAction={() => {
             if (phase === 'choose') return;
