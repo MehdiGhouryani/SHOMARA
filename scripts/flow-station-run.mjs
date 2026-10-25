@@ -131,6 +131,20 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   f = await flow(page);
   check('07: continue stops speech and moves to the next section', moved && f.stops > stopsBefore && (await visible(page, 'گروهی را انتخاب کن که ۳ مهره دارد')), `${moved} ${f.stops}/${stopsBefore}`);
 
+  // Android hardware back inside the lesson (question section): the registered handler must run the same
+  // confirmExit path as the ✕ button — the harness keeps a real registry, not an empty stub.
+  const alertsBeforeBack = (await flow(page)).alerts.length;
+  const backConsumed = await page.evaluate(() => window.__flow.back());
+  f = await flow(page);
+  check('08: android back inside the lesson asks before leaving (same confirmExit as close)', backConsumed === true && f.alerts.length === alertsBeforeBack + 1 && f.alerts[f.alerts.length - 1].title === 'خارج می‌شوی؟', `${backConsumed} ${JSON.stringify(f.alerts.map((a) => a.title))}`);
+  const backedBeforeStay = f.backed;
+  await page.evaluate(() => {
+    const stay = window.__flow.alerts[window.__flow.alerts.length - 1].buttons.find((b) => b.text === 'می‌مانم');
+    if (stay?.onPress) stay.onPress();
+  });
+  f = await flow(page);
+  check('08: staying after android back keeps the lesson open', f.backed === backedBeforeStay && (await visible(page, 'گروهی را انتخاب کن که ۳ مهره دارد')));
+
   // ================= pages 08 to 10: the question interaction (D-001 to D-003) =================
   const optionDisabled = async (page, label) => (await option(page, label).getAttribute('aria-disabled')) === 'true';
 

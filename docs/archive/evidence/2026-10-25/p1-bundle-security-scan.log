@@ -1,0 +1,29 @@
+bundle: parity-out-expo/_expo/static/js/android/entry-b7d73784462d8e179b4f0f225fafd88f.hbc (4609797 bytes)
+--- pattern counts in Hermes bundle ---
+SUPABASE_SERVICE_ROLE: 0
+service_role: 0
+serviceRole: 0
+PRIVATE KEY: 0
+BEGIN RSA: 0
+BEGIN OPENSSH: 0
+BEGIN EC PRIVATE: 0
+TEACHER_SESSION_SECRET: 0
+AUTH_OTP_PROVIDER_URL: 0
+ALLOW_DEV_PRINCIPAL: 0
+eyJhbGciOi: 0
+SUPABASE_ANON: 0
+sb_secret: 0
+sb_publishable: 0
+supabase.co: 0
+apiKey: 0
+api_key: 0
+password: 3
+secretKey: 0
+--- metadata.json + assets ---
+0
+
+
+--- annotation: the 3 'password' hits are Hermes string-table artifacts ---
+1. 'ifi_password_2_of' = Ionicons glyph-name substring
+2-3. 'current-password-new-passwordRules' = react-native TextInput autocomplete constants
+No credential material in the bundle. Scan clean.

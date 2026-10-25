@@ -1,0 +1,21 @@
+
+> math-learning-product@0.1.0 flow:tabs
+> node scripts/flow-tabs-run.mjs
+
+parity bundle built: apps\mobile\parity\dist-flow
+parity bundle built: apps\mobile\parity\dist-flow
+PASS 13: title and Fandogh guide bubble
+PASS 13: recommended row and second game carry the practice chip
+PASS 13: locked row explains when it opens
+PASS 13: start uses the contract label for the grade
+PASS 13: start opens the recommended station start route
+PASS no runtime errors (13)
+PASS 14: name, grade chip and the 25-station progress
+PASS 14: all five path achievements as locked rows
+PASS 14: derived action rows keep the parent and avatar entries
+PASS 14: settings button opens the settings route
+PASS 14: parent row opens the protected parent route
+PASS 14: achievement row opens the detail sheet (S18)
+PASS 14: the sheet closes
+PASS no runtime errors (14)
+FLOW_TABS: PASS (14/14)

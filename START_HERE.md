@@ -1,9 +1,9 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 18
+file_version: 19
 last_updated: 2026-10-25
-snapshot_id: SNAP-20261025-02
+snapshot_id: SNAP-20261025-03
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
 current_stage: Stage A (امنیت و Learning Truth) -> A1/A4/A5/A8 انجام شد؛ A2 (مسیر مرکزی ۴۰۱)، A3/A6/A7 (بخش باقی‌مانده)، persistence واقعی assignment/adult و O-1 باز است
@@ -110,6 +110,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 | `next build` (web) | FAIL (useSearchParams بدون Suspense) | **exit 0** |
 
 **شمارش‌های اصلاح‌شده (با دستور شمرده شد):** `route.ts` = 43 (نه 46)؛ فایل تست = 50 (49 در vitest، بعد از SNAP-20261014-04)؛ `scripts/verify-*` = 55 فایل؛ `static-all` = 58 جزء. `challenge-runtime` اکنون هم در vitest اجرا می‌شود (shim قدیمی `scripts/test-challenge-runtime.mjs` کد+پیام خطا را با هم می‌سنجید و دو تست واقعی را پنهان می‌کرد).
+
+**اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-03، P1 ابزار؛ لاگ‌های `p1-*` در `docs/archive/evidence/2026-10-25/`):** Node هدف در `.nvmrc` (22.18.0) و `engines.node` (>=22.18) قفل شد — **نصب Node ≥22.18 روی این ماشین (22.16.0) بلاکِر مالک است**؛ گیت‌های این اجرا با پرچم خودکار `--experimental-strip-types` (اجرای موقت/علامت‌دار) سبزند و CI از `.nvmrc` می‌خواند. دکمهٔ back اندروید در درس با stub واقعی BackHandler در harness اثبات شد (registry واقعی + `__flow.back()`؛ flow:station ۴۸→**۵۰**). اسکن امنیتی باندل ۴٫۶MB صفر یافت (لاگ `p1-bundle-security-scan.log`؛ سه اثر «password» مربوط به string-table هرمس است). app.json فقط INTERNET+ACCESS_NETWORK_STATE؛ بدون cleartext/debuggable؛ eas production = store/app-bundle بدون پرچم دیباگ. PowerShell 5.1 اثبات شد (`p1-12-ps51-check.log`)؛ **PS 7 روی این ماشین نصب نیست** (ثبت شد). سند `docs/testing/GATE_RUN_ORDER.md` نوشته شد. vitest ۴۲۵/۴۲۵، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/50/14.
 
 **اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-02، P0 بستن بازبینی؛ لاگ‌های `p0-*` در `docs/archive/evidence/2026-10-25/`):** بازبینی مستقل پذیرفته شد با دو اصلاح اعمال‌شده (R-1: `parity-out-expo` از گیت خارج و ignore شد؛ R-2: انحراف تب‌بار D-011 استثنای پین‌شدهٔ `tabbar-outlined-vs-soft-goldens` شد). بررسی قرارداد D-002: ارسال دوبارهٔ تلاش پس از پاسخ غلط با CONTINUE **مجاز** است (سند `docs/archive/review/D-002-contract-check.md`؛ بدون D-016). R-3: ترکیب ردیف‌های تمرین به تابع خالص `practiceRowGames` رفت + ۵ تست (vitest ۴۲۰→**۴۲۵**). همهٔ گیت‌ها سبز: typecheck ۹/۹، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/48/14، web build و باندل Metro exit 0. محیط: Node 22.16.0 (زیر ۲۲.18؛ static-all پرچم `--experimental-strip-types` می‌گذارد — نصب Node ≥22.18 کار مالک، بلاکِر ثبت شد).
 
@@ -360,6 +362,15 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 
 ---
 
+### 6.17) P1 — ابزار و بهداشت ریپو — SNAP-20261025-03 (شاخهٔ `chore/p1-toolchain`)
+- **Node 22.18+:** `.nvmrc` = 22.18.0 و `engines.node` = >=22.18 (هشدار npm بدون engine-strict). اجرای بدون `--experimental-strip-types` روی این ماشین **امکان‌پذیر نیست** (Node 22.16.0 نصب است) → بلاکِر مالک: `nvm install 22.18.0; nvm use 22.18.0` یا نصب‌کنندهٔ LTS؛ تا آن زمان static-all پرچم را خودکار می‌گذارد و لاگ‌ها این را علامت‌دار می‌کنند.
+- **back سخت‌افزاری اندروید:** stub خالی BackHandler در harness با registry واقعی عوض شد (`apps/mobile/parity/flow/entry.tsx`: هندلرهای ثبت‌شده نگه داشته می‌شوند و `__flow.back()` آخرین هندلر را مثل دستگاه صدا می‌زند). دو بررسی جدید در flow:station: «back داخل درس همان confirmExit را می‌آورد» و «می‌مانم درس را باز نگه می‌دارد» (48→50).
+- **اسکن امنیتی باندل:** خروجی واقعی expo (Hermes 4,609,797 بایت) برای ۱۸ الگوی محرمانگی grep شد: همه صفر (لاگ `p1-bundle-security-scan.log`). سه اثر «password» = نام گلیف Ionicons و ثابت‌های autocomplete ری‌اکت‌نیتیو.
+- **app.json/eas.json:** مجوزها فقط INTERNET و ACCESS_NETWORK_STATE؛ بدون `usesCleartextTraffic`/`debuggable`؛ پروفایل production فقط store/app-bundle و `MOBILE_RELEASE_CHANNEL` (بدون پرچم دیباگ).
+- **PowerShell:** 5.1 (5.1.22621.2506) با مسیر quoted و هر دستور npm در خط خودش اثبات شد (build:packages exit 0). **PS 7 نصب نیست** — شکاف محیط ثبت شد؛ سند `docs/testing/GATE_RUN_ORDER.md` هر دو را پوشش می‌دهد.
+- **اسناد جدید:** `docs/reference/DESIGN_INSPIRATION.md` (الگوهای مجاز/ممنوع الهام، مرجع D-entryها)، `docs/testing/DEVICE_TEST_CHECKLIST.md` (پیش‌نویس؛ تکمیل در P7)، `docs/testing/GATE_RUN_ORDER.md`.
+- **گیت‌ها:** vitest ۴۲۵/۴۲۵، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/**50**/14، web build و باندل Metro exit 0.
+
 ### 6.16) P0 — بستن بازبینی مستقل `ui/u8-closing` — SNAP-20261025-02
 - **بازبینی مستقل** (read-only در ورک‌تری جدا، گزارش در `docs/archive/review/2026-10-25-stage-u-review.md`): حکم «ACCEPT WITH FIXES»؛ همهٔ اعداد گیت‌ها دوباره تولید شد و یکی بود. دو اصلاح لازم اعمال شد:
   - **R-1:** خروجی بیلد `parity-out-expo/` (۱۲۵ فایل) از گیت خارج و در `.gitignore` رفت (همچنین الگوهای `parity/dist*` و `parity/out`).
@@ -557,6 +568,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-24 | SNAP-20261024-01 | U5a: نمای خالص سؤال و بازخورد ۰۸ تا ۱۰ (`QuestionView`، `OptionButton`، `FeedbackSheet`)، parity ۲۶ نمونه، `verify-ui-v1-question`، سؤال‌های U-Q20 تا U-Q22 برای اتصال (U5b)؛ ۴۱۳/۴۱۳ تست، static 71/71، bundle واقعی Metro موفق |
 | 2026-10-25 | SNAP-20261025-01 | U8: بستن Stage U — تب‌بار outlined یکتا (حذف soft طبق D-011)، صفحهٔ ۱۵ = راهنما نه اپ؛ parity ۲۹/۲۹، static ۷۴/۷۴، همهٔ flowها سبز؛ فهرست کامل DEFERRED در §6.15 |
 | 2026-10-25 | SNAP-20261025-02 | P0: بستن بازبینی مستقل (ACCEPT WITH FIXES) — R-1 ignore خروجی بیلد، R-2 استثنای پین‌شدهٔ تب‌بار D-011، بررسی قرارداد D-002 (ارسال دوباره مجاز، بدون D-016)، R-3 تابع خالص ردیف‌های تمرین + ۵ تست؛ ff-merge به main + تگ v1-candidate-ui |
+| 2026-10-25 | SNAP-20261025-03 | P1: ابزار — Node 22.18 در .nvmrc/engines (نصب روی ماشین = بلاکِر مالک)، back سخت‌افزاری با stub واقعی (flow:station ۵۰)، اسکن امنیتی باندل صفر، app.json/eas پاک، PS 5.1 اثبات/PS7 غایب، DESIGN_INSPIRATION + DEVICE_TEST_CHECKLIST (پیش‌نویس) + GATE_RUN_ORDER |
 | 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |
@@ -565,9 +577,9 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 ## 12) Prompt آمادهٔ چت بعدی
 
 ```
-ریپوی شمارا (same checkout). START_HERE.md را کامل بخوان (پروتکل §0) و AGENTS.md.binding. الان روی شاخهٔ chore/p0-review-close هستیم (P0 تمام؛ main = ui/u8-closing با تگ v1-candidate-ui).
+ریپوی شمارا (same checkout). START_HERE.md را کامل بخوان (پروتکل §0) و AGENTS.md.binding. الان روی شاخهٔ chore/p1-toolchain هستیم (P0 و P1 تمام؛ main = ui/u8-closing با تگ v1-candidate-ui؛ بلاکِر مالک: نصب Node ≥22.18).
 
-مأموریت فعلی (به ترتیب): P1 ابزار و بهداشت ریپو (Node 22.18+ در .nvmrc/engines، اجرای PowerShell، اسکن امنیتی باندل، مجوزهای app.json، دکمهٔ back سخت‌افزاری با stub واقعی در harness، docs/reference/DESIGN_INSPIRATION.md و پیش‌نویس docs/testing/DEVICE_TEST_CHECKLIST.md) → P2 ماتریس حالت‌ها و تست‌های جریان → P3 صدا/لرزش/جشن طبق بخش‌های ۲–۵ grade1/shomara-stage5-shared-references.md (فقط همین بخش‌ها؛ محتوای spec پیشنهاد است نه منبع تصمیم) → P4 خط محتوا (verify-content-spec.mjs با ۱۱ قاعدهٔ stage6 §5، DIN negative fixtures، آداپتر ST07 dev-pack پشت پرچم بیلد) → P5 بستن DEFERRED های UI → P6 مسدود (نویسندگی ایستگاه) → P7 چک‌لیست دستگاه → P8 READINESS.
+مأموریت فعلی (به ترتیب): P2 ماتریس حالت‌ها (docs/testing/STATE_MATRIX.md) و تست‌های جریانِ خانه‌های تست‌نشده + a11y/متن‌بزرگ/حرکت‌کم → P3 صدا/لرزش/جشن طبق بخش‌های ۲–۵ grade1/shomara-stage5-shared-references.md (فقط همین بخش‌ها؛ محتوای spec پیشنهاد است نه منبع تصمیم) → P4 خط محتوا (verify-content-spec.mjs با ۱۱ قاعدهٔ stage6 §5، DIN negative fixtures، آداپتر ST07 dev-pack پشت پرچم بیلد) → P5 بستن DEFERRED های UI → P6 مسدود (نویسندگی ایستگاه) → P7 چک‌لیست دستگاه → P8 READINESS.
 
 گیت‌های پایه (§3): vitest ۴۲۵/۴۲۵، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/48/14. شش استثنای tabs-waivers پین است. حدس نزن؛ تصمیم تازه = ردیف D جدید در §4؛ DEFERRED با دلیل. نصب Node ≥22.18 روی ماشین، کار مالک است (بلاکِر ثبت شده).
 ```

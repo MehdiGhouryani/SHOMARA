@@ -43,8 +43,18 @@ const allIds = G1_STATIONS.map((s) => s.id);
 Alert.alert = (title, message, buttons) => {
   (window as unknown as { __flow: { alerts: unknown[] } }).__flow.alerts.push({ title, message, buttons });
 };
-// The hardware back button does not exist on the web build.
-BackHandler.addEventListener = () => ({ remove: () => undefined });
+// The hardware back button does not exist on the web build, but the registered handlers are real app code:
+// keep a registry and let the script press back through `__flow.back()` so the Android back path is exercised
+// (a handler returning true means it consumed the press, exactly like React Native on device).
+const backHandlers: unknown[] = [];
+BackHandler.addEventListener = (_eventName: 'hardwareBackPress', handler: (event: never) => boolean | null | undefined) => {
+  backHandlers.push(handler);
+  return { remove: () => { const at = backHandlers.indexOf(handler); if (at >= 0) backHandlers.splice(at, 1); } };
+};
+(window as unknown as { __flow: { back: () => boolean } }).__flow.back = () => {
+  const handler = backHandlers[backHandlers.length - 1] as undefined | ((event?: unknown) => boolean | null | undefined);
+  return handler ? Boolean(handler(undefined)) : false;
+};
 const RTL_WEB_PROP = { dir: 'rtl' } as object;
 
 function Root() {
