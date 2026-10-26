@@ -41,4 +41,10 @@ export interface SyncQueueStore {
 
 export interface SyncTransport {
   send(action: OfflineSyncAction): Promise<SyncReceipt>;
+  /**
+   * Optional batch delivery (wave C): servers that accept `{ actions: [...] }` can carry several
+   * queued actions in one round-trip. Receipts must be aligned 1:1 with the given actions (same
+   * order); managers fall back to per-action send() when the transport does not implement it.
+   */
+  sendBatch?(actions: OfflineSyncAction[]): Promise<SyncReceipt[]>;
 }
