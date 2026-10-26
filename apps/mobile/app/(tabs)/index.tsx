@@ -15,6 +15,7 @@ import { useAppState } from '../../src/state/AppStateContext';
 import { getAuthoritativeProgression, shouldUseRemoteRuntime } from '../../src/station/runtimeApi';
 import { getResume, isJumpUnlocked, isStationPassed } from '../../src/state/appStateCore';
 import { cachedStationIds, loadContentSnapshot } from '../../src/content/bootstrap';
+import { isLocalContentPreview } from '../../src/config/runtime';
 import { PathBanner } from '../../src/path/PathBanner';
 import { PathView } from '../../src/path/PathView';
 import { buildChapterViews, gradeChipLabel, jumpOfferUnitIds, ringFraction } from '../../src/path/pathModel';
@@ -55,6 +56,14 @@ export default function PathScreen() {
       void loadContentSnapshot(state?.profile.gradeId ?? 'G1').then((snapshot) => {
         if (!alive) return;
         if (!snapshot) {
+          // D-019: the preview APK ships no downloaded packages; station content
+          // comes from the bundled local map, so every node is on-device there.
+          // Any other release build honestly reports the offline state.
+          if (isLocalContentPreview()) {
+            setDownloaded(G1_STATIONS.map((station) => station.id));
+            setContentState('ready');
+            return;
+          }
           setContentState('offline');
           return;
         }
@@ -121,7 +130,10 @@ export default function PathScreen() {
   const resumeStage = focusId ? getResume(state, focusId)?.stage : undefined;
   const guideStory = guideChapter !== null ? worldByUnitId(G1_UNITS[guideChapter]?.id ?? '')?.storyArcFa : undefined;
 
-  const banner = guideStory ? (
+  const banner = isLocalContentPreview() ? (
+    // D-019: the preview APK never reaches a server; the note states that plainly.
+    <PathBanner tone="info" text="پیش‌نمایش محلی: محتوا روی دستگاه است و اتصال به سرور در این نسخه فعال نیست." />
+  ) : guideStory ? (
     <PathBanner tone="story" text={guideStory} />
   ) : gradeNote ? (
     <PathBanner tone="info" text="پایه‌های دیگر به‌زودی باز می‌شوند." />

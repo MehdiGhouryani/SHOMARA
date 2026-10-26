@@ -31,3 +31,9 @@ Thumbs.db
 apps/mobile/parity/dist/
 apps/mobile/parity/dist-flow/
 apps/mobile/parity/out/
+
+# ---- signing & CI secrets hygiene ----
+*.keystore
+*.jks
+credentials.json
+google-services.json

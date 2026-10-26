@@ -13,8 +13,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EAS_NO_FROZEN_LOCKFILE": "1",
-        "MOBILE_RELEASE_CHANNEL": "preview"
+        "MOBILE_RELEASE_CHANNEL": "preview",
+        "EXPO_PUBLIC_RELEASE_CHANNEL": "preview"
       }
     },
     "production": {

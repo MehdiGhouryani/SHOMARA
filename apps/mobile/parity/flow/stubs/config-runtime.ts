@@ -11,6 +11,10 @@ export const API_BASE_URL = PLAY ? 'https://mock.test' : '';
 export const isApiConfigured = () => PLAY;
 export const isProductionApiSafe = () => true;
 export const productionConfigError = () => null;
+// The harness runs real dev-mode code in a browser, never as the EAS preview artifact,
+// so the D-019 release-only local-content mode is off here (PLAY drives the mode instead).
+export const isPreviewRelease = () => false;
+export const isLocalContentPreview = () => false;
 
 if (PLAY) installMockLearningServer();
 

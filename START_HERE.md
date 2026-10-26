@@ -1,9 +1,9 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 17
-last_updated: 2026-10-25
-snapshot_id: SNAP-20261025-01
+file_version: 18
+last_updated: 2026-10-26
+snapshot_id: SNAP-20261026-01
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
 current_stage: Stage A (امنیت و Learning Truth) -> A1/A4/A5/A8 انجام شد؛ A2 (مسیر مرکزی ۴۰۱)، A3/A6/A7 (بخش باقی‌مانده)، persistence واقعی assignment/adult و O-1 باز است
@@ -161,6 +161,7 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 | D-013 | U-Q11 گنج | فقط تزئینی و قفل (مطابق طرح) · قفل‌شونده واقعی | تزئینی قفل | چک‌پوینت قرارداد بعد از ایستگاه ۵ است؛ قفل‌سازی واقعی به موتور وابسته است | — |
 | D-014 | U-Q12/U-Q13 رفتارهای مشتق‌شده و متن حباب | حفظ رفتارهای فعلی · حذف | حفظ | حدس جدید ممنوع؛ چیزهایی که طرح تعریف نکرده همان می‌مانند | — |
 | D-015 | چیپ «N سؤال» صفحهٔ ۱۲: طرح نمونه ۴ می‌گوید، تعریف واقعی چالش ST01 سه round دارد | متن طرح · شمارش واقعی | شمارش واقعی (`rounds.length`) | دادهٔ واقعی بر متن نمونهٔ طرح مقدم است (همان قاعدهٔ U-Q19)؛ specimen مقایسهٔ پیکسلی متن نمونهٔ طرح را نگه می‌دارد | `ST01_SIGNATURE_CHALLENGE.rounds.length` |
+| D-019 | APK پیش‌نمایش بدون URL (شاخهٔ `chore/apk-preview`): بدون `EXPO_PUBLIC_API_BASE_URL` معتبر، بیلد پروفایل `preview` در **حالت محتوای محلی** اجرا می‌شود — بدون localhost، بدون تماس با سرور، بدون گام OTP؛ محتوا از نقشهٔ محلی، پاسخ‌ها هرگز سمت کلاینت ارزیابی نمی‌شوند و هیچ پیام همگام/سرور جعلی نمایش داده نمی‌شود؛ پروفایل‌های production/market-apk همیشه fail-closed می‌مانند | (الف) حالت محلی برای preview (انتخاب‌شده با دستور مالک) · (ب) بن‌بست صادقانه در release | الف، فقط برای پروفایل `preview` (`EXPO_PUBLIC_RELEASE_CHANNEL=preview` + نبودن URL) | مالک APK را برای تست دستگاه خواست و URL بعداً داده می‌شود؛ «Learning Truth فقط سرور» و «evaluator خارج از کلاینت» (§2.3) دست‌نخورده ماندند: LOCAL هرگز درستی را تعیین نمی‌کند و Station Pass نمی‌دهد | `isLocalContentPreview` در `config/runtime.ts` · gate در `StationFlow` · `onboarding.tsx` · `app/(tabs)/index.tsx` · verifier `verify-apk-preview` · راهنمای مالک `docs/release/APK_PREVIEW.md` (شماره‌های D-016 تا D-018 در شاخهٔ merge‌نشدهٔ `chore/p8-closing` هستند) |
 
 **تصمیم‌های باز طراحی (مالک، از ایمپورت handoff در `docs/design-handoff-2026-10/`):**
 - **O-4 cast شخصیت‌ها.** handoff شخصیت‌های Main، Number، Dana، Fandogh و Roka را «قطعی» می‌داند، اما cast فعلی در `project-design-v2` و `docs/reference` (aria / qbo / dana / jiko، با شناسه‌های قفل‌شده در CHARACTER-BIBLE-v2) است. نام Dana در هر دو وجود دارد ولی طرح متفاوت است: در کد سنجاب است و در handoff پرندهٔ فیروزه‌ای. تا تصمیم مالک، هیچ asset شخصیتی از handoff وارد اپ یا `characterArt.generated.ts` نمی‌شود. **→ بسته شد (مالک، ۲۰۲۶-۱۰-۱۴):** cast جدید Main/Number/Dana/Fandogh/Roka در ADR-0035 پذیرفته شد؛ جزئیات نگاشت در `pages-v1/manifest.json`.
@@ -318,6 +319,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 **U6** `DONE (SNAP-20261024-04)` — نتیجه و چالش: `StageResultView` (۱۱: کانفتی ثابت، جشن آرام Main، «۱ از ۵ مرحله»، ردیف دستاورد بنفش «دستاورد جدید/شمارش‌گر») و `ChallengeIntroView` (۱۲: روکا، چیپ‌ها، «شروع چالش»؛ تعداد سؤال از تعریف واقعی می‌آید، D-015). دو باگ پنهان گرفته شد (کرش هدر پخش‌کنندهٔ چالش؛ کارت محتوای کهنه زیر چالش). parity ۰٫۰۶٪ و ۰٫۳۱٪؛ flow:station ۴۸ بررسی با مسیر کامل شاد تا جشن.
 **U7** `DONE (SNAP-20261024-05)` — تمرین و من: `PracticeView` (۱۳: راهنمای فندق، ردیف‌های بازی از قرارداد تمرین با چیپ «تمرین» و ردیف قفل «بعد از مرحلهٔ n») و `MeView` (۱۴: کارت هویت، نوار «n از ۲۵ ایستگاه»، پنج ردیف دستاورد) + ردیف‌های اقدام قراردادی (تغییر ظاهر/والدین) به‌عنوان حالت مشتق. پنج استثنای قفل‌شده در `scripts/lib/tabs-waivers.mjs`. parity فقط ناحیهٔ body (تب‌بار outlined طبق D-011).
 **U8** `DONE (SNAP-20261025-01)` — بستن: variant «soft» تب‌بار حذف شد (طبق U-Q9/D-011؛ همه‌جا outlined)، specimenها و توکن مربوطه پاک شدند و `verify-ui-v1-path` به‌روز شد؛ صفحهٔ ۱۵ (راهنمای طراحی) صفحهٔ اپ نیست و parity آن را از ابتدا مستثنا کرده بود. تست اندروید واقعی = Phase 4 (ممنوع). همهٔ گیت‌ها سبز (§3).
+**APK-PREVIEW** `DONE (SNAP-20261026-01، تصمیم D-019؛ شاخهٔ chore/apk-preview از main — بدون commit و بدون push به دستور مالک)` — آماده‌سازی APK داخلی تست دستگاه: `EAS_NO_FROZEN_LOCKFILE` از پروفایل preview حذف شد (بیلد ابری از package-lock.json)؛ بهداشت اسرار کامل شد (`*.keystore`/`*.jks`/`credentials.json`/`google-services.json` در .gitignore؛ اثبات `git ls-files`/`git check-ignore`)؛ حالت محتوای محلی preview (D-019) در `config/runtime.ts` + `StationFlow` + `onboarding` + مسیر پیاده و با stub جریان سازگار شد؛ verifier جدید `verify-apk-preview` (۲۱ بررسی)؛ راهنمای مالک `docs/release/APK_PREVIEW.md` (سه دستور eas-cli؛ ورود و رمز فقط مالک). ساخت محلی gradle SKIP شد (JDK 17 و Android SDK روی ماشین نیست). expo-doctor 18/21 (خطای شبکه در بررسی اسکیما؛ رگرسیون Hermes V1 روی RN 0.86.0 و drift نسخه‌ها ثبت شد — هیچ وابستگی‌ای تغییر نکرد). گیت‌ها: build:packages/typecheck:all/vitest 420/420/static 75/75/expo export (Hermes 4.6MB) همه سبز؛ لاگ‌ها در `docs/archive/evidence/2026-10-26/`.
 
 **سؤال‌های باز (منتظر مالک):**
 - **U-Q1** گرهٔ «شروع مرحله» (۰۶): طرح Number خوابآلود را نشان می‌دهد ولی alt می‌گوید «با دست اشاره می‌کند». پیش‌فرض: همان تصویر طرح.
@@ -355,6 +357,21 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 - **sync**: `FileSyncQueueStore` با serialize، نوشتن temp+move، quarantine فایل خراب؛ `queueParse.ts` + ۴ تست. (رفتار `File.move(overwrite)` روی دستگاه UNVERIFIED.)
 - **verifierها**: p09 (pointer فاز ≥ P10)، phase15 (guard رفتاری: `RewardReveal visible={stationPassAchieved}` + `sessionCompleteFeel(` + بدون jargon)؛ دو بررسی وجود فایل منسوخ از `verify-backend-b0-foundation`/`verify-p10-batch-e-depth` حذف شد (فایل‌هایشان حذف شد).
 - **مستندات**: ادغام md-ها در همین فایل؛ `src/README.md` اصلاح شد.
+
+---
+
+### 6.16) APK پیش‌نمایش داخلی و حالت محتوای محلی (D-019) — SNAP-20261026-01
+
+شاخهٔ `chore/apk-preview` از main (u8/c4a19f5). طبق دستور مالک: هیچ commit و push انجام نشد؛ هیچ دستور حساب (eas login/build) اجرا نشد؛ تغییرات در working tree برای بازبینی مالک است.
+
+- **بازتولیدپذیری بیلد:** `EAS_NO_FROZEN_LOCKFILE` از پروفایل `preview` در `apps/mobile/eas.json` حذف شد (بیلد ابری frozen-lockfile از `package-lock.json`)؛ `EXPO_PUBLIC_RELEASE_CHANNEL=preview` به همان پروفایل اضافه شد (تنها نشانهٔ زمان-بیلدِ آرتیفکت preview؛ production/market-apk هرگز آن را ندارند).
+- **حالت محتوای محلی (D-019):** `config/runtime.ts` → `isPreviewRelease()`/`isLocalContentPreview()`. در بیلد preview بدون URL: مسیر ایستگاه‌ها به‌جای بن‌بست fail-closed در حالت LOCAL وارد می‌شود (`StationFlow` — gate فقط برای URL نامطمئن می‌ماند)؛ آنبوردینگ گام OTP را رد می‌کند و بدون `prepareGradeContent` محلی کامل می‌شود؛ تب مسیر همهٔ ایستگاه‌ها را «روی دستگاه» می‌بیند و بنر صادقانهٔ «اتصال به سرور در این نسخه فعال نیست» دارد. کلاینت در هیچ‌کدام درستی را تعیین نمی‌کند و Station Pass نمی‌دهد (§2.3 دست‌نخورده)؛ «checkQueued» فقط در مسیر REMOTE با صف واقعی نمایش داده می‌شود. stub جریان (`parity/flow/stubs/config-runtime.ts`) دو خروجی جدید را با false گرفت تا flow:station unchanged بماند.
+- **بهداشت اسرار:** `.gitignore` ← `*.keystore`/`*.jks`/`credentials.json`/`google-services.json` (ورودهای `.env`/`.env.*`/`!.env.example` از قبل بودند). اثبات: `git ls-files` هیچ‌کدام را track نمی‌کند؛ `git check-ignore` هر شش الگو را می‌گیرد؛ `.env.example` همچنان tracked.
+- **مستندات مالک:** `docs/release/APK_PREVIEW.md` — پیش‌نیازها (Node ≥22.18، حساب Expo خود مالک)، سه دستور PowerShell از `apps\mobile` (whoami ← login ← build --profile preview؛ رمز را مالک تایپ می‌کند)، دانلود/نصب APK و اجرای `docs/testing/DEVICE_TEST_CHECKLIST.md` (در شاخهٔ merge‌نشدهٔ chore/p8-closing)، الگوی گزارش برگشتی (build ID، commit، مدل گوشی، نسخهٔ اندروید، وضعیت هر آیتم)، هشدار «پروفایل‌های production/market-apk را اجرا نکن» و راه بعدي برای تزریق `EXPO_PUBLIC_API_BASE_URL` با eas secret (بدون commit کردن URL).
+- **gates (ویندوز، Node v24.22.1 — `.nvmrc` می‌گوید ۲۲؛ nvm روی ماشین نیست و ≥22.18 شرطِ gate است؛ توجه: nvm استفاده‌نشده، p1 «نصب Node 22.18» را مالک‌کار ثبت کرده):** `build:packages` exit 0 · `typecheck:all` exit 0 (۹ workspace) · `vitest` 420/420 (۵۳ فایل) · `verify:static:all` **75/75** (۷۴ پایهٔ u8 + `verify-apk-preview` جدید با ۲۱ بررسی) · `expo export --platform android` exit 0 (Hermes 4.6MB). لاگ‌ها: `docs/archive/evidence/2026-10-26/apk-00..05*.log`. اجرای static-all در این سندباکس نیاز به `TEMP` ریدایرکت‌شده به `node_modules/.cache/tmp` داشت (esbuild.exe نمی‌توانست به %TEMP% بنویسد) — روی ماشین بدون سندباکس لازم نیست.
+- **expo config --type public:** exit 0؛ SDK 57.0.0، package `com.mathlearning.app`، versionCode 1، فقط مجوزهای `INTERNET` + `ACCESS_NETWORK_STATE`. **expo-doctor:** 18/21 — خطای شبکه (ECONNRESET) در بررسی اسکیما؛ رگرسیون Hermes V1 روی RN 0.86.0 (رفع در 0.86.2+)؛ drift نسخه‌ها (expo 57.0.26 در برابر ~57.0.31، typescript 5.9.3 در برابر ~6.0.3 و…) — **هیچ وابستگی‌ای بدون D-entry تغییر نکرد؛ تصمیم upgrade با مالک.**
+- **ساخت محلی gradle (اثبات اختیاری §6 دستور):** SKIP — Android Studio هست ولی JBR آن JDK 25 است (نه 17) و Android SDK نصب نیست؛ شرط «فقط اگر JDK 17 بود» برقرار نیست.
+- **UNVERIFIED/BLOCKED:** خودِ EAS build (اقدام حساب مالک) · نصب و تست روی دستگاه واقعی · TalkBack/TTS فارسی روی دستگاه · behavior بیلد preview با URL واقعی · `expo install --fix` (تصمیم مالک، نیاز به D-entry و اجرای کامل گیت‌ها دارد).
 
 ---
 

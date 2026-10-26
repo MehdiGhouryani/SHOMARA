@@ -8,6 +8,7 @@ import { DS } from '../src/ui/design-system/theme';
 import { requestOtp, verifyOtp } from '../src/auth/authApi';
 import { DSButton, DSProgress, DSSurface } from '../src/ui/design-system/components';
 import { prepareGradeContent } from '../src/content/bootstrap';
+import { isLocalContentPreview } from '../src/config/runtime';
 import {
   isValidIranMobileInput,
   maskIranMobile,
@@ -91,12 +92,21 @@ export default function Onboarding() {
 
   function begin() {
     setTermsAcceptedAt(new Date().toISOString());
-    next('AUTH');
+    // D-019: the preview APK has no server, so the phone-OTP step cannot run there.
+    // Every release profile with a configured URL (and production always) keeps the OTP wall.
+    next(isLocalContentPreview() ? 'CHILD' : 'AUTH');
   }
 
   function goBack() {
     const previous = stepBack(step);
     if (previous) {
+      // D-019: in the local-content preview the AUTH/OTP steps are never visited;
+      // back from CHILD returns to the welcome page instead of the phone step.
+      if (isLocalContentPreview() && (previous === 'AUTH' || previous === 'OTP')) {
+        setError('');
+        setStep('WELCOME');
+        return;
+      }
       setError('');
       setStep(previous);
     }
@@ -177,7 +187,9 @@ export default function Onboarding() {
     try {
       // The first path node must be backed by a real cached content package.
       // This is not cosmetic loading: it establishes the offline-ready starting point.
-      await prepareGradeContent(gradeId);
+      // D-019: the preview APK has no server to prepare content from; onboarding
+      // completes on local state only and the path screen says so honestly.
+      if (!isLocalContentPreview()) await prepareGradeContent(gradeId);
       const ok = await completeOnboarding(
         {
           childName: name.trim(),

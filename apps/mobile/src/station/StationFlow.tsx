@@ -13,7 +13,7 @@ import { RESUMABLE_STAGES, getResume, shouldFastTrack, type ResumableStage } fro
 import { LessonFeedbackCard, LessonPlayerChrome } from './LessonPlayerChrome';
 import { DS } from '../ui/design-system/theme';
 import { DSButton, DSSurface } from '../ui/design-system/components';
-import { productionConfigError } from '../config/runtime';
+import { isLocalContentPreview, productionConfigError } from '../config/runtime';
 import { S } from '../ui/strings.fa';
 import { toFa } from '../ui/digits';
 import type { AnswerPayload, StationContent, StationStage, SubmitOutcome } from './types';
@@ -403,8 +403,11 @@ export function StationFlow({ stationId }: { stationId: string }) {
     setQuestionOutcome(null);
     setChallengeIntroDone(false);
     try {
+      // A configured-but-insecure API base still fails closed in any release build.
+      // The preview APK with no API base at all runs in LOCAL content mode (D-019):
+      // browsing only, answers are never evaluated client-side, nothing claims a queue.
       const releaseConfigError = productionConfigError();
-      if (releaseConfigError) {
+      if (releaseConfigError && !isLocalContentPreview()) {
         setMessage(releaseConfigError);
         setStage('ENTRY');
         return;

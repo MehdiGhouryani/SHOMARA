@@ -1,0 +1,45 @@
+Running 21 checks on your project...
+Unexpected error while running 'Check Expo config (app.json/ app.config.js) schema' check:
+TypeError: fetch failed
+Error: read ECONNRESET
+This check requires a connection to the Expo API. Ensure your network connection is stable.
+18/21 checks passed. 3 checks failed. Possible issues detected:
+Use the --verbose flag to see more details about passed checks.
+
+✖ Check Expo config (app.json/ app.config.js) schema
+✖ Check for Expo SDK versions affected by Hermes V1 regressions
+Detected Hermes V1 250829098.0.14 from React Native. Hermes V1 250829098.0.15 and earlier are affected by this regression; 250829098.0.16 is the first version that contains the fix.
+Advice:
+Upgrade to React Native 0.86.2 or later, which includes the fixed Hermes version. For Expo projects, install Expo SDK 57 with expo@57.0.9 or later and run `npx expo install --fix` to align React Native and other dependencies.
+
+✖ Check that packages match versions required by installed Expo SDK
+
+❗ Major version mismatches
+package             expected  found    
+typescript          ~6.0.3    5.9.3    
+
+⚠️ Minor version mismatches
+package             expected  found    
+@types/react        ~19.2.4   19.3.0   
+
+🔧 Patch version mismatches
+package             expected  found    
+expo                ~57.0.31  57.0.26  
+expo-crypto         ~57.0.4   57.0.3   
+expo-linking        ~57.0.13  57.0.11  
+expo-router         ~57.0.29  57.0.24  
+expo-splash-screen  ~57.0.10  57.0.9   
+react-native        0.86.3    0.86.0   
+
+Changelogs:
+- expo-crypto → https://github.com/expo/expo/blob/sdk-57/packages/expo-crypto/CHANGELOG.md
+- expo-linking → https://github.com/expo/expo/blob/sdk-57/packages/expo-linking/CHANGELOG.md
+- expo-router → https://github.com/expo/expo/blob/sdk-57/packages/expo-router/CHANGELOG.md
+- expo-splash-screen → https://github.com/expo/expo/blob/sdk-57/packages/expo-splash-screen/CHANGELOG.md
+
+8 packages out of date.
+Advice:
+Use 'npx expo install --check' to review and upgrade your dependencies.
+To ignore specific packages, add them to "expo.install.exclude" in package.json. Learn more: https://expo.fyi/dependency-validation
+
+3 checks failed, indicating possible issues with the project.
