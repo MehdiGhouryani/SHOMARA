@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { assertAssignmentBackendReady, assertAdultProjectionBackendReady } from '@/lib/runtime-gates';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { requireRequestAccountPrincipal } from '@/lib/request-principal';
 import { assignmentRuntime } from '@/lib/assignment-runtime';
 import { adultProjectionRuntime } from '@/lib/adult-projections';
@@ -25,7 +25,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ instanceId
     const completed = await assignmentRuntime.service.completeRecheck(body.recheckId);
     return NextResponse.json(completed);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message = publicErrorMessage(error);
     return NextResponse.json({ code: 'RECHECK_COMPLETE_FAILED', message }, { status: apiErrorStatus(error) });
   }
 }

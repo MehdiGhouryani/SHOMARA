@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { supabaseRpc } from '@/lib/supabase-http';
@@ -13,6 +13,6 @@ export async function GET(request: Request) {
     const projection = await supabaseRpc(principal.accessToken, 'mission_sync', { p_time_zone: zone });
     return NextResponse.json(projection);
   } catch (error) {
-    return NextResponse.json({ code: 'MISSION_HUB_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'MISSION_HUB_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

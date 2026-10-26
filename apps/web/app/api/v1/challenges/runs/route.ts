@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { productionChallengeRuntime } from '@/lib/challenge-runtime-production';
@@ -18,6 +18,6 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(run, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ code: 'CHALLENGE_START_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'CHALLENGE_START_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

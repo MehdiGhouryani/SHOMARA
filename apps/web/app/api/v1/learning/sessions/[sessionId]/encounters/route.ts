@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { createEncounterId, getSessionOrThrow, runtimeStore } from '@/lib/learning-runtime';
+import { toClientEncounter } from '@/lib/learning-client-content';
 import { productionLearningRuntime } from '@/lib/learning-runtime-production';
 
 export async function POST(request: Request, context: { params: Promise<{ sessionId: string }> }) {
@@ -46,8 +47,10 @@ export async function POST(request: Request, context: { params: Promise<{ sessio
       experienceForm: body.experienceForm ?? content.experienceForm,
       content,
     });
-    return NextResponse.json({ session, encounter }, { status: 201 });
+    // The in-memory engine keeps the evaluator config for later submission evaluation; the
+    // client response never carries it (same boundary as the production RPC path).
+    return NextResponse.json({ session, encounter: toClientEncounter(encounter) }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ code: 'ENCOUNTER_CREATE_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'ENCOUNTER_CREATE_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

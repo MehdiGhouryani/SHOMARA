@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { supabaseRpc } from '@/lib/supabase-http';
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     return NextResponse.json(projection);
   } catch (error) {
     return NextResponse.json(
-      { code: 'AVATAR_WORKSHOP_FAILED', message: error instanceof Error ? error.message : 'Unknown error' },
+      { code: 'AVATAR_WORKSHOP_FAILED', message: publicErrorMessage(error) },
       { status: apiErrorStatus(error) },
     );
   }
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json(projection);
   } catch (error) {
     return NextResponse.json(
-      { code: 'AVATAR_SAVE_FAILED', message: error instanceof Error ? error.message : 'Unknown error' },
+      { code: 'AVATAR_SAVE_FAILED', message: publicErrorMessage(error) },
       { status: apiErrorStatus(error) },
     );
   }

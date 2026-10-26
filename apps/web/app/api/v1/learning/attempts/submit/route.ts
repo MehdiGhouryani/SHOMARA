@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { assertBodyIdentityMatches, requireRequestPrincipal } from '@/lib/request-principal';
 import { runtimeStore } from '@/lib/learning-runtime';
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     if (result.stationPass) await recordAssignmentStationPass(learningIdentityId, body.encounterId);
     return NextResponse.json(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message = publicErrorMessage(error);
     return NextResponse.json({ code: 'ATTEMPT_SUBMIT_FAILED', message }, { status: apiErrorStatus(error) });
   }
 }

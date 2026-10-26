@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getSupabaseAuthUser, supabaseRestSelect } from './supabase-http';
+import { devPrincipalAllowed } from './request-principal';
 
 export interface TeacherAuthSession {
   accountId: string;
@@ -46,27 +47,38 @@ function encodeSession(session: TeacherAuthSession): string {
   return `${Buffer.from(payload).toString('base64url')}.${signSession(payload)}`;
 }
 
-// Approved development / seed accounts for robust local & testing execution
-const DEV_TEACHER_SEEDS: Record<string, { accountId: string; displayName: string; role: string; passwordHashPlaceholder: string }> = {
+// Approved development / seed accounts for robust local & testing execution.
+// Never usable in production: see devTeacherSeedsAllowed() below. The password is the
+// literal dev credential and is compared for real (no "any password of length >= 4" shortcut).
+const DEV_TEACHER_SEEDS: Record<string, { accountId: string; displayName: string; role: string; password: string }> = {
   'teacher_zahra': {
     accountId: 'teacher-account-01',
     displayName: 'مریم کریمی (آموزگار)',
     role: 'TEACHER',
-    passwordHashPlaceholder: 'TeacherPass123!',
+    password: 'TeacherPass123!',
   },
   'teacher-dev-01': {
     accountId: 'teacher-dev-01',
     displayName: 'آموزگار نمونه پایه اول',
     role: 'TEACHER',
-    passwordHashPlaceholder: 'TeacherPass123!',
+    password: 'TeacherPass123!',
   },
   'parent_user': {
     accountId: 'parent-dev-01',
     displayName: 'ولی دانش‌آموز',
     role: 'PARENT', // Non-teacher account to test strict rejection
-    passwordHashPlaceholder: 'ParentPass123!',
+    password: 'ParentPass123!',
   },
 };
+
+/**
+ * Fail-closed (R-006 / wave A1): the seed-account path only exists when BOTH hold:
+ * NODE_ENV is not "production" AND the operator explicitly set ALLOW_DEV_TEACHER_SEEDS=1.
+ * Evaluated per call (never cached at module load).
+ */
+export function devTeacherSeedsAllowed(): boolean {
+  return process.env.NODE_ENV !== 'production' && process.env.ALLOW_DEV_TEACHER_SEEDS === '1';
+}
 
 /**
  * Maps a teacher username to standard auth email
@@ -155,9 +167,15 @@ export async function authenticateTeacher(
     return session;
   }
 
-  // 2. Dev / Testing mode authentication (used when Supabase is not configured)
+  // 2. Dev / Testing mode authentication (explicitly enabled only; never in production).
+  // Fail closed with the same generic credential error so the enabled/disabled state and the
+  // existence of seed accounts are not distinguishable from a wrong password.
+  if (!devTeacherSeedsAllowed()) {
+    throw new Error('INVALID_CREDENTIALS: نام کاربری یا رمز عبور اشتباه است.');
+  }
+
   const devAccount = DEV_TEACHER_SEEDS[username] || DEV_TEACHER_SEEDS[username.toLowerCase()];
-  
+
   if (!devAccount) {
     throw new Error('INVALID_CREDENTIALS: نام کاربری یا رمز عبور اشتباه است.');
   }
@@ -167,8 +185,11 @@ export async function authenticateTeacher(
     throw new Error('TEACHER_ROLE_REQUIRED: این حساب کاربری دسترسی معلمان را ندارد.');
   }
 
-  if (password.length < 4) {
-    throw new Error('INVALID_CREDENTIALS: رمز عبور نامعتبر است.');
+  // Real credential comparison (constant-time); the placeholder is never accepted as validation.
+  const given = Buffer.from(password);
+  const expected = Buffer.from(devAccount.password);
+  if (given.length !== expected.length || !timingSafeEqual(given, expected)) {
+    throw new Error('INVALID_CREDENTIALS: نام کاربری یا رمز عبور اشتباه است.');
   }
 
   return {
@@ -218,7 +239,9 @@ export async function getTeacherSessionFromRequest(request?: Request): Promise<T
     const authHeader = request.headers.get('authorization');
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.slice(7).trim();
-      if (process.env.NODE_ENV !== 'production' && token.startsWith('dev-token-')) {
+      // Dev tokens share the dev-principal guard (A5): non-production AND ALLOW_DEV_PRINCIPAL=1.
+      // An internet-reachable deployment that only forgot NODE_ENV can no longer mint a teacher.
+      if (token.startsWith('dev-token-') && devPrincipalAllowed()) {
         return {
           accountId: token.replace('dev-token-', ''),
           username: 'teacher',

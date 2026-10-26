@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getTeacherSessionFromRequest } from '@/lib/teacher-auth';
+import { publicErrorMessage } from '@/lib/api-errors';
 
 export async function GET(request: Request) {
   try {
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         authenticated: false,
-        message: error instanceof Error ? error.message : 'خطای سرور',
+        message: publicErrorMessage(error),
       },
       { status: 500 }
     );

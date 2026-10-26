@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { teacherApplicationRepository } from '@/lib/teacher-applications';
 import { requireRequestAccountPrincipal } from '@/lib/request-principal';
+import { publicErrorMessage } from '@/lib/api-errors';
 
 export async function GET(
   request: Request,
@@ -42,7 +43,7 @@ export async function GET(
     return NextResponse.json(
       {
         code: 'INTERNAL_ERROR',
-        message: error instanceof Error ? error.message : 'خطای سرور',
+        message: publicErrorMessage(error),
       },
       { status: 500 }
     );

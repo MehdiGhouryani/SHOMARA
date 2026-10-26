@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { supabaseRpc } from '@/lib/supabase-http';
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     return NextResponse.json(projection);
   } catch (error) {
     return NextResponse.json(
-      { code: 'COLLECTION_SYNC_FAILED', message: error instanceof Error ? error.message : 'Unknown error' },
+      { code: 'COLLECTION_SYNC_FAILED', message: publicErrorMessage(error) },
       { status: apiErrorStatus(error) },
     );
   }
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json(projection);
   } catch (error) {
     return NextResponse.json(
-      { code: 'COLLECTION_ACK_FAILED', message: error instanceof Error ? error.message : 'Unknown error' },
+      { code: 'COLLECTION_ACK_FAILED', message: publicErrorMessage(error) },
       { status: apiErrorStatus(error) },
     );
   }

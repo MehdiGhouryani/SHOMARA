@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { assertBodyIdentityMatches, requireRequestPrincipal } from '@/lib/request-principal';
 import { createSessionId, runtimeStore } from '@/lib/learning-runtime';
@@ -39,6 +39,6 @@ export async function POST(request: Request) {
         });
     return NextResponse.json(session, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ code: 'SESSION_CREATE_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'SESSION_CREATE_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

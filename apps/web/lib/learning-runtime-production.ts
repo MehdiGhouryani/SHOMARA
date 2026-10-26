@@ -1,4 +1,5 @@
 import { supabaseRpc } from './supabase-http';
+import { toClientEncounter } from './learning-client-content';
 import type {
   AnswerSubmission,
   EncounterRecord,
@@ -173,7 +174,9 @@ export class SupabaseLearningRuntimeProduction {
       p_experience_form: null,
       p_learning_objective_id: input.learningObjectiveId ?? null,
     });
-    return data as unknown as EncounterRecord;
+    // Strip evaluator/answer-key fields before the payload leaves the server (wave A3): the
+    // runtime_create_encounter RPC returns content_versions.evaluator_config verbatim.
+    return toClientEncounter(data) as unknown as EncounterRecord;
   }
 
   async submitAttempt(command: Omit<SubmitAttemptCommand, 'learningIdentityId' | 'relationshipContextId'> & { relationshipContextId?: string | undefined }): Promise<SubmitAttemptResult> {

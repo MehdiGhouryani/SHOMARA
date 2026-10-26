@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { assertAssignmentBackendReady } from '@/lib/runtime-gates';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertAdultProjectionBackendReady } from '@/lib/runtime-gates';
 import { requireRequestAccountPrincipal } from '@/lib/request-principal';
 import { assignmentRuntime } from '@/lib/assignment-runtime';
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message = publicErrorMessage(error);
     return NextResponse.json({ code: 'ASSIGNMENT_CREATE_FAILED', message }, { status: apiErrorStatus(error) });
   }
 }

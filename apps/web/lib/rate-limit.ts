@@ -41,6 +41,14 @@ function pruneBuckets(now: number): void {
 
 export function resetRateLimitForTests(): void { buckets.clear(); }
 
+/**
+ * Best-effort client IP for rate-limit bucketing.
+ *
+ * LIMITATION (documented in START_HERE, wave A4): the leftmost x-forwarded-for value is the
+ * real client only when the platform in front of us overwrites/extends XFF (Vercel/Cloud Run do).
+ * A direct connection lets a caller spoof this header and split its IP bucket — the per-phone
+ * limiter remains the primary brake; a platform-specific trusted-proxy read is an owner decision.
+ */
 export function clientIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) return forwarded.split(',')[0]!.trim() || 'unknown';

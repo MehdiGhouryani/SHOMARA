@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertAdultProjectionBackendReady } from '@/lib/runtime-gates';
 import { requireRequestAccountPrincipal } from '@/lib/request-principal';
 import { adultProjectionRuntime } from '@/lib/adult-projections';
@@ -15,6 +15,6 @@ export async function POST(request: Request, ctx: { params: Promise<{ learningId
     return NextResponse.json(record,{status:201});
   } catch(error) {
     const status=error instanceof Error && (error.message==='FORBIDDEN_STUDENT'||error.message==='ACCOUNT_CONTEXT_MISMATCH'||error.message==='DEV_ACCOUNT_PRINCIPAL_REQUIRED')?403:400;
-    return NextResponse.json({code:'OBSERVATION_CREATE_FAILED',message:error instanceof Error?error.message:'unknown error'},{status});
+    return NextResponse.json({code:'OBSERVATION_CREATE_FAILED',message:publicErrorMessage(error)},{status});
   }
 }

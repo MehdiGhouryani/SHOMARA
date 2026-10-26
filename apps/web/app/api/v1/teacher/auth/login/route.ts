@@ -52,6 +52,8 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    // Raw message is used ONLY for internal classification and server-side logging; every client
+    // response below is a fixed, generic Persian message (wave A5).
     const msg = error instanceof Error ? error.message : 'خطای سرور در احراز هویت';
     if (msg.includes('TEACHER_SESSION_SECRET_MISSING')) {
       // Server misconfiguration: never expose details, never issue an unsigned/weakly signed session.

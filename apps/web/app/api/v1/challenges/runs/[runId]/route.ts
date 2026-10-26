@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { productionChallengeRuntime } from '@/lib/challenge-runtime-production';
@@ -12,7 +12,7 @@ export async function GET(request: Request, context: { params: Promise<{ runId: 
     const { runId } = await context.params;
     return NextResponse.json(await productionChallengeRuntime(principal.accessToken).run(runId));
   } catch (error) {
-    return NextResponse.json({ code: 'CHALLENGE_RUN_READ_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'CHALLENGE_RUN_READ_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }
 
@@ -26,6 +26,6 @@ export async function POST(request: Request, context: { params: Promise<{ runId:
     if (body.action !== 'EXITED') throw new Error('FINISH_REASON_INVALID');
     return NextResponse.json(await productionChallengeRuntime(principal.accessToken).finish(runId));
   } catch (error) {
-    return NextResponse.json({ code: 'CHALLENGE_FINISH_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'CHALLENGE_FINISH_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

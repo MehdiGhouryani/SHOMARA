@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { supabaseRpc } from '@/lib/supabase-http';
 
@@ -39,7 +39,7 @@ export async function GET(
     return NextResponse.json(snapshot);
   } catch (error) {
     return NextResponse.json(
-      { code: 'SESSION_RESUME_FAILED', message: error instanceof Error ? error.message : 'Unknown error' },
+      { code: 'SESSION_RESUME_FAILED', message: publicErrorMessage(error) },
       { status: apiErrorStatus(error) },
     );
   }

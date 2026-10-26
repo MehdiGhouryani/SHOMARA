@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { assertContentBackendReady } from '@/lib/runtime-gates';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { checkEntitlement, getPackage } from '../../../../../../lib/content-delivery';
 
@@ -25,6 +25,6 @@ export async function GET(request: Request, ctx: { params: Promise<{ packageId: 
       },
     });
   } catch (error) {
-    return NextResponse.json({ code: 'CONTENT_PACKAGE_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'CONTENT_PACKAGE_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

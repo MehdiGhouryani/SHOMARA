@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { supabaseRpc } from '@/lib/supabase-http';
 import { G1_STATIONS } from '@math/contracts';
@@ -24,6 +24,6 @@ export async function GET(request: Request) {
       activeSession: null,
     });
   } catch (error) {
-    return NextResponse.json({ code: 'PROGRESSION_SNAPSHOT_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'PROGRESSION_SNAPSHOT_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

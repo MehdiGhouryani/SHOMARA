@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { assertAssignmentBackendReady } from '@/lib/runtime-gates';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertAdultProjectionBackendReady } from '@/lib/runtime-gates';
 import { requireRequestAccountPrincipal } from '@/lib/request-principal';
 import { assignmentRuntime } from '@/lib/assignment-runtime';
@@ -22,7 +22,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ instanceId
     const recheck = await assignmentRuntime.service.requestRecheck(instanceId, body.requestedByAccountId, body.reason);
     return NextResponse.json(recheck, { status: 201 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message = publicErrorMessage(error);
     return NextResponse.json({ code: 'RECHECK_REQUEST_FAILED', message }, { status: apiErrorStatus(error) });
   }
 }

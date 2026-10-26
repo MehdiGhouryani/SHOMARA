@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { requireRequestPrincipal } from '@/lib/request-principal';
 import { supabaseRpc } from '@/lib/supabase-http';
 import { evaluateJumpAssessment, publicJumpAssessment } from '@/lib/jump-assessment-bank';
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     if (!assessment) return NextResponse.json({ code: 'JUMP_ASSESSMENT_NOT_FOUND' }, { status: 404 });
     return NextResponse.json(assessment);
   } catch (error) {
-    return NextResponse.json({ code: 'JUMP_ASSESSMENT_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'JUMP_ASSESSMENT_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }
 
@@ -50,6 +50,6 @@ export async function POST(request: Request) {
     if (!result.ok) return NextResponse.json({ code: result.code }, { status: 400 });
     return NextResponse.json({ ...result, unlockGranted: result.passed, idempotentReplay: false });
   } catch (error) {
-    return NextResponse.json({ code: 'JUMP_ASSESSMENT_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'JUMP_ASSESSMENT_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }

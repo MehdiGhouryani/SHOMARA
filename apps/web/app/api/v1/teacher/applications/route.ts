@@ -5,6 +5,7 @@ import {
   TeacherApplicationValidationError,
 } from '@/lib/teacher-applications';
 import { requireRequestAccountPrincipal } from '@/lib/request-principal';
+import { publicErrorMessage } from '@/lib/api-errors';
 
 export async function POST(request: Request) {
   try {
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           code: 'VALIDATION_ERROR',
-          message: error.message,
+          message: publicErrorMessage(error),
         },
         { status: 400 }
       );

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { assertAssignmentBackendReady } from '@/lib/runtime-gates';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertAdultProjectionBackendReady } from '@/lib/runtime-gates';
 import { requireRequestAccountPrincipal } from '@/lib/request-principal';
 import { assignmentRuntime } from '@/lib/assignment-runtime';
@@ -17,7 +17,7 @@ export async function GET(request: Request, ctx: { params: Promise<{ assignmentI
     const instances = await assignmentRuntime.repo.listInstances(assignmentId);
     return NextResponse.json({ assignment, instances });
   } catch (error) {
-    return NextResponse.json({ code: 'ASSIGNMENT_READ_FAILED', message: error instanceof Error ? error.message : 'Unknown error' }, { status: 400 });
+    return NextResponse.json({ code: 'ASSIGNMENT_READ_FAILED', message: publicErrorMessage(error) }, { status: 400 });
   }
 }
 
@@ -40,7 +40,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ assignment
     const result = await assignmentRuntime.service.publish(assignmentId, body.learnerIds);
     return NextResponse.json(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message = publicErrorMessage(error);
     return NextResponse.json({ code: 'ASSIGNMENT_PUBLISH_FAILED', message }, { status: apiErrorStatus(error) });
   }
 }

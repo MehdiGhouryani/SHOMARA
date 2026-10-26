@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { apiErrorStatus } from '@/lib/api-errors';
+import { apiErrorStatus, publicErrorMessage } from '@/lib/api-errors';
 import { assertLearningRuntimeBackendReady } from '@/lib/runtime-gates';
 import type { OfflineSyncAction, SyncReceipt } from '@math/offline-sync';
 import { assertBodyIdentityMatches, requireRequestPrincipal } from '@/lib/request-principal';
@@ -35,14 +35,14 @@ export async function POST(request: Request) {
         const receipt = await dispatch(action, principal.accessToken, principal.learningIdentityId);
         results.push(receipt);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'SYNC_DISPATCH_FAILED';
+        const message = publicErrorMessage(error);
         const retryable = message.includes('NETWORK') || message.includes('SUPABASE_RPC_5') || message.includes('SUPABASE_REST_5') || message.includes('HTTP_429');
         results.push({ status: retryable ? 'RETRY' : 'REJECTED', idempotencyKey: action.idempotencyKey, errorCode: message });
       }
     }
     return NextResponse.json({ results });
   } catch (error) {
-    return NextResponse.json({ code: 'SYNC_BATCH_FAILED', message: error instanceof Error ? error.message : 'SYNC_BATCH_FAILED' }, { status: apiErrorStatus(error) });
+    return NextResponse.json({ code: 'SYNC_BATCH_FAILED', message: publicErrorMessage(error) }, { status: apiErrorStatus(error) });
   }
 }
 
