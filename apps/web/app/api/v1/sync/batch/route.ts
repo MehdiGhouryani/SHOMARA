@@ -8,6 +8,50 @@ import { productionLearningRuntime } from '@/lib/learning-runtime-production';
 import { supabaseRestSelect } from '@/lib/supabase-http';
 import { recordAssignmentStationPass } from '@/lib/assignment-station-pass';
 
+// Server-enforced batch/field limits (wave B3). TypeScript assertions are not runtime validation,
+// so every action is shape-checked before it can reach the runtime or the RPC boundary.
+const SYNC_BATCH_BODY_LIMIT_BYTES = 256 * 1024;
+const SYNC_ACTION_PAYLOAD_LIMIT_BYTES = 32 * 1024;
+const SYNC_MAX_ANSWERS = 20;
+const SYNC_MAX_ATTEMPT_NUMBER = 50;
+const SYNC_FIELD_LIMIT = 128;
+const SYNC_OPERATION_TYPES = new Set(['SUBMIT_ATTEMPT', 'SESSION_RESUME', 'SESSION_UPDATE', 'EVENT_INGEST']);
+
+function isBoundedString(value: unknown, max = SYNC_FIELD_LIMIT): value is string {
+  return typeof value === 'string' && value.length > 0 && value.length <= max;
+}
+
+function isValidSubmitPayload(payload: unknown): payload is Record<string, unknown> {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false;
+  const p = payload as Record<string, unknown>;
+  if (!isBoundedString(p.sessionId) || !isBoundedString(p.encounterId) || !isBoundedString(p.clientIdempotencyKey)) return false;
+  if (typeof p.attemptNumber !== 'number' || !Number.isInteger(p.attemptNumber) || p.attemptNumber < 1 || p.attemptNumber > SYNC_MAX_ATTEMPT_NUMBER) return false;
+  if (!Array.isArray(p.answers) || p.answers.length === 0 || p.answers.length > SYNC_MAX_ANSWERS) return false;
+  for (const answer of p.answers) {
+    if (!answer || typeof answer !== 'object' || Array.isArray(answer)) return false;
+    const a = answer as Record<string, unknown>;
+    if (typeof a.answerIndex !== 'number' || !Number.isInteger(a.answerIndex) || a.answerIndex < 0) return false;
+    if (a.answerPayload !== undefined && a.answerPayload !== null && typeof a.answerPayload === 'object' && Object.keys(a.answerPayload).length > 32) return false;
+  }
+  return true;
+}
+
+/** Malformed or oversized actions are rejected permanently, without failing the whole batch. */
+function isSyncActionShapeValid(action: OfflineSyncAction): boolean {
+  if (!isBoundedString(action.id, 256) || !isBoundedString(action.idempotencyKey, 256)) return false;
+  if (!isBoundedString(action.clientInstallationId) || !isBoundedString(action.learningIdentityId)) return false;
+  if (typeof action.operationType !== 'string' || !SYNC_OPERATION_TYPES.has(action.operationType)) return false;
+  if (!action.payload || typeof action.payload !== 'object' || Array.isArray(action.payload)) return false;
+  if (JSON.stringify(action.payload ?? {}).length > SYNC_ACTION_PAYLOAD_LIMIT_BYTES) return false;
+  if (action.operationType === 'SUBMIT_ATTEMPT') return isValidSubmitPayload(action.payload);
+  return true;
+}
+
+function invalidReceipt(action: OfflineSyncAction | null | undefined): SyncReceipt {
+  const key = action && typeof action === 'object' && isBoundedString(action.idempotencyKey, 256) ? action.idempotencyKey : 'UNKNOWN';
+  return { status: 'REJECTED', idempotencyKey: key, errorCode: 'SYNC_ACTION_INVALID' };
+}
+
 export async function POST(request: Request) {
   try {
     assertLearningRuntimeBackendReady();
@@ -24,11 +68,24 @@ export async function POST(request: Request) {
       });
       if (installations.length !== 1) throw new Error('CLIENT_INSTALLATION_FORBIDDEN');
     }
-    const body = await request.json() as { actions?: OfflineSyncAction[] };
-    const actions = body.actions ?? [];
+    const raw = await request.text();
+    if (Buffer.byteLength(raw, 'utf8') > SYNC_BATCH_BODY_LIMIT_BYTES) {
+      return NextResponse.json({ code: 'SYNC_BATCH_TOO_LARGE' }, { status: 413 });
+    }
+    let parsed: { actions?: OfflineSyncAction[] };
+    try {
+      parsed = JSON.parse(raw) as { actions?: OfflineSyncAction[] };
+    } catch {
+      return NextResponse.json({ code: 'SYNC_PAYLOAD_INVALID' }, { status: 400 });
+    }
+    const actions = parsed.actions ?? [];
     if (actions.length > 20) return NextResponse.json({ code: 'SYNC_BATCH_TOO_LARGE' }, { status: 413 });
     const results: SyncReceipt[] = [];
     for (const action of actions) {
+      if (!action || typeof action !== 'object' || !isSyncActionShapeValid(action)) {
+        results.push(invalidReceipt(action));
+        continue;
+      }
       try {
         assertBodyIdentityMatches(principal, action.learningIdentityId);
         if (action.clientInstallationId !== installationId) throw new Error('CLIENT_INSTALLATION_CONTEXT_MISMATCH');

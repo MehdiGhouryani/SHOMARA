@@ -3,6 +3,7 @@ import type { OfflineSyncAction, SyncReceipt, SyncTransport } from '@math/offlin
 import { FileSyncQueueStore } from './FileSyncQueueStore';
 import { OfflineSyncManager } from '@math/offline-sync';
 import { getAuthHeaders } from '../auth/AuthSession';
+import { notifyAuthExpired } from '../auth/authExpiry';
 
 export class MobileSyncTransport implements SyncTransport {
   constructor(private readonly baseUrl: string, private readonly installationId: string, private readonly devLearningIdentityId: string | undefined) {}
@@ -16,6 +17,11 @@ export class MobileSyncTransport implements SyncTransport {
     if (!response.ok) {
       // 401/403 usually mean an expired/missing session: keep the learner's attempt and retry after re-login.
       // 408/425/429/5xx are transient. Only other 4xx (malformed / not allowed) are permanent rejections.
+      // A 401 while holding a token goes through the central auth-expiry path (R-009/D3): the token
+      // is cleared and "needs re-login" is published; the queued attempt itself stays (RETRY).
+      if (response.status === 401 && Boolean(getAuthHeaders().Authorization)) {
+        await notifyAuthExpired();
+      }
       const transient = response.status >= 500 || response.status === 429 || response.status === 408 || response.status === 425 || response.status === 401 || response.status === 403;
       if (transient) return { status: 'RETRY', idempotencyKey: action.idempotencyKey, errorCode: `HTTP_${response.status}` };
       return { status: 'REJECTED', idempotencyKey: action.idempotencyKey, errorCode: `HTTP_${response.status}` };

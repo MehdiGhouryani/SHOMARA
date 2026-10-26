@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
@@ -15,6 +15,7 @@ import { Text } from '../src/ui/AppText';
 import { S } from '../src/ui/strings.fa';
 import { toFa } from '../src/ui/digits';
 import { clearAccessToken } from '../src/auth/AuthSession';
+import { isReLoginNeeded, subscribeAuthExpired } from '../src/auth/authExpiry';
 import { clearClientInstallationId } from '../src/auth/ClientInstallation';
 import { DS } from '../src/ui/design-system';
 
@@ -26,6 +27,12 @@ export default function ParentScreen() {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [typed, setTyped] = useState('');
+  // R-009/D3: the "needs re-login" note lives only in the parent area; the child flow is never interrupted.
+  const [reloginNeeded, setReloginNeeded] = useState(isReLoginNeeded());
+  useEffect(() => {
+    setReloginNeeded(isReLoginNeeded());
+    return subscribeAuthExpired(() => setReloginNeeded(true));
+  }, []);
   const canDelete = typed.trim() === S.parent.deleteTypeWord;
 
   function askDelete() {
@@ -74,6 +81,15 @@ export default function ParentScreen() {
                 <Text style={styles.homeBody}>{reminderCopy.bodyFa}</Text>
               </View>
             </View>
+
+            {reloginNeeded ? (
+              <View style={styles.section}>
+                <Text style={styles.kicker}>ورود</Text>
+                <View style={styles.homeCard}>
+                  <Text style={styles.homeBody}>{S.parent.reloginNotice}</Text>
+                </View>
+              </View>
+            ) : null}
 
             {shouldShowParentGuidance(state?.profile.gradeId) ? (
               <View style={styles.section}>

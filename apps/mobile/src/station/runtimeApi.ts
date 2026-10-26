@@ -1,6 +1,7 @@
 import type { AnswerPayload, StationContent, SubmitOutcome } from './types';
 import { createMobileSyncManager, stableActionKey } from '../sync/MobileSyncManager';
 import { getAuthHeaders } from '../auth/AuthSession';
+import { notifyAuthExpired } from '../auth/authExpiry';
 import { ensureClientInstallationId } from '../auth/ClientInstallation';
 import { API_BASE_URL, isProductionApiSafe } from '../config/runtime';
 const LEARNING_ID = process.env.EXPO_PUBLIC_DEV_LEARNING_ID ?? 'dev-child-001';
@@ -200,7 +201,15 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
   } catch {
     throw new NetworkRequestError();
   }
-  if (!response.ok) throw new ApiRequestError(response.status);
+  if (!response.ok) {
+    // Central auth-expiry path (R-009/D3): a 401 while actually holding a token clears the
+    // session and publishes "needs re-login"; queue and local progress are untouched. A 401
+    // without a token (dev/principalless calls) must not clear anything.
+    if (response.status === 401 && Boolean(getAuthHeaders().Authorization)) {
+      await notifyAuthExpired();
+    }
+    throw new ApiRequestError(response.status);
+  }
   return (await response.json()) as T;
 }
 

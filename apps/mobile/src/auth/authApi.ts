@@ -1,6 +1,7 @@
 import { normalizeDigits, isValidOtp, isValidPhone } from '@math/contracts';
 import { API_BASE_URL, productionConfigError } from '../config/runtime';
 import { setAccessToken } from './AuthSession';
+import { markReLoginHandled } from './authExpiry';
 
 export type MobileOtpResponse = {
   ok: boolean;
@@ -52,5 +53,7 @@ export async function verifyOtp(phoneNumber: string, otpCode: string): Promise<M
   if (!token) return { ok: false, code: 'AUTH_SESSION_MISSING', message: 'ورود تأیید شد اما نشست امن برنامه ساخته نشد. دوباره تلاش کن.' };
   const persisted = await setAccessToken(token);
   if (!persisted) return { ok: false, code: 'AUTH_SESSION_SAVE_FAILED', message: 'نشست امن ذخیره نشد. فضای امن دستگاه را بررسی کن و دوباره تلاش کن.' };
+  // A fresh OTP session retires the "needs re-login" state (R-009/D3).
+  markReLoginHandled();
   return result;
 }
