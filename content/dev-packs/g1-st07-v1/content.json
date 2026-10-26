@@ -1,0 +1,189 @@
+{
+  "schema": "math-content-package/v1",
+  "environment": "DEV_ONLY",
+  "gradeId": "G1",
+  "stationId": "G1-ST07",
+  "packageVersion": "0.1.0-provisional",
+  "note": "generated from docs/content-spec/grade1/shomara-stage7-pilot-ST07.md by scripts/build-st07-devpack.mjs (D-018): skills keep spec ids (R-01 open), mastery follows the repo runtime (R-03)",
+  "encounters": [
+    {
+      "contentVersionId": "G1-ST07-E01",
+      "learningRole": "INSTRUCTION",
+      "experienceForm": "CONVERSATION_EXPLANATION",
+      "skillId": "SK-ST07-1"
+    },
+    {
+      "contentVersionId": "G1-ST07-E02",
+      "learningRole": "INSTRUCTION",
+      "experienceForm": "CONVERSATION_EXPLANATION",
+      "skillId": "SK-ST07-1"
+    },
+    {
+      "contentVersionId": "G1-ST07-E03",
+      "learningRole": "INSTRUCTION",
+      "experienceForm": "CONVERSATION_EXPLANATION",
+      "skillId": "SK-ST07-1"
+    },
+    {
+      "contentVersionId": "G1-ST07-E04",
+      "learningRole": "INSTRUCTION",
+      "experienceForm": "CONVERSATION_EXPLANATION",
+      "skillId": "SK-ST07-1"
+    },
+    {
+      "contentVersionId": "G1-ST07-E05",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-3",
+      "specItem": "ST07.P2.i01",
+      "answer": {
+        "type": "option",
+        "value": 1
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E06",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-3",
+      "specItem": "ST07.P2.i02",
+      "answer": {
+        "type": "option",
+        "value": 2
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E07",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-1",
+      "specItem": "ST07.P2.i03",
+      "answer": {
+        "type": "trace",
+        "value": 1
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E08",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-1",
+      "specItem": "ST07.P2.i04",
+      "answer": {
+        "type": "trace",
+        "value": 2
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E09",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-2",
+      "specItem": "ST07.P2.i05",
+      "answer": {
+        "type": "option",
+        "value": "count=2"
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E10",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-2",
+      "specItem": "ST07.P2.i06",
+      "answer": {
+        "type": "option",
+        "value": "count=1"
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E11",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "CONVERSATION_EXPLANATION",
+      "skillId": "SK-ST07-2",
+      "specItem": "ST07.P2.i07",
+      "answer": {
+        "type": "count_placed",
+        "value": 1
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E12",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "CONVERSATION_EXPLANATION",
+      "skillId": "SK-ST07-2",
+      "specItem": "ST07.P2.i08",
+      "answer": {
+        "type": "count_placed",
+        "value": 2
+      }
+    },
+    {
+      "contentVersionId": "G1-ST07-E13",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "MINI_GAME",
+      "skillId": "SK-ST07-4",
+      "specItem": "ST07.P3.r01"
+    },
+    {
+      "contentVersionId": "G1-ST07-E14",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "MINI_GAME",
+      "skillId": "SK-ST07-4",
+      "specItem": "ST07.P3.r02"
+    },
+    {
+      "contentVersionId": "G1-ST07-E15",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "MINI_GAME",
+      "skillId": "SK-ST07-4",
+      "specItem": "ST07.P3.r03"
+    },
+    {
+      "contentVersionId": "G1-ST07-E16",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "MINI_GAME",
+      "skillId": "SK-ST07-4",
+      "specItem": "ST07.P3.r04"
+    },
+    {
+      "contentVersionId": "G1-ST07-E17",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "MINI_GAME",
+      "skillId": "SK-ST07-4",
+      "specItem": "ST07.P3.r05"
+    },
+    {
+      "contentVersionId": "G1-ST07-E18",
+      "learningRole": "GUIDED_PRACTICE",
+      "experienceForm": "MINI_GAME",
+      "skillId": "SK-ST07-4",
+      "specItem": "ST07.P3.r06"
+    },
+    {
+      "contentVersionId": "G1-ST07-E19",
+      "learningRole": "INDEPENDENT_PRACTICE",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-1",
+      "specItem": "ST07.F1.w1a"
+    },
+    {
+      "contentVersionId": "G1-ST07-E20",
+      "learningRole": "MASTERY_CHECK",
+      "experienceForm": "PUZZLE",
+      "skillId": "SK-ST07-1",
+      "checkContract": {
+        "requiredCorrect": 4,
+        "totalItems": 5,
+        "separateSession": true
+      },
+      "specItems": [
+        "ST07.P5.i01",
+        "ST07.P5.i02",
+        "ST07.P5.i03",
+        "ST07.P5.i04",
+        "ST07.P5.i05"
+      ]
+    }
+  ]
+}

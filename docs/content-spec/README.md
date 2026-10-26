@@ -4,7 +4,7 @@
 reconciliation in section 4 is done and the owner has answered the open decisions. It sits outside `docs/source/`,
 `docs/reference/` and `docs/adr/` on purpose (the repo keeps exactly one canonical source per contract).
 
-**UI agents (phases U5b to U8): do not read this folder.** It is a separate track (curriculum content and audio) and 400+ KB of Persian.
+**UI-track agents (phases U5b to P3): you may read `grade1/shomara-stage5-shared-references.md` sections 2 to 5 only** (SFX palette, haptics, motion, feedback/hint ladder — as adopted through D-016/D-017). Everything else in this folder stays a separate track (curriculum content and audio) and is 400+ KB of Persian. Section 5.3 is a proposal that must be reconciled with the runtime (see VALIDATION_FINDINGS.md) before content authoring.
 
 ## 1. What is here (`grade1/`)
 | File | What it is |
@@ -38,6 +38,20 @@ Not checked: stage 1, the research documents' sources, TTS pronunciation, and th
 | R-07 | Guide character | UI v1 guide is Number; legacy stages still use the old cast (Aria, Kiyo, Dana, Jiko) | one guide voice; thematic characters are silent | align after UI phases U5b to U8 |
 | R-08 | Validator | none | "0 errors" was reported by a validator that is **not included** in the delivered files | rebuild it in the repo (`scripts/`, js-yaml is available) so the claim is reproducible |
 | R-09 | Open decisions | n/a | 13 decisions in the summary section 5 (names, narrator voice, haptics, SFX source, religious content, accreditation...) | owner answers; defaults are listed there |
+
+### 3b. Reconciliation status (2026-10-25, phase P4 — verified against the repo, not taken from this README)
+
+| # | Disposition |
+|---|---|
+| R-01 | **Owner decision** — repo taxonomy is 64 skills marked `PROVISIONAL / DERIVED` (`docs/source/…skill_graph…`); the spec's 100 `SK-STnn-k` ids are not a mapping target yet. The ST07 dev pack keeps the spec ids verbatim and is marked provisional (D-018). |
+| R-02 | **Owner mapping** — 15 templates `T01–T15` vs the repo's `G1-GAME-###`; the P4 adapter carries a minimal T→experienceForm table for ST07 only (D-018). |
+| R-03 | **Verified mismatch** — spec «۳ از ۴»/pool ≥12/jump «۴ از ۵» were authored against STAGE_FLOW, which is not in this repo; the runtime uses 5-item checks, 4 required, two sessions (`learning-runtime/src/policies.ts`). The dev pack follows the runtime. Owner must reconcile before batch authoring (P6 unblock condition). |
+| R-04 | **Partially DONE in P4** — validator (R-08) + ingestion adapter proven on ST07 behind `CONTENT_ST07_DEVPACK=1` (D-018). Full ingestion design stays phased. |
+| R-05 | **DEFERRED** — recorded audio needs a licence check, a contract field, storage/cache and an admin panel (none exist); TTS via `expo-speech` stays the playable path. |
+| R-06 | **Owner decision** — all 25 `G1_STATIONS` titles appear verbatim in stage-4 (verified); the proposed renames concern name↔content fit. No rename was made. |
+| R-07 | **Aligned as far as approved pages go** — UI v1 guide is Number on every v1 page (U8); legacy stages keep the old cast until their approved pages exist (D-008/D-009). |
+| R-08 | **DONE in P4** — `scripts/verify-content-spec.mjs` reproduces the 11 rules; ST07 = 0 errors, 0 warnings; 11 negative fixtures self-test the engine (`VALIDATION_FINDINGS.md`). |
+| R-09 | **Owner** — the 13 open decisions of the project summary gate P6. |
 
 ## 4. Order of work (do not skip steps)
 1. **Reconciliation audit** (read-only; Prompt 5 in `docs/handoff/PROMPTS.md`): evidence per ledger row, mapping tables, questions for the owner.

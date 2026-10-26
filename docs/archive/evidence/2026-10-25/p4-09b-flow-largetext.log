@@ -1,0 +1,29 @@
+
+> math-learning-product@0.1.0 flow:largetext
+> node scripts/flow-largetext-run.mjs
+
+parity bundle built: apps\mobile\parity\dist-flow
+parity bundle built: apps\mobile\parity\dist-flow
+parity bundle built: apps\mobile\parity\dist-flow
+parity bundle built: apps\mobile\parity\dist-flow
+PASS 13 practice tab: no new overlapping text at 130%
+PASS 13 practice tab: no new clipped text at 130%
+PASS 13 practice tab: no new overlapping text at 200%
+PASS 13 practice tab: no new clipped text at 200%
+PASS 13 practice tab: no runtime errors
+PASS 05 path tab: no new overlapping text at 130%
+PASS 05 path tab: no new clipped text at 130%
+PASS 05 path tab: no new overlapping text at 200%
+PASS 05 path tab: no new clipped text at 200%
+PASS 05 path tab: no runtime errors
+PASS 07/08 lesson + question: no new overlapping text at 130%
+PASS 07/08 lesson + question: no new clipped text at 130%
+PASS 07/08 lesson + question: no new overlapping text at 200%
+PASS 07/08 lesson + question: no new clipped text at 200%
+PASS 07/08 lesson + question: no runtime errors
+PASS settings: no new overlapping text at 130%
+PASS settings: no new clipped text at 130%
+PASS settings: no new overlapping text at 200%
+PASS settings: no new clipped text at 200%
+PASS settings: no runtime errors
+FLOW_LARGETEXT: PASS (20/20)

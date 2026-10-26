@@ -11,8 +11,9 @@ import { join } from 'node:path';
 const root = process.cwd();
 // Excluded: dev.mjs is a dev server, generate-design-system-css.mjs and parity-goldens.mjs are GENERATORS (they
 // rewrite generated output; goldens must only change deliberately via `npm run parity:goldens`, guarded by
-// verify-parity-goldens-pinned.mjs), run-p02-gates.mjs is orchestrated separately, and this file cannot run itself.
-const excluded = new Set(['dev.mjs', 'generate-design-system-css.mjs', 'parity-goldens.mjs', 'run-p02-gates.mjs', 'verify-static-all.mjs']);
+// verify-parity-goldens-pinned.mjs), build-st07-devpack.mjs is the deliberate-only ST07 content generator
+// (CONTENT_ST07_DEVPACK=1, D-018), run-p02-gates.mjs is orchestrated separately, and this file cannot run itself.
+const excluded = new Set(['dev.mjs', 'generate-design-system-css.mjs', 'parity-goldens.mjs', 'run-p02-gates.mjs', 'verify-static-all.mjs', 'build-st07-devpack.mjs']);
 const needsDist = ['learning-runtime', 'offline-sync', 'adult-projections', 'assignment-runtime']
   .filter((p) => !existsSync(join(root, 'packages', p, 'dist', 'index.js')));
 if (needsDist.length) {
