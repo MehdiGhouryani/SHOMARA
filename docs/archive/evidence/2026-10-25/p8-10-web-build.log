@@ -1,0 +1,84 @@
+
+> @math/web@0.1.0 build
+> next build
+
+▲ Next.js 16.3.6 (Turbopack)
+✓ Running next.config.ts took 120ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.2s
+  Running TypeScript ...
+  Finished TypeScript in 3.7s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/32) ...
+  Generating static pages using 7 workers (8/32) 
+  Generating static pages using 7 workers (16/32) 
+  Generating static pages using 7 workers (24/32) 
+✓ Generating static pages using 7 workers (32/32) in 638ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/v1/assignment-instances/[instanceId]/outcome
+├ ƒ /api/v1/assignment-instances/[instanceId]/recheck
+├ ƒ /api/v1/assignment-instances/[instanceId]/recheck/complete
+├ ƒ /api/v1/assignments
+├ ƒ /api/v1/assignments/[assignmentId]
+├ ƒ /api/v1/assignments/[assignmentId]/content
+├ ƒ /api/v1/auth/otp/start
+├ ƒ /api/v1/auth/otp/verify
+├ ƒ /api/v1/avatar
+├ ƒ /api/v1/challenges/runs
+├ ƒ /api/v1/challenges/runs/[runId]
+├ ƒ /api/v1/challenges/runs/[runId]/hints
+├ ƒ /api/v1/challenges/runs/[runId]/rounds
+├ ƒ /api/v1/challenges/stations/[stationCode]
+├ ƒ /api/v1/client/installations
+├ ƒ /api/v1/collection
+├ ƒ /api/v1/content/entitlements/[packageId]
+├ ƒ /api/v1/content/manifest
+├ ƒ /api/v1/content/packages/[packageId]
+├ ƒ /api/v1/learning-identities/[learningIdentityId]/assignments
+├ ƒ /api/v1/learning/attempts/submit
+├ ƒ /api/v1/learning/sessions
+├ ƒ /api/v1/learning/sessions/[sessionId]
+├ ƒ /api/v1/learning/sessions/[sessionId]/encounters
+├ ƒ /api/v1/missions/hub
+├ ƒ /api/v1/parent/[parentAccountId]/children
+├ ƒ /api/v1/parent/[parentAccountId]/today
+├ ƒ /api/v1/parent/today
+├ ƒ /api/v1/progression
+├ ƒ /api/v1/progression/jump
+├ ƒ /api/v1/sync/batch
+├ ƒ /api/v1/teacher/[teacherAccountId]/classes
+├ ƒ /api/v1/teacher/[teacherAccountId]/classes/[classId]
+├ ƒ /api/v1/teacher/[teacherAccountId]/needs-attention
+├ ƒ /api/v1/teacher/[teacherAccountId]/recheck-queue
+├ ƒ /api/v1/teacher/[teacherAccountId]/students/[learningIdentityId]
+├ ƒ /api/v1/teacher/applications
+├ ƒ /api/v1/teacher/applications/[id]
+├ ƒ /api/v1/teacher/auth/login
+├ ƒ /api/v1/teacher/auth/logout
+├ ƒ /api/v1/teacher/auth/session
+├ ƒ /api/v1/teacher/students/[learningIdentityId]/observations
+├ ƒ /api/v1/worlds
+├ ○ /auth
+├ ○ /auth/code
+├ ○ /child
+├ ○ /grade
+├ ○ /parent
+├ ○ /profile/avatar
+├ ○ /settings
+├ ○ /start-check
+├ ƒ /station/[stationId]
+├ ƒ /station/[stationId]/play
+├ ƒ /station/[stationId]/start
+├ ƒ /unit/[unitId]
+├ ƒ /unit/[unitId]/jump
+└ ○ /welcome
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

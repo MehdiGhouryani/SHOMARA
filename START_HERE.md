@@ -1,9 +1,9 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 23
+file_version: 24
 last_updated: 2026-10-25
-snapshot_id: SNAP-20261025-07
+snapshot_id: SNAP-20261025-09
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
 current_stage: Stage A (امنیت و Learning Truth) -> A1/A4/A5/A8 انجام شد؛ A2 (مسیر مرکزی ۴۰۱)، A3/A6/A7 (بخش باقی‌مانده)، persistence واقعی assignment/adult و O-1 باز است
@@ -110,6 +110,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 | `next build` (web) | FAIL (useSearchParams بدون Suspense) | **exit 0** |
 
 **شمارش‌های اصلاح‌شده (با دستور شمرده شد):** `route.ts` = 43 (نه 46)؛ فایل تست = 50 (49 در vitest، بعد از SNAP-20261014-04)؛ `scripts/verify-*` = 55 فایل؛ `static-all` = 58 جزء. `challenge-runtime` اکنون هم در vitest اجرا می‌شود (shim قدیمی `scripts/test-challenge-runtime.mjs` کد+پیام خطا را با هم می‌سنجید و دو تست واقعی را پنهان می‌کرد).
+
+**اجرای نهایی ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-09، P8 بستن؛ لاگ‌های `p8-*` در `docs/archive/evidence/2026-10-25/`):** build:packages و typecheck هر ۹ workspace exit 0؛ vitest **۴۲۵/۴۲۵** (۵۴ فایل)؛ static **۷۶/۷۶**؛ parity **۲۹/۲۹**؛ flowها: آنبوردینگ **۳۲/۳۲**، مسیر **۲۹/۲۹**، ایستگاه **۵۷/۵۷**، تب‌ها **۲۴/۲۴**، متن‌بزرگ **۲۰/۲۰**؛ content-spec validator exit 0 (ST07: ۰ خطا)؛ web build و باندل Metro اندروید exit 0. هیچ عددی نسبت به شروع اجرا کم نشده؛ هر افزایش (+۵ تست واحد، +۴ آنبوردینگ، +۱۰ تب‌ها، +۲۰ متن‌بزرگ، +۷ ایستگاه، +۲ verifier) با گزارش ثبت شده است. محیط: Node 22.16.0 (اجرای موقت علامت‌دار با پرچم خودکار؛ نصب ≥22.18 کار مالک).
 
 **اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-06، P4 خط محتوا؛ لاگ‌های `p4-*` در `docs/archive/evidence/2026-10-25/`):** اعتبارسنج محتوایی ساخته شد: `scripts/verify-content-spec.mjs` هر ۱۱ قاعدهٔ stage6 §۵ را روی YAML های ST07 و هر دو CSV اجرا می‌کند و با ۱۱ fixture منفی (هر کدام دقیقاً یک قاعده) خودتست دارد — **ادعای «۰ خطا» نویسنده بازتولید شد** (۰ خطا، ۰ هشدار؛ ۵۳+۱۷۹=۲۳۲ خط CSV یکی بود). یافته‌های موتور و مغایرت اعداد spec با runtime (۳از۴ در برابر ۴از۵) در `docs/content-spec/VALIDATION_FINDINGS.md`. آداپتر ingestiون ST07 (`scripts/build-st07-devpack.mjs`، پشت پرچم `CONTENT_ST07_DEVPACK=1`، D-018) بستهٔ DEV_ONLY با ۲۰ encounter ساخت؛ اسکن باندل production: نشانگرهای dev-pack (SK-ST07، dev-packs/g1-st07، CONTENT_ST07_DEVPACK) همه **۰**؛ دو اثر `ST07` در باندل از جداول قرارداد پیشرفت است نه بسته. تسویه‌حساب R-01 تا R-09 در README ثبت شد (§3b). static **۷۵→۷۶** (+verify-content-spec؛ generator آداپتر با دلیل از sweep خارج شد مثل parity-goldens).
 
@@ -371,6 +373,15 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 
 ---
 
+### 6.23) P8 — بستن اجرا — SNAP-20261025-09 (شاخهٔ `chore/p8-closing`)
+- **`docs/testing/READINESS.md`:** هر الزام با وضعیت (DONE+مسیر شواهد / BLOCKED مالک / BLOCKED دستگاه / DEFERRED با دلیل) و پنج اقدام بعدی مالک به ترتیب.
+- **اجرای نهایی گیت‌ها:** هر ۱۳ گیت exit 0 (لاگ‌های `p8-*`، شامل اجرای مستقیم verify-content-spec). اعداد نهایی در §3.
+- **شاخه‌های این اجرا (بدون push):** chore/p0-review-close (ادغام ff به main + تگ `v1-candidate-ui`)، chore/p1-toolchain، feat/p2-states، feat/p3-feedback، content/p4-pipeline، chore/p5-p6-deferrals، chore/p7-device-checklist، chore/p8-closing.
+- **فهرست کامل DEFERRED/BLOCKED:** §6.21 (UI/محتوا) و READINESS §5 (فهرست صادقانهٔ «اثبات نشده»).
+
+### 6.22) P7 — چک‌لیست آمادگی دستگاه — SNAP-20261025-08 (شاخهٔ `chore/p7-device-checklist`)
+- `docs/testing/DEVICE_TEST_CHECKLIST.md` کامل شد (پیش‌نویس P1 → چک‌لیست کامل): ۱۳ سرفصل از آماده‌سازی (دو مسیر بیلد dev: EAS و `expo run:android --device`) تا TalkBack روی ۰۱ تا ۱۴، TTS فارسی، آفلاین/هوایی‌پیما وسط درس، کشتن و بازکردن اپ، back سخت‌افزاری، RTL، متن‌بزرگ، کاهش حرکت سیستم، لرزش، پروتکل ثبت نتایج و برچسب‌گذاری جداگانهٔ شبیه‌ساز. **هیچ خانه‌ای اجرا نشده — تماماً کار مالک روی دستگاه واقعی.**
+
 ### 6.21) P5+P6 — بستن تعویق‌های UI و ثبت مسدودی نویسندگی — SNAP-20261025-07
 - **P5 (هر مورد DEFERRED یا پیاده شده با دلیل):**
   - مهاجرت محتوای سرور «مهره» (D-004) — **DEFERRED**: محتوای سرور مال کار مالک/نویسنده است؛ سمت کلاینت چیزی برای پیاده‌سازی نمانده.
@@ -613,7 +624,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-24 | SNAP-20261024-01 | U5a: نمای خالص سؤال و بازخورد ۰۸ تا ۱۰ (`QuestionView`، `OptionButton`، `FeedbackSheet`)، parity ۲۶ نمونه، `verify-ui-v1-question`، سؤال‌های U-Q20 تا U-Q22 برای اتصال (U5b)؛ ۴۱۳/۴۱۳ تست، static 71/71، bundle واقعی Metro موفق |
 | 2026-10-25 | SNAP-20261025-01 | U8: بستن Stage U — تب‌بار outlined یکتا (حذف soft طبق D-011)، صفحهٔ ۱۵ = راهنما نه اپ؛ parity ۲۹/۲۹، static ۷۴/۷۴، همهٔ flowها سبز؛ فهرست کامل DEFERRED در §6.15 |
 | 2026-10-25 | SNAP-20261025-02 | P0: بستن بازبینی مستقل (ACCEPT WITH FIXES) — R-1 ignore خروجی بیلد، R-2 استثنای پین‌شدهٔ تب‌بار D-011، بررسی قرارداد D-002 (ارسال دوباره مجاز، بدون D-016)، R-3 تابع خالص ردیف‌های تمرین + ۵ تست؛ ff-merge به main + تگ v1-candidate-ui |
-| 2026-10-25 | SNAP-20261025-07 | P5: تعویق‌های UI بسته شد (هر مورد پیاده‌شده یا DEFERRED با دلیل)؛ P6: نویسندگی ایستگاه BLOCKED با چهار شرط بازگشایی | 2026-10-25 | SNAP-20261025-06 | P4: verify-content-spec.mjs (۱۱ قاعده + ۱۱ fixture؛ ST07=۰ خطا، بازتولید ادعا)، آداپتر ST07 dev-pack پشت پرچم (D-018، اسکن باندل صفر)، تسویه R-01..R-09 (مغایرت ۳از۴/۴از۵ ثبت)، صوت DEFERRED؛ static ۷۶ | 2026-10-25 | SNAP-20261025-05 | P3: کانال لرزش اثبات‌شده (flow:station ۵۷؛ TAP/ناج/موفقیت + گیت تنظیم)، جملهٔ ۳۰ثانیه‌ای بی‌فشار (D-017)، صدای TTS بدون تغییر، SFX DEFERRED؛ D-016/D-017 | 2026-10-25 | SNAP-20261025-04 | P2: ماتریس حالت‌ها (STATE_MATRIX.md) + تست‌های netfail/ratelimit آنبوردینگ (۳۲) و تنظیمات/آواتار (۲۴) و `flow:largetext` (۲۰؛ ۱۳۰/۲۰۰٪)؛ برچسب a11y تنظیمات؛ static ۷۵ | 2026-10-25 | SNAP-20261025-03 | P1: ابزار — Node 22.18 در .nvmrc/engines (نصب روی ماشین = بلاکِر مالک)، back سخت‌افزاری با stub واقعی (flow:station ۵۰)، اسکن امنیتی باندل صفر، app.json/eas پاک، PS 5.1 اثبات/PS7 غایب، DESIGN_INSPIRATION + DEVICE_TEST_CHECKLIST (پیش‌نویس) + GATE_RUN_ORDER |
+| 2026-10-25 | SNAP-20261025-09 | P8: READINESS.md + اجرای نهایی ۱۳ گیت سبز (vitest 425، static 76، parity 29، flows 32/29/57/24/20، content-spec 0 خطا)؛ فهرست اقدام‌های مالک | 2026-10-25 | SNAP-20261025-08 | P7: چک‌لیست دستگاه کامل (پروتکل ثبت، برچسب شبیه‌ساز، دو مسیر بیلد dev) | 2026-10-25 | SNAP-20261025-07 | P5: تعویق‌های UI بسته شد (هر مورد پیاده‌شده یا DEFERRED با دلیل)؛ P6: نویسندگی ایستگاه BLOCKED با چهار شرط بازگشایی | 2026-10-25 | SNAP-20261025-06 | P4: verify-content-spec.mjs (۱۱ قاعده + ۱۱ fixture؛ ST07=۰ خطا، بازتولید ادعا)، آداپتر ST07 dev-pack پشت پرچم (D-018، اسکن باندل صفر)، تسویه R-01..R-09 (مغایرت ۳از۴/۴از۵ ثبت)، صوت DEFERRED؛ static ۷۶ | 2026-10-25 | SNAP-20261025-05 | P3: کانال لرزش اثبات‌شده (flow:station ۵۷؛ TAP/ناج/موفقیت + گیت تنظیم)، جملهٔ ۳۰ثانیه‌ای بی‌فشار (D-017)، صدای TTS بدون تغییر، SFX DEFERRED؛ D-016/D-017 | 2026-10-25 | SNAP-20261025-04 | P2: ماتریس حالت‌ها (STATE_MATRIX.md) + تست‌های netfail/ratelimit آنبوردینگ (۳۲) و تنظیمات/آواتار (۲۴) و `flow:largetext` (۲۰؛ ۱۳۰/۲۰۰٪)؛ برچسب a11y تنظیمات؛ static ۷۵ | 2026-10-25 | SNAP-20261025-03 | P1: ابزار — Node 22.18 در .nvmrc/engines (نصب روی ماشین = بلاکِر مالک)، back سخت‌افزاری با stub واقعی (flow:station ۵۰)، اسکن امنیتی باندل صفر، app.json/eas پاک، PS 5.1 اثبات/PS7 غایب، DESIGN_INSPIRATION + DEVICE_TEST_CHECKLIST (پیش‌نویس) + GATE_RUN_ORDER |
 | 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |
@@ -622,9 +633,11 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 ## 12) Prompt آمادهٔ چت بعدی
 
 ```
-ریپوی شمارا (same checkout). START_HERE.md را کامل بخوان (پروتکل §0) و AGENTS.md.binding. الان روی شاخهٔ chore/p1-toolchain هستیم (P0 و P1 تمام؛ main = ui/u8-closing با تگ v1-candidate-ui؛ بلاکِر مالک: نصب Node ≥22.18).
+ریپوی شمارا (same checkout). START_HERE.md را کامل بخوان (پروتکل §0) و AGENTS.md.binding. اجرای خودکار P0 تا P8 تمام شد؛ همهٔ شاخه‌ها محلی‌اند (بدون push) و main = ui/u8-closing با تگ v1-candidate-ui. READINESS.md و DEVICE_TEST_CHECKLIST.md منتظر مالک‌اند.
 
-مأموریت فعلی (به ترتیب): P2 ماتریس حالت‌ها (docs/testing/STATE_MATRIX.md) و تست‌های جریانِ خانه‌های تست‌نشده + a11y/متن‌بزرگ/حرکت‌کم → P3 صدا/لرزش/جشن طبق بخش‌های ۲–۵ grade1/shomara-stage5-shared-references.md (فقط همین بخش‌ها؛ محتوای spec پیشنهاد است نه منبع تصمیم) → P4 خط محتوا (verify-content-spec.mjs با ۱۱ قاعدهٔ stage6 §5، DIN negative fixtures، آداپتر ST07 dev-pack پشت پرچم بیلد) → P5 بستن DEFERRED های UI → P6 مسدود (نویسندگی ایستگاه) → P7 چک‌لیست دستگاه → P8 READINESS.
+وضعیت: هر ۱۴ صفحهٔ طرح روی UI v1 (parity 29/29)، کانال لرزش و جملهٔ آرام بی‌کاری اثبات‌شده (flow:station ۵۷)، ماتریس حالت‌ها + flowهای تازه (32/29/57/24/20)، اعتبارسنج محتوا (ST07: ۰ خطا؛ static 76/76)، آداپتر ST07 dev-pack پشت پرچم (D-018). vitest 425/425. Node ≥22.18 روی ماشین نصب نیست (بلاکِر مالک؛ اجرای فعلی موقت/علامت‌دار بود).
 
-گیت‌های پایه (§3): vitest ۴۲۵/۴۲۵، static ۷۴/۷۴، parity ۲۹/۲۹، flowها 28/29/48/14. شش استثنای tabs-waivers پین است. حدس نزن؛ تصمیم تازه = ردیف D جدید در §4؛ DEFERRED با دلیل. نصب Node ≥22.18 روی ماشین، کار مالک است (بلاکِر ثبت شده).
+کارهای بعدی فقط با مالک: (۱) تأیید/برگشت D-001 تا D-018؛ (۲) اجرای DEVICE_TEST_CHECKLIST روی دستگاه؛ (۳) نصب Node ≥22.18 و اجرای مجدد گیت‌ها بدون پرچم؛ (۴) پاسخ ۱۳ تصمیم باز محتوا + R-01/R-03/R-06 (پیش‌شرط P6)؛ (۵) میزبان CI (O-2) و ریموت push.
+
+قوانین: دقیق مطابق طرح؛ حدس نزن و در START_HERE ثبت کن؛ ستاره/جان/streak ممنوع؛ gate را بدون استثنای نام‌دار ضعیف نکن (D5)؛ رنگ و اندازه فقط از توکن؛ متن فقط از strings.fa.ts؛ parity:goldens فقط عمدی با GOLDENS_REGENERATE=1.
 ```

@@ -1,0 +1,15 @@
+PASS fixture fixture-R1 → R1 (expected R1)
+PASS fixture fixture-R10 → R10 (expected R10)
+PASS fixture fixture-R11 → R11 (expected R11)
+PASS fixture fixture-R2 → R2 (expected R2)
+PASS fixture fixture-R3 → R3 (expected R3)
+PASS fixture fixture-R4 → R4 (expected R4)
+PASS fixture fixture-R5 → R5 (expected R5)
+PASS fixture fixture-R6 → R6 (expected R6)
+PASS fixture fixture-R7 → R7 (expected R7)
+PASS fixture fixture-R8 → R8 (expected R8)
+PASS fixture fixture-R9 → R9 (expected R9)
+
+ST07: 53 station lines, 179 global lines, 8 yaml blocks, 41 assets, pool items: 26
+
+CONTENT_SPEC: PASS (errors 0, warnings 0, fixtures 11/11)
