@@ -1,6 +1,6 @@
 # Device test checklist (the owner runs this; emulator results never count as device results)
 
-**Status: DRAFT (phase P1) — completed in P7.** Nothing below has been run on a device by the build agent;
+**Status: COMPLETE as a checklist (phase P7) — every box is for the OWNER to run on a physical device.** Nothing below has been run on a device by the build agent;
 every unchecked box is genuinely unverified. Perform no account actions during the test beyond the child OTP
 flow itself with a real phone number you control.
 
@@ -89,3 +89,24 @@ question 08/09/10 → stage result 11 → challenge intro 12 → practice 13 →
 Record every finding with page number, Android version, device model, and a screenshot. Device-verified claims
 may only be written into START_HERE after this checklist has real checkmarks and the log is attached under
 `docs/archive/evidence/<date>/`.
+
+## 12. Recording results (protocol)
+
+1. Run the sections in order on ONE device first (minimum spec), then optionally a second width class.
+2. For every box: write pass/fail + device model + Android version + date. Failures get a screenshot and a
+   one-line reproduction; file them under `docs/archive/evidence/<date>/device/`.
+3. Only after every section 1–11 has a recorded result may «device-verified» appear in START_HERE — with the
+   evidence path. Any fail becomes a START_HERE task row with evidence, not a silent fix.
+4. TalkBack findings that require design decisions (not bugs) go to the owner as U-Q rows instead of fixes.
+5. Emulator results are recorded separately and explicitly labelled «emulator» — they never satisfy a box.
+
+## 13. What the build agent has already proven (not device results)
+
+- Hardware back inside a lesson follows confirmExit (flow harness, 2 checks) — section 4 should confirm the
+  same on device.
+- Haptics patterns and the settings gate (flow harness records `Vibration.vibrate` calls) — section 8 should
+  confirm real device feel and the no-vibrator fallback.
+- Persian TTS request language is `fa-IR` with stop-on-exit (harness records `expo-speech` calls) — section 2
+  should confirm a real Persian voice exists on the device and sounds right.
+- 130%/200% text robustness in the browser harness (`flow:largetext`, 20 checks) — section 6 confirms on the
+  device where real font scaling applies.
