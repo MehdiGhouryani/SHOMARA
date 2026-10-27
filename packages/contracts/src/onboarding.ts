@@ -103,10 +103,10 @@ export function normalizeDigits(input: string): string {
     .trim();
 }
 
-/** E.164-ish phone validation; country-specific formatting belongs to the provider UI. */
+/** Phone validation: local Iranian mobile (09xxxxxxxxx) or E.164-ish international form. */
 export function isValidPhone(input: string): boolean {
   const value = normalizeDigits(input).replace(/[\s()-]/g, '');
-  return /^\+?[1-9]\d{7,14}$/.test(value);
+  return /^0\d{10}$/.test(value) || /^\+?[1-9]\d{7,14}$/.test(value);
 }
 
 export function isValidOtp(input: string): boolean {
