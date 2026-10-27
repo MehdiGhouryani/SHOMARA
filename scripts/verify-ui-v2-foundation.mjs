@@ -21,10 +21,14 @@ const must = (ok, message) => { if (!ok) throw new Error(message); console.log(`
 const files = [
   'apps/mobile/src/ui/v2/tokens.ts',
   'apps/mobile/src/ui/v2/core.tsx',
+  'apps/mobile/src/ui/v2/clay.tsx',
+  'apps/mobile/src/ui/v2/Character.tsx',
   'apps/mobile/src/ui/v2/lesson.tsx',
   'apps/mobile/src/ui/v2/path.tsx',
   'apps/mobile/src/ui/v2/useReduceMotionV2.ts',
   'apps/mobile/src/station/views2/LessonViewsV2.tsx',
+  'apps/mobile/src/path/PathView2.tsx',
+  'apps/mobile/src/station/views2/StationStartV2.tsx',
 ];
 for (const f of files) if (!fs.existsSync(path.join(root, f))) throw new Error(`missing V2 file: ${f}`);
 must(true, `all ${files.length} V2 source files exist`);
@@ -42,7 +46,7 @@ for (const f of files.filter((f) => f.endsWith('.tsx') || f.endsWith('.ts'))) {
 must(true, 'V2 sources use only tokens.v2 (no raw hex beyond the documented highlight, no V1 tokens)');
 
 // 2. a11y: roles on every pressable + the touch-target test resolves V2 tokens
-for (const f of ['apps/mobile/src/ui/v2/core.tsx', 'apps/mobile/src/ui/v2/lesson.tsx', 'apps/mobile/src/ui/v2/path.tsx', 'apps/mobile/src/station/views2/LessonViewsV2.tsx']) {
+for (const f of ['apps/mobile/src/ui/v2/core.tsx', 'apps/mobile/src/ui/v2/lesson.tsx', 'apps/mobile/src/ui/v2/path.tsx', 'apps/mobile/src/ui/v2/Character.tsx', 'apps/mobile/src/ui/v2/clay.tsx', 'apps/mobile/src/station/views2/LessonViewsV2.tsx', 'apps/mobile/src/path/PathView2.tsx', 'apps/mobile/src/station/views2/StationStartV2.tsx']) {
   const src = read(f);
   for (const m of src.matchAll(/<Pressable\b/g)) {
     const tag = src.slice(m.index, src.indexOf('>', m.index));
@@ -56,16 +60,17 @@ must(
   'touch-target test resolves V2 tokens (K2/R2) like V1 UI tokens',
 );
 
-// 3. reduce-motion
+// 3. reduce-motion (the facade replaced CharacterSpot as the animated character surface, D-021 batch 2)
 const core = read('apps/mobile/src/ui/v2/core.tsx');
 const lesson = read('apps/mobile/src/ui/v2/lesson.tsx');
-const vpath = read('apps/mobile/src/ui/v2/path.tsx');
-must(core.includes('useReduceMotion') && vpath.includes('useReduceMotion') && lesson.includes('useReduceMotion'), 'V2 animated surfaces consult the reduce-motion hook');
+const character = read('apps/mobile/src/ui/v2/Character.tsx');
+must(core.includes('useReduceMotion') && character.includes('useReduceMotion') && lesson.includes('useReduceMotion'), 'V2 animated surfaces consult the reduce-motion hook');
 
 // 4. child-safety
 for (const f of files) {
   const src = read(f);
-  const banned = [/ستاره/u, /star/i, /جان/u, /lives/i, /streak/i];
+  // word-bounded latin terms keep the intent (no star/life/streak rewards) without matching startLabel/onStart (D5)
+  const banned = [/ستاره/u, /\bstar\b/i, /\bجان\b/u, /\blives\b/i, /\bstreak\b/i];
   for (const rx of banned) {
     if (rx.test(src)) throw new Error(`banned gamification term ${rx} in ${f}`);
   }

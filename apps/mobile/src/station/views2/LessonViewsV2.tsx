@@ -3,11 +3,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Text } from '../../ui/AppText';
 import { Button, Card, Chip, ProgressBar } from '../../ui/v2/core';
 import { CountTray, FeedbackSheet, OptionTile } from '../../ui/v2/lesson';
-import { CharacterSpot } from '../../ui/v2/path';
+import { Character } from '../../ui/v2/Character';
 import { C2, K2, R2, S2, type2 } from '../../ui/v2/tokens';
 import { S } from '../../ui/strings.fa';
 import { toFa } from '../../ui/digits';
-import { CHARACTER_ART } from '../../ui/v1/characters';
 
 /**
  * UI V2 lesson views (D-021) — pure presentation mirroring the V1 prop contracts, so StationFlow
@@ -66,7 +65,7 @@ export function TeachView2(p: TeachProps) {
     <LessonChrome2 caption={p.caption} progress={p.progress} progressLabel={p.progressLabel} closeLabel={p.closeLabel} onClose={p.onClose}>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <Card style={styles.promptCard}>
-          <CharacterSpot source={CHARACTER_ART["main-front"]} size={104} label={p.guideLabel} idleBob />
+          <Character characterId="main" emotion="guide" size={104} accessibilityLabel={p.guideLabel} idleBob />
           <Text style={[type2('title'), { color: C2.ink, textAlign: 'center' }]}>{p.prompt}</Text>
           <Pressable accessibilityRole="button" accessibilityLabel={p.replayLabel} onPress={p.onReplay} style={styles.replay}>
             <Ionicons name="volume-high" size={18} color={C2.sky} />
@@ -167,7 +166,7 @@ export function StageResultView2(p: ResultProps) {
     <LessonChrome2 caption={{ label: S.v2.doneLabel, position: `${toFa(p.done)} از ${toFa(p.total)}` }} progress={p.total > 0 ? p.done / p.total : 0} progressLabel={p.progressLabel} closeLabel={S.lesson.close} onClose={p.onContinue}>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <Card style={styles.resultCard}>
-          <CharacterSpot source={CHARACTER_ART["main-celebrate"]} size={132} label={p.heroLabel} idleBob />
+          <Character characterId="main" emotion="celebrate" size={132} accessibilityLabel={p.heroLabel} idleBob />
           <Text style={[type2('display'), { color: C2.primaryDark, textAlign: 'center' }]}>{p.title}</Text>
           <Text style={[type2('body'), { color: C2.ink2, textAlign: 'center' }]}>{p.subtitle}</Text>
           <Text style={[type2('bignum'), { color: C2.ink, textAlign: 'center' }]}>{toFa(p.done)} / {toFa(p.total)}</Text>

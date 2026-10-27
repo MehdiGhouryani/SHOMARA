@@ -1,5 +1,6 @@
-// Static gate for Stage U4 (station start page 06 and first lesson section page 07 on UI v1, ADR-0035).
-// Behavior is proven by `npm run flow:station` (real screens in a browser) and `npm run parity` (pixels).
+// Static gate for the station start (06) and first lesson section (07). Historical V1 half (ADR-0035):
+// V1 view files stay because parity specimens render them directly. The real start screen's assertion
+// was REPLACED with its V2 equivalent (D-021); the V2 half lives in scripts/verify-ui-v2-path-station.mjs.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -30,7 +31,8 @@ check('bead-tokens-only', !/#[0-9a-fA-F]{3,8}\b|rgba?\(/.test(bead) && bead.incl
 
 // Containers keep their logic and render the approved views.
 const start = read('apps/mobile/app/station/[stationId]/start.tsx');
-check('start-renders-StageIntroView', start.includes('<StageIntroView') && start.includes('MobileContentManager') && start.includes('/station/${station.id}/play'));
+// D-021: the real start screen renders the V2 view; the V1 StageIntroView remains for parity specimens.
+check('start-renders-StationStartV2', start.includes('<StationStartV2') && start.includes('MobileContentManager') && start.includes('/station/${station.id}/play'));
 check('start-keeps-prepare-flow', start.includes('downloadPackage') && start.includes('getCacheEntries'));
 const flowSrc = read('apps/mobile/src/station/StationFlow.tsx');
 check('lesson-learn-renders-TeachView', flowSrc.includes("stage === 'LEARN'") && flowSrc.includes('<TeachView') && flowSrc.includes('macroFilled(') && flowSrc.includes('macroLabel('));

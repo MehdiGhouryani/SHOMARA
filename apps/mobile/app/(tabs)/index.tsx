@@ -16,10 +16,9 @@ import { getAuthoritativeProgression, shouldUseRemoteRuntime } from '../../src/s
 import { getResume, isJumpUnlocked, isStationPassed } from '../../src/state/appStateCore';
 import { cachedStationIds, loadContentSnapshot } from '../../src/content/bootstrap';
 import { isLocalContentPreview } from '../../src/config/runtime';
-import { PathBanner } from '../../src/path/PathBanner';
-import { PathView } from '../../src/path/PathView';
+import { PathBanner2, PathView2 } from '../../src/path/PathView2';
 import { buildChapterViews, gradeChipLabel, jumpOfferUnitIds, ringFraction } from '../../src/path/pathModel';
-import { C } from '../../src/ui/v1';
+import { C2 } from '../../src/ui/v2/tokens';
 
 const JUMP_FOR_TARGET = new Map(JUMP_ASSESSMENTS.map((item) => [item.targetStationId, item]));
 const NOTICE_MS = 2200;
@@ -132,20 +131,20 @@ export default function PathScreen() {
 
   const banner = isLocalContentPreview() ? (
     // D-019: the preview APK never reaches a server; the note states that plainly.
-    <PathBanner tone="info" text="پیش‌نمایش محلی: محتوا روی دستگاه است و اتصال به سرور در این نسخه فعال نیست." />
+    <PathBanner2 tone="info" text="پیش‌نمایش محلی: محتوا روی دستگاه است و اتصال به سرور در این نسخه فعال نیست." />
   ) : guideStory ? (
-    <PathBanner tone="story" text={guideStory} />
+    <PathBanner2 tone="story" text={guideStory} />
   ) : gradeNote ? (
-    <PathBanner tone="info" text="پایه‌های دیگر به‌زودی باز می‌شوند." />
+    <PathBanner2 tone="info" text="پایه‌های دیگر به‌زودی باز می‌شوند." />
   ) : contentState === 'loading' ? (
-    <PathBanner tone="info" text="محتوای مسیر در حال بررسی است…" />
+    <PathBanner2 tone="info" text="محتوای مسیر در حال بررسی است…" />
   ) : contentState === 'offline' ? (
-    <PathBanner tone="warning" text="محتوای دانلودشده روی دستگاه نمایش داده می‌شود؛ برای محتوای تازه، اتصال لازم است." />
+    <PathBanner2 tone="warning" text="محتوای دانلودشده روی دستگاه نمایش داده می‌شود؛ برای محتوای تازه، اتصال لازم است." />
   ) : null;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
-      <PathView
+    <SafeAreaView style={{ flex: 1, backgroundColor: C2.canvas }} edges={['top']}>
+      <PathView2
         gradeLabel={gradeChipLabel(state?.profile.gradeId)}
         chapters={chapters}
         goText={goText}

@@ -61,7 +61,10 @@ const flowStubs = {
       [/auth\/authApi$/, 'authApi.ts'],
       [/content\/bootstrap$/, 'bootstrap.ts'],
       [/^react-native-safe-area-context$/, 'safe-area.tsx'],
-      [/^@expo\/vector-icons\/Ionicons$/, 'ionicons.tsx'],
+      // Flow builds render the real Ionicons (the harness embeds its font, and V2 states read
+      // through glyph + fill). Pixel-parity specimen builds keep the null stub for golden immutability.
+      ...(FLOW ? [[/^expo-font$/, 'expo-font.ts']] : []),
+      ...(FLOW ? [] : [[/^@expo\/vector-icons\/Ionicons$/, 'ionicons.tsx']]),
     ];
     for (const [filter, file] of map) build.onResolve({ filter }, () => ({ path: path.join(STUBS, file) }));
     // The screen under test (override with FLOW_TARGET to probe another copy of the screen).
@@ -84,6 +87,8 @@ await esbuild.build({
   tsconfig: path.join(ROOT, 'apps/mobile/tsconfig.json'),
   alias: { 'react-native': 'react-native-web' },
   resolveExtensions: ['.web.tsx', '.web.ts', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
+  // Flow builds bundle the real @expo/vector-icons (JSX inside its .js files, and its font asset).
+  loader: { '.js': FLOW ? 'jsx' : 'js', '.ttf': 'dataurl' },
   mainFields: ['browser', 'module', 'main'],
   define: { __DEV__: 'false', 'process.env.NODE_ENV': '"production"', 'process.env.EXPO_OS': '"web"', ...(FLOW ? { 'process.env': '{}' } : {}), global: 'globalThis' },
   plugins: FLOW ? [flowStubs, webpAsUri] : [stubAppState, webpAsUri],
@@ -91,12 +96,17 @@ await esbuild.build({
 });
 
 const font = (file) => fs.readFileSync(path.join(FONT_DIR, file)).toString('base64');
+// The icon font must render in the browser harness too: V2 states read through glyph + fill
+// (DESIGN COMPONENTS.md), so blank Ionicons in captures would hide real semantics.
+const ICON_FONT = path.join(ROOT, 'node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf');
+const iconFont = fs.readFileSync(ICON_FONT).toString('base64');
 fs.writeFileSync(
   path.join(DIST, 'index.html'),
   `<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8">
 <style>
 @font-face{font-family:'Vazirmatn_400Regular';src:url(data:font/ttf;base64,${font('400Regular/Vazirmatn_400Regular.ttf')}) format('truetype')}
 @font-face{font-family:'Vazirmatn_600SemiBold';src:url(data:font/ttf;base64,${font('600SemiBold/Vazirmatn_600SemiBold.ttf')}) format('truetype')}
+@font-face{font-family:'Ionicons';src:url(data:font/ttf;base64,${iconFont}) format('truetype')}
 html,body{margin:0;background:#F5F7F8}#root{width:390px;height:844px;position:relative;overflow:hidden}
 *{caret-color:transparent}
 </style></head><body><div id="root"></div><script src="bundle.js"></script></body></html>`,

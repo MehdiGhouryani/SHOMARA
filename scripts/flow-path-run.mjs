@@ -76,6 +76,7 @@ const inView = async (locator) => {
   check('fresh: grade chip is shown', await page.getByRole('button', { name: 'پایهٔ ۱', exact: true }).isVisible().catch(() => false));
   check('fresh: 25 stations and 5 chests are on the trail', (await page.getByRole('button', { name: /^ایستگاه [۰-۹]+،/ }).count()) === 25 && (await page.getByRole('button', { name: 'گنج، قفل', exact: true }).count()) === 5);
   check('fresh: start bubble on the current node', await visible(page, 'شروع', 1500).then(async (a) => a || (await visible(page, 'ادامه', 1500))));
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-path.png') });
   await tap(node(page, 1));
   const f1 = await flow(page);
   check('fresh: current station opens its start page', f1.pushed.length === 1 && /^\/station\/[^/]+\/start$/.test(f1.pushed[0]), JSON.stringify(f1.pushed));

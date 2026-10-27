@@ -77,7 +77,8 @@ else ok('parent guidance gated');
 const startSrc = read('apps/mobile/app/station/[stationId]/start.tsx');
 if (isStationWaived('station-start-session-hint')) {
   console.log(stationWaiverNote('station-start-session-hint'));
-  if (!startSrc.includes('StageIntroView')) fail('STATION_START_NOT_V1');
+  // D-021: the approved station start is now the V2 view; the assertion follows the screen.
+  if (!startSrc.includes('StationStartV2')) fail('STATION_START_NOT_V2');
   else ok('station start uses the approved stage page (session hint waived)');
 } else if (!startSrc.includes('sessionLengthHintFa')) fail('STATION_START_HINT');
 else ok('station start session hint');

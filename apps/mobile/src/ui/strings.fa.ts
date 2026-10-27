@@ -104,6 +104,12 @@ export const S = {
   v2: {
     countHint: 'مهره‌ها را یکی‌یکی لمس کن و با هم بشماریم.',
     doneLabel: 'پایان مرحله',
+    path: {
+      goCurrent: 'برو به مرحلهٔ فعلی',
+      chapterGuide: 'راهنمای فصل',
+      chest: 'گنج، قفل',
+      pathGuide: 'دانا، راهنمای مسیر',
+    },
   },
   parent: {
     row: 'بخش والدین',

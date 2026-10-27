@@ -1,5 +1,7 @@
-// Static gate for Stage U3 (path tab on UI v1, ADR-0035). Behavior is proven by `npm run flow:path`
-// (real screen in a browser) and `npm run parity` (pixels, including four scroll positions).
+// Static gate for the path tab. Historical V1 half (ADR-0035): the V1 view files stay because the
+// parity specimens render them directly (owner decision D-021 keeps goldens historical). The real
+// screen's assertions were REPLACED with V2 equivalents (never silently disabled) when the screen
+// migrated to PathView2; the V2 half lives in scripts/verify-ui-v2-path-station.mjs.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -22,14 +24,14 @@ check('tokens-node-from-page', P.node.size === 76 && P.node.edge === 8 && P.node
 check('tokens-measured-content-box', P.stats.height === 62 && P.grade.height === 44 && P.mate.size === 94, 'stats 62, grade chip 44, guide portrait 94');
 check('tokens-tab-outlined-measured', P.tabOutlined.width === 68 && P.tabOutlined.height === 44 && P.tabOutlined.barHeight === 106 && P.tabOutlined.border === 2);
 
-// Screen structure.
+// Screen structure (D-021: the real tab renders the V2 view; the V1 view remains for parity specimens).
 const screen = read('apps/mobile/app/(tabs)/index.tsx');
-check('screen-renders-PathView', screen.includes('<PathView') && screen.includes("from '../../src/path/PathView'"));
+check('screen-renders-PathView2', screen.includes('<PathView2') && screen.includes("from '../../src/path/PathView2'"));
 check('screen-uses-path-model', screen.includes('buildChapterViews') && screen.includes('jumpOfferUnitIds') && screen.includes('gradeChipLabel'));
 check('screen-without-removed-cards', !/getMissionHub|buildLearningRhythmProjection|dailyGoal/.test(screen), 'missions, rhythm and practice shortcut are not in the approved page');
 check('screen-keeps-navigation-logic', screen.includes('/station/${stationId}/play') && screen.includes('/station/${stationId}/start') && screen.includes('/jump?targetStationId='));
 check('screen-locked-notice', screen.includes('ایستگاه‌های قبل را جلو ببر.'));
-check('screen-content-states', screen.includes("'offline'") && screen.includes('PathBanner'));
+check('screen-content-states', screen.includes("'offline'") && screen.includes('PathBanner2'));
 
 // Tabs use the approved tab bar.
 check('tabs-use-ChildTabBar', read('apps/mobile/app/(tabs)/_layout.tsx').includes('ChildTabBar') && read('apps/mobile/src/navigation/ChildTabBar.tsx').includes('<TabBar'));

@@ -7,9 +7,9 @@ import { toFa } from '../../../src/ui/digits';
 import { getAuthHeaders } from '../../../src/auth/AuthSession';
 import { MobileContentManager } from '../../../src/content/ContentManager';
 import type { ContentManifest, EntitlementCheck } from '@math/contracts';
-import { StageIntroView, type StageIntroNotice } from '../../../src/station/views/StageIntroView';
+import { StationStartV2, type StageIntroNoticeV2 } from '../../../src/station/views2/StationStartV2';
 import { MACRO_LABELS } from '../../../src/station/macro';
-import { C } from '../../../src/ui/v1';
+import { C2 } from '../../../src/ui/v2/tokens';
 import { S } from '../../../src/ui/strings.fa';
 
 import { API_BASE_URL, productionConfigError } from '../../../src/config/runtime';
@@ -85,7 +85,7 @@ export default function StationStartScreen() {
     }
   }
 
-  const notice: StageIntroNotice | undefined = status === 'loading'
+  const notice: StageIntroNoticeV2 | undefined = status === 'loading'
     ? { tone: 'info', text: S.stage.checking }
     : status === 'error'
       ? { tone: 'error', text: S.stage.prepareFailed }
@@ -93,8 +93,8 @@ export default function StationStartScreen() {
   const sections = toFa(MACRO_LABELS.length);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
-      <StageIntroView
+    <SafeAreaView style={{ flex: 1, backgroundColor: C2.canvas }} edges={['top']}>
+      <StationStartV2
         stageLabel={`${S.stage.word} ${toFa(station.number)}`}
         title={station.title}
         subtitle={station.subtitle}

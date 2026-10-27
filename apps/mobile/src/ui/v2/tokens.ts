@@ -49,6 +49,20 @@ export const K2 = {
   topBarH: v2.component.topBarH,
 } as const;
 
+/**
+ * Clay depth (DESIGN MASTER §2 intensity scale): numbers only — fill/border resolve through C2
+ * (soft = surface + line, featured = amberSoft + amber, highlight = white). One featured hero per
+ * viewport; body text and math labels stay flat.
+ */
+export const CL2 = {
+  levels: v2.clay.levels,
+  soft: v2.clay.soft,
+  featured: v2.clay.featured,
+} as const;
+
+export type ClayLevel = 'soft' | 'featured';
+
+
 type V2Type = typeof v2.type;
 type TypeKey = keyof V2Type;
 
