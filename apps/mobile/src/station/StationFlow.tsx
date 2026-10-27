@@ -91,6 +91,10 @@ export function StationFlow({ stationId }: { stationId: string }) {
   const [lastOutcome, setLastOutcome] = useState<SubmitOutcome | null>(null);
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [busy, setBusy] = useState(false);
+  // Synchronous re-entry guard (wave D): busy state only flips after the first await, so a fast
+  // double-tap on «بررسی»/«ادامه» must be blocked here — otherwise the same attempt is submitted
+  // twice and attemptNumber drifts ahead of the server's honest count.
+  const submitInFlight = useRef(false);
   const [mode, setMode] = useState<'REMOTE' | 'LOCAL'>(shouldUseRemoteRuntime() ? 'REMOTE' : 'LOCAL');
   const [message, setMessage] = useState('');
   const [localPassedChecks, setLocalPassedChecks] = useState(0);
@@ -180,6 +184,16 @@ export function StationFlow({ stationId }: { stationId: string }) {
   }
 
   async function answerContent(target: StationContent, answerIndex: number) {
+    if (submitInFlight.current) return;
+    submitInFlight.current = true;
+    try {
+      await submitAnswerOnce(target, answerIndex);
+    } finally {
+      submitInFlight.current = false;
+    }
+  }
+
+  async function submitAnswerOnce(target: StationContent, answerIndex: number) {
     const session = await ensureSession();
     setBusy(true);
     try {
@@ -216,6 +230,17 @@ export function StationFlow({ stationId }: { stationId: string }) {
   }
 
   /** The stage transition that used to run inside answerContent; the question sheet's action triggers it (D-001). */
+  /** Tap-driven sheet action (D-001): guarded against a fast double-tap re-entering the transition. */
+  async function advanceAfterAnswerFromSheet(target: StationContent, outcome: SubmitOutcome) {
+    if (submitInFlight.current) return;
+    submitInFlight.current = true;
+    try {
+      await advanceAfterAnswer(target, outcome);
+    } finally {
+      submitInFlight.current = false;
+    }
+  }
+
   async function advanceAfterAnswer(target: StationContent, outcome: SubmitOutcome) {
     const session = await ensureSession();
     setBusy(true);
@@ -271,6 +296,16 @@ export function StationFlow({ stationId }: { stationId: string }) {
   }
 
   async function answerCheck(target: StationContent, answers: AnswerPayload[]) {
+    if (submitInFlight.current) return;
+    submitInFlight.current = true;
+    try {
+      await submitCheckOnce(target, answers);
+    } finally {
+      submitInFlight.current = false;
+    }
+  }
+
+  async function submitCheckOnce(target: StationContent, answers: AnswerPayload[]) {
     const session = await ensureSession();
     setBusy(true);
     try {
@@ -632,7 +667,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
             if (phase === 'choose') return;
             if (phase === 'correct' || sheetDirectsElsewhere) {
               stopSpeaking();
-              void advanceAfterAnswer(content, questionOutcome!);
+              void advanceAfterAnswerFromSheet(content, questionOutcome!);
             } else {
               // The server allowed another attempt on the same item (D-002); choose again.
               setQuestionSelection(null);

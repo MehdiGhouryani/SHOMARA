@@ -140,11 +140,14 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('08: selecting an option enables check (no submit yet)', !(await isDisabled(page, 'بررسی')));
   let submits = () => flow(page).then((x) => x.submits);
   check('08: selecting sends nothing to the server (D-001)', (await submits()).length === 0, JSON.stringify(await submits()));
+  // Wave D interaction guard: a fast double-tap on «بررسی» (the submit is in flight during the
+  // session/submit await) must reach the server exactly once — attemptNumber never drifts.
+  await tap(button(page, 'بررسی'));
   await tap(button(page, 'بررسی'));
   check('10: warm sheet with retry copy, never red', (await visible(page, 'نزدیک بود. دوباره امتحان کنیم؟')) && (await visible(page, 'دوباره امتحان کن')));
   check('10: options lock while the sheet is open', (await optionDisabled(page, '۳')) && (await optionDisabled(page, '۴')));
   f = await flow(page);
-  check('08: check submits exactly one attempt with attemptNumber 1', f.submits.length === 1 && f.submits[0].attemptNumber === 1 && f.submits[0].answerIndex === 0, JSON.stringify(f.submits));
+  check('08: a double-tap on check still submits exactly one attempt (attemptNumber 1, no drift)', f.submits.length === 1 && f.submits[0].attemptNumber === 1 && f.submits[0].answerIndex === 0, JSON.stringify(f.submits));
   await tap(button(page, 'دوباره امتحان کن'));
   check('10: retry re-opens the same question and clears the selection', (await gone(page, 'نزدیک بود. دوباره امتحان کنیم؟')) && (await isDisabled(page, 'بررسی')));
   await tap(option(page, '۳'));
