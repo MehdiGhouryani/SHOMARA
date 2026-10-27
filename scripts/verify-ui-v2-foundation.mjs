@@ -80,7 +80,7 @@ must(views2.includes("p.phase === 'correct' ? 'correct' : 'retry'"), 'V2 feedbac
 
 // 5. wiring + contract surfaces untouched
 const flow = read('apps/mobile/src/station/StationFlow.tsx');
-must(flow.includes('<TeachView2') && flow.includes('<QuestionView2') && flow.includes('<StageResultView2'), 'StationFlow renders the V2 lesson-slice views');
+must(flow.includes('<TeachView2') && flow.includes('<QuestionView2') && flow.includes('<StageResultView2') && flow.includes('<ChallengeIntroView2'), 'StationFlow renders the V2 lesson-slice views (teach/question/result/challenge-intro)');
 must(flow.includes('void answerContent(content, questionSelection)') && flow.includes('await advanceAfterAnswer(target, outcome)'), 'submitAttempt/advance contract surfaces unchanged in StationFlow');
 must(flow.includes("from './views2/LessonViewsV2'"), 'V2 views are imported from views2 (transitional adapter location)');
 const flowScript = read('scripts/flow-station-run.mjs');

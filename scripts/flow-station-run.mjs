@@ -223,6 +223,7 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   // Page 12: the challenge invitation
   check('12: title, subtitle and chips from the page', (await visible(page, 'مهارتت را نشان بده')) && (await visible(page, 'چهار سؤال کوتاه. این بار بدون کمک.')) && (await visible(page, 'چالش آخر')) && (await visible(page, '۳ سؤال'), 'the chip counts the real rounds of the definition (the page sample says ۴)'));
   check('12: the bar announces section 5 of 5', (await page.getByRole('progressbar').first().getAttribute('aria-label')) === 'بخش ۵ از ۵');
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-challenge-intro.png') });
   await tap(button(page, 'بستن'));
   let f = await flow(page);
   check('12: close asks before leaving (no silent exit)', f.alerts.length === 1 && f.alerts[0].title === 'خارج می‌شوی؟' && f.backed === 0, JSON.stringify(f.alerts.map((a) => a.title)));

@@ -2,6 +2,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Text } from '../../ui/AppText';
 import { Button, Card, Chip, ProgressBar } from '../../ui/v2/core';
+import { ClaySurface } from '../../ui/v2/clay';
 import { CountTray, FeedbackSheet, OptionTile } from '../../ui/v2/lesson';
 import { Character } from '../../ui/v2/Character';
 import { C2, K2, R2, S2, type2 } from '../../ui/v2/tokens';
@@ -41,6 +42,8 @@ function LessonChrome2({ caption, progress, progressLabel, closeLabel, onClose, 
     </View>
   );
 }
+
+export { LessonChrome2 };
 
 type TeachProps = {
   caption: { label: string; position: string };
@@ -186,6 +189,49 @@ export function StageResultView2(p: ResultProps) {
   );
 }
 
+type ChallengeProps = {
+  caption: Caption;
+  progress: number;
+  progressLabel: string;
+  closeLabel: string;
+  title: string;
+  subtitle: string;
+  /** First chip names the challenge (with its icon); the second counts its questions. */
+  kindChip: string;
+  kindChipIcon?: React.ComponentProps<typeof Ionicons>['name'] | undefined;
+  questionsChip: string;
+  heroLabel: string;
+  startLabel: string;
+  onStart: () => void;
+  onClose: () => void;
+};
+
+/**
+ * V2 challenge invitation (page 12): one featured hero with Roka and the same honest chips.
+ * The invitation is V2; the player behind «شروع چالش» still has no approved page (D-008).
+ */
+export function ChallengeIntroView2(p: ChallengeProps) {
+  return (
+    <LessonChrome2 caption={p.caption} progress={p.progress} progressLabel={p.progressLabel} closeLabel={p.closeLabel} onClose={p.onClose}>
+      <ScrollView contentContainerStyle={[styles.body, styles.bodyCenter]} showsVerticalScrollIndicator={false}>
+        <ClaySurface level="featured" tone="amberSoft" radius={R2.xl} style={styles.resultCard}>
+          <Character characterId="roka" emotion="celebrate" size={124} accessibilityLabel={p.heroLabel} />
+          <Text style={[type2('title'), { color: C2.ink, textAlign: 'center' }]}>{p.title}</Text>
+          <Text style={[type2('body'), { color: C2.ink2, textAlign: 'center' }]}>{p.subtitle}</Text>
+          <View style={styles.chipsRow}>
+            <View style={styles.kindChip}>
+              {p.kindChipIcon ? <Ionicons name={p.kindChipIcon} size={16} color={C2.amberInk} /> : null}
+              <Text style={[type2('caption'), { color: C2.amberInk }]}>{p.kindChip}</Text>
+            </View>
+            <Chip label={p.questionsChip} tone="sky" />
+          </View>
+        </ClaySurface>
+        <Button label={p.startLabel} onPress={p.onStart} style={styles.cta} />
+      </ScrollView>
+    </LessonChrome2>
+  );
+}
+
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: C2.canvas },
   topBar: {
@@ -204,4 +250,8 @@ const styles = StyleSheet.create({
   options: { gap: S2.md },
   resultCard: { alignItems: 'center', gap: S2.md },
   achievement: { flexDirection: 'row-reverse', alignItems: 'center', gap: S2.md, backgroundColor: C2.berrySoft, borderRadius: R2.md, padding: S2.md, alignSelf: 'stretch' },
+  bodyCenter: { flexGrow: 1, justifyContent: 'center' },
+  chipsRow: { flexDirection: 'row', gap: S2.sm, flexWrap: 'wrap', justifyContent: 'center' },
+  kindChip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: C2.surface, borderWidth: 2, borderColor: C2.amber, borderRadius: R2.pill, paddingHorizontal: S2.md, paddingVertical: 6 },
+  cta: { alignSelf: 'stretch' },
 });

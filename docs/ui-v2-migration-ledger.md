@@ -15,7 +15,7 @@ Status values: `V2` (migrated + verified) · `V1` (historical view still on the 
 | `station/[stationId]/play` → LEARN | LESSONS (teach) | **V2** (`TeachView2`) | Interactive CountTray, replay, one continue | `flow:station` 07 checks · `verify-ui-v2-foundation` | Retry-pose character polish open (batch 2) |
 | `station/[stationId]/play` → question slice | LESSONS (practice/count) | **V2** (`QuestionView2`) | OptionTile + CountTray + warm FeedbackSheet; server-authoritative submit/advance untouched | `flow:station` 08–10 checks (single submit, server-redirect) | Non-single-choice encounters (pattern/review/transfer) still render the V1/legacy player |
 | `station/[stationId]/play` → COMPLETE-on-pass | LESSONS (result) | **V2** (`StageResultView2`) | Celebrate hero, honest «n از ۵», achievement row | `flow:station` 11 checks | Other COMPLETE kinds keep the legacy card (by design, D-008 family) |
-| `station/[stationId]/play` → SIGNATURE_CHALLENGE intro | LESSONS | V1 (`ChallengeIntroView`) | V2 shell when migrated | `flow:station` 12 checks (behavior) | Batch 3 candidate |
+| `station/[stationId]/play` → SIGNATURE_CHALLENGE intro | LESSONS | **V2** (`ChallengeIntroView2`, batch 3) | Featured clay hero (Roka), honest chips (kind + real round count), one start CTA | `flow:station` 48/48 (12 checks) · `verify-ui-v2-foundation` | The player behind «شروع چالش» stays legacy (no approved page, D-008) |
 | `station/[stationId]/play` → challenge player / checks / recovery | LESSONS | LEGACY player (`LessonPlayerChrome`) | Needs the no-approved-page decision (D-008/D-009 family) | `flow:station` play-pass scenario | Design decision, not a code migration |
 | `onboarding` (welcome/phone/code/profile) | SYSTEM_SCREENS | V1 (`onboarding/views/*`) | V2 shells per screen | `flow:onboarding` 28/28 (behavior) | Batch 3 |
 | `(tabs)/practice` | SYSTEM_SCREENS (profile/history family) | V1 (`PracticeView`) | Clay rows, honest locked rows | `flow:tabs` 14/14 | Batch 3 |
@@ -33,7 +33,7 @@ Status values: `V2` (migrated + verified) · `V1` (historical view still on the 
 |---|---|---|
 | Button / Card / Chip / ProgressBar | `core.tsx` | LessonViewsV2, StationStartV2, PathView2 (Button amber for jump) |
 | ClaySurface (soft/featured, native layered depth) | `clay.tsx` | PathView2 (FAB), StationStartV2 (hero) |
-| Character facade (5 IDs × emotion map, WebP poses) | `Character.tsx` | LessonViewsV2 (main guide/celebrate), PathView2 (dana cameo), StationStartV2 (number idle) |
+| Character facade (5 IDs × emotion map, WebP poses) | `Character.tsx` | LessonViewsV2 (main guide/celebrate, roka celebrate), PathView2 (dana cameo), StationStartV2 (number idle) |
 | PathNode (states + optional captions + glyph override) | `path.tsx` | PathView2 |
 | CountTray / OptionTile / FeedbackSheet | `lesson.tsx` | LessonViewsV2 |
 | CL2 clay depth numbers | `tokens.ts` ← `packages/design-system/src/tokens.json#v2.clay` | clay.tsx, path.tsx |

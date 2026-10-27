@@ -284,8 +284,9 @@ const styles = StyleSheet.create({
     backgroundColor: C2.canvas,
   },
   bandAccent: { width: 4, height: 36, borderRadius: R2.pill },
-  bandText: { flex: 1, gap: 1 },
-  bandMeta: { flexDirection: 'row', alignItems: 'center', gap: S2.sm },
+  // minWidth 0 lets the title/kicker ellipsize instead of pushing the guide button off-screen on 360dp phones
+  bandText: { flex: 1, gap: 1, minWidth: 0 },
+  bandMeta: { flexDirection: 'row', alignItems: 'center', gap: S2.sm, flexShrink: 0 },
   guideHit: { width: K2.touchMin, height: K2.touchMin, alignItems: 'center', justifyContent: 'center' },
   trailWrap: { flex: 1, minHeight: 0 },
   curves: { position: 'absolute', top: 0, start: 0 },

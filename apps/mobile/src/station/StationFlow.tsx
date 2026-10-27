@@ -32,8 +32,7 @@ import {
 } from '@math/contracts';
 import { SignatureChallengeView } from './SignatureChallengeView';
 import { type QuestionPhase } from './views/QuestionView';
-import { StageResultView2, QuestionView2, TeachView2 } from './views2/LessonViewsV2';
-import { ChallengeIntroView } from './views/ChallengeIntroView';
+import { ChallengeIntroView2, StageResultView2, QuestionView2, TeachView2 } from './views2/LessonViewsV2';
 import { MACRO_LABELS, macroFilled, macroLabel } from './macro';
 import { speakFa, stopSpeaking } from './speech';
 import { C } from '../ui/v1';
@@ -711,7 +710,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
     const total = toFa(MACRO_LABELS.length);
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
-        <ChallengeIntroView
+        <ChallengeIntroView2
           caption={{ label: macroLabel(stage, null), position: S.lesson.sectionOf(total, total) }}
           progress={(MACRO_LABELS.length - 1) / MACRO_LABELS.length}
           progressLabel={S.lesson.sectionA11y(total, total)}

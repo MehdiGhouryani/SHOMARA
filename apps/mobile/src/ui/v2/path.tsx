@@ -91,7 +91,7 @@ export function PathNode({ state, ordinal, title, minutes, glyph, onPress, a11yL
       accessibilityRole="button"
       accessibilityLabel={a11yLabel}
       accessibilityHint={a11yHint}
-      accessibilityState={{ disabled: state === 'locked', selected: current }}
+      accessibilityState={{ selected: current }}
       onPress={onPress}
       style={({ pressed }) => [styles.nodePress, pressed && styles.nodePressed]}
     >
