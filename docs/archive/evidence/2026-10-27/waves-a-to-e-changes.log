@@ -1,0 +1,57 @@
+# Wave-by-wave change summary (details in START_HERE 6.17 and git commits)
+
+WAVE A (sec/wave-a-security @ 68f4a98) — 46 files, +599/-83
+  - ANSWER-KEY BOUNDARY (A3): runtime_create_encounter returned content_versions.evaluator_config
+    (expectedAnswers) verbatim to the child client through /learning/sessions/[id]/encounters.
+    Web layer now strips evaluator/answer-key fields in BOTH the production RPC path and the
+    in-memory path (apps/web/lib/learning-client-content.ts), matching the already-existing
+    FORBIDDEN_CLIENT_ANSWER_KEYS contract. Migration-level column grants = BLOCKED_OWNER_DECISION
+    + BLOCKED_LIVE_SUPABASE (no migration without owner).
+  - RLS static guard (A9 static): scripts/verify-answer-key-boundary.mjs — 83/83 tables enable RLS,
+    54/54 SECURITY DEFINER functions pin search_path, web boundary locked. Live RLS tests remain blocked.
+  - Teacher seeds (A1): seed path only when NODE_ENV!=production AND new ALLOW_DEV_TEACHER_SEEDS=1;
+    real constant-time password comparison replaces the length>=4 shortcut; production fails closed
+    with the generic credential error.
+  - Dev tokens (A2): teacher dev-token-* now requires devPrincipalAllowed() (ALLOW_DEV_PRINCIPAL=1).
+  - Error mapping (A6): publicErrorMessage() across 35 route files — unknown internals become
+    REQUEST_FAILED; machine codes preserved (offline-sync retry intact); teacher login keeps internal
+    classification with fixed Persian client messages.
+  - CSP (A7): Content-Security-Policy-Report-Only with documented directives; enforcement deferred
+    until a violation collector + review exists (documented in next.config.ts).
+  - Tests +24 (teacher-auth 14, api-errors 4, sanitizer 3, headers 3).
+
+WAVE B (sync/wave-b-persistence @ b0f987e) — 11 files, +409/-4
+  - Central 401 path (D3/R-009, A2): apps/mobile/src/auth/authExpiry.ts — 401-with-token clears the
+    token, publishes needs-re-login once, queue/progress untouched; 401-without-token and 5xx never
+    reach it. Wired into runtimeApi.request() + MobileSyncTransport; OTP login retires the state;
+    parent screen shows a warm Persian note only while the state is set. Token TTL still UNVERIFIED.
+  - sync/batch validation (B3): body byte cap 413, JSON shape 400, per-action shape validation
+    (bounded ids, known operationType, SUBMIT_ATTEMPT caps) -> REJECTED/SYNC_ACTION_INVALID per action.
+  - B1 persistence: BLOCKED — adult-projection schema does not exist (migration = owner); integration
+    tests need live Supabase. B4: negative tests already covered (A1).
+
+WAVE C (perf/wave-c-performance @ a28aa0b) — 5 files, +344/-52
+  - Measured metric: HTTP requests to flush N queued sync actions. Before: N (per-action transport).
+    After: chunks of <=20 actions / 192KB JSON budget -> 5 actions = 1 request, 25 = 2 (unit-counted).
+    Wall-clock saving = (N-1)xRTT on device — UNVERIFIED on device.
+  - packages/offline-sync: optional SyncTransport.sendBatch + manager chunking; per-action fallback
+    identical to before; MobileSyncTransport implements sendBatch with the same transient/permanent
+    mapping. Idempotency keys and the HTTP contract unchanged.
+  - Baselines recorded: web 26 chunks 1134KB raw / 309KB gzip (largest 72KB gzip); Hermes 4.6MB.
+
+WAVE D (ux/wave-d-learning @ 837162e) — 2 files, +40/-2
+  - Interaction-error hardening: synchronous re-entry guard on the tap-driven submit/advance paths
+    (busy only flips after the first await). Honest note: the flow harness could not reproduce the
+    race (mock latency ~0, session pre-created); the flow check locks the invariant (exactly one
+    submit per check under double-tap) rather than proving the fix.
+  - UX matrix + ledger rows recorded in START_HERE 7 (D0 partial review).
+
+WAVE E (chore/wave-e-quality) — this branch
+  - next 16.3.6 -> 16.4.3 exact (resolves the audit CRITICAL set: image-optimization RCE, SSG/ISR
+    cache poisoning, SSRF, DoS). Gates re-run green (typecheck/build/vitest/flows).
+  - ci.yml: loud warning step when the informational job's verify:static:all fails (policy unchanged).
+  - verify-static-all.mjs: per-script timeout 120s -> 300s (browser headroom; no assertion change).
+  - verify:p02:full executed for the first time (B6/VD-003): caught a real unhandled rejection from
+    the wave-C `void notifyAuthExpired()` -> fixed by awaiting; verdict now NOT_PASS solely on the
+    known mobile dependency drift (owner decision).
+  - vitest discipline note: earlier gate runs grep-masked the exit code; verify:p02:full surfaced it.

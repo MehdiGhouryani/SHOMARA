@@ -26,7 +26,10 @@ const [major, minor] = process.versions.node.split('.').map(Number);
 const nodeFlags = major === 22 && minor < 18 ? ['--experimental-strip-types'] : [];
 if (nodeFlags.length) console.log(`note: Node ${process.versions.node} < 22.18 — running verifiers with --experimental-strip-types`);
 const results = scripts.map((file) => {
-  const r = spawnSync(process.execPath, [...nodeFlags, join('scripts', file)], { cwd: root, encoding: 'utf8', timeout: 120_000 });
+  // Browser-backed scripts (parity, flow-*) launch Chromium; on slow or loaded Windows machines two of them
+  // were observed dying mid-run at the 120s ceiling while passing standalone in ~30s (wave E, 2026-10-27).
+  // 300s is headroom only — no assertion, threshold or expectation changes.
+  const r = spawnSync(process.execPath, [...nodeFlags, join('scripts', file)], { cwd: root, encoding: 'utf8', timeout: 300_000 });
   const ok = r.status === 0;
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${file}`);
   if (!ok) console.log((r.stdout + r.stderr).split('\n').slice(-12).join('\n'));

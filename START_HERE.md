@@ -1,12 +1,12 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 18
-last_updated: 2026-10-26
-snapshot_id: SNAP-20261026-01
+file_version: 19
+last_updated: 2026-10-27
+snapshot_id: SNAP-20261027-01
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
-current_stage: Stage A (امنیت و Learning Truth) -> A1/A4/A5/A8 انجام شد؛ A2 (مسیر مرکزی ۴۰۱)، A3/A6/A7 (بخش باقی‌مانده)، persistence واقعی assignment/adult و O-1 باز است
+current_stage: موج امنیت/پایداری/perf/UX خودکار ۲۰۲۶-۱۰-۲۷ انجام شد (A2/A6/A7 بسته، مرز answer-key قفل، sync batching، 401 مرکزی)؛ باز: persistence واقعی assignment/adult (BLOCKED مالک/زنده)، O-1 (limiter مشترک)، drift وابستگی‌های موبایل، enforce شدن CSP
 ui_v1_stage: Stage U کامل شد (U0 تا U8؛ U8 = بستن: تب‌بار outlined یکتا شد و صفحات ۰۱ تا ۱۴ همه روی UI v1 هستند؛ SNAP-20261025-01). صفحهٔ ۱۵ راهنمای طراحی است نه صفحهٔ اپ. جزئیات §5 و §6.15
 phase_4_final_work: محتوا، APK/AAB، live backend، device/child/educational QA، release  # فعلاً ممنوع
 official_roadmap: ROADMAP_PHASES.md  (next_eligible_phase: P12 ؛ هیچ gate رسمی در این ZIP PASS نشد)
@@ -35,12 +35,13 @@ npm install --no-audit --no-fund          # ~45s؛ node_modules داخل ZIP ن�
 npm run build:packages                    # باید exit 0
 for w in contracts design-system learning-runtime challenge-runtime assignment-runtime adult-projections offline-sync web mobile; do
   npm --workspace @math/$w run typecheck || echo "FAIL $w"; done
-npx vitest run                            # انتظار: 53 فایل / 406 تست سبز
-node scripts/verify-static-all.mjs        # انتظار: PASS (68/68)
+npx vitest run                            # انتظار: 63 فایل / 468 تست سبز
+node scripts/verify-static-all.mjs        # انتظار: PASS (76/76)
 npm --workspace @math/web run build       # انتظار: exit 0 (~3 دقیقه؛ در یک فراخوانی با حلقهٔ انتظار اجرا کن)
 # گیت‌های UI v1 (Chromium لازم است؛ اگر نسخهٔ Playwright نصب نبود: PARITY_CHROMIUM_PATH=<مسیر chrome>)
-npm run parity                            # انتظار: PARITY: PASS (20/20) — مقایسهٔ پیکسلی با صفحه‌های طرح
+npm run parity                            # انتظار: PARITY: PASS (29/29) — مقایسهٔ پیکسلی با صفحه‌های طرح
 npm run flow:onboarding                   # انتظار: FLOW: PASS (28/28) — صفحهٔ واقعی ورود در مرورگر
+# توجه: verify:static:all برای اسکریپت‌های مرورگری سقف ۳۰۰ثانیه دارد (فلک ویندوزِ پربار ۲۰۲۶-۱۰-۲۷)
 npm run flow:path                         # انتظار: FLOW_PATH: PASS (29/29) — صفحهٔ واقعی مسیر
 (cd apps/mobile && EXPO_OFFLINE=1 CI=1 npx expo export --platform android --output-dir /tmp/expo-out)   # انتظار: exit 0 (Hermes ~4.6MB؛ تا ~۴ دقیقه)
 ```
@@ -111,6 +112,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 
 **شمارش‌های اصلاح‌شده (با دستور شمرده شد):** `route.ts` = 43 (نه 46)؛ فایل تست = 50 (49 در vitest، بعد از SNAP-20261014-04)؛ `scripts/verify-*` = 55 فایل؛ `static-all` = 58 جزء. `challenge-runtime` اکنون هم در vitest اجرا می‌شود (shim قدیمی `scripts/test-challenge-runtime.mjs` کد+پیام خطا را با هم می‌سنجید و دو تست واقعی را پنهان می‌کرد).
 
+**اجرای ۲۰۲۶-۱۰-۲۷ (SNAP-20261027-01، موج‌های ZCode A تا E؛ لاگ‌ها در `docs/archive/evidence/2026-10-27/`):** `build:packages` exit 0؛ typecheck هر ۹ workspace exit 0؛ vitest **۴۶۸/۴۶۸ (۶۳ فایل؛ +۴۸ تست این مأموریت)**؛ static **۷۶/۷۶** (+`verify-answer-key-boundary`)؛ parity ۲۹/۲۹؛ flowها ۲۸/۲۹/۴۸/۱۴ (اولین check ایستگاه حالا دوبار-لمس «بررسی» را می‌راند)؛ web build exit 0 (Next **16.4.3**؛ ارتقای امنیتی از critical audit)؛ bundle واقعی Metro exit 0 (Hermes 4.6MB)؛ `npm audit --omit=dev` = 4 یافتهٔ زنجیرهٔ Expo (D8) — critical قبلی next حل شد؛ `verify:p02:full` اولین بار اجرا شد: ۱۱/۱۱ گیت قابل‌اجرا PASS، فقط drift شناخته‌شدهٔ موبایل FAIL (تصمیم مالک). فلک محیطی: timeout اسکریپت‌های مرورگری static-all به ۳۰۰s.
+
 **اجرای ۲۰۲۶-۱۰-۲۵ (SNAP-20261025-01، بعد از U8؛ لاگ‌ها در `docs/archive/evidence/2026-10-25/`):** typecheck هر ۹ workspace exit 0؛ vitest ۴۲۰/۴۲۰؛ static ۷۴/۷۴؛ parity **۲۹/۲۹** (tabbar-13 حذف شد چون variant soft رفت)؛ flow آنبوردینگ ۲۸/۲۸، مسیر ۲۹/۲۹، ایستگاه ۴۸/۴۸، تب‌ها ۱۴/۱۴؛ web build exit 0؛ bundle واقعی Metro exit 0.
 
 **اجرای ۲۰۲۶-۱۰-۲۴ (SNAP-20261024-05، بعد از U7؛ لاگ‌ها در `docs/archive/evidence/2026-10-24/`):** typecheck هر ۹ workspace exit 0؛ vitest ۴۲۰/۴۲۰؛ static ۷۴/۷۴ (+`verify-ui-v1-tabs` و اسکریپت flow:tabs)؛ parity ۳۰/۳۰ (practice ۰٫۱۹٪ و me ۰٫۱۵٪ روی ناحیهٔ body)؛ `flow:tabs` ۱۴/۱۴؛ web build exit 0؛ bundle واقعی Metro exit 0.
@@ -162,6 +165,7 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 | D-014 | U-Q12/U-Q13 رفتارهای مشتق‌شده و متن حباب | حفظ رفتارهای فعلی · حذف | حفظ | حدس جدید ممنوع؛ چیزهایی که طرح تعریف نکرده همان می‌مانند | — |
 | D-015 | چیپ «N سؤال» صفحهٔ ۱۲: طرح نمونه ۴ می‌گوید، تعریف واقعی چالش ST01 سه round دارد | متن طرح · شمارش واقعی | شمارش واقعی (`rounds.length`) | دادهٔ واقعی بر متن نمونهٔ طرح مقدم است (همان قاعدهٔ U-Q19)؛ specimen مقایسهٔ پیکسلی متن نمونهٔ طرح را نگه می‌دارد | `ST01_SIGNATURE_CHALLENGE.rounds.length` |
 | D-019 | APK پیش‌نمایش بدون URL (شاخهٔ `chore/apk-preview`): بدون `EXPO_PUBLIC_API_BASE_URL` معتبر، بیلد پروفایل `preview` در **حالت محتوای محلی** اجرا می‌شود — بدون localhost، بدون تماس با سرور، بدون گام OTP؛ محتوا از نقشهٔ محلی، پاسخ‌ها هرگز سمت کلاینت ارزیابی نمی‌شوند و هیچ پیام همگام/سرور جعلی نمایش داده نمی‌شود؛ پروفایل‌های production/market-apk همیشه fail-closed می‌مانند | (الف) حالت محلی برای preview (انتخاب‌شده با دستور مالک) · (ب) بن‌بست صادقانه در release | الف، فقط برای پروفایل `preview` (`EXPO_PUBLIC_RELEASE_CHANNEL=preview` + نبودن URL) | مالک APK را برای تست دستگاه خواست و URL بعداً داده می‌شود؛ «Learning Truth فقط سرور» و «evaluator خارج از کلاینت» (§2.3) دست‌نخورده ماندند: LOCAL هرگز درستی را تعیین نمی‌کند و Station Pass نمی‌دهد | `isLocalContentPreview` در `config/runtime.ts` · gate در `StationFlow` · `onboarding.tsx` · `app/(tabs)/index.tsx` · verifier `verify-apk-preview` · راهنمای مالک `docs/release/APK_PREVIEW.md` (شماره‌های D-016 تا D-018 در شاخهٔ merge‌نشدهٔ `chore/p8-closing` هستند) |
+| D-020 | ارتقای `next` 16.3.6→16.4.3 (exact) در موج امنیت ۲۰۲۶-۱۰-۲۷ | `npm audit --omit=dev` مجموعهٔ CRITICAL را روی next می‌داد (RCE بهینه‌سازی تصویر، مسموم‌کردن کش SSG/ISR، SSRF، DoS)؛ ارتقای minor درون رنج React 19.2.3؛ همهٔ گیت‌ها بعد از ارتقا سبز | اعمال شد (برچسب امنیتی؛ بازگشت با D-entry ممکن) |
 
 **تصمیم‌های باز طراحی (مالک، از ایمپورت handoff در `docs/design-handoff-2026-10/`):**
 - **O-4 cast شخصیت‌ها.** handoff شخصیت‌های Main، Number، Dana، Fandogh و Roka را «قطعی» می‌داند، اما cast فعلی در `project-design-v2` و `docs/reference` (aria / qbo / dana / jiko، با شناسه‌های قفل‌شده در CHARACTER-BIBLE-v2) است. نام Dana در هر دو وجود دارد ولی طرح متفاوت است: در کد سنجاب است و در handoff پرندهٔ فیروزه‌ای. تا تصمیم مالک، هیچ asset شخصیتی از handoff وارد اپ یا `characterArt.generated.ts` نمی‌شود. **→ بسته شد (مالک، ۲۰۲۶-۱۰-۱۴):** cast جدید Main/Number/Dana/Fandogh/Roka در ADR-0035 پذیرفته شد؛ جزئیات نگاشت در `pages-v1/manifest.json`.
@@ -192,9 +196,9 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 - جهت اصلاح: completion از attempt/station-pass معتبر سرور استنتاج شود؛ مسیر learner فقط مجاز به گزارش غیرمعتبر نباشد (یا حذف/محدود شود)؛ پاک‌کردن `NEEDS_RECHECK` فقط معلم؛ جدول انتقال مجاز وضعیت؛ whitelist و سقف اندازهٔ payload.
 - پذیرش: تست‌های route + service (کودک نمی‌تواند COMPLETED بدهد/recheck را پاک کند/وضعیت را برگرداند)؛ typecheck/vitest/static سبز.
 
-**A2 — مسیر مرکزی ۴۰۱ (R-009)** `P0 · High · PARTIAL`
-- انجام‌شده: ۴۰۱/۴۰۳/۴۰۸/۴۲۵/۴۲۹/۵xx در صف آفلاین موبایل و وب دیگر REJECTED دائمی نمی‌شوند (RETRY تا ۱۴ روز)؛ `submitAttempt` موبایل در همین خطاها تلاش را وارد صف می‌کند (نه از دست می‌دهد)؛ سقف ۸ تلاش حذف شد (جایگزین: سقف سن ۱۴ روز، backoff تا ۵ دقیقه). تست: `offline-sync/__tests__/manager.test.ts`، `apps/mobile/src/sync/MobileSyncTransport.test.ts`.
-- مانده: listener/state مرکزی «نیاز به ورود مجدد»، پاک‌کردن توکن روی ۴۰۱، نمایش فقط در مسیر والد/شروع بعدی (طراحی D3). عمر توکن همچنان UNVERIFIED. (طراحی: D3)
+**A2 — مسیر مرکزی ۴۰۱ (R-009)** `P0 · High · DONE (2026-10-27، موج ZCode-B؛ عمر توکن همچنان UNVERIFIED)`
+- انجام‌شده (قدیمی): ۴۰۱/۴۰۳/۴۰۸/۴۲۵/۴۲۹/۵xx در صف آفلاین موبایل و وب دیگر REJECTED دائمی نمی‌شوند (RETRY تا ۱۴ روز)؛ `submitAttempt` موبایل در همین خطاها تلاش را وارد صف می‌کند؛ سقف سن ۱۴ روز، backoff تا ۵ دقیقه.
+- انجام‌شده (۲۰۲۶-۱۰-۲۷): `apps/mobile/src/auth/authExpiry.ts` — مسیر مرکزی یگانه: ۴۰۱ «با توکن موجود» توکن را پاک می‌کند (حافظه+SecureStore)، state «نیاز به ورود مجدد» یک بار منتشر می‌شود، صف sync و پیشرفت محلی دست‌نخورده می‌مانند؛ ۴۰۱ بدون توکن و ۵xx هرگز وارد این مسیر نمی‌شوند؛ ورود OTP تازه state را بازنشانه می‌کند؛ یادداشت فارسی گرم فقط در مسیر والد (`S.parent.reloginNotice`) نمایش داده می‌شود و جریان کودک هرگز قطع نمی‌شود. تست: `authExpiry.test.ts`، `runtimeApi.authExpiry.test.ts`، `MobileSyncTransport.authExpiry.test.ts` (۱۰ تست).
 - شواهد: `apps/mobile/src/station/runtimeApi.ts` تابع `request()` فقط `API_401` پرتاب می‌کند؛ `AuthSession.ts` فقط get/set/clear توکن؛ `MobileSyncManager` مدیریت انقضا ندارد.
 - اول تأیید کن: `request()` و callerها، رفتار sync روی خطاهای auth، و جایی که `/onboarding` ورود OTP را نشان می‌دهد؛ طول عمر توکن را در کد سرور/provider پیدا کن (اگر نشد، UNVERIFIED بنویس).
 - جهت اصلاح: بر اساس D3 — یک listener/state مرکزی «نیاز به ورود مجدد»؛ پاک‌کردن توکن؛ **حفظ صف و پیشرفت**؛ نمایش فقط در مسیر والد/شروع بعدی؛ هیچ صفحهٔ بن‌بست یا قطع درس.
@@ -222,30 +226,34 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 - جهت اصلاح: علاوه بر NODE_ENV، پرچم صریح `ALLOW_DEV_PRINCIPAL=1` لازم باشد؛ مستند در `.env.example`.
 - پذیرش: تست (بدون پرچم → رد حتی در non-production).
 
-**A6 — پاک‌سازی مرکزی `error.message`** `P1 · Medium · PARTIAL`
-- انجام‌شده: `apiErrorStatus` حالا `error.code` را هم می‌خواند و `INVALID_*_STATUS`→409؛ `publicErrorMessage()` اضافه شد و در `parent/today`، `parent/[id]/today`، `learning-identities/[id]/assignments` استفاده شد؛ ورود معلم اصلاح شد. مانده: بقیهٔ routeها (مثل `teacher/applications*`، `learning/*`، `sync/batch errorCode`) هنوز پیام خام برمی‌گردانند؛ بررسی کامل همهٔ ۴۳ route لازم است.
+**A6 — پاک‌سازی مرکزی `error.message`** `P1 · Medium · DONE (2026-10-27، موج ZCode-A؛ نقشهٔ فارسی کد→پیام برای تمام routeها به مالک واگذار است)`
+- انجام‌شده: `apiErrorStatus` حالا `error.code` را هم می‌خواند؛ `publicErrorMessage()` اضافه شد و حالا در **همهٔ ۴۳ route** اعمال شد (۳۵ فایل، ۲۰۲۶-۱۰-۲۷): خطای ناشناختهٔ داخلی → `REQUEST_FAILED`، کدهای ماشین‌محور بدون تغییر (retry صف sync سالم می‌ماند)، ورود معلم دسته‌بندی داخلی با پیام ثابت فارسی. تست: `api-errors.test.ts`.
 - شواهد: routeهایی مثل `learning/attempts/submit`، `sync/batch` (`errorCode: message`)، `teacher/*` پیام خام Error را برمی‌گردانند؛ `apps/web/app/parent/page.tsx` همان `body.message` را به کاربر نشان می‌دهد. (supabaseRpc دیگر بدنهٔ خام نمی‌گذارد؛ ولی TypeError/JSON parse و … هنوز می‌توانند نشت کنند.) (تعداد routeها ۴۳ است، نه ۴۶.)
 - اول تأیید کن: با grep همهٔ `error.message`/`message:` در `apps/web/app/api`؛ `lib/api-errors.ts`.
 - جهت اصلاح: یک `toClientError()` که فقط کدهای شناخته‌شده را با پیام فارسی امن برمی‌گرداند؛ ناشناخته → کد عمومی + `console.error` بدون PII/توکن. قبل از تغییر، مطمئن شو retry در sync به `SUPABASE_RPC_5xx`/`NETWORK`/`HTTP_429` وابسته است و نشکند.
 - پذیرش: تست؛ هیچ پیام خام Error در پاسخ.
 
-**A7 — هدرهای امنیتی وب** `P1 · Medium · PARTIAL`
-- انجام‌شده: `headers()` با nosniff، X-Frame-Options DENY، Referrer-Policy، Permissions-Policy، HSTS؛ originهای AI Studio/Cloud Run حذف شدند. مانده: CSP (ابتدا Report-Only).
+**A7 — هدرهای امنیتی وب** `P1 · Medium · DONE (2026-10-27 به‌صورت Report-Only؛ enforce شدن = تصمیم مالک پس از collector)`
+- انجام‌شده: `headers()` با nosniff، X-Frame-Options DENY، Referrer-Policy، Permissions-Policy، HSTS؛ **CSP به‌صورت `Content-Security-Policy-Report-Only`** اضافه شد (`default-src 'self'`، `frame-ancestors 'none'`، `object-src 'none'`، بدون origin دور؛ `unsafe-inline`/`unsafe-eval` با دلیل مستند). بدون report-uri (collector وجود ندارد). تست: `security-headers.test.ts`. enforce شدن پس از بازبینی گزارش‌های واقعی = تصمیم مالک.
 - شواهد: `apps/web/next.config.ts` فاقد `headers()` است (CSP، nosniff، Referrer-Policy، Permissions-Policy، frame-ancestors). `allowedDevOrigins` شامل hostهای Cloud Run/AI Studio باقی‌مانده است.
 - جهت اصلاح: ابتدا CSP به‌صورت Report-Only؛ بقیه فعال؛ حذف originهای بی‌مصرف بعد از تأیید. پذیرش: `next build` سبز + تست هدرها.
 
 **A8 — نظافت log** `P2 · Low · DONE (2026-10-09)` — `console.log`های `DuolingoLessonModal` حذف؛ `catch {}`های خالی کامنت‌دار شدند.
 - `apps/web/components/DuolingoLessonModal.tsx`: `console.log` های debug (وضعیت solved) در production؛ حذف. بررسی کن هیچ log سرور توکن/PII ندارد (`supabaseRpc` فقط status/pg-code می‌نویسد).
 
-**A9 — RLS: پوشش استاتیک و تست منفی** `P2 · BLOCKED(live) / static OPEN`
-- شواهد: static: ۸۳ جدول در migrationها، هر ۸۳ `enable row level security` دارند. درستی policyها و تست مثبت/منفی اجرایی = UNVERIFIED (نیاز به Supabase).
-- بکن: یک verifier استاتیک پایدار برای «هر جدول جدید باید RLS داشته باشد» بنویس (نه ادعای live).
+**A9 — RLS: پوشش استاتیک و تست منفی** `P2 · static DONE (2026-10-27) / live BLOCKED_LIVE_SUPABASE`
+- انجام‌شده: verifier پایدار `scripts/verify-answer-key-boundary.mjs` — ۸۳/۸۳ جدول RLS دارند، ۵۴/۵۴ تابع SECURITY DEFINER پایبند `set search_path` دارند، و مرز answer-key وب (بند A3 زیر) قفل می‌شود. تست مثبت/منفی اجرایی با JWT واقعی = BLOCKED_LIVE_SUPABASE.
+
+**A11 — نشت کلید پاسخ از `runtime_create_encounter`** `P0 · Critical · FIXED LOCALLY / migration-level BLOCKED (2026-10-27)`
+- یافته: RPC `runtime_create_encounter` (migration 0037) `content.evaluatorConfig` را — که `expectedAnswers` (کلید پاسخ) در آن است — در پاسخ برمی‌گرداند و route وب همان را خام به کلاینت کودک می‌داد (نقض protected «evaluator خارج از client»). مسیر `runtime_resume_session` (0053) تمیز است (فقط presentation)؛ `runtime_submit_attempt` هم کلید پاسخ برنمی‌گرداند (evidence=null، پاسخ‌های خود کودک).
+- اصلاح وب (بدون تغییر قرارداد؛ موبایل هرگز `evaluatorConfig` را نمی‌خواند): `apps/web/lib/learning-client-content.ts` فیلدهای ممنوعه را در هر عمق از پاسخ هر دو مسیر (RPC تولیدی و in-memory) حذف می‌کند؛ هم‌راستا با `FORBIDDEN_CLIENT_ANSWER_KEYS` قرارداد چالش. تست: `learning-client-content.test.ts` + verifier استاتیک.
+- مانع: حذف ستون از خروجی خود RPC و محدودسازی grant ستونی `content_versions` = migration جدید = `BLOCKED_OWNER_DECISION`؛ راستی‌آزمایی زنده با JWT = `BLOCKED_LIVE_SUPABASE`.
 
 **A10 — وابستگی‌ها** `P2 · Accepted` (D8). فقط در Phase 4 دوباره.
 
 ### Stage B — تست و CI
 
-**B1 — regression برای fixهای همین پروژه** `P1 · OPEN` — تست‌ها: `teacher-auth` (production بدون secret/کوتاه‌تر از 32 → sign پرتاب، verify → null؛ non-production → dev secret)، `supabaseRpc` (پیام فقط `SUPABASE_RPC_<status>`؛ بدنه به client نمی‌رسد)، `FileSyncQueueStore` (با mock `expo-file-system`: فایل خراب quarantine، tmp recovery، serialize)، `DSSurface` forwards accessibilityLabel. (تست parser صف قبلاً هست.)
+**B1 — regression برای fixهای همین پروژه** `P1 · DONE (2026-10-27؛ مورد teacher-auth و supabaseRpc و FileSyncQueueStore و DSSurface توسط تست‌های این مأموریت پوشش داده شد: teacher-auth ۱۴ تست، api-errors ۴ تست)` — تست‌ها: `teacher-auth` (production بدون secret/کوتاه‌تر از 32 → sign پرتاب، verify → null؛ non-production → dev secret)، `supabaseRpc` (پیام فقط `SUPABASE_RPC_<status>`؛ بدنه به client نمی‌رسد)، `FileSyncQueueStore` (با mock `expo-file-system`: فایل خراب quarantine، tmp recovery، serialize)، `DSSurface` forwards accessibilityLabel. (تست parser صف قبلاً هست.)
 
 **B2 — تست route-level برای API** `P1 · OPEN` — وب ۱۱۷ فایل منبع و فقط ۱ تست دارد. اولویت: guard هویت (۴۶ route؛ فقط OTP و ورود/خروج معلم عمومی‌اند)، ownership (parent/teacher/assignment/outcome)، `sync/batch`، content entitlement.
 
@@ -255,7 +263,7 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 
 **B5 — verifierها** `P2 · OPEN` — ثبت `verify-phase-a..f` در `package.json`؛ تبدیل تدریجی guardهای string-grep به تست رفتاری (D5).
 
-**B6 — `npm run verify:p02:full`** `P1 · OPEN` — هرگز اجرا نشده؛ اجرا و ثبت (VD-003). `eas.json` preview هنوز `EAS_NO_FROZEN_LOCKFILE=1` دارد؛ حالا lockfile هست → بعد از اجرای موفق حذف شود.
+**B6 — `npm run verify:p02:full`** `P1 · DONE (2026-10-27؛ VD-003 بسته شد)` — اولین اجرا یک unhandled rejection واقعی از تغییرات موج C را گرفت (`void notifyAuthExpired()` → `await`؛ vitest حالا exit 0 است). verdict فعلی `NOT_PASS` فقط به‌خاطر drift شناخته‌شدهٔ وابستگی‌های موبایل (`expo install --check`؛ react-native 0.86.0↔0.86.3 و ۳ مورد دیگر) = تصمیم مالک (D-entry لازم). شواهد: `artifacts/p02/p02-gates-2026-10-27T*.json`. یادداشت `EAS_NO_FROZEN_LOCKFILE` در SNAP-20261026-01 حذف شده بود.
 
 ### Stage C — زیرساخت و تنظیمات
 
@@ -292,6 +300,7 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 ### Stage E — Performance (اول اندازه‌گیری، بعد بهینه‌سازی)
 
 Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکریپت، مجموع ≈ **306KB gzip**، بزرگ‌ترین ≈ 72KB gzip. موبایل: assets ≈ **2.1MB**، بزرگ‌ترین فایل 109KB (آیکن)؛ بدون `.riv`.
+**۲۰۲۶-۱۰-۲۷ (موج C):** وب امروز = ۲۶ chunk، **1134KB خام / 309KB gzip**، بزرگ‌ترین 72KB gzip (رشد جزئی طبیعی کد). بهینه‌سازی اندازه‌گیری‌شده: صف sync حالا هر flush را در chunkهای ≤۲۰ اکشن / ≤۱۹۲KB می‌فرستد — درخواست‌های HTTP برای N اکشن آماده از N به ceil(N/20) رسید (۵ اکشن: ۵→۱؛ unit-counted). صرفهٔ زمان واقعی روی دستگاه = UNVERIFIED. الگوی N+1 در routeهای API یافت نشد (grep فراخوانی‌های حلقه‌ای supabase).
 
 **E1** `P1 · OPEN` — First-Load JS به‌ازای route وب (از build manifest) و ثبت عدد.
 **E2** `P1 · OPEN` — حجم bundle موبایل با `npx expo export --platform android` (در صورت امکان شبکه) و ثبت عدد.
@@ -359,6 +368,19 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 - **مستندات**: ادغام md-ها در همین فایل؛ `src/README.md` اصلاح شد.
 
 ---
+
+### 6.17) موج‌های خودکار ZCode (امنیت/پایداری/perf/UX/کیفیت) — SNAP-20261027-01
+
+شاخه‌های تجمعی از main@0582f51 (بدون push، بدون merge به main): `sec/wave-a-security@68f4a98` → `sync/wave-b-persistence@b0f987e` → `perf/wave-c-performance@a28aa0b` → `ux/wave-d-learning@837162e` → `chore/wave-e-quality`. لاگ‌ها: `docs/archive/evidence/2026-10-27/` (wave-0-baseline، waves-a-to-e-changes، waves-a-e-final-gates، final-npm-audit).
+
+- **Wave A (امنیت):** مرز answer-key (A11 بالا — نشت `evaluatorConfig` از route encounter بسته شد در لایهٔ وب؛ migration = مالک)؛ seedهای معلم پشت `ALLOW_DEV_TEACHER_SEEDS=1` + مقایسهٔ واقعی رمز (A1)؛ `dev-token-*` پشت `devPrincipalAllowed()` (A2)؛ `publicErrorMessage` در همهٔ ۴۳ route (A6)؛ CSP Report-Only (A7)؛ verifier جدید `verify-answer-key-boundary` (A9 استاتیک: ۸۳ جدول RLS، ۵۴ definer با search_path). +۲۴ تست.
+- **Wave B (پایداری):** مسیر مرکزی ۴۰۱ (D3) کامل شد (`authExpiry.ts`؛ A2→DONE)؛ اعتبارسنجی سمت سرور sync/batch (سقف بایت 413، شکل JSON 400، شکل هر اکشن → `SYNC_ACTION_INVALID` بدون شکستن batch). +۱۵ تست. B1 (repository پایدار) BLOCKED ماند (schema adult وجود ندارد → migration = مالک).
+- **Wave C (perf):** batching صف sync (سنجه: تعداد درخواست HTTP برای flush؛ N → ceil(N/20)؛ ۵→۱). baseline وب امروز ثبت شد (۲۶ chunk / 309KB gzip). +۹ تست.
+- **Wave D (UX):** گارد هم‌زمان دوبار-لمس «بررسی»/«ادامه» (station flow)؛ UX Ledger §7 پر شد (D0 جزئی).
+- **Wave E (کیفیت):** `next` 16.3.6→**16.4.3** (رفع مجموعهٔ CRITICAL در audit؛ D-020)؛ CI حالا شکست job اطلاعاتی را با `::warning::` بلند اعلام می‌کند (سیاست continue-on-error دست‌نخورده)؛ timeout اسکریپت‌های مرورگری static-all 120→300s (فلک ویندوز پربار)؛ `verify:p02:full` اولین اجرا (B6/VD-003) و یک unhandled rejection واقعی گرفت که اصلاح شد.
+- **گیت‌های نهایی (همهٔ سبز):** build:packages، typecheck:all (۹)، vitest **۴۶۸/۴۶۸**، static **۷۶/۷۶**، parity ۲۹/۲۹، flowها 28/29/48/14، web build (16.4.3)، Metro 4.6MB. `npm audit --omit=dev` = ۴ یافتهٔ زنجیرهٔ Expo (D8). `verify:p02:full` = NOT_PASS فقط روی drift موبایل (مالک).
+- **بدون ضعیف‌شدن هیچ گیت:** بدون waiver جدید؛ verifier جدید فقط اضافه شد؛ متن‌های قفل‌شدهٔ verifierها (مثل `await advanceAfterAnswer(target, outcome);`) با ساختار معکوس گارد حفظ شدند.
+- **ریسک‌های باقی‌مانده:** ستون‌های حساس همچنان در خروجی RPC سطح دیتابیس هستند (تا migration مالک)؛ limiter OTP/معلم همچنان درون‌پردازشی (O-1)؛ عمر توکن UNVERIFIED؛ CSP فقط Report-Only؛ افست زمانی batching روی دستگاه واقعی اندازه‌گیری نشده.
 
 ### 6.16) APK پیش‌نمایش داخلی و حالت محتوای محلی (D-019) — SNAP-20261026-01
 
@@ -518,7 +540,11 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 
 | Screen/route | مشکل | شدت | وضعیت | evidence |
 |---|---|---|---|---|
-| (هنوز بررسی نشده) | | | | |
+| درس/سؤال (StationFlow) | پنجرهٔ دوبار-ارسال بین لمس و `setBusy` (busy بعد از await اول بالا می‌آید) → submit دوباره + drift شمارهٔ تلاش | متوسط | FIXED (گارد هم‌زمان ref؛ 2026-10-27) | کامیت 837162e؛ flow:station check «double-tap» (harness مسابقه را بازتولید نمی‌کند — قفل invariant، نه اثبات fix) |
+| مسیر والد | هیچ نشانی از انقضای نشست نبود؛ کودک/والد بی‌خبر می‌ماند | متوسط | FIXED (یادداشت فارسی فقط در مسیر والد؛ D3) | کامیت b0f987e؛ `S.parent.reloginNotice` |
+| صف sync | N درخواست HTTP برای N تلاش در صف (سرور تا ۲۰ می‌پذیرد) | کم (شبکه) | FIXED (batch ≤۲۰/≤۱۹۲KB) | کامیت a28aa0b؛ تست شمارش درخواست |
+| تنظیمات/آواتار/missions | UI قدیمی بدون صفحهٔ طرح تأییدشده | — | طبق D-009 دست‌نخورده | START_HERE §5 D-009 |
+| بازطراحی تعیین‌سطح/نتیجه/همگام‌سازی | صفحهٔ تأییدشده ندارد | — | DEFERRED تا طرح (D-009) | §5 U-Q5 |
 
 ---
 
@@ -564,6 +590,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |
+| 2026-10-27 | SNAP-20261027-01 | موج‌های ZCode A–E: مرز answer-key + A1/A2/A6/A7/A9، مسیر مرکزی ۴۰۱ (A2/D3 DONE)، اعتبارسنجی sync/batch، batching صف sync (N→ceil(N/20) درخواست)، گارد دوبار-لمس، next 16.4.3 (D-020)، CI warning، p02:full اجرا شد و باگ unhandled-rejection گرفت؛ vitest 468/468، static 76/76، همهٔ flowها سبز |
 | 2026-10-24 | SNAP-20261024-02 | بستهٔ تحویل: `AGENTS.md`، `docs/handoff/PROMPTS.md` (پرامپت‌های بازنگری و فاز)، `.gitattributes`، `.github` (CI و قالب PR)، اسکریپت `typecheck:all`، اصلاح README؛ ممیزی clone تمیز: `npm ci` ۶۴۹ بسته، build:packages، ۹ typecheck، vitest 413/413، static 71/71 |
 
 ## 12) Prompt آمادهٔ چت بعدی
@@ -573,7 +600,7 @@ ZIP پروژه (shomara_math_app.zip) ضمیمه است. START_HERE.md در ری
 
 وضعیت: محصول «شمارا» (ریاضی کودکان، پایهٔ اول، اندروید-اول، فارسی). **Stage U کامل شد**: هر ۱۴ صفحهٔ اپ طرح ۲۰۲۶-۱۰ (۰۱ تا ۱۴) روی UI v1 پیاده و پیکسلی تأیید شده‌اند (ADR-0035)؛ صفحهٔ ۱۵ راهنمای طراحی است. تعامل سؤال طبق D-001 تا D-003 (بررسی یک‌تایی، برگهٔ دنبال تصمیم سرور)، جشن/چالش طبق U6، تب‌ها طبق U7 با تب‌بار outlined یکتا. سرور mock یادگیری در harness جریان ایستگاه هست (48 بررسی).
 
-گیت‌های پایه (اعداد §3): static ۷۴/۷۴، vitest ۴۲۰/۴۲۰، parity ۲۹/۲۹، flowها 28/29/48/14، bundle Metro سبز.
+گیت‌های پایه (اعداد §3): static ۷۶/۷۶، vitest ۴۶۸/۴۶۸ (۶۳ فایل)، parity ۲۹/۲۹، flowها 28/29/48/14، web build (Next 16.4.3) و bundle Metro سبز. شاخه‌های موج ۲۰۲۶-۱۰-۲۷ (sec/wave-a … chore/wave-e-quality) لوکال و mergeنشده‌اند.
 
 کارهای بعدی ممکن: (۱) بازبینی مالک روی تصمیم‌های D-001 تا D-015 و پنج استثنای tabs-waivers و بازگرداندن موارد DEFERRED (§6.15)؛ (۲) ادامه Stage A (A2 مسیر مرکزی ۴۰۱، A6، A7) یا B؛ (۳) آماده‌سازی Phase 4 (دستگاه واقعی، محتوا، APK) که فعلاً ممنوع است.
 

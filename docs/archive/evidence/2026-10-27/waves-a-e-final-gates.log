@@ -1,0 +1,37 @@
+# ZCode mission waves A–E — 2026-10-27 — branch stack on main@0582f51
+# sec/wave-a-security@68f4a98 -> sync/wave-b-persistence@b0f987e -> perf/wave-c-performance@a28aa0b
+#   -> ux/wave-d-learning@837162e -> chore/wave-e-quality (this log)
+# Machine: Windows, Node v24.22.1, npm 11.19.1 (nvm not installed; >=22.18 gate condition holds)
+
+FINAL GATES (after next 16.3.6 -> 16.4.3 security bump and the unhandled-rejection fix):
+npm run build:packages            exit 0
+npm run typecheck:all             exit 0 (9 workspaces)
+npx vitest run                    exit 0 — 63 files, 468/468 tests (was 420/420 at baseline; +48 tests this mission)
+npm run verify:static:all         exit 0 — STATIC_ALL: PASS (76/76) (+verify-answer-key-boundary)
+npm run parity                    exit 0 — PARITY: PASS (29/29)
+npm run flow:onboarding           exit 0 — FLOW: PASS (28/28)
+npm run flow:path                 exit 0 — FLOW_PATH: PASS (29/29)
+npm run flow:station              exit 0 — FLOW_STATION: PASS (48/48) (first check now double-taps check)
+npm run flow:tabs                 exit 0 — FLOW_TABS: PASS (14/14)
+npm --workspace @math/web run build exit 0 (Next.js 16.4.3)
+expo export --platform android    exit 0 (Hermes 4.6MB, entry-89141f0d...)
+npm audit --omit=dev              exit 1 — 4 findings remain, all Expo/Metro toolchain (D8 pattern):
+                                        decode-uri-component (moderate, via expo-router; fix=expo-router@58 breaking)
+                                        node-forge (high, via @expo/cli code-signing; fix=expo@44 breaking)
+                                    next CRITICAL set RESOLVED by the 16.4.3 bump (was 5 high + 1 critical incl. next).
+npm run verify:p02:full -- --skip-install  exit 1 — 11/11 runnable gates PASS; only mobile:deps:check FAILs on the
+                                        KNOWN version drift (react-native 0.86.0 vs 0.86.3, expo-splash-screen,
+                                        @types/react, typescript) — recorded in START_HERE 6.16, owner decision.
+                                        Evidence JSON: artifacts/p02/p02-gates-2026-10-27T*.json
+                                        (first run caught a REAL unhandled rejection from the wave-C change
+                                        `void notifyAuthExpired()` — fixed by awaiting it; vitest exit 0 now.
+
+ENVIRONMENT FLAKES OBSERVED (documented, no assertions weakened):
+- verify-static-all per-script timeout raised 120s -> 300s (browser scripts; two mid-run deaths observed
+  on this loaded Windows machine while the same scripts passed standalone in ~29s).
+- .github/workflows/ci.yml: informational job now prints a loud ::warning:: when verify:static:all fails
+  inside it (continue-on-error policy itself unchanged — owner decision to flip).
+
+UNVERIFIED/BLOCKED (honest list):
+- Live Supabase RLS/OTP/teacher-login behaviour, answer-key column grants (migration), device tests, TalkBack,
+  real-device sync batching latency, EAS build — all unchanged blockers, recorded in START_HERE.

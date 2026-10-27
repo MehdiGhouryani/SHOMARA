@@ -34,4 +34,15 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npx playwright install --with-deps chromium
       - run: npm run build:packages
-      - run: npm run verify:static:all
+      - id: verify
+        run: npm run verify:static:all
+      - name: surface hidden failures (wave E1)
+        # The job stays informational (continue-on-error above) until the owner confirms it green on
+        # GitHub, but a failure inside it must be loud in the pipeline output, never silent.
+        if: always()
+        run: |
+          if [ "${{ steps.verify.outcome }}" != "success" ]; then
+            echo "::warning::verify:static:all FAILED inside the informational job — static verifiers, pixel parity or browser flows are RED. The release gate is NOT green; read this job's log before any release decision."
+            exit 0
+          fi
+          echo "verify:static:all passed in the informational job."

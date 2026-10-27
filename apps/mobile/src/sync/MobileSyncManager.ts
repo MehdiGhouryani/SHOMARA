@@ -12,13 +12,15 @@ export class MobileSyncTransport implements SyncTransport {
     return { Accept: 'application/json', 'Content-Type': 'application/json', 'X-Client-Installation-Id': this.installationId, ...getAuthHeaders(), ...(__DEV__ && !getAuthHeaders().Authorization && this.devLearningIdentityId ? { 'x-dev-learning-identity-id': this.devLearningIdentityId } : {}) };
   }
 
-  private receiptFor(response: Response, action: OfflineSyncAction): SyncReceipt {
+  private async receiptFor(response: Response, action: OfflineSyncAction): Promise<SyncReceipt> {
     // 401/403 usually mean an expired/missing session: keep the learner's attempt and retry after re-login.
     // 408/425/429/5xx are transient. Only other 4xx (malformed / not allowed) are permanent rejections.
     // A 401 while holding a token goes through the central auth-expiry path (R-009/D3): the token
     // is cleared and "needs re-login" is published; the queued attempt itself stays (RETRY).
+    // Awaited (not fire-and-forget): a rejection here must reach the manager's catch (RETRY),
+    // never escape as an unhandled rejection.
     if (response.status === 401 && Boolean(getAuthHeaders().Authorization)) {
-      void notifyAuthExpired();
+      await notifyAuthExpired();
     }
     const transient = response.status >= 500 || response.status === 429 || response.status === 408 || response.status === 425 || response.status === 401 || response.status === 403;
     if (transient) return { status: 'RETRY', idempotencyKey: action.idempotencyKey, errorCode: `HTTP_${response.status}` };
@@ -31,7 +33,7 @@ export class MobileSyncTransport implements SyncTransport {
       headers: this.headers(),
       body: JSON.stringify({ actions: [action] }),
     });
-    if (!response.ok) return this.receiptFor(response, action);
+    if (!response.ok) return await this.receiptFor(response, action);
     const body = await response.json() as { results?: SyncReceipt[] };
     return body.results?.[0] ?? { status: 'RETRY', idempotencyKey: action.idempotencyKey, errorCode: 'SYNC_RESPONSE_INVALID' };
   }
@@ -47,7 +49,7 @@ export class MobileSyncTransport implements SyncTransport {
       headers: this.headers(),
       body: JSON.stringify({ actions }),
     });
-    if (!response.ok) return actions.map((action) => this.receiptFor(response, action));
+    if (!response.ok) return Promise.all(actions.map((action) => this.receiptFor(response, action)));
     const body = await response.json() as { results?: SyncReceipt[] };
     const results = body.results;
     if (!Array.isArray(results)) {
