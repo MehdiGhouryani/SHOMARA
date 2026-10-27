@@ -1,12 +1,12 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 21
+file_version: 22
 last_updated: 2026-10-28
-snapshot_id: SNAP-20261028-01
+snapshot_id: SNAP-20261028-02
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
-current_stage: نسل V2 طراحی (D-021) در جریان — بستهٔ پایه + اسلایس درس (SNAP-20261027-03) و مهاجرت مسیر + شروع ایستگاه (SNAP-20261028-01، دفتر مهاجرت در docs/ui-v2-migration-ledger.md)؛ باز: بقیهٔ صفحات (batch 3)، persistence واقعی assignment/adult (BLOCKED مالک/زنده)، O-1، drift وابستگی‌های موبایل، enforce شدن CSP
+current_stage: نسل V2 طراحی (D-021) در جریان — audit مستقل + مهاجرت معرفی چالش + پوستهٔ تب V2 (SNAP-20261028-02؛ کامیت‌های 25b97f7 و 73f86ff؛ دفتر مهاجرت: docs/ui-v2-migration-ledger.md)؛ باز: آنبوردینگ/احراز V2 (نیازمند TextField2 + CodeInput2)، تب‌های تمرین/من V2، سطوح بی‌طرح (D-008/D-009/D-010)، persistence واقعی assignment/adult (BLOCKED مالک/زنده)، O-1، drift وابستگی‌های موبایل، enforce شدن CSP
 ui_v1_stage: Stage U کامل شد (U0 تا U8؛ U8 = بستن: تب‌بار outlined یکتا شد و صفحات ۰۱ تا ۱۴ همه روی UI v1 هستند؛ SNAP-20261025-01). صفحهٔ ۱۵ راهنمای طراحی است نه صفحهٔ اپ. جزئیات §5 و §6.15
 phase_4_final_work: محتوا، APK/AAB، live backend، device/child/educational QA، release  # فعلاً ممنوع
 official_roadmap: ROADMAP_PHASES.md  (next_eligible_phase: P12 ؛ هیچ gate رسمی در این ZIP PASS نشد)
@@ -113,6 +113,8 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 **شمارش‌های اصلاح‌شده (با دستور شمرده شد):** `route.ts` = 43 (نه 46)؛ فایل تست = 50 (49 در vitest، بعد از SNAP-20261014-04)؛ `scripts/verify-*` = 55 فایل؛ `static-all` = 58 جزء. `challenge-runtime` اکنون هم در vitest اجرا می‌شود (shim قدیمی `scripts/test-challenge-runtime.mjs` کد+پیام خطا را با هم می‌سنجید و دو تست واقعی را پنهان می‌کرد).
 
 **اجرای ۲۰۲۶-۱۰-۲۷ (SNAP-20261027-03، V2 foundation + lesson slice؛ لاگ‌ها و اسکرین‌شات‌ها در `docs/archive/evidence/2026-10-27/`):** `build:packages` و typecheck هر ۹ workspace exit 0؛ vitest **۴۸۶/۴۸۶ (۶۵ فایل)**؛ static **۷۷/۷۷** (+`verify-ui-v2-foundation` با ۱۱ بررسی)؛ parity **۲۹/۲۹** (V1 specimens = تاریخی، دست‌نخورده)؛ flowها ۲۸/۲۹/**۴۸**/۱۴ (۵ assertion بصری V1 با معادل V2 جایگزین شد)؛ web build و Metro export سبز. تصمیم D-021: نسل V2 — توکن‌های `v2` در منبع واحد، کیت `ui/v2`، viewهای `station/views2` سیم‌کشی‌شده در StationFlow برای slice آموزشی، سینی شمارش تعاملی، اسکرین‌شات‌های واقعی با `FLOW_CAPTURE=1`.
+
+**اجرای ۲۰۲۶-۱۰-۲۸ (SNAP-20261028-02، audit مستقل + batch 3+4: معرفی چالش V2، پوستهٔ تب V2؛ لاگ‌ها در `docs/archive/evidence/2026-10-28/`):** `build:packages` و typecheck هر ۹ workspace exit 0؛ vitest **۴۹۴/۴۹۴ (۶۵ فایل)**؛ static **۷۸/۷۸**؛ parity **۲۹/۲۹** (تاریخی، دست‌نخورده)؛ flowها ۲۸/**۲۹**/**۴۸**/**۱۸** (flow:tabs سه سناریو شد: پوستهٔ تب واقعی اضافه شد)؛ Metro export exit 0. **دو P1 واقعی در audit مستقل گرفته شد:** (۱) در ۳۶۰dp نوار فصل مسیر جمع نمی‌شد و دکمهٔ راهنما بیرون می‌افتاد (minWidth:0 روی متن جمع‌شونده؛ probe تغییر اندازهٔ root: صفر هم‌پوشانی/بیرون‌زدگی در ۳۶۰/۴۱۲)؛ (۲) گره‌های قفل مسیر در TalkBack «disabled» اعلام می‌شدند در حالی که پاسخ می‌دهند (حالت disabled حذف شد؛ برچسب وضعیت را می‌گوید). معرفی چالش (صفحهٔ ۱۲) V2 شد (Roka روی قهرمان featured؛ پلیر همچنان بدون طرح = D-008)؛ ChildTabBar به TabBar V2 وصل شد ( assertion انتخاب به‌جای aria-selected که react-native-web به DOM نمی‌دهد، پرکنندگی pill فعال را می‌سنجد — گوتچ مستند §0). اسکرین‌شات‌های جدید: v2-challenge-intro، v2-tabbar، v2-practice، v2-me، v2-path-360/412.
 
 **اجرای ۲۰۲۶-۱۰-۲۸ (SNAP-20261028-01، V2 batch 1+2: مسیر، شروع ایستگاه، بهبود اسلایس درس؛ لاگ‌ها و اسکرین‌شات‌ها در `docs/archive/evidence/2026-10-28/`):** `build:packages` و typecheck هر ۹ workspace exit 0؛ vitest **۴۹۲/۴۹۲ (۶۵ فایل)**؛ static **۷۸/۷۸** (verifier جدید `verify-ui-v2-path-station` + جایگزینی assertionهای صفحهٔ واقعی در سه verifier قدیمی طبق D-021، بدون تضعیف)؛ parity **۲۹/۲۹** (نمونه‌های V1 تاریخی، دست‌نخورده)؛ flowها **۲۸/۲۹/۴۸/۱۴** همه سبز روی صفحه‌های واقعی V2؛ Metro export exit 0. اسکرین‌شات‌های V2 با `FLOW_CAPTURE=1` (مسیر، شروع، آموزش، سؤال، نتیجه) — هارنس حالا فونت Ionicons را در بیلدهای flow جاسازی می‌کند تا گلیف‌ها در شواهد بصری دیده شوند (بیلدهای parity همان stub را دارند؛ طلایی‌ها ثابت). دفتر مهاجرت: `docs/ui-v2-migration-ledger.md`.
 
@@ -374,6 +376,16 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 
 ---
 
+### 6.21) SHOMARA V2 — audit مستقل، معرفی چالش و پوستهٔ تب — SNAP-20261028-02
+
+شاخهٔ `ui/shomara-v2-foundation` (کامیت‌های `25b97f7`، `73f86ff`). مأموریت: audit مستقل کار قبلی + ادامهٔ مهاجرت؛ هیچ verifier تضعیف نشد.
+
+- **audit مستقل (با اثبات، نه حدس):** probe جدید تغییر-اندازهٔ root در هارنس (هارنس #root را ۳۹۰px ثابت می‌کند؛ با shrink واقعی به ۳۶۰، `useWindowDimensions` دوباره رندر می‌شود) → **دو P1 واقعی:** سرریز نوار فصل در ۳۶۰dp (رفع: `minWidth:0`/`flexShrink:0`) و a11y نادرست گرهٔ قفل (رفع). نتیجهٔ پایانی: صفر هم‌پوشانی و صفر عنصر بیرون‌صفحه در ۳۶۰/۳۹۰/۴۱۲؛ `flow:station` ۴۸/۴۸ و کلیدهای idempotency سالم (مرزهای D-001..D-003 و ارزیابی سرور دست‌نخورده).
+- **ChallengeIntroView2:** صفحهٔ ۱۲ V2 شد (قهرمان featured کهربایی با Roka، چیپ نوع با آیکن + شمارش واقعی راندها، یک CTA)؛ در StationFlow فقط view عوض شد؛ پلیر چالش همچنان legacy (بدون صفحهٔ طرح، D-008). `verify-ui-v2-foundation` حالا رندر آن را قفل می‌کند.
+- **پوستهٔ تب V2:** `ui/v2/TabBar` (آیکن+برچسب فارسی، نشانگر فعال فراتر از رنگ: پرکنندگی soft + قاب محکم، هدف ≥۴۸)؛ `ChildTabBar` به آن وصل شد (emission/ناوبری/safe-area همان). **تست رفتاری واقعی جدید:** سناریوی shell در flow:tabs که ChildTabBar واقعی را با state جعلی می‌راند (۳ تب + برچسب‌ها، نشانگر فعال، تپ → navigate). اسکرین‌شات v2-tabbar.
+- **یادداشت هارنس:** `accessibilityState` react-native-web به DOM نمی‌رسد (گوتچ §0)؛ assertion انتخاب از پرکنندگی محاسبه‌شدهٔ pill می‌گیرد. چیپ/بازخورد: ` FeedbackSheet` حالا از Button مشترک استفاده می‌کند (batch 2).
+- **چک‌پوینت صادقانهٔ آنبوردینگ (باز):** مهاجرت آنبوردینگ/احراز به **TextField2** (prefix +۹۸، LTR، error/hint) و **CodeInput2** (شش خانه، OTP autofill) نیاز دارد + بازنویسی نمای ۵گانه + rewiring `onboarding.tsx` + جایگزینی assertionهای `verify-ui-v1-onboarding` — به‌عنوان batch بعدی ثبت شد، شروع‌نشده. تب‌های تمرین/من و سطوح بی‌طرح (D-008/D-009/D-010) هم باز‌اند. تست دستگاه اندروید همچنان Phase 4.
+
 ### 6.20) SHOMARA V2 — مهاجرت مسیر و شروع ایستگاه + بهبود اسلایس درس — SNAP-20261028-01
 
 شاخهٔ `ui/shomara-v2-foundation` (کامیت‌های `1b85236` و `f088d37`). قواعد D-021 پابرجا؛ **جایگزینی assertion، نه حذف**: assertionهای صفحهٔ واقعی در `verify-ui-v1-path` و `verify-ui-v1-station` و `verify-phase-a` حالا به viewهای V2 اشاره می‌کنند (نیمهٔ تاریخی V1 برای specimenهای parity سر جایش است)؛ assertion بار ۰۶ در flow:station با معادل V2 (ارتفاع ۱۴) جایگزین شد.
@@ -632,6 +644,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |
+| 2026-10-28 | SNAP-20261028-02 | audit مستقل: دو P1 (سرریز ۳۶۰dp نوار مسیر، a11y گرهٔ قفل) با probe تغییر-اندازه گرفت و رفع شد؛ معرفی چالش (۱۲) و پوستهٔ تب V2 شد؛ سناریوی shell در flow:tabs (۱۸/۱۸)؛ vitest 494، static 78، parity 29، flows 28/29/48/18، Metro سبز |
 | 2026-10-28 | SNAP-20261028-01 | V2 batch 1+2: مهاجرت مسیر (PathView2) و شروع ایستگاه (StationStartV2) روی مسیرهای واقعی؛ v2.clay + ClaySurface + فاساد Character؛ تیک گزینهٔ ۶۴dp و دکمهٔ مشترک در برگهٔ بازخورد؛ جایگزینی assertionهای صفحهٔ واقعی طبق D-021 (static ۷۸/۷۸، دفتر مهاجرت جدید)؛ فونت آیکن در هارنس flow؛ همهٔ گیت‌ها سبز |
 | 2026-10-27 | SNAP-20261027-03 | V2 (D-021): توکن‌های v2 + کیت ui/v2 + viewهای lesson slice در StationFlow + سینی شمارش تعاملی؛ verifier v2 (11 بررسی)؛ ۵ assertion flow با معادل V2؛ vitest 486/486، static 77/77، parity 29/29، flows سبز؛ اسکرین‌شات‌های واقعی |
 | 2026-10-27 | SNAP-20261027-02 | ممیزی جامع UI/UX با اسکیل duo-design: رفع بن‌بست و نامرئی‌بودن خطای بارگذاری پرش + نوار پیشرفت صادقانه (موبایل+وب)؛ تأیید reduce-motion کامل و a11y کامل؛ D3 موبایل→DONE؛ همهٔ گیت‌ها سبز بدون تغییر parity |
