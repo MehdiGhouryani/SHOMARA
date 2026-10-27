@@ -58,6 +58,7 @@ export const CL2 = {
   levels: v2.clay.levels,
   soft: v2.clay.soft,
   featured: v2.clay.featured,
+  answerTile: v2.clay.answerTile,
 } as const;
 
 export type ClayLevel = 'soft' | 'featured';

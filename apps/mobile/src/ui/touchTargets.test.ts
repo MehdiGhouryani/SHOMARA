@@ -20,6 +20,8 @@ const UI_TOKENS: Record<string, Record<string, unknown>> = TOKENS_JSON.ui ?? {};
 const V2_TOKENS: Record<string, Record<string, unknown>> = {
   ...(TOKENS_JSON.v2?.component ? { K2: TOKENS_JSON.v2.component as Record<string, unknown> } : {}),
   ...(TOKENS_JSON.v2?.radius ? { R2: TOKENS_JSON.v2.radius as Record<string, unknown> } : {}),
+  // CL2 groups (e.g. clay.answerTile.minHeight) resolve through the same walk.
+  ...(TOKENS_JSON.v2?.clay ? { CL2: TOKENS_JSON.v2.clay as Record<string, unknown> } : {}),
 };
 
 function files(dir: string, out: string[] = []): string[] {
@@ -46,9 +48,9 @@ function declared(src: string, name: string): { h: number | undefined; w: number
     const u = body.match(new RegExp(`\\b${k}:\\s*UI\\.([\\w.]+)`));
     const uv = u ? u[1]!.split('.').reduce<unknown>((node, key) => (node as Record<string, unknown> | undefined)?.[key], UI_TOKENS) : undefined;
     if (typeof uv === 'number') return uv;
-    // D-021: V2 primitives (K2.key from tokens.v2.component / R2.key from tokens.v2.radius).
-    const v2m = body.match(new RegExp(`\\b${k}:\\s*(K2|R2)\\.(\\w+)`));
-    const v2v = v2m ? (V2_TOKENS[v2m[1]!] as Record<string, unknown> | undefined)?.[v2m[2]!] : undefined;
+    // D-021: V2 primitives (K2.key / R2.key / CL2.group.key from tokens.v2) — deep walk like UI.
+    const v2m = body.match(new RegExp(`\\b${k}:\\s*(K2|R2|CL2)\\.([\\w.]+)`));
+    const v2v = v2m ? v2m[2]!.split('.').reduce<unknown>((node, key) => (node as Record<string, unknown> | undefined)?.[key], V2_TOKENS[v2m[1]!]) : undefined;
     if (typeof v2v === 'number') return v2v;
     return undefined;
   };

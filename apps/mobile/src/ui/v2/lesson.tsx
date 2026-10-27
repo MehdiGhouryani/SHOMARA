@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Text } from '../AppText';
+import { Button } from './core';
 import { useReduceMotion } from './useReduceMotionV2';
-import { C2, K2, R2, S2, type2 } from './tokens';
+import { CL2, C2, K2, R2, S2, type2 } from './tokens';
 import { toFa } from '../digits';
 
 /**
@@ -61,7 +63,7 @@ function Bead({ counted, reduced, onPress, a11yLabel }: { counted: boolean; redu
   );
 }
 
-/** V2 answer tile: big rounded choice; selected fills soft primary; never red for retry. */
+/** V2 answer tile: big rounded choice (64dp), selected = strong stroke + check glyph, never color alone. */
 export function OptionTile({ label, selected, disabled = false, onPress }: { label: string; selected: boolean; disabled?: boolean | undefined; onPress: () => void }) {
   return (
     <Pressable
@@ -70,27 +72,25 @@ export function OptionTile({ label, selected, disabled = false, onPress }: { lab
       accessibilityState={{ selected, disabled }}
       disabled={disabled}
       onPress={onPress}
-      style={[styles.option, selected ? styles.optionSelected : null]}
+      style={({ pressed }) => [styles.option, selected ? styles.optionSelected : null, pressed && !disabled ? styles.optionPressed : null]}
     >
       <Text style={[type2('body'), { color: C2.ink, fontWeight: '800' }]}>{label}</Text>
+      {selected ? (
+        <View style={styles.check}>
+          <Ionicons name="checkmark" size={18} color={C2.primaryDark} />
+        </View>
+      ) : null}
     </Pressable>
   );
 }
 
-/** V2 feedback sheet: warm correct (primary) / warm retry (amber); one clear next action. */
+/** V2 feedback sheet: warm correct (primary) / warm retry (amber); one clear next action with a real lip. */
 export function FeedbackSheet({ tone, text, actionLabel, onAction }: { tone: 'correct' | 'retry'; text: string; actionLabel: string; onAction: () => void }) {
   const correct = tone === 'correct';
   return (
     <View style={[styles.sheet, { backgroundColor: correct ? C2.primarySoft : C2.amberSoft, borderColor: correct ? C2.primary : C2.amber }]}>
       <Text style={[type2('body'), { color: correct ? C2.primaryDark : C2.amberInk, fontWeight: '800' }]}>{text}</Text>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={actionLabel}
-        style={[styles.sheetAction, { backgroundColor: correct ? C2.primary : C2.amber }]}
-        onPress={onAction}
-      >
-        <Text style={[type2('body'), { color: correct ? C2.white : C2.amberInk, fontWeight: '800' }]}>{actionLabel}</Text>
-      </Pressable>
+      <Button label={actionLabel} onPress={onAction} variant={correct ? 'primary' : 'amber'} accessibilityLabel={actionLabel} />
     </View>
   );
 }
@@ -121,27 +121,24 @@ const styles = StyleSheet.create({
   beadCounted: { backgroundColor: C2.primary, borderWidth: 2, borderColor: C2.primaryDark },
   beadShine: { width: K2.trayBead / 3, height: K2.trayBead / 3, borderRadius: R2.pill, backgroundColor: 'rgba(255,255,255,0.45)', marginTop: -K2.trayBead / 4 },
   option: {
-    minHeight: K2.touchMin + 8,
+    minHeight: CL2.answerTile.minHeight,
     borderRadius: R2.md,
-    borderWidth: 2,
+    borderWidth: CL2.answerTile.borderWidth,
     borderColor: C2.line2,
     backgroundColor: C2.surface,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: S2.lg,
+    gap: S2.sm,
+    flexDirection: 'row',
   },
   optionSelected: { borderColor: C2.primary, backgroundColor: C2.primarySoft },
+  optionPressed: { backgroundColor: C2.surfaceAlt },
+  check: { width: K2.touchMin - 12, height: K2.touchMin - 12, borderRadius: R2.pill, backgroundColor: C2.white, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: C2.primary },
   sheet: {
     borderRadius: R2.lg,
     borderWidth: 2,
     padding: S2.lg,
     gap: S2.md,
-  },
-  sheetAction: {
-    minHeight: K2.touchMin,
-    borderRadius: R2.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: S2.lg,
   },
 });
