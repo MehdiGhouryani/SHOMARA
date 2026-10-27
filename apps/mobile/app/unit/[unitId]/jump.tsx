@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -28,13 +28,15 @@ export default function JumpScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
+  // Loadable + retryable: a failed load must offer an explicit way back in, never a dead end.
+  const loadAssessment = useCallback(() => {
     let active = true;
     const configError = productionConfigError();
     if (configError) {
       setError(configError);
       return () => { active = false; };
     }
+    setError('');
     fetch(`${API_BASE_URL}/api/v1/progression/jump?targetStationId=${encodeURIComponent(fallback.targetStationId)}`, { headers: { Accept: 'application/json', ...getAuthHeaders() } })
       .then(async (response) => {
         if (!response.ok) throw new Error('JUMP_LOAD_FAILED');
@@ -44,6 +46,8 @@ export default function JumpScreen() {
       .catch(() => { if (active) setError('ارزیابی پرش بارگذاری نشد. اتصال را بررسی کن.'); });
     return () => { active = false; };
   }, [fallback.targetStationId]);
+
+  useEffect(() => loadAssessment(), [loadAssessment]);
 
   const current = assessment?.questions[index];
   const progress = assessment ? Math.round((Object.keys(answers).length / assessment.questions.length) * 100) : 0;
@@ -85,7 +89,7 @@ export default function JumpScreen() {
         {!result && current && (
           <View style={styles.card}>
             <View style={styles.progressRow}><Text style={styles.progressText}>سؤال {toFa(index + 1)} از {toFa(assessment?.questions.length ?? 5)}</Text><Text style={styles.progressText}>{toFa(progress)}٪</Text></View>
-            <View style={styles.track}><View style={[styles.fill, { width: `${Math.max(progress, 20)}%` }]} /></View>
+            <View style={styles.track}><View style={[styles.fill, { width: `${progress}%` }]} /></View>
             <Text style={styles.question}>{current.prompt}</Text>
             <View style={styles.options}>{current.options.map((option, optionIndex) => <Pressable key={optionIndex} accessibilityRole="button" disabled={busy} onPress={() => choose(optionIndex)} style={[styles.option, answers[current.id] === optionIndex && styles.optionSelected]}><Text style={[styles.optionText, answers[current.id] === optionIndex && styles.optionTextSelected]}>{option}</Text></Pressable>)}</View>
             <Text style={styles.note}>با ۴ پاسخ درست، ایستگاه بعدی باز می‌شود.</Text>
@@ -94,6 +98,16 @@ export default function JumpScreen() {
         )}
 
         {!assessment && !error && <View style={styles.card}><Text style={styles.loading}>در حال آماده‌سازی ارزیابی…</Text></View>}
+
+        {!assessment && error ? (
+          <View style={styles.card}>
+            <Text accessibilityRole="alert" style={styles.error}>{error}</Text>
+            <Pressable accessibilityRole="button" style={styles.retry} onPress={loadAssessment}>
+              <Ionicons name="refresh" size={18} color={DS.color.brand.primaryDark} />
+              <Text style={styles.retryText}>تلاش دوباره</Text>
+            </Pressable>
+          </View>
+        ) : null}
 
         {result && (
           <View style={styles.card}>
@@ -131,6 +145,8 @@ const styles = StyleSheet.create({
   optionText: { color: DS.color.text.primary, fontSize: 18, fontWeight: '800', textAlign: 'right' },
   optionTextSelected: { color: DS.color.brand.primaryDark },
   note: { color: DS.color.text.muted, fontSize: DS.type.xs.fontSize, fontWeight: '700', textAlign: 'right', marginTop: 14 },
+  retry: { minHeight: 48, alignSelf: 'flex-start', flexDirection: 'row-reverse', alignItems: 'center', gap: 6, marginTop: 10, paddingHorizontal: 14, borderRadius: DS.radius.lg, borderWidth: 1.5, borderColor: DS.color.border.default, backgroundColor: DS.color.bg.surface },
+  retryText: { color: DS.color.brand.primaryDark, fontSize: DS.type.sm.fontSize, fontWeight: '800' },
   error: { color: DS.color.state.error, backgroundColor: DS.color.state.errorSoft, borderRadius: 12, padding: 10, marginTop: 10, fontSize: 12, fontWeight: '800', textAlign: 'right' },
   loading: { color: DS.color.text.secondary, textAlign: 'center', fontSize: DS.type.sm.fontSize, fontWeight: '800', paddingVertical: 30 },
   resultIcon: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', alignSelf: 'center', borderWidth: 2 },

@@ -78,7 +78,7 @@ export function JumpAssessmentView({ targetStationId }: { targetStationId: strin
       {!result ? (
         <UiSurface elevated className={styles.questionCard}>
           <div className={styles.progressRow}><span>سؤال {toPersianDigits(index + 1)} از {toPersianDigits(assessment.questions.length)}</span><span>{toPersianDigits(progress)}٪</span></div>
-          <div className={styles.progressTrack}><span style={{ width: `${Math.max(progress, 20)}%` }} /></div>
+          <div className={styles.progressTrack}><span style={{ width: `${progress}%` }} /></div>
           <h2>{question.prompt}</h2>
           <div className={styles.options}>
             {question.options.map((option, optionIndex) => (

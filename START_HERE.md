@@ -1,9 +1,9 @@
 # START_HERE.md — تنها فایل وضعیت و برنامهٔ اجرایی پروژه (شمارا / Math App)
 
 ```yaml
-file_version: 19
+file_version: 20
 last_updated: 2026-10-27
-snapshot_id: SNAP-20261027-01
+snapshot_id: SNAP-20261027-02
 working_dir_for_all_commands: .                 # ریشهٔ ریپو (کنار همین فایل)؛ package.json و node_modules اینجاست
 current_scope: فاز 1 تا 3 (زیرساخت، معماری، UI/UX، a11y پایه، performance، امنیت، باگ مهم)
 current_stage: موج امنیت/پایداری/perf/UX خودکار ۲۰۲۶-۱۰-۲۷ انجام شد (A2/A6/A7 بسته، مرز answer-key قفل، sync batching، 401 مرکزی)؛ باز: persistence واقعی assignment/adult (BLOCKED مالک/زنده)، O-1 (limiter مشترک)، drift وابستگی‌های موبایل، enforce شدن CSP
@@ -287,7 +287,7 @@ P00 `PASS` · P01/P02 `IN_PROGRESS` · P03–P09 `IMPLEMENTED` · P10 `IN_PROGRE
 
 **D2 — متن بزرگ (large text)** `P1 · OPEN` — هیچ `maxFontSizeMultiplier` یا سیاست scaling در موبایل نیست و ۳۷ مورد `height: <عدد>` ثابت دارد. استاتیک: کانتینرهای ارتفاع‌ثابتِ حاوی Text را فهرست کن، `minHeight` یا سقف scaling در کامپوننت پایهٔ متن بگذار. اثبات واقعی = device (Phase 4).
 
-**D3 — reduced motion** `P2 · OPEN` — فقط ۴ فایل موبایل و ۱۱ فایل وب آن را رعایت می‌کنند. فهرست همهٔ animation/Reanimated را بساز و رعایت را تأیید کن.
+**D3 — reduced motion** `P2 · DONE (موبایل) (2026-10-27، ممیزی UI/UX)` — بررسی کامل: هر ۶ فایل Reanimated موبایل (TactileChoice، DraggableToken، RevealPrimitives، FeedbackBurst، ProgressFill، AnimatedCharacter) + ChapterBand/GoBubble کاهش حرکت را رعایت می‌کنند (کانال `motionPreferences`/`useReduceMotion`؛ verifier `verify-phase3` قفل می‌کند). یادداشت قبلی «فقط ۴ فایل» منسوخ بود. پوشش وب: ۱۱ فایل (بدون تغییر این اجرا). اثبات روی دستگاه = Phase 4.
 
 **D4 — کد مرده** `P2 · PARTIAL (SNAP-20261014-04)` — `apps/mobile/src/components/SemanticAnimationDemo.tsx` و `apps/web/components/RiveCompanionMascot.tsx` هیچ importی ندارند (مورد `div onClick` غیرقابل‌دسترس در Mascot عملاً غیرفعال است). `@rive-app/react-native` فقط در `AnimatedCharacter.tsx` است و هیچ فایل `.riv` وجود ندارد. تأیید کن (P12 ممکن است لازم داشته باشد) و بعد حذف/رها کن. نام `DuolingoLessonModal` به brand مرجع اشاره دارد؛ تغییر نام در نظر گرفته شود. **حذف‌شده:** `learningEngine.ts` و `offlineSync.ts` (وب)، دو barrel بی‌مصرف موبایل، پکیج `api-client`. **باقی (با دلیل):** `SemanticAnimationDemo`، `PlacementFlow`، `runtimeBudget` و `progression.ts` را verifierها با نام می‌خوانند (gate-bound)؛ `RiveCompanionMascot` منتظر O-7 است؛ `flow.ts` و `macro.ts` منتظر O-8.
 
@@ -368,6 +368,17 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 - **مستندات**: ادغام md-ها در همین فایل؛ `src/README.md` اصلاح شد.
 
 ---
+
+### 6.18) ممیزی جامع UI/UX و اصلاحات پرش — SNAP-20261027-02
+
+شاخهٔ `ux/uiux-audit-improvement` از `chore/wave-e-quality@3d5a753`. با اسکیل تازه‌نصب `duo-design` (الگوهای طراحی، نه برند) به‌عنوان لنز ممیزی (نوار پایدار، پیشرفت صادقانه، خطای گرم با بازیابی، دسترس‌پذیری پیش‌فرض).
+
+- **پوشش ممیزی:** هر ۱۵ صفحهٔ طرح (۰۱-۱۴ اپ + ۱۵ راهنما) و مسیرهای واقعی آن‌ها + صفحات بی‌طرح (تعیین‌سطح، پرش، تنظیمات، آواتار، missions، parent، پخش‌کنندهٔ چالش)؛ نقشهٔ جریان: آنبوردینگ→تب‌ها→شروع ایستگاه→درس→نتیجه→چالش→جشن→بازگشت؛ بن‌بست/بازگشت/حالت‌های خطا بررسی شد.
+- **دو اصلاح واقعی (هر دو در صفحهٔ پرش — بی‌طرح، پس خارج از قفل parity):** (۱) خطای بارگذاری ارزیابی پرش نامرئی بود و بن‌بست کامل می‌ساخت → کارت خطا با دکمهٔ «تلاش دوباره»؛ (۲) نوار پیشرفت با کف ۲۰٪ حتی در ۰ پاسخ دروغ می‌گفت → درصد صادقانه (موبایل + وب، هم‌راستا با اصل «هرگز پیشرفت را جعل نکن»).
+- **تأییدهای سلامت (بدون تغییر):** reduce-motion کامل (D3→DONE)؛ ۰ عنصر لمسی بی‌برچسب در صفحات کاربر؛ معنای tab/tablist در تب‌بار؛ بازخوردهای گرم با مسیر بازیابی در درس/آفلاین/missions؛ missions خطا/بارگذاری/پاداش صادقانه دارد؛ ورودی حرکت در تنظیمات به همان کانال reduce-motion وصل است.
+- **بدون تغییر:** هیچ صفحهٔ ۰۱-۱۴، توکن، متن، verifier یا golden لمس نشد؛ parity 29/29 بی‌تغییر ماند (اصلاحات رفتاری/حالتی‌اند).
+- **گیت‌ها قبل=بعد (همه exit 0):** typecheck:all، vitest ۴۶۸/۴۶۸، static ۷۶/۷۶، parity ۲۹/۲۹، flowها ۲۸/۲۹/۴۸/۱۴، web build، Metro export. لاگ: `docs/archive/evidence/2026-10-27/uiux-audit.log`.
+- **مالک/DEFERRED:** پرش‌های بقیهٔ صفحات بی‌طرح (D-008/D-009)، ورودی missions (D-010)، حرکت کانفتی/نوار پیشرفت در صفحات v1 نیازمند تصمیم طرح است (صفحات v1 حرکت تعریف نکرده‌اند) — به‌عنوان پیشنهاد ثبت شد نه تغییر.
 
 ### 6.17) موج‌های خودکار ZCode (امنیت/پایداری/perf/UX/کیفیت) — SNAP-20261027-01
 
@@ -545,6 +556,10 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | صف sync | N درخواست HTTP برای N تلاش در صف (سرور تا ۲۰ می‌پذیرد) | کم (شبکه) | FIXED (batch ≤۲۰/≤۱۹۲KB) | کامیت a28aa0b؛ تست شمارش درخواست |
 | تنظیمات/آواتار/missions | UI قدیمی بدون صفحهٔ طرح تأییدشده | — | طبق D-009 دست‌نخورده | START_HERE §5 D-009 |
 | بازطراحی تعیین‌سطح/نتیجه/همگام‌سازی | صفحهٔ تأییدشده ندارد | — | DEFERRED تا طرح (D-009) | §5 U-Q5 |
+| پرش (unit/jump) | خطای بارگذاری نامرئی بود (کارت به `current` وابسته؛ متن خطا داخل کارت) و هیچ مسیر بازیابی نداشت | P2 | FIXED: کارت خطای بارگذاری + دکمهٔ «تلاش دوباره» | branch ux/uiux-audit-improvement؛ typecheck/vitest/flow:path سبز |
+| پرش (unit/jump موبایل+وب) | نوار پیشرفت با `Math.max(progress,20)` حتی با ۰ پاسخ ۲۰٪ نشان می‌داد (نوار دروغگو) | P2 | FIXED: درصد صادقانه | همان branch؛ parity/flowها بی‌تغییر سبز |
+| reduce-motion (موبایل) | یادداشت «فقط ۴ فایل» قدیمی بود | P3 | بررسی شد: کامل (D3→DONE) | verifier phase3 + گریپ کامل |
+| a11y برچسب عناصر لمسی | — | P3 | اسکن کامل: ۰ مورد بدون label/role در صفحات کاربر | اسکریپت اسکن ممیزی؛ evidence 2026-10-27 |
 
 ---
 
@@ -590,6 +605,7 @@ Baseline اندازه‌گیری‌شده: وب = ۲۵ chunk جاوااسکری�
 | 2026-10-24 | SNAP-20261024-05 | U7: تب تمرین (۱۳) و من (۱۴) روی UI v1 با ListRow/PracticeView/MeView؛ ردیف‌های قراردادی حفظ و پنج استثنای tabs-waivers؛ رفع شمارش practiceListLimit؛ parity ۳۰/۳۰ (body)، flow:tabs ۱۴/۱۴، static ۷۴/۷۴، vitest ۴۲۰/۴۲۰ |
 | 2026-10-24 | SNAP-20261024-04 | U6: صفحهٔ ۱۱ (جشن پایان مرحله با کانفتی/دستاورد/۱از۵) و ۱۲ (مقدمهٔ چالش با روکا) روی UI v1؛ `Confetti`/`AchievementRow`/`StageResultView`/`ChallengeIntroView`؛ رفع دو باگ پنهان (کرش کروم چالش، کارت کهنه)؛ parity ۲۸/۲۸، flow:station ۴۸/۴۸، static ۷۲/۷۲، vitest ۴۱۷/۴۱۷، D-015 |
 | 2026-10-24 | SNAP-20261024-03 | H1: قابلیت حمل ویندوز (کروم، file-URL، جداکننده‌ها، dynamic import، build وب)، golden immutability (پین SHA-256 + verifier، parity:goldens فقط عمدی)، git local. U5b: اتصال QuestionView به StationFlow با D-001 تا D-003 (بررسی یک‌تایی، برگه دنبال تصمیم سرور، متن عمومی، مهره در محتوای محلی)، سرور mock یادگیری در harness، flow:station ۳۹/۳۹؛ static ۷۱/۷۱، vitest ۴۱۳/۴۱۳، parity ۲۶/۲۶ |
+| 2026-10-27 | SNAP-20261027-02 | ممیزی جامع UI/UX با اسکیل duo-design: رفع بن‌بست و نامرئی‌بودن خطای بارگذاری پرش + نوار پیشرفت صادقانه (موبایل+وب)؛ تأیید reduce-motion کامل و a11y کامل؛ D3 موبایل→DONE؛ همهٔ گیت‌ها سبز بدون تغییر parity |
 | 2026-10-27 | SNAP-20261027-01 | موج‌های ZCode A–E: مرز answer-key + A1/A2/A6/A7/A9، مسیر مرکزی ۴۰۱ (A2/D3 DONE)، اعتبارسنجی sync/batch، batching صف sync (N→ceil(N/20) درخواست)، گارد دوبار-لمس، next 16.4.3 (D-020)، CI warning، p02:full اجرا شد و باگ unhandled-rejection گرفت؛ vitest 468/468، static 76/76، همهٔ flowها سبز |
 | 2026-10-24 | SNAP-20261024-02 | بستهٔ تحویل: `AGENTS.md`، `docs/handoff/PROMPTS.md` (پرامپت‌های بازنگری و فاز)، `.gitattributes`، `.github` (CI و قالب PR)، اسکریپت `typecheck:all`، اصلاح README؛ ممیزی clone تمیز: `npm ci` ۶۴۹ بسته، build:packages، ۹ typecheck، vitest 413/413، static 71/71 |
 

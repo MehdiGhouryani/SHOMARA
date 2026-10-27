@@ -1,0 +1,47 @@
+# UI/UX comprehensive audit — 2026-10-27 — branch ux/uiux-audit-improvement (from chore/wave-e-quality@3d5a753)
+# Lens: newly installed skill "duo-design" (~/.zcode/skills/duo-design) — design rationale only:
+#   stable bottom bar · progress bars as a feature (never lie) · error-as-delight (recovery first)
+#   accessibility as a default (reduce-motion, labels, color-not-only)
+
+BASELINE (before fixes) — all exit 0:
+  typecheck:all · vitest 468/468 (63 files) · static 76/76 · parity 29/29 · flows 28/29/48/14 · web build · expo export
+
+INVENTORY COVERED:
+  design pages 01-14 (app) + 15 (guide) mapped to real routes:
+    01-04 -> /onboarding (WelcomeView/PhoneView/CodeView/ProfileView)
+    05    -> (tabs)/index  PathView      06 -> /station/[id]/start  StageIntroView
+    07    -> StationFlow TeachView      08-10 -> QuestionView/FeedbackSheet
+    11    -> StageResultView            12 -> ChallengeIntroView
+    13    -> (tabs)/practice PracticeView  14 -> (tabs)/profile MeView
+  no-design screens: placement/sync/result (onboarding steps), /unit/[unitId], /unit/[unitId]/jump,
+    /settings, /avatar, /missions, /parent, old lesson surfaces (E03/E06/E11, challenge player) — D-008/D-009.
+
+FIXED (both on /unit/[unitId]/jump — a no-design screen, outside the parity lock):
+  1. P2 jump load-error dead end: the load error was INVISIBLE (error text rendered only inside the
+     question card, which requires `current` = undefined on load failure) and offered no recovery.
+     -> dedicated load-error card with a "تلاش دوباره" retry button; loadAssessment is now a
+        retryable useCallback. File: apps/mobile/app/unit/[unitId]/jump.tsx
+  2. P2 lying progress bar: `width: Math.max(progress, 20)%` showed 20% at zero answers — against
+     the progress-honesty principle (and the skill's "progress bars that lie" anti-pattern).
+     -> honest `width: progress%` on mobile AND web (apps/web/components/JumpAssessmentView.tsx).
+
+VERIFIED HEALTHY (no change needed):
+  - reduce-motion: ALL 6 reanimated files + ChapterBand/GoBubble honor it via motionPreferences /
+    useReduceMotion (verifier verify-phase3-game-feel locks it) -> START_HERE Stage D3 mobile = DONE;
+    the old "only 4 files" note was outdated.
+  - a11y: scripted scan of every user-facing screen (app/**, station, practice, profile, onboarding
+    views, path) found 0 unlabeled Pressable/TouchableOpacity; TabBar exposes tablist/tab/selected;
+    OptionButton exposes selected/disabled; locked rows state conveyed verbally by kicker text.
+  - error states: lesson startFailed/submitFailed/checkQueued, path offline strip, missions error
+    with retry — all warm register with recovery (error-as-delight compliant).
+  - flow map: onboarding -> tabs -> station start -> lesson -> result -> challenge -> celebration;
+    back/exit/resume verified by flow tests; no dead ends found outside the jump fix above.
+
+AFTER — all exit 0 (identical counts; fixes are behavioral, parity untouched):
+  typecheck:all · vitest 468/468 · static 76/76 · parity 29/29 · flows 28/29/48/14 · web build · expo export
+
+OWNER/DEFERRED (recorded, not acted on):
+  - remaining no-design screens redesigns (D-008/D-009), missions visual entry (D-010)
+  - motion for confetti/progress fills on v1 pages: design pages define no motion -> any animation
+    needs an owner/design decision (suggestion registered in START_HERE 6.18, not implemented)
+  - device/TalkBack verification = Phase 4 (unchanged blocker)
