@@ -53,6 +53,7 @@ build('apps/mobile/app/(tabs)/practice.tsx');
   await tap(button(page, 'شروع همین حالا'));
   let f = await flow(page);
   check('13: start opens the recommended station start route', f.pushed.length === 1 && f.pushed[0] === '/station/ST01/start?entry=practice', JSON.stringify(f.pushed));
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-practice.png') });
   check('no runtime errors (13)', errors.length === 0, errors.join(' | '));
   if (results.some((r) => !r.ok)) await shot(page, 'practice-fail');
   await page.close();
@@ -75,8 +76,29 @@ build('apps/mobile/app/(tabs)/profile.tsx');
   check('14: achievement row opens the detail sheet (S18)', await visible(page, 'هنوز نه'));
   await tap(button(page, 'بستن'));
   check('14: the sheet closes', (await page.getByText('هنوز نه', { exact: false }).count()) === 0);
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-me.png') });
   check('no runtime errors (14)', errors.length === 0, errors.join(' | '));
   if (results.some((r) => !r.ok)) await shot(page, 'me-fail');
+  await page.close();
+}
+
+// ---------- the V2 tab shell itself (real ChildTabBar, fake navigator state) ----------
+{
+  build('apps/mobile/parity/flow/targets/ChildTabBarShell.tsx');
+  const { page, errors } = await open('tabs-shell');
+  const tabs = page.getByRole('tab');
+  check('shell: three tabs render with their Persian labels', (await tabs.count()) === 3 && (await visible(page, 'مسیر')) && (await visible(page, 'تمرین')) && (await visible(page, 'من')), String(await tabs.count()));
+  // react-native-web does not forward accessibilityState to the DOM (known harness gotcha), so the
+  // selected semantics are asserted through the visible marker: the active pill's soft-primary fill.
+  const pillBg = (name) => page
+    .getByRole('tab', { name })
+    .evaluate((el) => { const pill = el.querySelector('div'); return pill ? getComputedStyle(pill).backgroundColor : ''; });
+  check('shell: active tab shows the soft-primary pill marker', (await pillBg('مسیر')) === 'rgb(221, 242, 231)' && (await pillBg('تمرین')) !== 'rgb(221, 242, 231)', JSON.stringify([await pillBg('مسیر'), await pillBg('تمرین')]));
+  await tap(page.getByRole('tab', { name: 'تمرین' }));
+  check('shell: tapping a tab navigates through the adapter', ((await page.evaluate(() => window.__nav)) ?? []).includes('practice'), JSON.stringify(await page.evaluate(() => window.__nav)));
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-tabbar.png') });
+  check('no runtime errors (shell)', errors.length === 0, errors.join(' | '));
+  if (results.some((r) => !r.ok)) await shot(page, 'shell-fail');
   await page.close();
 }
 await browser.close();

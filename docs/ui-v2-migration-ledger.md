@@ -20,7 +20,7 @@ Status values: `V2` (migrated + verified) · `V1` (historical view still on the 
 | `onboarding` (welcome/phone/code/profile) | SYSTEM_SCREENS | V1 (`onboarding/views/*`) | V2 shells per screen | `flow:onboarding` 28/28 (behavior) | Batch 3 |
 | `(tabs)/practice` | SYSTEM_SCREENS (profile/history family) | V1 (`PracticeView`) | Clay rows, honest locked rows | `flow:tabs` 14/14 | Batch 3 |
 | `(tabs)/profile` | SYSTEM_SCREENS | V1 (`MeView`) | Soft identity card, real progress | `flow:tabs` 14/14 | Batch 3 |
-| `(tabs)/_layout` (ChildTabBar) | SYSTEM_SCREENS (tab shell) | V1 (outlined single variant) | V2 tab bar when tabs migrate | `flow:tabs` · `verify-ui-v1-path` tabbar checks | Batch 3 |
+| `(tabs)/_layout` (ChildTabBar) | SYSTEM_SCREENS (tab shell) | **V2** (`ui/v2/TabBar`, batch 4) | icon+label tabs, active pill beyond color, 48dp targets, adapter keeps expo-router emission | `flow:tabs` 18/18 (new shell scenario drives the real ChildTabBar) | Content screens of تمرین/من remain V1 (next batch) |
 | `unit/[unitId]/jump` | SYSTEM_SCREENS (edge/assessment) | LEGACY (no approved page; D-008/D-009) | Error/empty states already honest | `flow:path` jump scenario | Needs owner design decision |
 | `settings` | SYSTEM_SCREENS | LEGACY (no approved page; D-009) | Flat rows when redesigned | — | Batch 3/owner decision |
 | `avatar` | SYSTEM_SCREENS | LEGACY (no approved page; D-009) | — | — | Owner decision |
@@ -31,6 +31,7 @@ Status values: `V2` (migrated + verified) · `V1` (historical view still on the 
 
 | Primitive | File | Consumers |
 |---|---|---|
+| TabBar (icon+label shell) | `TabBar.tsx` | ChildTabBar (all three tabs) |
 | Button / Card / Chip / ProgressBar | `core.tsx` | LessonViewsV2, StationStartV2, PathView2 (Button amber for jump) |
 | ClaySurface (soft/featured, native layered depth) | `clay.tsx` | PathView2 (FAB), StationStartV2 (hero) |
 | Character facade (5 IDs × emotion map, WebP poses) | `Character.tsx` | LessonViewsV2 (main guide/celebrate, roka celebrate), PathView2 (dana cameo), StationStartV2 (number idle) |

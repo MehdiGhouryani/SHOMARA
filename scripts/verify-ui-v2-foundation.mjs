@@ -25,6 +25,7 @@ const files = [
   'apps/mobile/src/ui/v2/Character.tsx',
   'apps/mobile/src/ui/v2/lesson.tsx',
   'apps/mobile/src/ui/v2/path.tsx',
+  'apps/mobile/src/ui/v2/TabBar.tsx',
   'apps/mobile/src/ui/v2/useReduceMotionV2.ts',
   'apps/mobile/src/station/views2/LessonViewsV2.tsx',
   'apps/mobile/src/path/PathView2.tsx',
@@ -46,7 +47,7 @@ for (const f of files.filter((f) => f.endsWith('.tsx') || f.endsWith('.ts'))) {
 must(true, 'V2 sources use only tokens.v2 (no raw hex beyond the documented highlight, no V1 tokens)');
 
 // 2. a11y: roles on every pressable + the touch-target test resolves V2 tokens
-for (const f of ['apps/mobile/src/ui/v2/core.tsx', 'apps/mobile/src/ui/v2/lesson.tsx', 'apps/mobile/src/ui/v2/path.tsx', 'apps/mobile/src/ui/v2/Character.tsx', 'apps/mobile/src/ui/v2/clay.tsx', 'apps/mobile/src/station/views2/LessonViewsV2.tsx', 'apps/mobile/src/path/PathView2.tsx', 'apps/mobile/src/station/views2/StationStartV2.tsx']) {
+for (const f of ['apps/mobile/src/ui/v2/core.tsx', 'apps/mobile/src/ui/v2/lesson.tsx', 'apps/mobile/src/ui/v2/path.tsx', 'apps/mobile/src/ui/v2/TabBar.tsx', 'apps/mobile/src/ui/v2/Character.tsx', 'apps/mobile/src/ui/v2/clay.tsx', 'apps/mobile/src/station/views2/LessonViewsV2.tsx', 'apps/mobile/src/path/PathView2.tsx', 'apps/mobile/src/station/views2/StationStartV2.tsx']) {
   const src = read(f);
   for (const m of src.matchAll(/<Pressable\b/g)) {
     const tag = src.slice(m.index, src.indexOf('>', m.index));
