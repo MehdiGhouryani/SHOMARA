@@ -106,8 +106,10 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   const bar = page.getByRole('progressbar', { name: 'بخش ۱ از ۵' });
   const track = await bar.boundingBox();
   const fill = await bar.locator('> div').first().boundingBox();
-  check('07: progress bar is 16px high and 1 of 5 sections (20%) filled', track && fill && Math.round(track.height) === 16 && Math.abs(fill.width / track.width - 0.2) < 0.005, JSON.stringify({ track, fill }));
-  check('07: three numbered beads', (await page.getByLabel('۳ مهره').count()) > 0 && (await visible(page, '۳')) && (await visible(page, '۲')));
+  check('07 (V2): progress bar is 14px high (tokens.v2) and 1 of 5 sections (20%) filled', track && fill && Math.round(track.height) === 14 && Math.abs(fill.width / track.width - 0.2) < 0.005, JSON.stringify({ track, fill }));
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-teach.png') });
+  const tray = page.getByLabel('سینی شمارش مهره‌ها');
+  check('07 (V2): interactive counting tray with three uncounted beads and the count hint', (await tray.count()) === 1 && (await tray.getByRole('button').count()) >= 3 && (await visible(page, 'مهره‌ها را یکی‌یکی لمس کن')), JSON.stringify({ tray: await tray.count(), beads: await tray.getByRole('button').count() }));
   const replay = button(page, 'دوباره بشنو');
   check('07: hear-again and continue buttons are present', (await replay.isVisible().catch(() => false)) && (await button(page, 'ادامه').isVisible().catch(() => false)));
   await tap(replay);
@@ -134,8 +136,9 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   // ================= pages 08 to 10: the question interaction (D-001 to D-003) =================
   const optionDisabled = async (page, label) => (await option(page, label).getAttribute('aria-disabled')) === 'true';
 
-  check('08: caption from the macro labels and question progress 2/5', (await visible(page, 'با هم تمرین می‌کنیم · ۲ از ۵')) && (await page.getByRole('progressbar').first().getAttribute('aria-label')) === 'سؤال ۲ از ۵');
+  check('08 (V2): macro label and position chip render separately, question progress 2/5', (await visible(page, 'با هم تمرین می‌کنیم')) && (await visible(page, '۲ از ۵')) && (await page.getByRole('progressbar').first().getAttribute('aria-label')) === 'سؤال ۲ از ۵');
   check('08: check is disabled until an option is selected', await isDisabled(page, 'بررسی'));
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-question.png') });
   await tap(option(page, '۲'));
   check('08: selecting an option enables check (no submit yet)', !(await isDisabled(page, 'بررسی')));
   let submits = () => flow(page).then((x) => x.submits);
@@ -159,7 +162,7 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
   check('09: continue moves straight to the next section (pattern game)', (await visible(page, 'مسیر الگو')) && (await visible(page, 'کدام مهره باید جای علامت سؤال بیاید؟')));
   // The legacy pattern stage still submits on tap and auto-advances to the counting question (E04).
   await tap(option(page, 'آبی'));
-  check('08: the counting question opens after the pattern game', (await visible(page, 'بازی می‌کنیم · ۳ از ۵')) && (await visible(page, 'چند مهره می‌بینی؟')));
+  check('08 (V2): the counting question opens after the pattern game', (await visible(page, 'بازی می‌کنیم')) && (await visible(page, '۳ از ۵')) && (await visible(page, 'چند مهره می‌بینی؟')));
   // A second wrong answer is redirected by the server: the sheet says continue and recovery opens (D-002).
   await tap(option(page, '۲'));
   await tap(button(page, 'بررسی'));
@@ -235,7 +238,8 @@ build('apps/mobile/parity/flow/targets/StationPlay.tsx');
     await page.waitForTimeout(250);
   }
   check('11: the celebration page with the station title', (await visible(page, 'آفرین!')) && (await visible(page, 'مرحلهٔ «شمارش و الگو» را کامل کردی.')));
-  check('11: chapter progress 1 of 5 and the new achievement', (await visible(page, '۱ از ۵ مرحله')) && (await visible(page, 'دستاورد جدید')) && (await visible(page, 'شمارش‌گر')));
+  check('11 (V2): chapter progress 1 of 5 and the new achievement', (await visible(page, '۱ از ۵')) && (await visible(page, 'دستاورد جدید')) && (await visible(page, 'شمارش‌گر')));
+  if (process.env.FLOW_CAPTURE === '1') await page.screenshot({ path: path.join(OUT, 'v2-result.png') });
   await tap(button(page, 'ادامه'));
   f = await flow(page);
   check('11: continue leaves the lesson', f.backed >= 1, String(f.backed));

@@ -16,6 +16,11 @@ const TOKENS_JSON = JSON.parse(readFileSync(join(ROOT, '..', '..', 'packages', '
 const SIZE_TOKENS: Record<string, number> = TOKENS_JSON.size ?? {};
 // ADR-0035: v1 primitives size themselves from `tokens.ui` (UI.group.key); resolved so they are checked too.
 const UI_TOKENS: Record<string, Record<string, unknown>> = TOKENS_JSON.ui ?? {};
+// D-021: V2 primitives size themselves from tokens.v2 (component/radius groups), resolved like UI above.
+const V2_TOKENS: Record<string, Record<string, unknown>> = {
+  ...(TOKENS_JSON.v2?.component ? { K2: TOKENS_JSON.v2.component as Record<string, unknown> } : {}),
+  ...(TOKENS_JSON.v2?.radius ? { R2: TOKENS_JSON.v2.radius as Record<string, unknown> } : {}),
+};
 
 function files(dir: string, out: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
@@ -40,7 +45,12 @@ function declared(src: string, name: string): { h: number | undefined; w: number
     // UI.group.key and deeper (UI.path.node.size): walk the token tree.
     const u = body.match(new RegExp(`\\b${k}:\\s*UI\\.([\\w.]+)`));
     const uv = u ? u[1]!.split('.').reduce<unknown>((node, key) => (node as Record<string, unknown> | undefined)?.[key], UI_TOKENS) : undefined;
-    return typeof uv === 'number' ? uv : undefined;
+    if (typeof uv === 'number') return uv;
+    // D-021: V2 primitives (K2.key from tokens.v2.component / R2.key from tokens.v2.radius).
+    const v2m = body.match(new RegExp(`\\b${k}:\\s*(K2|R2)\\.(\\w+)`));
+    const v2v = v2m ? (V2_TOKENS[v2m[1]!] as Record<string, unknown> | undefined)?.[v2m[2]!] : undefined;
+    if (typeof v2v === 'number') return v2v;
+    return undefined;
   };
   const h = Math.max(num('minHeight') ?? 0, num('height') ?? 0);
   return { h: h || undefined, w: Math.max(num('minWidth') ?? 0, num('width') ?? 0) || undefined };

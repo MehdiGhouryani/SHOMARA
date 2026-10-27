@@ -31,9 +31,8 @@ import {
   type SessionCompleteKind,
 } from '@math/contracts';
 import { SignatureChallengeView } from './SignatureChallengeView';
-import { TeachView } from './views/TeachView';
-import { QuestionView, type QuestionPhase } from './views/QuestionView';
-import { StageResultView } from './views/StageResultView';
+import { type QuestionPhase } from './views/QuestionView';
+import { StageResultView2, QuestionView2, TeachView2 } from './views2/LessonViewsV2';
 import { ChallengeIntroView } from './views/ChallengeIntroView';
 import { MACRO_LABELS, macroFilled, macroLabel } from './macro';
 import { speakFa, stopSpeaking } from './speech';
@@ -615,7 +614,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
     const beadCount = content.visualCount ?? TEACH_DEFAULT_BEADS;
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
-        <TeachView
+        <TeachView2
           caption={{ label: macroLabel(stage, null), position: S.lesson.sectionOf(toFa(filled), total) }}
           progress={filled / MACRO_LABELS.length}
           progressLabel={S.lesson.sectionA11y(toFa(filled), total)}
@@ -644,7 +643,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
     const sheetDirectsElsewhere = questionOutcome !== null && !questionOutcome.correct && !questionSheetAllowsRetry(questionOutcome);
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
-        <QuestionView
+        <QuestionView2
           caption={{ label: macroLabel(stage, null), position: S.lesson.sectionOf(toFa(filled), total) }}
           progress={filled / MACRO_LABELS.length}
           progressLabel={S.lesson.questionOf(toFa(filled), total)}
@@ -692,7 +691,7 @@ export function StationFlow({ stationId }: { stationId: string }) {
     const achievementTitle = pathAchievementTitle(stationCode);
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: C.canvas }} edges={['top']}>
-        <StageResultView
+        <StageResultView2
           heroLabel={S.stationDone.heroA11y}
           title={S.stationDone.title}
           subtitle={S.stationDone.subtitle(station?.title ?? stationCode)}

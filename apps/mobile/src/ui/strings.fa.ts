@@ -101,6 +101,10 @@ export const S = {
     hello: (name: string) => `سلام ${name}!`,
     welcomeBack: (name: string) => `سلام دوباره ${name}!`,
   },
+  v2: {
+    countHint: 'مهره‌ها را یکی‌یکی لمس کن و با هم بشماریم.',
+    doneLabel: 'پایان مرحله',
+  },
   parent: {
     row: 'بخش والدین',
     title: 'بخش والدین',

@@ -4,6 +4,17 @@ Applies to every agent (Claude, GLM via ZCode, Codex, ...). Read this file first
 `START_HERE.md` (Persian) is the **only** source of project status, open questions and the next task.
 This file is the stable operating manual; if the two ever disagree about *status*, START_HERE wins.
 
+## 0. V2 DESIGN GENERATION (owner decision, 2026-10-27)
+
+The owner has rejected the V1 visual design and authorized **UI/UX Generation V2**. Concretely:
+
+- ADR-0035, `docs/design-handoff-2026-10/pages-v1/`, the V1 goldens, and the V1 parity thresholds are **historical V1 references**, not V2 design targets.
+- New child-facing UI is built as **UI V2** from the single authoritative token source (`packages/design-system`), with its own visual-verification (V2 snapshot baselines + behavior/flow tests), not against the old HTML mockups.
+- When a screen migrates to V2, its V1-specific visual assertions (parity specimens, V1 verifiers' visual checks, V1 flow strings) are **replaced with meaningful V2 equivalents** — never silently disabled.
+- V1 files stay in place until their consumers migrate, then are retired; no permanent dual design system.
+
+Everything else in this file — server-authoritative learning, security, Persian/RTL, no stars/lives/punitive streaks, no weakened tests, evidence discipline — is unchanged and still binding.
+
 ## 1. What this repo is
 Persian (RTL), Android-first, server-authoritative math-learning app for children (grade 1 first).
 Monorepo: `apps/mobile` (Expo / React Native), `apps/web` (Next.js, demo + API), `packages/*` (contracts, runtimes, design system), `supabase/` (migrations), `docs/`, `scripts/` (verifiers and the visual-parity harness).
