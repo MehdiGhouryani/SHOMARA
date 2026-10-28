@@ -1,0 +1,14 @@
+PASS  required Phase A files present
+PASS  gradeExperienceViolations empty
+PASS  only G1 playable
+PASS  derived helpers coherent
+WAIVED grade-experience-density (ADR-0035 U3): grade-based node density and session-time hint on the Path tab; still verified: grade experience contract (node sizes, practice limit, parent guidance) and primaryContinueLabelFa; restore: decide in U8 whether the contract is still needed (page sizes are fixed)
+PASS  path wired
+PASS  profile wired
+PASS  practice list capped by band
+PASS  parent guidance gated
+WAIVED station-start-session-hint (ADR-0035 U4): session-length hint ("پیشنهاد جلسه ...") and the ready/needs-preparing status box on the station start screen; still verified: sessionLengthHintFa contract and its use on the profile and me surfaces; restore: owner decision U-Q15: page 06 draws no session hint (the minutes chip shows the station estimate)
+PASS  station start uses the approved stage page (session hint waived)
+PASS  onboarding availability single-sourced
+
+PHASE_A_GRADE_EXPERIENCE: PASS

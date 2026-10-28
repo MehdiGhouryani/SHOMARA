@@ -1,0 +1,134 @@
+
+ RUN  v5.0.3 /home/claude/proj/work/src
+
+ ✓ apps/mobile/src/state/appStateCore.test.ts (34 tests) 26ms
+ ✓ packages/contracts/src/engagement-policy.test.ts (18 tests) 67ms
+ ✓ packages/learning-runtime/src/__tests__/policies.test.ts (10 tests) 8ms
+ ✓ packages/contracts/src/missions.test.ts (9 tests) 35ms
+ ✓ packages/contracts/src/game-feel.test.ts (9 tests) 16ms
+ ✓ packages/contracts/src/engagement.test.ts (8 tests) 10ms
+ ✓ packages/contracts/src/challenge-presentation.test.ts (8 tests) 12ms
+ ✓ packages/contracts/src/collection.test.ts (10 tests) 23ms
+ ✓ apps/mobile/src/game-feel/GameFeelController.test.ts (8 tests) 8ms
+ ✓ packages/learning-runtime/src/__tests__/p02-golden.test.ts (7 tests) 8ms
+ ❯ apps/mobile/src/ui/touchTargets.test.ts (14 tests | 3 failed) 29ms
+   ❯ touch targets >= 48dp (14)
+     ✓ /app/(tabs)/index.tsx 4ms
+     × /app/(tabs)/profile.tsx 13ms
+     × /app/avatar.tsx 2ms
+     ✓ /app/onboarding.tsx 1ms
+     ✓ /app/parent.tsx 1ms
+     ✓ /app/settings.tsx 0ms
+     ✓ /app/station/[stationId]/start.tsx 1ms
+     ✓ /app/unit/[unitId]/jump.tsx 0ms
+     ✓ /app/unit/[unitId].tsx 1ms
+     ✓ /src/components/ChildAvatar.tsx 0ms
+     ✓ /src/station/LessonPlayerChrome.tsx 0ms
+     × /src/ui/PracticeHubScreen.tsx 2ms
+     ✓ /src/ui/design-system/authComponents.tsx 0ms
+     ✓ /src/ui/design-system/components.tsx 0ms
+ ✓ packages/contracts/src/grade-experience.test.ts (11 tests) 12ms
+ ✓ packages/contracts/src/p10-depth-quality.test.ts (4 tests) 31ms
+ ✓ apps/mobile/src/ui/uiText.test.ts (34 tests) 45ms
+ ✓ packages/learning-runtime/src/__tests__/engine.test.ts (2 tests) 8ms
+ ✓ packages/contracts/src/avatar-customization.test.ts (7 tests) 8ms
+ ✓ apps/mobile/src/game-feel/DragDropController.test.ts (7 tests) 8ms
+ ✓ apps/mobile/src/onboarding/flow.test.ts (9 tests) 10ms
+ ✓ packages/learning-runtime/src/__tests__/evaluator.test.ts (3 tests) 6ms
+ ✓ apps/web/lib/characterScenes.test.ts (5 tests) 7ms
+ ✓ packages/offline-sync/src/__tests__/manager.test.ts (2 tests) 13ms
+ ✓ apps/mobile/src/station/macro.test.ts (6 tests) 8ms
+ ✓ packages/contracts/src/path-focus.test.ts (4 tests) 10ms
+ ✓ packages/contracts/src/worlds.test.ts (4 tests) 12ms
+ ✓ packages/contracts/src/learning-rhythm.test.ts (3 tests) 32ms
+ ✓ apps/mobile/src/game-feel/feedback.test.ts (4 tests) 7ms
+ ✓ apps/mobile/src/game-feel/haptics.test.ts (4 tests) 6ms
+ ✓ packages/contracts/src/p10-batch-a.test.ts (4 tests) 8ms
+ ✓ apps/mobile/src/auth/phone.test.ts (4 tests) 10ms
+ ✓ packages/contracts/src/session-feel.test.ts (5 tests) 9ms
+ ✓ packages/contracts/src/p10-batch-e.test.ts (3 tests) 6ms
+ ✓ packages/contracts/src/p10-batch-a-depth.test.ts (3 tests) 12ms
+ ✓ packages/contracts/src/p10-batch-e-depth.test.ts (2 tests) 7ms
+ ✓ packages/contracts/src/p10-batch-b.test.ts (2 tests) 8ms
+ ✓ packages/contracts/src/p10-batch-c.test.ts (2 tests) 5ms
+ ✓ packages/contracts/src/p10-batch-d.test.ts (2 tests) 7ms
+ ✓ apps/mobile/src/ui/digits.test.ts (4 tests) 6ms
+ ✓ packages/contracts/src/p10-batch-b-depth.test.ts (1 test) 8ms
+ ✓ packages/contracts/src/p10-batch-c-depth.test.ts (1 test) 6ms
+ ✓ packages/contracts/src/p10-batch-d-depth.test.ts (1 test) 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/mobile/src/ui/touchTargets.test.ts > touch targets >= 48dp > /app/(tabs)/profile.tsx
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "[achievement, achievementUnlocked, achievementLocked] best height 0",
++ ]
+
+ ❯ apps/mobile/src/ui/touchTargets.test.ts:63:19
+     61|         if (best < MIN) bad.push(`[${names.join(', ')}] best height ${…
+     62|       }
+     63|       expect(bad).toEqual([]);
+       |                   ^
+     64|     });
+     65|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  apps/mobile/src/ui/touchTargets.test.ts > touch targets >= 48dp > /app/avatar.tsx
+AssertionError: expected [ '[cat, catOn] best height 40' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "[cat, catOn] best height 40",
++ ]
+
+ ❯ apps/mobile/src/ui/touchTargets.test.ts:63:19
+     61|         if (best < MIN) bad.push(`[${names.join(', ')}] best height ${…
+     62|       }
+     63|       expect(bad).toEqual([]);
+       |                   ^
+     64|     });
+     65|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  apps/mobile/src/ui/touchTargets.test.ts > touch targets >= 48dp > /src/ui/PracticeHubScreen.tsx
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "[featureCard, pressed] best height 0",
++   "[card, disabledCard, pressed] best height 0",
++ ]
+
+ ❯ apps/mobile/src/ui/touchTargets.test.ts:63:19
+     61|         if (best < MIN) bad.push(`[${names.join(', ')}] best height ${…
+     62|       }
+     63|       expect(bad).toEqual([]);
+       |                   ^
+     64|     });
+     65|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 39 passed (40)
+      Tests  3 failed | 275 passed (278)
+   Start at  11:46:52
+   Duration  11.38s (transform 41%, import 35%, tests 14%, worker 10%)
+
+    Isolate  40 workers spawned · ~169ms startup each (spawn + environment, per file)
+             at least ~6.59s faster with isolate: false — reuses workers across files instead of one per file
+

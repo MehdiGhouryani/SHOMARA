@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "2.0.0",
+  "implementation": { "web": "source/motion.css (copied into apps/web/app/globals.css)", "mobile": "apps/mobile/src/components/AnimatedCharacter.tsx (sprite-level)", "rive": "docs/RIVE-RIG-BRIEF.md" },
+  "global": {
+    "blink": { "parts": ["eye-l", "eye-r"], "property": "scaleY", "keys": [[0, 1], [0.93, 1], [0.955, 0.1], [1, 1]], "durationMs": 4600, "loop": true },
+    "reducedMotion": "no animation; static drawn pose carries the meaning",
+    "lessonMode": "data-static=true: only blink + one-shot reactions; no loops (Qbo think loading ring is static in lessons)"
+  },
+  "states": {
+    "idle": [
+      { "part": "body-group", "property": "scale", "keys": [[0, [1, 1]], [0.5, [1.012, 0.988]], [1, [1, 1]]], "durationMs": 3400, "easing": "sine-in-out", "loop": true },
+      { "part": "tail", "property": "rotate", "keys": [[0, -3], [0.5, 3], [1, -3]], "durationMs": 3400, "loop": true, "characters": ["aria", "dana"] },
+      { "part": "antenna", "property": "rotate", "keys": [[0, -3], [0.5, 3], [1, -3]], "durationMs": 2600, "loop": true, "characters": ["qbo"] },
+      { "part": "float-cube", "property": "translateY", "keys": [[0, 0], [0.5, -6], [1, 0]], "durationMs": 2800, "loop": true, "characters": ["qbo"] },
+      { "part": "arm-r", "property": "rotate", "keys": [[0, 0], [0.3, -14], [0.65, 8], [1, 0]], "durationMs": 1100, "repeat": 2, "characters": ["aria"], "note": "hello wave on first show" }
+    ],
+    "think": [
+      { "part": "head", "property": "rotate", "keys": [[0, 0], [0.5, -3], [1, 0]], "durationMs": 2800, "loop": true },
+      { "part": "loading", "property": "rotate", "keys": [[0, 0], [1, 360]], "durationMs": 1400, "easing": "linear", "loop": true, "characters": ["qbo"] }
+    ],
+    "encourage": [
+      { "part": "arm-r|wing-r", "property": "rotate", "keys": [[0, 18], [1, 0]], "durationMs": 900, "easing": "back-out", "repeat": 1 }
+    ],
+    "correct": [
+      { "part": "head", "property": "translateY", "keys": [[0, 0], [0.4, 5], [1, 0]], "durationMs": 550, "repeat": 1 },
+      { "part": "crest|tail", "property": "scale", "keys": [[0, 0.85], [0.6, 1.08], [1, 1]], "durationMs": 500, "easing": "back-out", "repeat": 1 },
+      { "part": "fx", "property": "opacity+scale", "keys": [[0, [0, 0.6]], [1, [1, 1]]], "durationMs": 600, "repeat": 1 }
+    ],
+    "celebrate": [
+      { "part": "root", "property": "translateY+squash", "keys": [[0, [0, 1, 1]], [0.12, [0, 1.05, 0.94]], [0.45, [-14, 0.97, 1.04]], [0.8, [0, 1.03, 0.97]], [1, [0, 1, 1]]], "durationMs": 620, "repeat": 3 },
+      { "part": "arm-l|wing-l", "property": "rotate", "keys": [[0, 0], [1, -10]], "durationMs": 310, "repeat": 6, "alternate": true },
+      { "part": "arm-r|wing-r", "property": "rotate", "keys": [[0, 0], [1, 10]], "durationMs": 310, "repeat": 6, "alternate": true },
+      { "part": "tail-pattern", "property": "strokeDashoffset", "keys": [[0, 0], [1, -92]], "durationMs": 1200, "repeat": 1, "characters": ["dana"], "note": "pattern flows along the tail" },
+      { "part": "cube-tower", "property": "translateY+opacity", "keys": [[0, [-30, 0]], [1, [0, 1]]], "durationMs": 600, "easing": "back-out", "characters": ["qbo"] }
+    ],
+    "recovery": [
+      { "part": "body-group", "property": "rotate", "keys": [[0, -1.2], [0.5, 1.2], [1, -1.2]], "durationMs": 4000, "loop": true },
+      { "part": "head", "property": "rotate", "keys": [[0, 0], [0.5, -3], [1, 0]], "durationMs": 4000, "loop": true }
+    ]
+  },
+  "rules": [
+    "no shake, no head-shake 'no', no red flash on wrong answers",
+    "correct is one calm nod; celebrate only for STATION_PASS / MILESTONE / REWARD_GRANTED",
+    "never point, look or gesture toward an answer option",
+    "max 3 hops; total celebrate under 2s so the child keeps control"
+  ]
+}

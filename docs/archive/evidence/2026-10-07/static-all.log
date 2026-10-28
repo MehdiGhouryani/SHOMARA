@@ -1,0 +1,147 @@
+FAIL  independent-verification.mjs
+[PASS] Station Pass achievement is durable across E11/E12
+[PASS] E10 only reaches Transfer after Station Pass; otherwise it returns to an independent Check
+[PASS] E11 flows to the final Mastery Check
+[PASS] E11 uses the option interaction rather than CountGame
+
+❌ INDEPENDENT VERIFICATION FAILED: Error: Completion UI shows a reward only when Station Pass was actually achieved and never claims mastery or exposes system jargon
+    at must (file:///home/claude/proj/work/src/scripts/verify-phase15-deep-remediation.mjs:6:37)
+    at file:///home/claude/proj/work/src/scripts/verify-phase15-deep-remediation.mjs:39:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async runIndependentVerification (file:///home/claude/proj/work/src/scripts/independent-verification.mjs:199:3)
+
+PASS  runtime-tests.mjs
+PASS  test-challenge-runtime.mjs
+PASS  test-phase9.mjs
+PASS  verify-backend-b0-foundation.mjs
+PASS  verify-migrations-static.mjs
+FAIL  verify-mobile-release.mjs
+MOBILE_RELEASE_GATE: BLOCKED
+EMOJI_IN_UI_SOURCE:apps/mobile/app/avatar.tsx
+
+PASS  verify-p01-prototype-isolation.mjs
+PASS  verify-p06-mission-engine.mjs
+PASS  verify-p07-collection.mjs
+PASS  verify-p08-avatar.mjs
+FAIL  verify-p09-worlds.mjs
+PASS  0061 worlds_projection
+PASS  0061 pathIsPrimarySurface
+PASS  0061 setsMastery
+PASS  0061 revoke insert, update, delete on public.world_completions_p09
+PASS  Path UI has world layer
+PASS  Path remains primary surface
+PASS  roadmap P09 IMPLEMENTED
+PASS  VD-012 present
+FAIL  next_eligible_phase must be P10
+
+P09 static verification: FAIL
+
+PASS  verify-p10-batch-a-depth.mjs
+PASS  verify-p10-batch-a.mjs
+PASS  verify-p10-batch-b-depth.mjs
+PASS  verify-p10-batch-b.mjs
+PASS  verify-p10-batch-c-depth.mjs
+PASS  verify-p10-batch-c.mjs
+PASS  verify-p10-batch-d-depth.mjs
+PASS  verify-p10-batch-d.mjs
+PASS  verify-p10-batch-e-depth.mjs
+PASS  verify-p10-batch-e.mjs
+PASS  verify-p11-rhythm.mjs
+PASS  verify-phase-a-grade-experience.mjs
+PASS  verify-phase-b-path-focus.mjs
+PASS  verify-phase-c-session-feel.mjs
+PASS  verify-phase-d-practice-habit.mjs
+PASS  verify-phase-e-me-surface.mjs
+PASS  verify-phase-f-ux-a11y.mjs
+PASS  verify-phase1-product-lock.mjs
+PASS  verify-phase10.mjs
+PASS  verify-phase11-auth.mjs
+PASS  verify-phase12-postgres-runtime.mjs
+PASS  verify-phase14-deep-remediation.mjs
+FAIL  verify-phase15-deep-remediation.mjs
+const must=(ok,msg)=>{if(!ok) throw new Error(msg); console.log(`[PASS] ${msg}`)};
+                                    ^
+
+Error: Completion UI shows a reward only when Station Pass was actually achieved and never claims mastery or exposes system jargon
+    at must (file:///home/claude/proj/work/src/scripts/verify-phase15-deep-remediation.mjs:6:37)
+    at file:///home/claude/proj/work/src/scripts/verify-phase15-deep-remediation.mjs:39:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.22.2
+
+FAIL  verify-phase16-deep-audit.mjs
+    throw new Error(`${command} ${args.join(' ')} exited ${result.status}; expected ${expected}`);
+          ^
+
+Error: /usr/bin/node scripts/verify-phase15-deep-remediation.mjs exited 1; expected 0
+    at run (file:///home/claude/proj/work/src/scripts/verify-phase16-deep-audit.mjs:8:11)
+    at file:///home/claude/proj/work/src/scripts/verify-phase16-deep-audit.mjs:13:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.22.2
+
+PASS  verify-phase2-foundation.mjs
+PASS  verify-phase2.mjs
+PASS  verify-phase3-game-feel.mjs
+PASS  verify-phase3.mjs
+PASS  verify-phase4-challenge-foundation.mjs
+PASS  verify-phase4.mjs
+PASS  verify-phase5.mjs
+PASS  verify-phase6.mjs
+PASS  verify-phase7.mjs
+PASS  verify-phase8.mjs
+PASS  verify-phase9.mjs
+PASS  verify-production-readiness-static.mjs
+PASS  verify-uiux-path2.mjs
+PASS  verify-uiux-phase3.mjs
+PASS  verify-uiux-phase4.mjs
+PASS  verify-uiux-phase5.mjs
+PASS  verify-uiux-phase6.mjs
+FAIL  verify-uiux-phase7-5.mjs
+PASS station-header-clean
+PASS unit-title-short
+PASS web-nav-three-tabs
+PASS mobile-nav-three-tabs
+PASS topbar-no-persistent-metrics
+PASS no-reward-currency-ui
+PASS product-surface-version
+
+FAIL 2 checks
+ - practice-no-path-duplicate
+ - profile-holds-all-achievements
+
+PASS  verify-uiux-phase7.mjs
+FAIL  verify-uiux-phase8.mjs
+PASS vector-achievement-icons
+PASS avatar-workshop-web
+PASS avatar-workshop-mobile
+PASS avatar-persistence-web
+PASS avatar-persistence-mobile
+PASS child-nav-still-three
+PASS removed-surfaces-still-enforced
+PASS p08-contract
+
+FAIL 1 checks
+ - achievements-on-profile
+
+PASS  verify-uiux-phase9.mjs
+FAIL  verify-ux-p10-final.mjs
+PASS station-header-clean
+PASS unit-title-short
+PASS web-nav-three-tabs
+PASS mobile-nav-three-tabs
+PASS topbar-no-persistent-metrics
+PASS no-reward-currency-ui
+PASS product-surface-version
+
+FAIL 2 checks
+ - practice-no-path-duplicate
+ - profile-holds-all-achievements
+
+
+STATIC_ALL: FAIL (50/58)

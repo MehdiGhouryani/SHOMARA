@@ -1,0 +1,54 @@
+{
+  "phase": "UX-P06",
+  "generatedAt": "2026-10-03",
+  "status": "PASS",
+  "files": {
+    "packages/contracts/src/lesson.ts": {
+      "sha256": "861db61c20f9f16c6a043e7dbbdb277d573591a46e2a4e5d444fea5ff38c9b6d",
+      "bytes": 2781
+    },
+    "apps/web/components/LessonPlayerShell.tsx": {
+      "sha256": "400b7cad066493084f7008e6d314713d229600d7b63e15488aa93a2dcaa90d53",
+      "bytes": 4098
+    },
+    "apps/web/components/LessonPlayerShell.module.css": {
+      "sha256": "9e4c5af969e03c131868e1ea07dc21421382e9b860ad21dcfd94d76554d646de",
+      "bytes": 3778
+    },
+    "apps/web/components/DuolingoLessonModal.tsx": {
+      "sha256": "f0ba7ff83b2a2d821cf53c880a1ef021f416da9b84c2f556816779f17517d3db",
+      "bytes": 32960
+    },
+    "apps/mobile/src/station/LessonPlayerChrome.tsx": {
+      "sha256": "e32cce78f741069b3759bc67814b639c5ea666aea55a37705ff79ba4824afab9",
+      "bytes": 4722
+    },
+    "apps/mobile/src/station/StationFlow.tsx": {
+      "sha256": "f56b596d16ec8028e0092298ca4802d2d0d7e96a83f968464e74c6472600f59b",
+      "bytes": 31142
+    },
+    "docs/reference/LESSON_PLAYER_CONTRACT.md": {
+      "sha256": "b5f016f56aa28edf248dceec1c058e24718354d069da6bb3df60d1c5a35f9598",
+      "bytes": 975
+    },
+    "docs/phases/PHASE_6_UI_UX_LESSON_PLAYER.md": {
+      "sha256": "4a52bc497051f371850b185904879b11b41194fe10885eab369f06079f805154",
+      "bytes": 965
+    },
+    "docs/audits/AUDIT_UIUX_PHASE_6_2026-10-03.md": {
+      "sha256": "5f3971f8a490bb46547d134fd2c811b1ee30ce0fd1d15f53f75130fa4aa26c9d",
+      "bytes": 975
+    },
+    "scripts/verify-uiux-phase6.mjs": {
+      "sha256": "40f81adfd3a042e05bb81c569431cec5859b4a7ad8ec0cd332cbac1a1074eb45",
+      "bytes": 2859
+    }
+  },
+  "validation": {
+    "verify_uiux_p6": "PASS",
+    "contracts_typecheck": "PASS",
+    "verify_uiux_p3": "PASS",
+    "verify_uiux_p4": "PASS",
+    "verify_uiux_p5": "PASS"
+  }
+}

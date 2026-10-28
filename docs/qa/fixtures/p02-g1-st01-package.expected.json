@@ -1,0 +1,751 @@
+{
+  "schema": "math-content-package/v1",
+  "environment": "PRODUCTION",
+  "gradeId": "G1",
+  "stationId": "G1-ST01",
+  "packageVersion": "1.2.0-android",
+  "items": [
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000001",
+      "required": true,
+      "ordinal": 1,
+      "presentation": {
+        "id": "G1-ST01-E01",
+        "title": "اول بشماریم",
+        "prompt": "هر ستاره را یکی‌یکی ببین. آخرین عددی که می‌گویی، تعداد همه‌ی ستاره‌هاست.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK001",
+        "learningRole": "INSTRUCTION",
+        "experienceForm": "CONVERSATION_EXPLANATION",
+        "interactionType": "TAP",
+        "options": [],
+        "questions": []
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000002",
+      "required": true,
+      "ordinal": 2,
+      "presentation": {
+        "id": "G1-ST01-E02",
+        "title": "یه انتخاب کوچولو",
+        "prompt": "گروهی را انتخاب کن که ۳ ستاره دارد.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK001",
+        "learningRole": "GUIDED_PRACTICE",
+        "experienceForm": "PUZZLE",
+        "interactionType": "TAP",
+        "options": [
+          "★ ★",
+          "★ ★ ★",
+          "★ ★ ★ ★"
+        ],
+        "questions": []
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000003",
+      "required": true,
+      "ordinal": 3,
+      "presentation": {
+        "id": "G1-ST01-E03",
+        "title": "مسیر الگو",
+        "prompt": "کدام مهره باید جای علامت سؤال بیاید؟",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK009",
+        "learningRole": "GUIDED_PRACTICE",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MINI_GAME",
+        "options": [
+          "زرد",
+          "آبی",
+          "سبز"
+        ],
+        "questions": []
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000004",
+      "required": true,
+      "ordinal": 4,
+      "presentation": {
+        "id": "G1-ST01-E04",
+        "title": "شکار شمارش",
+        "prompt": "چند ستاره می‌بینی؟",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK003",
+        "learningRole": "GUIDED_PRACTICE",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MINI_GAME",
+        "options": [
+          "۲",
+          "۳",
+          "۴"
+        ],
+        "questions": [],
+        "visualCount": 3
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000005",
+      "required": true,
+      "ordinal": 5,
+      "presentation": {
+        "id": "G1-ST01-E05",
+        "title": "تمرین مستقل",
+        "prompt": "بدون کمک، عددی را انتخاب کن که تعداد شکل‌ها را نشان می‌دهد.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK003",
+        "learningRole": "INDEPENDENT_PRACTICE",
+        "experienceForm": "PUZZLE",
+        "interactionType": "MULTIPLE_CHOICE",
+        "options": [
+          "۲",
+          "۳",
+          "۴"
+        ],
+        "questions": [],
+        "visualCount": 3
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000006",
+      "required": true,
+      "ordinal": 6,
+      "presentation": {
+        "id": "G1-ST01-E06",
+        "title": "مرور الگو",
+        "prompt": "الگوی رنگی را سریع کامل کن.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK009",
+        "learningRole": "REVIEW",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MINI_GAME",
+        "options": [
+          "زرد",
+          "آبی",
+          "سبز"
+        ],
+        "questions": []
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000007",
+      "required": true,
+      "ordinal": 7,
+      "presentation": {
+        "id": "G1-ST01-E07",
+        "title": "چالش اول",
+        "prompt": "در ۵ مأموریت کوتاه، شمارش و تعداد را بررسی کن.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK001",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "CHALLENGE",
+        "interactionType": "COUNT",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "چند ستاره؟",
+            "options": [
+              "۲",
+              "۳",
+              "۴",
+              "۵"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند ستاره؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳",
+              "۴"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند ستاره؟",
+            "options": [
+              "۳",
+              "۴",
+              "۵",
+              "۶"
+            ],
+            "visualCount": 4
+          },
+          {
+            "prompt": "چند ستاره؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳",
+              "۴"
+            ],
+            "visualCount": 2
+          },
+          {
+            "prompt": "چند ستاره؟",
+            "options": [
+              "۳",
+              "۴",
+              "۵",
+              "۶"
+            ],
+            "visualCount": 5
+          }
+        ]
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000008",
+      "required": true,
+      "ordinal": 8,
+      "presentation": {
+        "id": "G1-ST01-E08",
+        "title": "چالش دوم",
+        "prompt": "حالا یک بررسی تازه و مستقل انجام بده.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK009",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "CHALLENGE",
+        "interactionType": "MINI_GAME",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "چه رنگی جای علامت سؤال می‌آید؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "الگو را کامل کن.",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "کدام مهره ادامه الگوست؟",
+            "options": [
+              "قرمز",
+              "سبز",
+              "آبی"
+            ]
+          },
+          {
+            "prompt": "کدام رنگ باید بیاید؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "پایان الگو چیست؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000009",
+      "required": true,
+      "ordinal": 9,
+      "presentation": {
+        "id": "G1-ST01-E09",
+        "title": "دوباره و آهسته‌تر",
+        "prompt": "این بار آهسته‌تر: هر ستاره را یکی‌یکی لمس کن و تا ۳ بشمار.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK001",
+        "learningRole": "RECOVERY",
+        "experienceForm": "BUILD_EXPLORE",
+        "interactionType": "COUNT",
+        "options": [
+          "۱",
+          "۲",
+          "۳"
+        ],
+        "questions": [],
+        "visualCount": 3
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000010",
+      "required": true,
+      "ordinal": 10,
+      "presentation": {
+        "id": "G1-ST01-E10",
+        "title": "بررسی دوباره",
+        "prompt": "بعد از تمرین بازیابی، یک بررسی تازه انجام بده.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK001",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MINI_GAME",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۲",
+              "۳",
+              "۴"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 1
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 2
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 2
+          }
+        ]
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000011",
+      "required": true,
+      "ordinal": 11,
+      "presentation": {
+        "id": "G1-ST01-E11",
+        "title": "در دنیای واقعی",
+        "prompt": "این بار قانون الگو را در یک موقعیت تازه پیدا کن.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK011",
+        "learningRole": "TRANSFER",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MINI_GAME",
+        "options": [
+          "الگو A",
+          "الگو B",
+          "الگو C"
+        ],
+        "questions": []
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000012",
+      "required": true,
+      "ordinal": 12,
+      "presentation": {
+        "id": "G1-ST01-E12",
+        "title": "چالش نهایی مهارت",
+        "prompt": "آخرین چالش: قانون الگو را در ۵ موقعیت تازه بررسی کن.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK011",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MINI_GAME",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "گزینه درست چیست؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "الگو را کامل کن.",
+            "options": [
+              "قرمز",
+              "سبز",
+              "آبی"
+            ]
+          },
+          {
+            "prompt": "کدام مورد ادامه الگوست؟",
+            "options": [
+              "سبز",
+              "زرد",
+              "آبی"
+            ]
+          },
+          {
+            "prompt": "چه رنگی می‌آید؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "پایان الگو چیست؟",
+            "options": [
+              "آبی",
+              "سبز",
+              "زرد"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000013",
+      "required": false,
+      "ordinal": 13,
+      "presentation": {
+        "id": "G1-ST01-E09",
+        "title": "با هم دوباره",
+        "prompt": "با هم دوباره بشماریم.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK001",
+        "learningRole": "RECOVERY",
+        "experienceForm": "BUILD_EXPLORE",
+        "interactionType": "COUNT",
+        "options": [
+          "۱",
+          "۲",
+          "۳"
+        ],
+        "questions": [],
+        "visualCount": 3
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000014",
+      "required": false,
+      "ordinal": 14,
+      "presentation": {
+        "id": "G1-ST01-E09",
+        "title": "دوباره و آهسته‌تر",
+        "prompt": "این بار تعداد را با نشانه‌ها دوباره پیدا کن.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK003",
+        "learningRole": "RECOVERY",
+        "experienceForm": "BUILD_EXPLORE",
+        "interactionType": "COUNT",
+        "options": [
+          "۲",
+          "۳",
+          "۴"
+        ],
+        "questions": [],
+        "visualCount": 3
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000015",
+      "required": false,
+      "ordinal": 15,
+      "presentation": {
+        "id": "G1-ST01-E09",
+        "title": "با هم الگو می‌سازیم",
+        "prompt": "الگوی رنگی را آرام‌آرام کامل کن.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK009",
+        "learningRole": "RECOVERY",
+        "experienceForm": "BUILD_EXPLORE",
+        "interactionType": "MATCH",
+        "options": [
+          "زرد",
+          "آبی",
+          "سبز"
+        ],
+        "questions": []
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000016",
+      "required": false,
+      "ordinal": 16,
+      "presentation": {
+        "id": "G1-ST01-E09",
+        "title": "قانون الگو را دوباره پیدا کن",
+        "prompt": "قانون الگو را با رنگ‌ها دوباره پیدا کن.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK011",
+        "learningRole": "RECOVERY",
+        "experienceForm": "BUILD_EXPLORE",
+        "interactionType": "MATCH",
+        "options": [
+          "الگو A",
+          "الگو B",
+          "الگو C"
+        ],
+        "questions": []
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000017",
+      "required": false,
+      "ordinal": 17,
+      "presentation": {
+        "id": "G1-ST01-E10",
+        "title": "بررسی دوباره",
+        "prompt": "یک بررسی تازه از شمارش انجام بده.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK001",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "COUNT",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۲",
+              "۳",
+              "۴"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 1
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 2
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند ستاره داریم؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 2
+          }
+        ]
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000018",
+      "required": false,
+      "ordinal": 18,
+      "presentation": {
+        "id": "G1-ST01-E10",
+        "title": "بررسی دوباره الگو",
+        "prompt": "چه رنگی می‌آید؟",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK009",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MATCH",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "چه رنگی می‌آید؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "ادامه چیست؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "کدام مورد درست است؟",
+            "options": [
+              "قرمز",
+              "سبز",
+              "آبی"
+            ]
+          },
+          {
+            "prompt": "رنگ بعدی چیست؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          },
+          {
+            "prompt": "پایان الگو چیست؟",
+            "options": [
+              "زرد",
+              "آبی",
+              "سبز"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000019",
+      "required": false,
+      "ordinal": 19,
+      "presentation": {
+        "id": "G1-ST01-E10",
+        "title": "بررسی دوباره تعداد",
+        "prompt": "یک بررسی تازه از درک تعداد انجام بده.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK003",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "COUNT",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "چند شیء است؟",
+            "options": [
+              "۲",
+              "۳",
+              "۴"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند شیء است؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 1
+          },
+          {
+            "prompt": "چند شیء است؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 2
+          },
+          {
+            "prompt": "چند شیء است؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 3
+          },
+          {
+            "prompt": "چند شیء است؟",
+            "options": [
+              "۱",
+              "۲",
+              "۳"
+            ],
+            "visualCount": 2
+          }
+        ]
+      }
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000020",
+      "required": false,
+      "ordinal": 20,
+      "presentation": {
+        "id": "G1-ST01-E10",
+        "title": "بررسی دوباره قانون الگو",
+        "prompt": "یک بررسی تازه از قانون الگو انجام بده.",
+        "stationId": "G1-ST01",
+        "skillId": "G1-SK011",
+        "learningRole": "MASTERY_CHECK",
+        "experienceForm": "MINI_GAME",
+        "interactionType": "MATCH",
+        "options": [],
+        "questions": [
+          {
+            "prompt": "قانون درست چیست؟",
+            "options": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          {
+            "prompt": "کدام ادامه درست است؟",
+            "options": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          {
+            "prompt": "چه چیزی باید بیاید؟",
+            "options": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          {
+            "prompt": "کدام قانون درست است؟",
+            "options": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          {
+            "prompt": "پایان الگو چیست؟",
+            "options": [
+              "A",
+              "B",
+              "C"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

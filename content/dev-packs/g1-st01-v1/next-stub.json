@@ -1,0 +1,9 @@
+{
+  "schema": "math-content-package/v1",
+  "environment": "DEV_ONLY",
+  "gradeId": "G1",
+  "stationId": "G1-ST02",
+  "packageVersion": "0.1.0-dev",
+  "items": [],
+  "note": "Navigation/prefetch fixture only; not educationally approved content."
+}

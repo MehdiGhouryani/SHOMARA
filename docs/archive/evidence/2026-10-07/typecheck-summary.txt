@@ -1,0 +1,9 @@
+contracts | exit=2 | TS errors=16
+design-system | exit=0 | TS errors=0
+learning-runtime | exit=0 | TS errors=0
+challenge-runtime | exit=2 | TS errors=17
+assignment-runtime | exit=0 | TS errors=0
+adult-projections | exit=0 | TS errors=0
+offline-sync | exit=0 | TS errors=0
+web | exit=2 | TS errors=21
+mobile | exit=2 | TS errors=34

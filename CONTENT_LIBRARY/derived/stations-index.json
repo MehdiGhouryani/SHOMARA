@@ -1,0 +1,132 @@
+{
+  "source": "shomara-stage4-architecture.md",
+  "status": "proposed_not_runtime",
+  "mapping_proposal": "ST k maps to student book unit k; verify owner decisions and repo learning contracts",
+  "stations": [
+    {
+      "id": "ST01",
+      "workingTitle": "شمارش و الگو",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST02",
+      "workingTitle": "جایگاه و جهت",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST03",
+      "workingTitle": "عدد و جمع",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST04",
+      "workingTitle": "شکل‌ها و ویژگی‌ها",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST05",
+      "workingTitle": "جمع و تفریق",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST06",
+      "workingTitle": "جمع با مهره‌ها",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST07",
+      "workingTitle": "عددهای ۱ و ۲",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST08",
+      "workingTitle": "عددهای ۳ و ۴",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST09",
+      "workingTitle": "صفر و ۵",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST10",
+      "workingTitle": "عددهای ۶ و ۷",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST11",
+      "workingTitle": "برابری و عدد ۸",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST12",
+      "workingTitle": "مقایسه و عدد ۹",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST13",
+      "workingTitle": "نشانهٔ جمع",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST14",
+      "workingTitle": "تفریق و طول",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST15",
+      "workingTitle": "گروه‌بندی",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST16",
+      "workingTitle": "ساعت و عددها",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST17",
+      "workingTitle": "جمع چندبخشی",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST18",
+      "workingTitle": "الگو و زمان",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST19",
+      "workingTitle": "ده‌تایی‌ها و خرید",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST20",
+      "workingTitle": "عددهای دو رقمی",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST21",
+      "workingTitle": "عددهای ۱ تا ۱۰۰",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST22",
+      "workingTitle": "تقویم و شمارش",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST23",
+      "workingTitle": "شمارش گروهی",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST24",
+      "workingTitle": "مسئله‌های چندمرحله‌ای",
+      "approval": "unverified"
+    },
+    {
+      "id": "ST25",
+      "workingTitle": "عدد ۱۰۰",
+      "approval": "unverified"
+    }
+  ]
+}

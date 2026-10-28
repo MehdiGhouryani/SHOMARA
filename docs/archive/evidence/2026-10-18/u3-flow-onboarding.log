@@ -1,0 +1,30 @@
+parity bundle built: apps/mobile/parity/dist-flow
+PASS welcome: title and consent line
+PASS phone: page and progress 2/6
+PASS phone: send disabled while empty
+PASS phone: Persian digits accepted, send enabled
+PASS code: page and progress 3/6
+PASS code: OTP requested for the E.164 number
+PASS code: masked number in the approved format ۰۹۱۲***۶۷۸۹
+PASS code: verify disabled until six digits
+PASS code: resend countdown shown
+PASS code: wrong code shows the server message and stays
+PASS profile: reached directly after the code (grade step skipped), progress 4/6
+PASS profile: grade chooser is on the same page
+PASS profile: old separate grade page is gone
+PASS profile: continue disabled until a name is typed
+PASS back from profile goes to the code page
+PASS change number returns to the phone page
+PASS profile: continue enabled after a name
+PASS profile: avatar selection moves from sun to moon
+PASS profile: locked grades are disabled
+PASS placement: first question is shown (not a blank page)
+PASS placement: second question after the first answer
+PASS result: shown after both answers, progress 6/6
+PASS finish: routed to the tabs
+PASS finish: first grade content prepared
+PASS finish: profile saved with name, grade, avatar and consent time
+PASS no runtime errors (flow A)
+PASS skip: finishes without placement
+PASS no runtime errors (flow B)
+FLOW: PASS (28/28)

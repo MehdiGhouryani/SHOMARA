@@ -1,0 +1,143 @@
+/* GENERATED FILE — DO NOT EDIT DIRECTLY.
+ * Source of truth: packages/design-system/src/tokens.json
+ * Regenerate with: npm run design-system:generate
+ */
+:root {
+  --ds-bg-canvas: #F5F7F8;
+  --ds-bg-subtle: #E9EEF1;
+  --ds-bg-surface: #FFFFFF;
+  --ds-bg-elevated: #FFFFFF;
+  --ds-bg-inverse: #1B2A36;
+  --ds-brand-primary: #2B5C7A;
+  --ds-brand-primaryDark: #1F4459;
+  --ds-brand-primarySoft: #D5E5EF;
+  --ds-brand-secondary: #E3A33B;
+  --ds-brand-secondaryDark: #B07A2A;
+  --ds-brand-secondarySoft: #EEE3CF;
+  --ds-brand-teal: #2B5C7A;
+  --ds-brand-tealDark: #1F4459;
+  --ds-brand-tealSoft: #D5E5EF;
+  --ds-brand-emerald: #2B5C7A;
+  --ds-brand-emeraldDark: #1F4459;
+  --ds-brand-emeraldSoft: #D5E5EF;
+  --ds-brand-coral: #A94438;
+  --ds-brand-coralDark: #A94438;
+  --ds-brand-coralSoft: #F7E1DD;
+  --ds-brand-violet: #7462E6;
+  --ds-brand-violetDark: #2F2470;
+  --ds-brand-violetSoft: #E3DCFC;
+  --ds-text-primary: #1B2A36;
+  --ds-text-secondary: #4D5F6D;
+  --ds-text-muted: #4D5F6D;
+  --ds-text-inverse: #FFFFFF;
+  --ds-text-link: #2B5C7A;
+  --ds-border-subtle: #E4EAEE;
+  --ds-border-default: #D3DBE0;
+  --ds-border-strong: #6B7C88;
+  --ds-border-focus: #2B5C7A;
+  --ds-state-success: #2B5C7A;
+  --ds-state-successSoft: #D5E5EF;
+  --ds-state-warning: #8A5A12;
+  --ds-state-warningSoft: #EEE3CF;
+  --ds-state-error: #A94438;
+  --ds-state-errorSoft: #F7E1DD;
+  --ds-state-info: #2B5C7A;
+  --ds-state-infoSoft: #D5E5EF;
+  --ds-state-disabled: #6B7C88;
+  --ds-state-disabledSoft: #E9EEF1;
+  --ds-focus: #2B5C7A;
+  --ds-overlay-scrim: rgba(27, 42, 54, 0.28);
+  --ds-space-0: 0px;
+  --ds-space-1: 4px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-5: 20px;
+  --ds-space-6: 24px;
+  --ds-space-8: 32px;
+  --ds-space-10: 40px;
+  --ds-space-12: 48px;
+  --ds-space-16: 64px;
+  --ds-space-20: 80px;
+  --ds-radius-none: 0px;
+  --ds-radius-sm: 8px;
+  --ds-radius-md: 12px;
+  --ds-radius-lg: 16px;
+  --ds-radius-xl: 20px;
+  --ds-radius-2xl: 24px;
+  --ds-radius-3xl: 32px;
+  --ds-radius-full: 999px;
+  --ds-size-iconXs: 16px;
+  --ds-size-iconSm: 20px;
+  --ds-size-iconMd: 24px;
+  --ds-size-iconLg: 32px;
+  --ds-size-iconXl: 40px;
+  --ds-size-touchMin: 48px;
+  --ds-size-touchPrimary: 56px;
+  --ds-size-avatarSm: 40px;
+  --ds-size-avatarMd: 56px;
+  --ds-size-avatarLg: 80px;
+  --ds-type-xs-size: 12px;
+  --ds-type-xs-line: 20px;
+  --ds-type-xs-weight: 500;
+  --ds-type-sm-size: 14px;
+  --ds-type-sm-line: 24px;
+  --ds-type-sm-weight: 500;
+  --ds-type-body-size: 16px;
+  --ds-type-body-line: 28px;
+  --ds-type-body-weight: 500;
+  --ds-type-bodyStrong-size: 16px;
+  --ds-type-bodyStrong-line: 28px;
+  --ds-type-bodyStrong-weight: 700;
+  --ds-type-lg-size: 18px;
+  --ds-type-lg-line: 30px;
+  --ds-type-lg-weight: 600;
+  --ds-type-title-size: 20px;
+  --ds-type-title-line: 32px;
+  --ds-type-title-weight: 700;
+  --ds-type-displaySm-size: 24px;
+  --ds-type-displaySm-line: 36px;
+  --ds-type-displaySm-weight: 700;
+  --ds-type-display-size: 28px;
+  --ds-type-display-line: 42px;
+  --ds-type-display-weight: 800;
+  --ds-type-hero-size: 32px;
+  --ds-type-hero-line: 48px;
+  --ds-type-hero-weight: 800;
+  --ds-type-reward-size: 40px;
+  --ds-type-reward-line: 52px;
+  --ds-type-reward-weight: 800;
+  --ds-type-math-size: 24px;
+  --ds-type-math-line: 36px;
+  --ds-type-math-weight: 700;
+  --ds-shadow-none: none;
+  --ds-shadow-sm: 0 2px 8px rgba(27, 42, 54, 0.06);
+  --ds-shadow-md: 0 8px 24px rgba(27, 42, 54, 0.08);
+  --ds-shadow-lg: 0 16px 40px rgba(27, 42, 54, 0.12);
+  --ds-shadow-tactilePrimary: 0 4px 0 #1F4459;
+  --ds-shadow-tactileSecondary: 0 4px 0 #B07A2A;
+  --ds-shadow-tactileSuccess: 0 4px 0 #1F4459;
+  --ds-shadow-tactileNeutral: 0 4px 0 #D3DBE0;
+  --ds-motion-fast: 120ms;
+  --ds-motion-normal: 180ms;
+  --ds-motion-slow: 280ms;
+  --ds-motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ds-motion-reducedMotion: respect-prefers-reduced-motion;
+  --ds-font-family: Vazirmatn, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+[data-motion="reduced"], [data-motion="reduced"] * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

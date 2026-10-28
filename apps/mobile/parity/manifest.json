@@ -1,0 +1,272 @@
+[
+  {
+    "id": "welcome",
+    "page": "01",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "01 welcome: real WelcomeView"
+  },
+  {
+    "id": "phone",
+    "page": "02",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "02 phone: real PhoneView"
+  },
+  {
+    "id": "button-amber",
+    "page": "01",
+    "selector": ".btn",
+    "index": 0,
+    "pad": 8,
+    "maxDiffPercent": 0.15,
+    "note": "amber button face and 6px edge"
+  },
+  {
+    "id": "guide-07",
+    "page": "07",
+    "selector": ".guide",
+    "index": 0,
+    "pad": 6,
+    "maxDiffPercent": 0.15,
+    "note": "guide bubble with Number portrait"
+  },
+  {
+    "id": "chip-06",
+    "page": "06",
+    "selector": ".chip",
+    "index": 0,
+    "pad": 4,
+    "maxDiffPercent": 0.15,
+    "note": "plain chip"
+  },
+  {
+    "id": "chip-icon-book-06",
+    "page": "06",
+    "selector": ".chip",
+    "index": 1,
+    "pad": 4,
+    "maxDiffPercent": 0.5,
+    "note": "chip with book icon"
+  },
+  {
+    "id": "chip-icon-clock-06",
+    "page": "06",
+    "selector": ".chip",
+    "index": 2,
+    "pad": 4,
+    "maxDiffPercent": 0.5,
+    "note": "chip with clock icon"
+  },
+  {
+    "id": "button-primary-09",
+    "page": "09",
+    "selector": ".btn",
+    "index": 0,
+    "pad": 8,
+    "bg": "#D5E5EF",
+    "maxDiffPercent": 0.5,
+    "note": "primary button on the feedback sheet"
+  },
+  {
+    "id": "button-replay-07",
+    "page": "07",
+    "selector": ".btn",
+    "index": 0,
+    "pad": 8,
+    "maxDiffPercent": 0.5,
+    "note": "compact secondary button with icon (replay audio)"
+  },
+  {
+    "id": "portrait-04",
+    "page": "04",
+    "selector": ".por",
+    "index": 0,
+    "pad": 4,
+    "maxDiffPercent": 0.5,
+    "note": "Main portrait (violet tone)"
+  },
+  {
+    "id": "portrait-13",
+    "page": "13",
+    "selector": ".por",
+    "index": 0,
+    "pad": 4,
+    "maxDiffPercent": 0.5,
+    "note": "Fandogh cover portrait"
+  },
+  {
+    "id": "code",
+    "page": "03",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "03 code: real CodeView (badge, six cells, countdown, text button)"
+  },
+  {
+    "id": "profile",
+    "page": "04",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "04 profile: real ProfileView (guide, name field, avatar tiles, grade cells)"
+  },
+  {
+    "id": "path",
+    "page": "05",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.3,
+    "note": "05 path: real PathView (stats chip, band, trail, nodes, current ring and bubble) + outlined tab bar"
+  },
+  {
+    "id": "tabbar-05",
+    "page": "05",
+    "selector": ".tabs",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.15,
+    "note": "outlined tab bar of the path page"
+  },
+  {
+    "id": "path-s900",
+    "page": "05",
+    "golden": "05-s900",
+    "sy": 900,
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.3,
+    "note": "05 path scrolled to 900px: band theme, dividers, chests"
+  },
+  {
+    "id": "path-s1800",
+    "page": "05",
+    "golden": "05-s1800",
+    "sy": 1800,
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.3,
+    "note": "05 path scrolled to 1800px: band theme, dividers, chests"
+  },
+  {
+    "id": "path-s2700",
+    "page": "05",
+    "golden": "05-s2700",
+    "sy": 2700,
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.3,
+    "note": "05 path scrolled to 2700px: band theme, dividers, chests"
+  },
+  {
+    "id": "path-s3600",
+    "page": "05",
+    "golden": "05-s3600",
+    "sy": 3600,
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.3,
+    "note": "05 path scrolled to 3600px: band theme, dividers, chests"
+  },
+  {
+    "id": "stage-intro",
+    "page": "06-fix",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "06 stage intro: real StageIntroView against the page with only its flex bug neutralised (U-Q14)"
+  },
+  {
+    "id": "lesson",
+    "page": "07",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "07 lesson: real TeachView"
+  },
+  {
+    "id": "tray-07",
+    "page": "07",
+    "selector": ".tray",
+    "index": 0,
+    "pad": 6,
+    "maxDiffPercent": 0.15,
+    "note": "bead tray with three numbered beads"
+  },
+  {
+    "id": "question",
+    "page": "08",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "08 question: real QuestionView, choosing phase"
+  },
+  {
+    "id": "correct",
+    "page": "09",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "09 correct feedback: real QuestionView, correct phase"
+  },
+  {
+    "id": "retry",
+    "page": "10",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "10 retry feedback: real QuestionView, retry phase (warm, never red)"
+  },
+  {
+    "id": "stage-result",
+    "page": "11",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "11 stage result: real StageResultView (celebration, achievement row)"
+  },
+  {
+    "id": "challenge-intro",
+    "page": "12",
+    "selector": ".scr",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "12 challenge intro: real ChallengeIntroView"
+  },
+  {
+    "id": "practice",
+    "page": "13",
+    "selector": ".body",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "13 practice tab: real PracticeView; the tab bar is compared separately (outlined bar app-wide, D-011)"
+  },
+  {
+    "id": "me",
+    "page": "14",
+    "selector": ".body",
+    "index": 0,
+    "pad": 0,
+    "maxDiffPercent": 0.5,
+    "note": "14 me tab: real MeView; tab bar outside the comparison (U-Q9)"
+  }
+]

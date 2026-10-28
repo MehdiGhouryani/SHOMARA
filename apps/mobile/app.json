@@ -1,0 +1,72 @@
+{
+  "expo": {
+    "name": "ماجراجویی ریاضی",
+    "slug": "math-learning",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "jsEngine": "hermes",
+    "newArchEnabled": true,
+    "scheme": "mathlearning",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36
+          }
+        }
+      ],
+      [
+        "expo-localization",
+        {
+          "supportsRtl": true
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#F5F7F8"
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true
+        }
+      ],
+      "./plugins/withForceRtl"
+    ],
+    "android": {
+      "package": "com.mathlearning.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F7F8",
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "versionCode": 1
+    },
+    "ios": {
+      "bundleIdentifier": "com.mathlearning.app",
+      "buildNumber": "1"
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a268f69d-d2c0-4846-bc57-29bad235f20f"
+      }
+    },
+    "icon": "./assets/icon.png"
+  }
+}

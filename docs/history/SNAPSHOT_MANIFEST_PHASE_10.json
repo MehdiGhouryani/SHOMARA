@@ -1,0 +1,26 @@
+{
+  "phase": 10,
+  "name": "E2E + Performance Gate + Pilot Readiness",
+  "snapshotType": "complete",
+  "includesAllPreviousFiles": true,
+  "newFiles": [
+    "playwright.config.ts",
+    "e2e/web/critical-path.spec.ts",
+    "e2e/web/api-critical-path.spec.ts",
+    "scripts/performance/phase10-performance.mjs",
+    "scripts/verify-phase10.mjs",
+    "docs/phases/PHASE_10_E2E_PERFORMANCE_PILOT.md",
+    "docs/api/API_CONTRACT_PHASE_10.md",
+    "docs/phases/PILOT_RUNBOOK_PHASE_10.md",
+    "docs/history/REVISION_NOTES_PHASE_10.md",
+    "docs/history/SNAPSHOT_MANIFEST_PHASE_10.json"
+  ],
+  "verification": {
+    "staticContract": "PASS",
+    "syntheticPerformance": "PASS",
+    "playwrightAgainstRealApp": "NOT_EXECUTED",
+    "realLowEndAndroidProfile": "NOT_EXECUTED",
+    "stagingSupabaseE2E": "NOT_EXECUTED"
+  },
+  "releaseGate": "NOT_GREEN"
+}

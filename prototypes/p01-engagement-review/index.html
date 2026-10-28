@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>شمارا · پروتوتایپ بازبینی P01 (فقط تحقیق)</title>
+<!--
+  P01 REVIEW PROTOTYPE — research artifact only.
+  - NOT P04+ implementation. Not imported by apps/web or apps/mobile.
+  - No backend, no Learning Runtime, no real station content. All data is fake and labelled.
+  - Purpose: owner review + child discoverability test of LOCKED/PROVISIONAL P01 decisions.
+  See README.md in this folder.
+-->
+<style>
+:root{
+  --canvas:#FBFCF9;--surface:#fff;--ink:#24313A;--ink2:#55636F;--muted:#6B7772;
+  --primary:#287A4A;--primaryDark:#1F5C37;--primarySoft:#ECF7F0;
+  --amber:#F59E0B;--amberSoft:#FFF7DF;--teal:#147D7E;--tealSoft:#E8F6F5;
+  --coral:#D95C3A;--coralSoft:#FDF0EC;--violet:#7657C8;--violetSoft:#F2EEFB;
+  --border:#DFE7E2;--border2:#C8D4CC;--info:#0369A1;--infoSoft:#F0F9FF;
+  --r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;--touch:48px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Vazirmatn,system-ui,-apple-system,"Segoe UI",sans-serif;background:#E9EEEA;color:var(--ink);line-height:1.75}
+button{font:inherit;cursor:pointer}
+.stage{display:flex;gap:24px;justify-content:center;align-items:flex-start;padding:24px;flex-wrap:wrap}
+.phone{width:390px;max-width:100%;height:800px;background:var(--canvas);border-radius:36px;box-shadow:0 20px 60px rgba(36,49,58,.18);border:10px solid #24313A;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.proto-banner{background:var(--ink);color:#fff;font-size:12px;text-align:center;padding:4px 8px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar h1{font-size:18px;margin:0}
+.back{border:0;background:var(--primarySoft);color:var(--primaryDark);border-radius:999px;min-height:40px;padding:0 14px;font-weight:700}
+.screen{flex:1;overflow-y:auto;padding:16px}
+.nav{display:flex;border-top:1px solid var(--border);background:var(--surface)}
+.nav button{flex:1;border:0;background:none;min-height:60px;font-weight:700;color:var(--muted)}
+.nav button.on{color:var(--primary)}
+.nav button[disabled]{opacity:.45;cursor:not-allowed}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:14px;margin-bottom:12px}
+.card h2,.card h3{margin:0 0 4px;font-size:16px}
+.sub{color:var(--ink2);font-size:14px;margin:0}
+.tiny{font-size:12px;color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px}
+.grow{flex:1}
+.btn{border:0;border-radius:var(--r-lg);min-height:var(--touch);padding:0 18px;font-weight:800;background:var(--primary);color:#fff}
+.btn.soft{background:var(--primarySoft);color:var(--primaryDark)}
+.btn.ghost{background:transparent;color:var(--ink2);border:1px solid var(--border2)}
+.btn.block{width:100%}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--tealSoft);color:var(--teal)}
+.pill.amber{background:var(--amberSoft);color:#8A5A00}.pill.violet{background:var(--violetSoft);color:var(--violet)}
+.pill.gray{background:#F1F5F9;color:#55636F}
+.placeholder{border:2px dashed var(--border2);border-radius:var(--r-lg);padding:10px;color:var(--muted);font-size:13px;background:#fff}
+.bar{height:12px;background:#EEF2EF;border-radius:999px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--amber);border-radius:999px;transition:width .4s}
+.mission-entry{background:linear-gradient(135deg,var(--amberSoft),#fff);border:2px solid #F7D27A}
+.path{position:relative;padding:8px 0 24px}
+.node{width:72px;height:72px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;margin:10px auto;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.node.done{background:var(--primary);color:#fff}.node.current{background:var(--amber);color:#fff;outline:6px solid var(--amberSoft)}
+.node.locked{background:#E5EAE7;color:#9EAEA4}
+.node-label{text-align:center;font-size:13px;font-weight:700;margin-top:-4px}
+.z0{transform:translateX(0)}.z1{transform:translateX(-70px)}.z2{transform:translateX(-110px)}.z3{transform:translateX(-70px)}.z4{transform:translateX(0)}
+.world{border-radius:var(--r-2xl);padding:16px;color:#fff;margin-bottom:12px;position:relative;overflow:hidden}
+.world.locked{filter:grayscale(.75);opacity:.75}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px;text-align:center;font-size:12px;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.tile .ico{font-size:28px}
+.tile.locked .ico{filter:grayscale(1);opacity:.4}
+.tile.sel{outline:3px solid var(--primary)}
+.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);flex:none;display:flex;align-items:center;justify-content:center;font-size:14px}
+.check.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.objects{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:12px;min-height:150px}
+.obj{width:58px;height:58px;border-radius:16px;border:0;background:var(--tealSoft);font-size:30px;transition:transform .15s}
+.obj.tapped{background:var(--primary);transform:scale(.92)}
+.obj.grouped:nth-child(-n+5){outline:3px solid var(--amber)}
+.target{font-size:44px;font-weight:900;text-align:center;color:var(--primaryDark)}
+.companion{display:flex;gap:10px;align-items:flex-end;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:8px 12px;margin-bottom:12px}
+.companion img{width:64px;height:64px;object-fit:contain}
+.bubble{background:var(--primarySoft);border-radius:16px 16px 4px 16px;padding:8px 12px;font-size:14px;font-weight:600}
+.dots{display:flex;gap:6px;justify-content:center;margin:6px 0 10px}
+.dots i{width:28px;height:8px;border-radius:999px;background:#E5EAE7}.dots i.on{background:var(--amber)}
+.overlay{position:absolute;inset:0;background:rgba(36,49,58,.4);display:flex;align-items:flex-end;z-index:5}
+.sheet{background:var(--surface);width:100%;border-radius:24px 24px 0 0;padding:20px;text-align:center}
+.sheet img{width:120px}
+.avatar-stage{display:flex;justify-content:center;padding:8px 0 4px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:6px;border-bottom:1px solid var(--border);text-align:right}
+/* review panel */
+.review{width:380px;max-width:100%;background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(36,49,58,.12);padding:16px;max-height:800px;overflow:auto}
+.review h2{font-size:16px;margin:0 0 8px}
+.dec{border:1px solid var(--border);border-radius:12px;padding:8px 10px;margin-bottom:8px;font-size:13px}
+.dec b{font-family:ui-monospace,monospace;font-size:12px}
+.state{font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;margin-inline-start:6px}
+.state.LOCKED{background:var(--primarySoft);color:var(--primaryDark)}.state.PROVISIONAL{background:var(--amberSoft);color:#8A5A00}.state.OPEN{background:var(--coralSoft);color:var(--coral)}
+.verdict{display:flex;gap:6px;margin-top:6px}.verdict button{flex:1;border:1px solid var(--border2);background:#fff;border-radius:8px;min-height:32px;font-size:12px}
+.verdict button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+textarea{width:100%;min-height:54px;border:1px solid var(--border2);border-radius:8px;font:inherit;font-size:13px;padding:6px;margin-top:6px}
+.sim{background:var(--infoSoft);border:1px dashed var(--info);color:var(--info);border-radius:10px;padding:6px 10px;font-size:12px;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone" id="phone">
+    <div class="proto-banner">پروتوتایپ بازبینی P01 · داده‌ها نمایشی‌اند · به Learning Runtime وصل نیست</div>
+    <div class="topbar"><h1 id="title">مسیر</h1><span id="topAction"></span></div>
+    <main class="screen" id="screen"></main>
+    <nav class="nav" id="nav">
+      <button data-go="path">مسیر</button>
+      <button disabled title="بیرون از دامنهٔ این پروتوتایپ">تمرین</button>
+      <button data-go="me">من</button>
+    </nav>
+  </div>
+  <aside class="review" id="review"></aside>
+</div>
+
+<script>
+'use strict';
+/* ------------------------------------------------------------------
+ * FAKE DATA ONLY. Shapes mirror P01 policy names so reviewers can map
+ * screens to decisions, but nothing here is a contract or runtime.
+ * ------------------------------------------------------------------ */
+const fa = (n) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const A = (name) => `assets/${name}.png`;
+
+const UNITS = [
+  { id: 'G1-U01', n: 1, title: 'عددها و جایگاه', color: '#287A4A', stations: ['شمارش و الگو', 'جایگاه و جهت', 'عدد و جمع', 'شکل‌ها و ویژگی‌ها', 'جمع و تفریق'] },
+  { id: 'G1-U02', n: 2, title: 'عددها و اندازه‌گیری', color: '#147D7E' },
+  { id: 'G1-U03', n: 3, title: 'عدد و مسئله', color: '#7657C8' },
+  { id: 'G1-U04', n: 4, title: 'زمان و عددهای بزرگ‌تر', color: '#D95C3A' },
+  { id: 'G1-U05', n: 5, title: 'اندازه‌گیری و مسئله', color: '#8A5A00' },
+];
+
+const DECISIONS = {
+  'P01-A-01': ['LOCKED', 'خطا = اطلاعات: تشویق + تلاش دوباره/تغییر نمایش؛ بدون جان، بدون شرمندگی.'],
+  'P01-A-02': ['LOCKED', 'ریاضی خودِ مکانیک بازی است (شمردن با لمس، گروه‌بندی).'],
+  'P01-B-01': ['LOCKED', 'دسته‌های ماموریت: روزانه، ایستگاه، جهان، ماجراجویی.'],
+  'P01-B-02': ['LOCKED', 'حداکثر ۳ روزانه (آسان → مهارت‌ساز → پیشرفت معنادار)، ۱ ایستگاه، ۱ جهان، ۱ ماجراجویی.'],
+  'P01-B-03': ['LOCKED', 'فقط رویداد پذیرفته‌شده‌ی سرور ماموریت را کامل می‌کند؛ UI محلی جایزه نمی‌دهد.'],
+  'P01-B-04': ['LOCKED', 'روزانه‌ها بی‌صدا آخر روز منقضی می‌شوند؛ انقضا شکست نیست و چیزی کم نمی‌کند.'],
+  'P01-C-02': ['LOCKED', 'دستاورد یک‌بار باز می‌شود، هرگز پس گرفته نمی‌شود؛ دستاورد ≠ تسلط.'],
+  'P01-C-03': ['PROVISIONAL', 'نام‌ها و آستانه‌های دستاورد فعلاً نمونه‌اند (قطعی در P07).'],
+  'P01-D-02': ['LOCKED', 'بدون هیچ ارز یا موجودی خرج‌کردنی برای کودک در V1؛ ستاره فقط نوار پیشرفت است.'],
+  'P01-D-04': ['LOCKED', 'جایزه‌ها قطعی و از پیش مشخص؛ بدون صندوق شانسی.'],
+  'P01-D-05': ['LOCKED', 'جایزه بعد از یادگیری می‌آید و آگاهی‌دهنده است («یاد گرفتی…»).'],
+  'P01-D-06': ['PROVISIONAL', 'حداکثر ۳ نمایش جشن جایزه در هر جلسه.'],
+  'P01-D-07': ['PROVISIONAL', 'انتخاب «۱ از ۲ آیتم» در کارگاه آواتار ارزیابی می‌شود (P08).'],
+  'P01-E-01': ['LOCKED', 'Mission Hub صفحه‌ی ثانویه است و از یک کارت روی مسیر باز می‌شود؛ ناوبری سه‌بخشی می‌ماند.'],
+  'P01-F-01': ['PROVISIONAL', '۵ فصل کلاس اول = ۵ جهان (W01–W05)، قطعی در P09.'],
+  'P01-G-02': ['LOCKED', 'چالش ۳۰–۹۰ ثانیه، هدف در ≤۲ ثانیه، ۳ دور + لحظه‌ی پایانی، بدون تایمر.'],
+  'P01-G-03': ['LOCKED', 'نتیجه‌ها: کامل، کامل با کمک، هنوز نه، رها شد. «شکست» نداریم؛ تسلط را تغییر نمی‌دهد.'],
+  'P01-G-04': ['LOCKED', 'اولین تکمیل جایزه را یک‌بار می‌دهد؛ راهنما جایزه را کم نمی‌کند؛ تکرار فقط واکنش.'],
+  'SEP-9.1': ['LOCKED', 'آواتار کودک (هویت) از همراه (راهنما) جداست. (Roadmap §9.1)'],
+  'SEP-3.3': ['LOCKED', 'حقیقت یادگیری، تجربه، جایزه و آنالیتیکس چهار لایه‌ی جدا هستند. (Roadmap §3.3)'],
+};
+const SCREEN_DECISIONS = {
+  path: ['P01-E-01', 'P01-F-01'],
+  missions: ['P01-B-01', 'P01-B-02', 'P01-B-03', 'P01-B-04', 'P01-D-06'],
+  worlds: ['P01-F-01'],
+  challenge: ['P01-A-01', 'P01-A-02', 'P01-G-02', 'P01-G-03', 'P01-G-04'],
+  collection: ['P01-C-02', 'P01-C-03', 'P01-D-02', 'P01-D-04', 'P01-D-05'],
+  me: ['SEP-9.1', 'P01-D-02'],
+  avatar: ['SEP-9.1', 'P01-D-07', 'P01-D-04'],
+  parent: ['SEP-3.3', 'P01-C-02'],
+};
+const TITLES = { path: 'مسیر', missions: 'ماموریت‌ها', worlds: 'جهان‌ها', challenge: 'چالش ایستگاه', collection: 'کلکسیون من', me: 'من', avatar: 'کارگاه آواتار', parent: 'گزارش والد' };
+
+/* fake session state (resets on reload except review notes) */
+const S = {
+  stars: 7, starGoal: 12,
+  daily: [
+    { id: 'EASY_START', title: 'یک فعالیت کوتاه در ایستگاهِ «شمارش و الگو» را تمام کن', done: true },
+    { id: 'SKILL_BUILDER', title: 'یک بازی مرور شمارش را تمام کن', done: false },
+    { id: 'MEANINGFUL_PROGRESS', title: 'یک مرحله‌ی تازه در مسیر را کامل کن', done: false },
+  ],
+  station: { title: 'چالش ویژه‌ی ایستگاه ۱ را تمام کن', done: false },
+  world: { title: 'هر ۵ ایستگاه جهان ۱ را کامل کن', progress: 0, of: 5 },
+  challengeRewardGranted: false,
+  revealsThisSession: 0,
+  stickers: [
+    { id: 'st-counting', ico: '🔢', name: 'برچسب شمارش', how: 'چالش ایستگاه ۱', owned: false },
+    { id: 'st-pattern', ico: '🔷', name: 'برچسب الگو', how: 'چالش ایستگاه ۲', owned: false },
+    { id: 'st-first', ico: '🌱', name: 'اولین قدم', how: 'اولین فعالیت', owned: true },
+  ],
+  achievements: [
+    ['اولین ایستگاه', '🏁', 'PATH', false], ['کارآگاه الگو', '🔍', 'SKILL', false], ['شمارش‌گر شجاع', '🦁', 'SKILL', false],
+    ['قهرمان دوباره‌تلاش', '💪', 'RECOVERY', true], ['استاد انتقال', '🌉', 'TRANSFER', false], ['کاشف پنج ایستگاه', '🧭', 'EXPLORATION', false],
+    ['نجات‌دهنده‌ی اولین جهان', '🌍', 'WORLD', false], ['کامل‌کننده‌ی مسیر', '🏆', 'PATH', false], ['کلکسیونر کوچک', '🧺', 'COLLECTION', false],
+  ],
+  avatar: { skin: '#F2C9A0', hat: 'none', shirt: '#287A4A' },
+  items: [
+    { id: 'none', kind: 'hat', ico: '🚫', name: 'بدون کلاه', owned: true },
+    { id: 'cap', kind: 'hat', ico: '🧢', name: 'کلاه کپ', owned: true, how: 'آغاز' },
+    { id: 'crown', kind: 'hat', ico: '👑', name: 'تاج', owned: false, how: 'تمام کردن جهان ۱' },
+    { id: 'party', kind: 'hat', ico: '🥳', name: 'کلاه جشن', owned: false, how: '۳ روز ماموریت کامل' },
+    { id: '#287A4A', kind: 'shirt', ico: '🟢', name: 'لباس سبز', owned: true, how: 'آغاز' },
+    { id: '#147D7E', kind: 'shirt', ico: '🔵', name: 'لباس فیروزه‌ای', owned: true, how: 'آغاز' },
+    { id: '#7657C8', kind: 'shirt', ico: '🟣', name: 'لباس بنفش', owned: false, how: 'دستاورد «کارآگاه الگو»' },
+  ],
+};
+
+/* ---------------- review panel (persists to localStorage) ---------------- */
+const RKEY = 'shomara.p01.review.v1';
+const R = JSON.parse(localStorage.getItem(RKEY) || '{"verdicts":{},"notes":{},"reviewer":"","mode":"owner"}');
+const saveR = () => localStorage.setItem(RKEY, JSON.stringify(R));
+let current = 'path';
+let simMode = false;
+
+function renderReview() {
+  const ids = SCREEN_DECISIONS[current] || [];
+  const el = document.getElementById('review');
+  el.innerHTML = `
+    <h2>پنل بازبینی · ${TITLES[current]}</h2>
+    <p class="tiny">این پنل جزو محصول نیست. برای ثبت نظر مالک محصول/یادگیری و مشاهده‌ی تست کودک است. نظرها فقط در همین مرورگر ذخیره می‌شوند؛ با «خروجی JSON» به لاگ P01 اضافه کنید.</p>
+    <label class="tiny">بازبین: <input id="rv" value="${R.reviewer}" style="font:inherit;border:1px solid #C8D4CC;border-radius:8px;padding:2px 6px"></label>
+    <p class="tiny" style="margin-top:8px"><label><input type="checkbox" id="simT" ${simMode ? 'checked' : ''}> نمایش دکمه‌های «شبیه‌سازی رویداد سرور»</label></p>
+    ${ids.map((id) => { const [st, txt] = DECISIONS[id]; const v = R.verdicts[id] || ''; return `
+      <div class="dec"><b>${id}</b><span class="state ${st}">${st}</span><div>${txt}</div>
+        <div class="verdict" data-id="${id}">
+          ${['تأیید', 'نیاز به تغییر', 'رد'].map((l) => `<button class="${v === l ? 'on' : ''}" data-v="${l}">${l}</button>`).join('')}
+        </div>
+        <textarea data-note="${id}" placeholder="یادداشت / مشاهده از تست کودک">${R.notes[id] || ''}</textarea>
+      </div>`; }).join('')}
+    <div class="row" style="margin-top:8px"><button class="btn soft grow" id="exp">خروجی JSON</button><button class="btn ghost" id="clr">پاک کردن</button></div>
+    <p class="tiny" style="margin-top:10px">${Object.keys(R.verdicts).length} از ${Object.keys(DECISIONS).length} تصمیم بازبینی شده.</p>`;
+  el.querySelector('#rv').oninput = (e) => { R.reviewer = e.target.value; saveR(); };
+  el.querySelector('#simT').onchange = (e) => { simMode = e.target.checked; render(); };
+  el.querySelectorAll('.verdict button').forEach((b) => b.onclick = () => { R.verdicts[b.parentElement.dataset.id] = b.dataset.v; saveR(); renderReview(); });
+  el.querySelectorAll('textarea').forEach((t) => t.oninput = () => { R.notes[t.dataset.note] = t.value; saveR(); });
+  el.querySelector('#exp').onclick = () => {
+    const out = { artifact: 'P01 review prototype', exportedAt: new Date().toISOString(), reviewer: R.reviewer,
+      decisions: Object.keys(DECISIONS).map((id) => ({ id, state: DECISIONS[id][0], verdict: R.verdicts[id] || null, note: R.notes[id] || null })) };
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' }));
+    a.download = `p01-review-${Date.now()}.json`; a.click();
+  };
+  el.querySelector('#clr').onclick = () => { if (confirm('همه‌ی نظرها پاک شود؟')) { R.verdicts = {}; R.notes = {}; saveR(); renderReview(); } };
+}
+
+/* ---------------- helpers ---------------- */
+const $ = (s) => document.getElementById('screen').querySelector(s);
+const go = (name) => { current = name; render(); };
+const companion = (pose, text) => `<div class="companion"><img src="${A('aria-' + pose)}" alt="آریا، همراه"><div class="bubble">${text}</div></div>`;
+const sim = (label, id) => simMode ? `<button class="sim" data-sim="${id}">⚙ شبیه‌سازی رویداد سرور: ${label}</button>` : '';
+const placeholder = (t) => `<div class="placeholder">⬚ ${t}</div>`;
+function reveal(img, title, body) {
+  if (S.revealsThisSession >= 3) { toast(`${title} به کلکسیون اضافه شد`); return; } // P01-D-06
+  S.revealsThisSession++;
+  const o = document.createElement('div'); o.className = 'overlay';
+  o.innerHTML = `<div class="sheet"><img src="${A(img)}" alt=""><h2>${title}</h2><p class="sub">${body}</p><button class="btn block" style="margin-top:12px">ادامه</button></div>`;
+  o.querySelector('button').onclick = () => o.remove();
+  document.getElementById('phone').appendChild(o);
+}
+function toast(t) { const d = document.createElement('div'); d.className = 'sim'; d.style.cssText = 'position:absolute;bottom:72px;inset-inline:16px;z-index:6;background:#fff'; d.textContent = t; document.getElementById('phone').appendChild(d); setTimeout(() => d.remove(), 2200); }
+
+/* ---------------- screens ---------------- */
+const SCREENS = {
+  path() {
+    const doneDaily = S.daily.filter((d) => d.done).length;
+    const u = UNITS[0];
+    return `
+      <button class="card mission-entry row" style="width:100%;text-align:inherit" data-go="missions">
+        <span style="font-size:32px">🎯</span>
+        <span class="grow"><h3>ماموریت‌های امروز</h3><span class="sub">${fa(doneDaily)} از ${fa(S.daily.length)} انجام شده</span></span>
+        <span class="pill amber">باز کن</span>
+      </button>
+      <button class="card row" style="width:100%;text-align:inherit;background:${u.color};color:#fff;border:0" data-go="worlds">
+        <span class="grow"><span class="tiny" style="color:#fff">جهان ${fa(u.n)} · نام داستانی: بعداً (P09)</span><h3>${u.title}</h3></span><span>همه‌ی جهان‌ها ›</span>
+      </button>
+      <div class="path">
+        ${u.stations.map((t, i) => { const cls = i === 0 ? 'current' : 'locked'; return `
+          <div class="z${i}"><button class="node ${cls}" ${i === 0 ? 'data-go="challenge"' : 'disabled'} aria-label="ایستگاه ${fa(i + 1)}">${i === 0 ? '★' : fa(i + 1)}</button>
+          <div class="node-label">${t}</div></div>`; }).join('')}
+      </div>
+      ${placeholder('مسیر واقعی ۲۵ ایستگاهی zig-zag در اپ اصلی حفظ می‌شود؛ این فقط برش جهان ۱ برای تست جای کارت ماموریت است. لمس ایستگاه ۱ مستقیم چالش ویژه را باز می‌کند (در اپ واقعی چالش آخر StationFlow است).')}`;
+  },
+  missions() {
+    const row = (m, i) => `<div class="card row"><span class="check ${m.done ? 'on' : ''}">${m.done ? '✓' : fa(i + 1)}</span>
+      <span class="grow"><b style="font-size:14px">${m.title}</b><div class="tiny">${['شروع آسان', 'مهارت‌ساز', 'پیشرفت معنادار'][i]}</div></span></div>
+      ${!m.done ? sim('تکمیل «' + ['شروع آسان', 'مهارت‌ساز', 'پیشرفت معنادار'][i] + '»', 'daily-' + i) : ''}`;
+    return `
+      ${companion('encourage', 'این‌ها کمکت می‌کنن توی مسیر جلو بری!')}
+      <h3 style="margin:4px 0 8px">امروز</h3>
+      ${S.daily.map(row).join('')}
+      <p class="tiny">ماموریت‌های امروز آخر روز آروم عوض می‌شن. چیزی از دست نمی‌دی. 🌙</p>
+      <h3 style="margin:16px 0 8px">ایستگاه</h3>
+      <div class="card row"><span class="check ${S.station.done ? 'on' : ''}">${S.station.done ? '✓' : '★'}</span><span class="grow"><b style="font-size:14px">${S.station.title}</b><div class="tiny">منقضی نمی‌شود</div></span>
+        ${!S.station.done ? '<button class="btn soft" data-go="challenge">برو</button>' : ''}</div>
+      <h3 style="margin:16px 0 8px">جهان</h3>
+      <div class="card"><b style="font-size:14px">${S.world.title}</b><div class="bar" style="margin-top:8px"><i style="width:${(S.world.progress / S.world.of) * 100}%"></i></div><div class="tiny">${fa(S.world.progress)} از ${fa(S.world.of)}</div></div>
+      <h3 style="margin:16px 0 8px">ماجراجویی</h3>
+      ${placeholder('ماجراجویی (داستان → بازی → انتخاب → ریاضی) در P06/P09 طراحی می‌شود. فقط جای آن در این صفحه تست می‌شود.')}`;
+  },
+  worlds() {
+    return `${companion('think', 'هر فصل یه جهان تازه‌ست!')}
+      ${UNITS.map((u, i) => `<div class="world ${i ? 'locked' : ''}" style="background:${u.color}">
+        <div class="tiny" style="color:#fffd">جهان ${fa(u.n)} · ${i ? '🔒 بعد از جهان ' + fa(i) : 'در حال بازی'}</div>
+        <h2 style="margin:2px 0;font-size:20px">${u.title}</h2>
+        <div class="tiny" style="color:#fffd">نام داستانی، تم کلکسیون و چالش جهان: placeholder تا P09</div>
+        <div class="bar" style="margin-top:8px;background:#fff4"><i style="width:${i ? 0 : 4}%;background:#fff"></i></div>
+      </div>`).join('')}
+      ${placeholder('نگاشت ۵ فصل → ۵ جهان موقت است (P01-F-01). هیچ داستان یا محتوای جهان اینجا قطعی نیست.')}`;
+  },
+  challenge() { return challengeView(); },
+  collection() {
+    return `<div class="card"><div class="row"><span style="font-size:26px">⭐</span><span class="grow"><h3>ستاره‌های پیشرفت</h3><span class="tiny">ستاره خرج نمی‌شود؛ فقط نشان می‌دهد چقدر جلو رفتی.</span></span><b>${fa(S.stars)}/${fa(S.starGoal)}</b></div>
+        <div class="bar" style="margin-top:8px"><i style="width:${(S.stars / S.starGoal) * 100}%"></i></div><div class="tiny">به ${fa(S.starGoal)} برسی، یک برچسب ویژه باز می‌شود.</div></div>
+      <h3 style="margin:8px 0">دستاوردها <span class="pill gray">نمونه · قطعی در P07</span></h3>
+      <div class="grid">${S.achievements.map(([n, ico, fam, own]) => `<div class="tile ${own ? '' : 'locked'}"><span class="ico">${ico}</span><b>${n}</b><span class="tiny">${own ? 'باز شده' : fam}</span></div>`).join('')}</div>
+      <h3 style="margin:16px 0 8px">برچسب‌ها</h3>
+      <div class="grid">${S.stickers.map((s) => `<div class="tile ${s.owned ? '' : 'locked'}"><span class="ico">${s.ico}</span><b>${s.name}</b><span class="tiny">${s.owned ? 'مال تو' : 'از: ' + s.how}</span></div>`).join('')}</div>
+      <p class="tiny" style="margin-top:12px">هر جایزه یک راه مشخص برای به‌دست‌آوردن دارد. صندوق شانسی، فروشگاه و الماس وجود ندارد.</p>`;
+  },
+  me() {
+    return `<div class="card row"><span>${avatarSvg(80)}</span><span class="grow"><h3>آواتار من</h3><span class="sub">این تویی! هر وقت خواستی عوضش کن.</span></span><button class="btn soft" data-go="avatar">ویرایش</button></div>
+      <div class="card row"><img src="${A('aria-bust')}" style="width:64px" alt=""><span class="grow"><h3>همراه من: آریا</h3><span class="sub">آریا راهنمای توست، نه آواتار تو.</span></span></div>
+      <button class="card row" style="width:100%;text-align:inherit" data-go="collection"><span style="font-size:28px">🧺</span><span class="grow"><h3>کلکسیون من</h3><span class="sub">دستاوردها، برچسب‌ها، ستاره‌ها</span></span><span>›</span></button>
+      <button class="card row" style="width:100%;text-align:inherit" data-go="parent"><span style="font-size:28px">👪</span><span class="grow"><h3>بخش والدین</h3><span class="sub">در اپ واقعی پشت ورود والد است</span></span><span>›</span></button>`;
+  },
+  avatar() {
+    const it = (k) => S.items.filter((x) => x.kind === k).map((x) => {
+      const sel = (k === 'hat' ? S.avatar.hat : S.avatar.shirt) === x.id;
+      return `<button class="tile ${x.owned ? '' : 'locked'} ${sel ? 'sel' : ''}" data-item="${x.id}" ${x.owned ? '' : 'aria-disabled="true"'}><span class="ico">${x.ico}</span><b>${x.name}</b><span class="tiny">${x.owned ? (sel ? 'پوشیده' : 'مال تو') : '🔒 ' + x.how}</span></button>`;
+    }).join('');
+    return `<div class="avatar-stage">${avatarSvg(150)}</div>
+      <h3 style="margin:8px 0">کلاه</h3><div class="grid">${it('hat')}</div>
+      <h3 style="margin:16px 0 8px">لباس</h3><div class="grid">${it('shirt')}</div>
+      ${placeholder('هنر واقعی آواتار، تعداد آیتم‌ها و «انتخاب ۱ از ۲» در P08 طراحی می‌شود. آیتم قفل نشان می‌دهد دقیقاً از کجا باز می‌شود.')}`;
+  },
+  parent() {
+    return `<div class="sim" style="margin-bottom:12px">داده‌ی نمایشی: در اپ واقعی از Adult Projections / Learning Runtime می‌آید.</div>
+      <div class="card"><h3>پیشرفت یادگیری</h3><p class="tiny">منبع: تصمیم‌های سرور (Learning Truth)</p>
+        <table><tr><th>مهارت</th><th>وضعیت</th></tr>
+        <tr><td>شمارش اشیا تا ۵</td><td><span class="pill">در حال یادگیری</span></td></tr>
+        <tr><td>ادامه‌دادن الگوی ساده</td><td><span class="pill gray">شروع نشده</span></td></tr></table></div>
+      <div class="card"><h3>این هفته</h3>${placeholder('زمان تمرین، روزهای فعال و پیشنهاد فعالیت در خانه (P11)')}</div>
+      <div class="card"><h3>جوایز و کلکسیون</h3><p class="tiny">جدا از تسلط نمایش داده می‌شود: جایزه یعنی تلاش و مشارکت، نه اثبات یادگیری.</p>
+        <p class="sub">${fa(S.achievements.filter((a) => a[3]).length)} دستاورد · ${fa(S.stickers.filter((s) => s.owned).length)} برچسب</p></div>`;
+  },
+};
+
+/* ---------------- avatar ---------------- */
+function avatarSvg(size) {
+  const hat = { cap: '<path d="M30 42 Q60 10 90 42 Z" fill="#D95C3A"/><rect x="58" y="36" width="44" height="7" rx="3" fill="#9C3E25"/>',
+    crown: '<path d="M34 40 L40 16 L52 32 L60 12 L68 32 L80 16 L86 40 Z" fill="#F59E0B" stroke="#8A5A00" stroke-width="2"/>',
+    party: '<path d="M44 40 L60 4 L76 40 Z" fill="#7657C8"/><circle cx="60" cy="4" r="5" fill="#F59E0B"/>', none: '' }[S.avatar.hat];
+  return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" role="img" aria-label="آواتار کودک">
+    <circle cx="60" cy="60" r="58" fill="#ECF7F0"/>
+    <path d="M22 118 Q60 74 98 118 Z" fill="${S.avatar.shirt}"/>
+    <circle cx="60" cy="56" r="26" fill="${S.avatar.skin}"/>
+    <circle cx="51" cy="54" r="3.5" fill="#24313A"/><circle cx="69" cy="54" r="3.5" fill="#24313A"/>
+    <path d="M50 65 Q60 73 70 65" stroke="#24313A" stroke-width="3" fill="none" stroke-linecap="round"/>${hat}</svg>`;
+}
+
+/* ---------------- station challenge (interaction test only) ---------------- */
+// NOT real ST01 content (P05). Generic "count by tapping" mechanic to test feel/flow.
+const ROUNDS = [3, 4, 5];
+const C = { round: 0, tapped: 0, hintUsed: false, wrongs: 0, phase: 'intro', result: null };
+function resetChallenge() { Object.assign(C, { round: 0, tapped: 0, hintUsed: false, wrongs: 0, phase: 'intro', result: null }); }
+function challengeView() {
+  const dots = `<div class="dots">${ROUNDS.map((_, i) => `<i class="${i < C.round || C.phase === 'final' || C.phase === 'result' ? 'on' : ''}"></i>`).join('')}<i class="${C.phase === 'result' ? 'on' : ''}" style="background:${C.phase === 'result' ? '#7657C8' : ''}"></i></div>`;
+  if (C.phase === 'intro') return `${dots}${companion('encourage', 'کیوبو مکعب‌هاشو گم کرده! کمکش کن بشمره.')}
+    <div class="card" style="text-align:center"><img src="${A('qbo-bust')}" style="width:110px" alt="کیوبو"><h2>چالش ویژه‌ی ایستگاه ۱</h2><p class="sub">۳ دور کوتاه · بدون تایمر</p></div>
+    <button class="btn block" id="startC">شروع</button>
+    <p class="tiny" style="margin-top:8px">این فقط تست حس و جریان چالش است، نه محتوای واقعی ST01 (P05).</p>`;
+  if (C.phase === 'play') {
+    const n = ROUNDS[C.round];
+    const total = n + 2;
+    return `${dots}<div class="target">${fa(n)}</div><p class="sub" style="text-align:center">به همین تعداد مکعب دست بزن</p>
+      ${C.wrongs ? companion('think', C.hintUsed ? 'ببین، ۵ تای اول رو برات رنگی کردم. یکی‌یکی بشمر.' : 'اشکالی نداره! دوباره بشمریم؟ آروم و یکی‌یکی.') : ''}
+      <div class="objects">${Array.from({ length: total }, (_, i) => `<button class="obj ${i < C.tapped ? 'tapped' : ''} ${C.hintUsed ? 'grouped' : ''}" data-obj="${i}" aria-label="مکعب">🧊</button>`).join('')}</div>
+      <p style="text-align:center;font-weight:800">${fa(C.tapped)} تا شمردی</p>
+      <div class="split"><button class="btn ghost" id="hint">راهنما 💡</button><button class="btn" id="checkC">تموم شد</button></div>
+      <div class="split" style="margin-top:8px"><button class="btn ghost" id="undo">یکی کمتر</button><button class="btn ghost" id="quit">بعداً</button></div>`;
+  }
+  if (C.phase === 'final') return `${dots}${companion('correct', 'آفرین! کیوبو داره دوباره ساخته می‌شه!')}
+    <div class="card" style="text-align:center"><img src="${A('qbo-bust')}" style="width:140px" alt=""><h2>${fa(ROUNDS.reduce((a, b) => a + b, 0))} مکعب سر جاش!</h2></div>
+    <button class="btn block" id="finishC">ببین چی شد</button>`;
+  const labels = { COMPLETED: ['تمومش کردی! 🎉', 'celebrate'], COMPLETED_WITH_SUPPORT: ['با کمک راهنما تمومش کردی! 🎉', 'celebrate'], NOT_YET: ['هنوز نه، ولی خیلی نزدیک شدی', 'encourage'], ABANDONED: ['هر وقت خواستی برگرد', 'encourage'] };
+  const [txt, pose] = labels[C.result];
+  return `${companion(pose, txt)}
+    <div class="card"><h3>یاد گرفتی</h3><p class="sub">شمردن یکی‌یکی تا ۵ (متن نمونه)</p></div>
+    <div class="tiny" style="margin-bottom:8px">نتیجه‌ی چالش: <b>${C.result}</b> · تسلط را تغییر نمی‌دهد. ${simMode ? '' : ''}</div>
+    <div class="split"><button class="btn soft" id="replay">دوباره بازی</button><button class="btn" data-go="path">برگرد به مسیر</button></div>`;
+}
+function bindChallenge() {
+  const on = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };
+  on('startC', () => { C.phase = 'play'; render(); });
+  document.querySelectorAll('[data-obj]').forEach((b) => b.onclick = () => { const i = +b.dataset.obj; C.tapped = i < C.tapped ? C.tapped : C.tapped + 1; render(); });
+  on('undo', () => { C.tapped = Math.max(0, C.tapped - 1); render(); });
+  on('hint', () => { C.hintUsed = true; C.wrongs = Math.max(C.wrongs, 1); render(); });
+  on('quit', () => { C.result = 'ABANDONED'; C.phase = 'result'; render(); });
+  on('checkC', () => {
+    if (C.tapped === ROUNDS[C.round]) { C.round++; C.tapped = 0; C.wrongs = 0; C.phase = C.round >= ROUNDS.length ? 'final' : 'play'; }
+    else { C.wrongs++; C.tapped = 0; if (C.wrongs >= 3) { C.result = 'NOT_YET'; C.phase = 'result'; } }
+    render();
+  });
+  on('finishC', () => {
+    C.result = C.hintUsed ? 'COMPLETED_WITH_SUPPORT' : 'COMPLETED';
+    C.phase = 'result'; render();
+    // P01-G-04: reward once; hints never reduce it; replays give reactions only.
+    if (!S.challengeRewardGranted) {
+      S.challengeRewardGranted = true; S.station.done = true; S.stickers[0].owned = true; S.stars = Math.min(S.starGoal, S.stars + 2);
+      reveal('aria-celebrate', 'برچسب شمارش مال تو شد!', 'چون یاد گرفتی یکی‌یکی بشمری.');
+    } else toast('آریا براش دست زد! 👏 (تکرار: فقط واکنش، جایزه‌ی تکراری نه)');
+  });
+  on('replay', () => { resetChallenge(); C.phase = 'play'; render(); });
+}
+
+/* ---------------- render ---------------- */
+function render() {
+  if (current !== 'challenge' && C.phase !== 'intro' && C.phase !== 'play') resetChallenge();
+  document.getElementById('title').textContent = TITLES[current];
+  const root = ['path', 'me'].includes(current);
+  const parentOf = { missions: 'path', worlds: 'path', challenge: 'path', collection: 'me', avatar: 'me', parent: 'me' };
+  document.getElementById('topAction').innerHTML = root ? `<span class="pill amber">⭐ ${fa(S.stars)}</span>` : `<button class="back" data-go="${parentOf[current]}">بازگشت</button>`;
+  document.getElementById('screen').innerHTML = SCREENS[current]();
+  document.querySelectorAll('#nav button[data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === (parentOf[current] || current)));
+  document.querySelectorAll('[data-go]').forEach((b) => b.onclick = () => go(b.dataset.go));
+  document.querySelectorAll('[data-item]').forEach((b) => b.onclick = () => {
+    const x = S.items.find((i) => i.id === b.dataset.item); if (!x.owned) { toast('🔒 از «' + x.how + '» باز می‌شود'); return; }
+    S.avatar[x.kind] = x.id; render();
+  });
+  document.querySelectorAll('[data-sim]').forEach((b) => b.onclick = () => {
+    const i = +b.dataset.sim.split('-')[1]; S.daily[i].done = true;
+    S.stars = Math.min(S.starGoal, S.stars + 1);
+    reveal('aria-celebrate', 'ماموریت انجام شد!', 'یک ستاره‌ی پیشرفت گرفتی.'); render();
+  });
+  if (current === 'challenge') bindChallenge();
+  document.getElementById('screen').scrollTop = 0;
+  renderReview();
+}
+render();
+</script>
+</body>
+</html>

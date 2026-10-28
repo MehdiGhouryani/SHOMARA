@@ -1,0 +1,224 @@
+{
+  "phase": "UX-P07.5",
+  "date": "2026-10-03",
+  "status": "IMPLEMENTED_PRE_P08_GATE",
+  "primary_child_navigation": [
+    "PATH",
+    "PRACTICE",
+    "PROFILE"
+  ],
+  "primary_labels": [
+    "مسیر",
+    "تمرین",
+    "من"
+  ],
+  "achievement_surface": "PROFILE_EMBEDDED",
+  "practice_surface": "GAMES_ONLY",
+  "teacher_child_ui": "REMOVED",
+  "adult_teacher_backend": "PRESERVED",
+  "reward_currency_ui": "REMOVED",
+  "station_titles": {
+    "ST01": "شمارش و الگو",
+    "ST02": "جایگاه و جهت",
+    "ST03": "عدد و جمع",
+    "ST04": "شکل‌ها و ویژگی‌ها",
+    "ST05": "جمع و تفریق"
+  },
+  "station_header": [
+    "ایستگاه N",
+    "عنوان",
+    "زمان"
+  ],
+  "unit_title": "شمارش و الگو",
+  "validation": {
+    "contracts": "PASS",
+    "design_system": "PASS",
+    "p04": "PASS",
+    "p05": "PASS",
+    "p06": "PASS",
+    "p07": "PASS",
+    "p07_5": "PASS",
+    "migrations": "PASS",
+    "audit_p1": "PASS",
+    "audit_p2": "PASS",
+    "full_typecheck": "BLOCKED_BY_MISSING_DEPENDENCIES"
+  },
+  "files": [
+    {
+      "path": "packages/contracts/src/navigation.ts",
+      "sha256": "5262c43a3f8e3de57d4dfc9a9876d3d4beb8fc13bf79e8ebf5fc10f26ea156f2",
+      "bytes": 2866
+    },
+    {
+      "path": "packages/contracts/src/product-surface.ts",
+      "sha256": "f7bf4d2344643972c7f60df92dca29d4a65e6dd2bb1b060c57e6cd7ec58ff948",
+      "bytes": 4274
+    },
+    {
+      "path": "packages/contracts/src/practice.ts",
+      "sha256": "022d36a77f14828bdd6b0cc5a8f74f12abaeb675630f67e263da7ad150a08924",
+      "bytes": 5983
+    },
+    {
+      "path": "packages/contracts/src/progression.ts",
+      "sha256": "f1437bf4d813853c6a54ab7ee7b2931f4bc16688e57b7fe8010b4babb889c809",
+      "bytes": 3525
+    },
+    {
+      "path": "apps/web/components/ChildBottomNav.tsx",
+      "sha256": "ebca25ed5a5388dc78d104fdc12e3a282e849ca93cdecf7fca87ddbe2e16f53b",
+      "bytes": 2930
+    },
+    {
+      "path": "apps/web/components/ChildRouteShell.tsx",
+      "sha256": "91b7db2fb4c1c785816eeba43113fca6589dc5df33bbb3bef99bce7923a6bad4",
+      "bytes": 1637
+    },
+    {
+      "path": "apps/web/components/ChildTopBar.tsx",
+      "sha256": "d0108f5a4c6b74a97da7daeebf30be59261965567ec10dcc085af9847c268e4b",
+      "bytes": 1103
+    },
+    {
+      "path": "apps/web/components/DuolingoPath.tsx",
+      "sha256": "1eff58f334e15bdaf1377723734da8d027c4fe92d85f2eb2f97c5e071065a47f",
+      "bytes": 7680
+    },
+    {
+      "path": "apps/web/components/PracticeHubView.tsx",
+      "sha256": "70c6bbf720a425c9ab2a815deb9d2b87bb8e2682a1f77d4cd9e05fd9bc915315",
+      "bytes": 3971
+    },
+    {
+      "path": "apps/web/components/ProfileView.tsx",
+      "sha256": "b1b72cd334bd9e10567b0c84ff234c7669341772730411f3f66435d8945b00ef",
+      "bytes": 3697
+    },
+    {
+      "path": "apps/web/components/DuolingoLessonModal.tsx",
+      "sha256": "57a51fca0185eeaa38a23b87fdbeb590a6d224f7f2a8a8daeffbe134fa7c8721",
+      "bytes": 28157
+    },
+    {
+      "path": "apps/web/app/page.tsx",
+      "sha256": "a14ee044f57e560529def49af4fc1e8556067e9138bcf063fd50da5efc7b73c8",
+      "bytes": 4519
+    },
+    {
+      "path": "apps/web/app/unit/[unitId]/page.tsx",
+      "sha256": "39b2c712e7905e9725bb121e6fecfb0c30064e5677c5a1778317a4a0e6fa4ef8",
+      "bytes": 6348
+    },
+    {
+      "path": "apps/web/app/station/[stationId]/start/page.tsx",
+      "sha256": "4b50e00f59d5bf986b7e873f6b02724a8be83fa22deaf7e61ea8054e0ba55a2f",
+      "bytes": 5931
+    },
+    {
+      "path": "apps/mobile/app/(tabs)/_layout.tsx",
+      "sha256": "3e08409f87ff47387cb2bb7ff4fbccab55c44763e968d301d0c1295a5904ca3e",
+      "bytes": 1930
+    },
+    {
+      "path": "apps/mobile/app/(tabs)/index.tsx",
+      "sha256": "303b0115681ffb6df232e7a82097c6dac1d96add2b2e066bd3c7cabc3a8545f2",
+      "bytes": 11181
+    },
+    {
+      "path": "apps/mobile/app/(tabs)/practice.tsx",
+      "sha256": "42ddd1ca778d5f591dd69a3b89880befa047d1f2a5140a6bfefb967d39bf0e76",
+      "bytes": 146
+    },
+    {
+      "path": "apps/mobile/app/(tabs)/profile.tsx",
+      "sha256": "46402b235c2caa8b1abb2053567ef96199a7b39c4d3e51f360c83763ee23c210",
+      "bytes": 7541
+    },
+    {
+      "path": "apps/mobile/src/ui/PracticeHubScreen.tsx",
+      "sha256": "e4b2a756c88155bc2d92cc294259602ed5d183ceeb455c4baa70c75c02722c29",
+      "bytes": 7090
+    },
+    {
+      "path": "apps/mobile/src/ui/strings.fa.ts",
+      "sha256": "9d0e7a14af040dcacf5088a1f88ed2f830914ab15bbd4f0e6fb2e106939cd644",
+      "bytes": 2989
+    },
+    {
+      "path": "apps/mobile/app/unit/[unitId].tsx",
+      "sha256": "c41bf86f8f325e5e3f6d9f863d5b28e7846d28dafbc6d0ff2ccfd460e6a00c6b",
+      "bytes": 6191
+    },
+    {
+      "path": "apps/mobile/app/station/[stationId]/start.tsx",
+      "sha256": "13f46d94ec57290c8040b8996e3c60d01d62d3e57627574766c770f428fab4f1",
+      "bytes": 7753
+    },
+    {
+      "path": "apps/web/lib/learningEngine.ts",
+      "sha256": "abebb7032c746171c1122b4a323fcec86750b90c9d4229aa080eef096df2d866",
+      "bytes": 6144
+    },
+    {
+      "path": "apps/web/lib/persian.ts",
+      "sha256": "0888b347b561bfd9fb618e44dc105b7059093afbe03ca4acef2c96f555d93a30",
+      "bytes": 9959
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "sha256": "8eb2c87f4e169da9c2539f780e78c6cbbf1522abf83a252a74d7ad9b59d18cca",
+      "bytes": 324
+    },
+    {
+      "path": "supabase/migrations/0049_child_product_surface_labels.sql",
+      "sha256": "51ac5c2648ab8b5c64f914fce68092801eb91509072f331e3fdf143d2472740b",
+      "bytes": 573
+    },
+    {
+      "path": "supabase/migrations/0050_child_product_surface_label_refinement.sql",
+      "sha256": "2a45c9ee01cb221536fc1f3493b321b5f68dba20c54c9c9dd80282265a73b230",
+      "bytes": 541
+    },
+    {
+      "path": "docs/reference/CHILD_PRODUCT_SURFACE.md",
+      "sha256": "45711745da1d284dc2b7fcf456d62c2480b04871dbeca5077cb85385353dc971",
+      "bytes": 5253
+    },
+    {
+      "path": "docs/reference/PRACTICE_HUB_CONTRACT.md",
+      "sha256": "5aa7dfaf9589f0d01badcafa5c4f847e1d68006b599290b2c751eec27afac5f3",
+      "bytes": 1228
+    },
+    {
+      "path": "docs/phases/PHASE_7_5_UI_UX_PRODUCT_CLEANUP.md",
+      "sha256": "6164f6d136e4253b363ea02edad21d9f7f7b7d71a50bb0ad19ccb28ea6dc7a4b",
+      "bytes": 3206
+    },
+    {
+      "path": "docs/audits/AUDIT_UIUX_P07_5_CLEANUP_2026-10-03.md",
+      "sha256": "679f90088be6a9aa05a280d7a16049b84a7f624e0a3fbeeee0b08dfe4ccda40d",
+      "bytes": 4975
+    },
+    {
+      "path": "docs/audits/AUDIT_UIUX_P07_5_CLEANUP_2026-10-03.json",
+      "sha256": "b8fabf28cf808e066f7f2be1cd2c6b77b55455955a004d9821d3cdc2cfe637c5",
+      "bytes": 1670
+    },
+    {
+      "path": "docs/history/REVISION_NOTES_UX_P07_5.md",
+      "sha256": "8005b42f8572add377b0a4ef6cc18b544d21919c6b7bacb53c5c93189f00b4c5",
+      "bytes": 1410
+    },
+    {
+      "path": "scripts/verify-uiux-phase7-5.mjs",
+      "sha256": "82e8b61c65e3326f930afa3e9ad21268749a85b8bc5aeabec6c48767033c34f6",
+      "bytes": 5468
+    }
+  ],
+  "followUpAudit": {
+    "canonicalScreens": "24/24",
+    "emojiLiterals": 35,
+    "inlineStyleSignals": 246,
+    "hardcodedG1Signals": 1
+  }
+}

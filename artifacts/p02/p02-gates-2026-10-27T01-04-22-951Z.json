@@ -1,0 +1,112 @@
+{
+  "phase": "P02-A",
+  "at": "2026-10-27T01:04:22.951Z",
+  "env": {
+    "node": "v24.22.1",
+    "npm": "11.19.1",
+    "os": "win32-x64",
+    "expo": "57.0.27"
+  },
+  "lockfilePresent": true,
+  "results": [
+    {
+      "id": "install",
+      "cmd": "npm ci",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "build:packages",
+      "cmd": "npm run build:packages",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 7187,
+      "tail": "\n> math-learning-product@0.1.0 build:packages\n> npm --workspace @math/learning-runtime run build && npm --workspace @math/assignment-runtime run build && npm --workspace @math/adult-projections run build && npm --workspace @math/offline-sync run build && npm --workspace @math/challenge-runtime run typecheck\n\n\n> @math/learning-runtime@0.1.0 build\n> tsc -p tsconfig.build.json\n\n\n> @math/assignment-runtime@0.1.0 build\n> tsc -p tsconfig.json\n\n\n> @math/adult-projections@0.1.0 build\n> tsc -p tsconfig.json\n\n\n> @math/offline-sync@0.1.0 build\n> tsc -p tsconfig.build.json\n\n\n> @math/challenge-runtime@0.1.0 typecheck\n> tsc --noEmit -p tsconfig.json\n\n"
+    },
+    {
+      "id": "mobile:deps:check",
+      "cmd": "npm run mobile:deps:check",
+      "status": "FAIL",
+      "exitCode": 1,
+      "ms": 2255,
+      "tail": "> npm --workspace @math/mobile run deps:check\n\n\n> @math/mobile@0.1.0 deps:check\n> expo install --check\n\nThe following packages should be updated for best compatibility with the installed expo version:\n  expo@57.0.26 - expected version: ~57.0.31\n  expo-crypto@57.0.3 - expected version: ~57.0.4\n  expo-linking@57.0.11 - expected version: ~57.0.13\n  expo-router@57.0.24 - expected version: ~57.0.29\n  expo-splash-screen@57.0.9 - expected version: ~57.0.10\n  react-native@0.86.0 - expected version: 0.86.3\n  @types/react@19.3.0 - expected version: ~19.2.4\n  typescript@5.9.3 - expected version: ~6.0.3\nYour project may not work correctly until you install the expected versions of the packages.\nFound outdated dependencies\nnpm error Lifecycle script `deps:check` failed with error:\nnpm error code 1\nnpm error path D:\\Projects\\shomara_math_app\\apps\\mobile\nnpm error workspace @math/mobile@0.1.0\nnpm error location D:\\Projects\\shomara_math_app\\apps\\mobile\nnpm error command failed\nnpm error command C:\\Windows\\system32\\cmd.exe /d /s /c expo install --check\n"
+    },
+    {
+      "id": "typecheck:all",
+      "cmd": "npm run typecheck:all",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 22563,
+      "tail": "\n> @math/challenge-runtime@0.1.0 typecheck\n> tsc --noEmit -p tsconfig.json\n\n\n> @math/assignment-runtime@0.1.0 typecheck\n> tsc -p tsconfig.json --noEmit\n\n\n> @math/adult-projections@0.1.0 typecheck\n> tsc -p tsconfig.json --noEmit\n\n\n> @math/offline-sync@0.1.0 typecheck\n> tsc --noEmit -p tsconfig.json\n\n\n> @math/web@0.1.0 typecheck\n> tsc --noEmit\n\n\n> @math/mobile@0.1.0 typecheck\n> tsc --noEmit\n\n"
+    },
+    {
+      "id": "test:unit",
+      "cmd": "npm run test:unit",
+      "status": "FAIL",
+      "exitCode": 1,
+      "ms": 6248,
+      "tail": "    // your mocked methods\n  }\n})\n\n\u001b[90m \u001b[2m❯\u001b[22m VitestMocker.createError node_modules/vitest/dist/chunks/index.k8L_ZRzq.js:\u001b[2m64:17\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m Object.get node_modules/vitest/dist/chunks/index.k8L_ZRzq.js:\u001b[2m341:16\u001b[22m\u001b[39m\n\u001b[36m \u001b[2m❯\u001b[22m notifyAuthExpired apps/mobile/src/auth/authExpiry.ts:\u001b[2m29:9\u001b[22m\u001b[39m\n    \u001b[90m 27|\u001b[39m   needsReLogin = true;\n    \u001b[90m 28|\u001b[39m   const event: AuthExpiredEvent = { reason, at: new Date().toISOString…\n    \u001b[90m 29|\u001b[39m   await clearAccessToken();\n    \u001b[90m   |\u001b[39m         \u001b[31m^\u001b[39m\n    \u001b[90m 30|\u001b[39m   for (const listener of listeners) listener(event);\n    \u001b[90m 31|\u001b[39m }\n\u001b[90m \u001b[2m❯\u001b[22m MobileSyncTransport.receiptFor apps/mobile/src/sync/MobileSyncManager.ts:\u001b[2m21:12\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m MobileSyncTransport.send apps/mobile/src/sync/MobileSyncManager.ts:\u001b[2m34:35\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m processTicksAndRejections node:internal/process/task_queues:\u001b[2m104:5\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m OfflineSyncManager.processOne packages/offline-sync/dist/manager.js:\u001b[2m104:29\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m OfflineSyncManager.flush packages/offline-sync/dist/manager.js:\u001b[2m74:40\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m apps/mobile/src/sync/MobileSyncTransport.test.ts:\u001b[2m34:5\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m node_modules/vitest/dist/chunks/run.BTlFXlnv.js:\u001b[2m2783:20\u001b[22m\u001b[39m\n\n\u001b[31mThis error originated in \"\u001b[1mapps/mobile/src/sync/MobileSyncTransport.test.ts\u001b[22m\" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.\u001b[39m\n\u001b[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\u001b[39m\n\n"
+    },
+    {
+      "id": "verify:p01",
+      "cmd": "npm run verify:p01",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 374,
+      "tail": "\n> math-learning-product@0.1.0 verify:p01\n> node scripts/verify-phase1-product-lock.mjs\n\nPASS: P01 lifecycle status is IN_PROGRESS\nPASS: three daily quest slots are encoded\nPASS: 14 unique reusable game templates are locked\nPASS: all 25 stations have an experience mapping\nPASS: forbidden V1 economy/social mechanics remain disabled\nPASS: Mission Hub is locked as a secondary Path entry card\nPASS: Grade 1 internal world model is locked as 5 units → 5 worlds\nPASS: source game catalog has no duplicate G1-GAME-012 row\nPASS: P01 phase log contains the required evidence sections\nPASS: decision register covers A–G (23 decisions); every OPEN/PROVISIONAL item has a review gate\nPASS: reward economy decision is explicit (no token, no purchase, no randomness, no social comparison)\nPASS: mission completion/expiry semantics are non-punitive and server-authoritative\nPASS: 25-station signature challenge rule is explicit (shape, timer, results, hint, reward)\n"
+    },
+    {
+      "id": "verify:p02",
+      "cmd": "npm run verify:p02",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 345,
+      "tail": "\n> math-learning-product@0.1.0 verify:p02\n> node scripts/verify-phase2-foundation.mjs\n\nP02_FOUNDATION_GUARD: PASS (53 checks)\n"
+    },
+    {
+      "id": "verify:p03",
+      "cmd": "npm run verify:p03",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 357,
+      "tail": "    \"hapticsRespectPreference\": true,\n    \"dispatchStaysStable\": true,\n    \"stationHasNoBrokenFeedbackFork\": true,\n    \"stationUsesHintReveal\": true,\n    \"webSharesOutcomeSemantics\": true,\n    \"progressFillRespectsReducedMotion\": true,\n    \"nearMissDrop\": true,\n    \"tactileChoice\": true,\n    \"transientOverlay\": true,\n    \"stableAnimationDispatch\": true,\n    \"reducedMotion\": true,\n    \"interactivePrimitivesRespectReducedMotion\": true,\n    \"noPunitiveWrongAnimation\": true,\n    \"feedbackSurvivesSilentTransition\": true,\n    \"celebrationActuallyBlocksInput\": true,\n    \"testsPresent\": true,\n    \"dragDropPrimitive\": true,\n    \"revealPrimitives\": true,\n    \"stationUsesSharedSurfaceButton\": true,\n    \"stationUsesRewardReveal\": true,\n    \"progressPrimitiveShared\": true\n  },\n  \"failures\": []\n}\n"
+    },
+    {
+      "id": "verify:migrations",
+      "cmd": "npm run verify:migrations",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 371,
+      "tail": "\n> math-learning-product@0.1.0 verify:migrations\n> node scripts/verify-migrations-static.mjs\n\nMIGRATION_STATIC_GUARD: PASS (73 migrations, latest=0073_p10_depth_answer_position_rebalance.sql)\n"
+    },
+    {
+      "id": "verify:mobile-release",
+      "cmd": "npm run verify:mobile-release",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 327,
+      "tail": "\n> math-learning-product@0.1.0 verify:mobile-release\n> node scripts/verify-mobile-release.mjs\n\nMOBILE_RELEASE_GATE: PASS\n{\n  \"package\": \"com.mathlearning.app\",\n  \"version\": \"0.1.0\",\n  \"androidVersionCode\": 1,\n  \"targetSdk\": 36,\n  \"productionArtifact\": \"AAB\",\n  \"previewArtifact\": \"APK\",\n  \"secureAuthStorage\": true,\n  \"childPrimaryTabs\": [\n    \"مسیر\",\n    \"تمرین\",\n    \"من\"\n  ]\n}\n"
+    },
+    {
+      "id": "verify:static:all",
+      "cmd": "npm run verify:static:all",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 79137,
+      "tail": "PASS  verify-phase7.mjs\nPASS  verify-phase8.mjs\nPASS  verify-phase9.mjs\nPASS  verify-production-readiness-static.mjs\nPASS  verify-ui-v1-foundation.mjs\nPASS  verify-ui-v1-onboarding.mjs\nPASS  verify-ui-v1-path.mjs\nPASS  verify-ui-v1-question.mjs\nPASS  verify-ui-v1-result.mjs\nPASS  verify-ui-v1-scope.mjs\nPASS  verify-ui-v1-station.mjs\nPASS  verify-ui-v1-tabs.mjs\nPASS  verify-uiux-path2.mjs\nPASS  verify-uiux-phase3.mjs\nPASS  verify-uiux-phase4.mjs\nPASS  verify-uiux-phase5.mjs\nPASS  verify-uiux-phase6.mjs\nPASS  verify-uiux-phase7-5.mjs\nPASS  verify-uiux-phase7.mjs\nPASS  verify-uiux-phase8.mjs\nPASS  verify-uiux-phase9.mjs\nPASS  verify-ux-p10-final.mjs\n\nSTATIC_ALL: PASS (76/76)\n"
+    },
+    {
+      "id": "build:web",
+      "cmd": "npm run build:web",
+      "status": "PASS",
+      "exitCode": 0,
+      "ms": 10266,
+      "tail": "├ ƒ /api/v1/teacher/auth/login\n├ ƒ /api/v1/teacher/auth/logout\n├ ƒ /api/v1/teacher/auth/session\n├ ƒ /api/v1/teacher/students/[learningIdentityId]/observations\n├ ƒ /api/v1/worlds\n├ ○ /auth\n├ ○ /auth/code\n├ ○ /child\n├ ○ /grade\n├ ○ /parent\n├ ○ /profile/avatar\n├ ○ /settings\n├ ○ /start-check\n├ ƒ /station/[stationId]\n├ ƒ /station/[stationId]/play\n├ ƒ /station/[stationId]/start\n├ ƒ /unit/[unitId]\n├ ƒ /unit/[unitId]/jump\n└ ○ /welcome\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n"
+    },
+    {
+      "id": "mobile:export",
+      "cmd": "npx --workspace @math/mobile expo export --platform android",
+      "status": "NOT_RUN"
+    }
+  ],
+  "verdict": "NOT_PASS"
+}

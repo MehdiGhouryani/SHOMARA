@@ -1,0 +1,17 @@
+{
+  "schema": "math-content-package/v1",
+  "environment": "DEV_ONLY",
+  "gradeId": "G1",
+  "stationId": "G1-ST01",
+  "packageVersion": "1.0.0",
+  "items": [
+    { "contentVersionId": "G1-ST01-E01", "learningRole": "INSTRUCTION", "experienceForm": "CONVERSATION_EXPLANATION", "interactionType": "TAP", "status": "ACTIVE" },
+    { "contentVersionId": "G1-ST01-E02", "learningRole": "GUIDED_PRACTICE", "experienceForm": "PUZZLE", "interactionType": "TAP", "status": "ACTIVE" },
+    { "contentVersionId": "G1-ST01-E03", "learningRole": "GUIDED_PRACTICE", "experienceForm": "MINI_GAME", "interactionType": "MINI_GAME", "status": "ACTIVE" },
+    { "contentVersionId": "G1-ST01-E04", "learningRole": "GUIDED_PRACTICE", "experienceForm": "MINI_GAME", "interactionType": "MINI_GAME", "status": "ACTIVE" },
+    { "contentVersionId": "G1-ST01-E07", "learningRole": "MASTERY_CHECK", "experienceForm": "CHALLENGE", "interactionType": "COUNT", "status": "ACTIVE" },
+    { "contentVersionId": "G1-ST01-E08", "learningRole": "MASTERY_CHECK", "experienceForm": "CHALLENGE", "interactionType": "MINI_GAME", "status": "ACTIVE" },
+    { "contentVersionId": "G1-ST01-E09", "learningRole": "GUIDED_PRACTICE", "experienceForm": "BUILD_EXPLORE", "interactionType": "COUNT", "status": "ACTIVE" },
+    { "contentVersionId": "G1-ST01-E10", "learningRole": "MASTERY_CHECK", "experienceForm": "MINI_GAME", "interactionType": "MINI_GAME", "status": "ACTIVE" }
+  ]
+}

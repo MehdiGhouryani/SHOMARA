@@ -1,0 +1,35 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@math/learning-runtime": ["../../packages/learning-runtime/dist/index"],
+      "@math/contracts": ["../../packages/contracts/src/index"],
+      "@math/content-delivery": ["../../packages/content-delivery/src/index"],
+      "@math/assignment-runtime": ["../../packages/assignment-runtime/dist/index"],
+      "@math/adult-projections": ["../../packages/adult-projections/dist/index"],
+      "@math/offline-sync": ["../../packages/offline-sync/dist/index"],
+      "@math/design-system": ["../../packages/design-system/src/index.ts"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

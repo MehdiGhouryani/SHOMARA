@@ -1,0 +1,66 @@
+{
+  "phase": "UX-P09",
+  "date": "2026-10-03",
+  "status": "IMPLEMENTED_VALIDATED",
+  "scope": [
+    "parent-report",
+    "settings",
+    "adult-shell",
+    "parent-gate",
+    "unit-overview"
+  ],
+  "childNavigation": [
+    "PATH",
+    "PRACTICE",
+    "PROFILE"
+  ],
+  "parentSurface": [
+    "REPORT"
+  ],
+  "teacherUi": "DEFERRED_SEPARATE_PRODUCT",
+  "validation": {
+    "uxP03": "PASS",
+    "uxP04": "PASS",
+    "uxP05": "PASS",
+    "uxP06": "PASS",
+    "uxP07": "PASS",
+    "uxP07_5": "PASS",
+    "uxP08": "PASS",
+    "uxP08_5": "PASS",
+    "uxP09": "PASS",
+    "migrationStaticGuard": "PASS (52 migrations)",
+    "contractsTypecheck": "PASS",
+    "designSystemTypecheck": "PASS",
+    "changedSyntaxTranspile": "PASS",
+    "fullAppBuild": "NOT_RUN_MISSING_NODE_MODULES"
+  },
+  "auditBaseline": {
+    "canonicalScreens": 24,
+    "emojiLiterals": 30,
+    "inlineStyleSignals": 175,
+    "hardcodedG1Signals": 1,
+    "p0": 2,
+    "p1": 7,
+    "p2": 2
+  },
+  "hashes": {
+    "packages/contracts/src/adult.ts": "e25a17524a5dfd8af614ac76529fc7095efbc691c818c924119346c5b76809b4",
+    "apps/web/app/parent/page.tsx": "9571b84cf9ced06f6b3832888b253f90318561ecd28783ecbbe18b08d02bfc22",
+    "apps/web/app/settings/page.tsx": "d55d767a3ef678e27a5cafe92a6825540f29e2f7236921a48026566f32be6bf1",
+    "apps/web/app/api/v1/parent/today/route.ts": "e35350cee81e4b2aa48224395ea0d4105c8fe4e81b3b1333719d6d15894af84b",
+    "apps/web/components/AdultRouteShell.tsx": "9c91726749af725defa4eade94516f7296ac9393cf52915f40ff53327b5c547c",
+    "apps/web/components/ParentGate.tsx": "816967e8ada8cd7c04f6a40c36d4ba9d91fc63dc82f07372024f73a3b2719151",
+    "apps/web/components/ParentReportView.module.css": "1d76df4333a34a27a5fe6a7f138d5cbfbdf6a39d7eca62e49534a4d5555021fc",
+    "apps/mobile/app/parent.tsx": "35d0c045e232ed91637ac39709fd859956c2af6cd851581dfae158d326ddc8dc",
+    "apps/mobile/app/settings.tsx": "9dc7b21d32ecc679ce0ccaca990ac704cfb097912349db01807af937d2a63723",
+    "apps/mobile/src/components/ParentGate.tsx": "5b6895b54159afbc660d0bc7c11d56ce32ccdc29a8f1ea7d6e99e2c4a38026ef",
+    "apps/web/app/unit/[unitId]/page.tsx": "770c4d888e311d8dad3cf9c1772651243edb364555288aee9a3b90922f19e228",
+    "apps/mobile/app/unit/[unitId].tsx": "a376aed65d1ecb2ff7494650a7c941f7d20d6f0732076fc15360498f46beb5e6",
+    "scripts/verify-uiux-phase9.mjs": "265f77f3a2322269474899435c9d1c9c4198e6ed6d61985c91bfbbbbe1360edc",
+    "scripts/verify-uiux-phase5.mjs": "73ad80f427d7966f805a36682c1d618e4db6af2a0116cfe53eb1dd51f65e62e5",
+    "docs/reference/ADULT_SURFACE.md": "4904540d85aa5b12e26df68623d42cd0eacd81d8f646566f60c855db95ebdedf",
+    "docs/phases/PHASE_9_UI_UX_ADULT_PARENT_SETTINGS.md": "04e0ac77d443550e41a54c3549c9e217f8449cfb204797de85841a4f26a82299",
+    "docs/audits/AUDIT_UIUX_P09_2026-10-03.md": "e6198f2af29078ccfdc30cae949f439ededdbe2fd7a9e063465018cd25731817",
+    "docs/history/REVISION_NOTES_UX_P09.md": "ed75282cef749e6953bfd7289dd5bf66b7dc46461ad73b19762346326a2ae8d8"
+  }
+}

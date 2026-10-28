@@ -1,0 +1,14 @@
+{
+  "note": "Characters: handoff _app_800 assets trimmed to the alpha bounding box, as the approved pages do. Dana and Fandogh: the 320px circle crops embedded in the pages. Pose names describe what the image shows; handoff file names are unreliable for Number and Roka.",
+  "files": {
+    "main-wave": "Main/Main_10_pose_wave_app_800.webp trimmed to its alpha bounding box (same trim as the approved page, full resolution)",
+    "main-thinking": "Main/Main_07_expression_thinking_app_800.webp trimmed to its alpha bounding box (same trim as the approved page, full resolution)",
+    "main-front": "Main/Main_01_front_app_800.webp trimmed to its alpha bounding box (same trim as the approved page, full resolution)",
+    "main-celebrate": "Main/Main_12_state_celebrate_app_800.webp trimmed to its alpha bounding box (same trim as the approved page, full resolution)",
+    "number-yawning": "Number/Number_17_pose_pointing_app_800.webp trimmed to its alpha bounding box (same trim as the approved page, full resolution)",
+    "number-front": "Number/Number_01_front_app_800.webp trimmed to its alpha bounding box (same trim as the approved page, full resolution)",
+    "roka-trophy": "Roka/Roka_15_pose_determined_app_800.webp trimmed to its alpha bounding box (same trim as the approved page, full resolution)",
+    "fandogh-portrait": "embedded in pages-v1/13-practice.html (trimmed to the character; same image the approved page renders)",
+    "dana-portrait": "crop 320x320 embedded in pages-v1/05-path.html (source: Dana_01_front)"
+  }
+}

@@ -1,0 +1,48 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  core:
+    # Required checks: install from the lockfile, typecheck all workspaces, unit tests.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build:packages
+      - run: npm run typecheck:all
+      - run: npx vitest run
+
+  visual-and-static:
+    # Runs every verifier plus pixel parity and the browser flows. The design goldens were rendered with one
+    # Chromium build; another build may differ by font anti-aliasing, so this job is informational until it has
+    # been confirmed green on GitHub (it is green in a clean local clone: 71/71).
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build:packages
+      - id: verify
+        run: npm run verify:static:all
+      - name: surface hidden failures (wave E1)
+        # The job stays informational (continue-on-error above) until the owner confirms it green on
+        # GitHub, but a failure inside it must be loud in the pipeline output, never silent.
+        if: always()
+        run: |
+          if [ "${{ steps.verify.outcome }}" != "success" ]; then
+            echo "::warning::verify:static:all FAILED inside the informational job — static verifiers, pixel parity or browser flows are RED. The release gate is NOT green; read this job's log before any release decision."
+            exit 0
+          fi
+          echo "verify:static:all passed in the informational job."

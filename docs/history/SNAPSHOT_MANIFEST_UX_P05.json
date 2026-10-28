@@ -1,0 +1,30 @@
+{
+  "phase": "UX-P05",
+  "date": "2026-10-03",
+  "status": "IMPLEMENTED",
+  "required_files": [
+    "packages/contracts/src/progression.ts",
+    "apps/web/lib/progression.ts",
+    "apps/web/components/ChildRouteShell.tsx",
+    "apps/web/app/unit/[unitId]/page.tsx",
+    "apps/web/app/unit/[unitId]/jump/page.tsx",
+    "apps/web/app/station/[stationId]/start/page.tsx",
+    "apps/web/app/station/[stationId]/play/page.tsx",
+    "apps/mobile/app/unit/[unitId].tsx",
+    "apps/mobile/app/unit/[unitId]/jump.tsx",
+    "apps/mobile/app/station/[stationId]/index.tsx",
+    "apps/mobile/app/station/[stationId]/start.tsx",
+    "apps/mobile/app/station/[stationId]/play.tsx",
+    "docs/reference/PROGRESSION_CONTRACT.md",
+    "docs/phases/PHASE_5_UI_UX_PATH_UNIT_STATION.md",
+    "docs/audits/AUDIT_UIUX_PHASE_5_2026-10-03.md",
+    "docs/audits/AUDIT_UIUX_PHASE_5_2026-10-03.json",
+    "docs/history/REVISION_NOTES_UX_P05.md",
+    "scripts/verify-uiux-phase5.mjs"
+  ],
+  "verification": {
+    "verify:uiux:p5": "PASS",
+    "contracts_typecheck": "PASS",
+    "full_app_typecheck": "NOT_CLAIMED_node_modules_absent"
+  }
+}

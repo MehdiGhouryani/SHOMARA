@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shomara.local/schemas/roadmap.schema.json",
+  "title": "SHOMARA execution roadmap",
+  "type": "object",
+  "required": ["schemaVersion", "project", "updatedAt", "currentPhase", "currentTask", "statusValues", "phases"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "project": { "const": "SHOMARA" },
+    "updatedAt": { "type": "string", "format": "date" },
+    "currentPhase": { "type": "string", "pattern": "^N\\d{2}$" },
+    "currentTask": { "type": "string", "pattern": "^N\\d{2}-\\d{2}$" },
+    "statusValues": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["TODO", "READY", "IN_PROGRESS", "BLOCKED", "DEFERRED", "DONE", "DONE_WITH_BLOCKER"] }
+    },
+    "canonicalDocs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "commandAllowlist": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "humanGates": { "type": "array", "items": { "$ref": "#/$defs/humanGate" } },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/phase" }
+    }
+  },
+  "$defs": {
+    "humanGate": {
+      "type": "object",
+      "required": ["id", "phase", "title", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "phase": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "enum": ["OPEN", "APPROVED", "REJECTED", "NOT_DUE"] },
+        "evidence": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "required": ["id", "title", "status", "dependsOn", "acceptance"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^N\\d{2}-\\d{2}$" },
+        "title": { "type": "string", "minLength": 3 },
+        "status": { "enum": ["TODO", "READY", "IN_PROGRESS", "BLOCKED", "DEFERRED", "DONE", "DONE_WITH_BLOCKER"] },
+        "dependsOn": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "acceptance": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "blocker": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "phase": {
+      "type": "object",
+      "required": ["id", "title", "status", "branch", "goal", "allowedPaths", "gates", "tasks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^N\\d{2}$" },
+        "title": { "type": "string" },
+        "status": { "enum": ["TODO", "READY", "IN_PROGRESS", "BLOCKED", "DEFERRED", "DONE", "DONE_WITH_BLOCKER"] },
+        "branch": { "type": "string" },
+        "goal": { "type": "string" },
+        "allowedPaths": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true },
+        "gates": { "type": "array", "items": { "type": "string" } },
+        "tasks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/task" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

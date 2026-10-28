@@ -1,0 +1,6 @@
+-- Phase 2 completion marker.
+-- Canonical dependency order:
+-- helpers -> identity -> installation -> relationships/classes -> curriculum -> graph/stations
+-- -> objectives -> content -> diagnostics/policies -> runtime -> evidence/state -> decisions/plans
+-- -> progression/quests/rewards -> events/audit -> entitlements/assignments -> indexes/hardening
+-- -> seed -> auth trigger -> RLS contract -> historical safety.

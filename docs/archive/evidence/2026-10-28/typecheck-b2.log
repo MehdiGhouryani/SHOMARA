@@ -1,0 +1,50 @@
+
+> @math/mobile@0.1.0 typecheck
+> tsc --noEmit
+
+src/ui/v2/lesson.tsx(124,20): error TS2339: Property 'answerTile' does not exist on type '{ readonly levels: { flat: number; hint: number; soft: number; featured: number; }; readonly soft: { borderWidth: number; shadowOpacity: number; shadowRadius: number; shadowOffsetY: number; highlightOpacity: number; highlightThickness: number; elevation: number; }; readonly featured: { ...; }; }'.
+src/ui/v2/lesson.tsx(126,22): error TS2339: Property 'answerTile' does not exist on type '{ readonly levels: { flat: number; hint: number; soft: number; featured: number; }; readonly soft: { borderWidth: number; shadowOpacity: number; shadowRadius: number; shadowOffsetY: number; highlightOpacity: number; highlightThickness: number; elevation: number; }; readonly featured: { ...; }; }'.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path D:\Projects\shomara_math_app\apps\mobile
+npm error workspace @math/mobile@0.1.0
+npm error location D:\Projects\shomara_math_app\apps\mobile
+npm error command failed
+npm error command C:\Windows\system32\cmd.exe /d /s /c tsc --noEmit
+
+> math-learning-product@0.1.0 build:packages
+> npm --workspace @math/learning-runtime run build && npm --workspace @math/assignment-runtime run build && npm --workspace @math/adult-projections run build && npm --workspace @math/offline-sync run build && npm --workspace @math/challenge-runtime run typecheck
+
+
+> @math/learning-runtime@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @math/assignment-runtime@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @math/adult-projections@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @math/offline-sync@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @math/challenge-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @math/mobile@0.1.0 typecheck
+> tsc --noEmit
+
+src/ui/v2/lesson.tsx(124,20): error TS2339: Property 'answerTile' does not exist on type '{ readonly levels: { flat: number; hint: number; soft: number; featured: number; }; readonly soft: { borderWidth: number; shadowOpacity: number; shadowRadius: number; shadowOffsetY: number; highlightOpacity: number; highlightThickness: number; elevation: number; }; readonly featured: { ...; }; }'.
+src/ui/v2/lesson.tsx(126,22): error TS2339: Property 'answerTile' does not exist on type '{ readonly levels: { flat: number; hint: number; soft: number; featured: number; }; readonly soft: { borderWidth: number; shadowOpacity: number; shadowRadius: number; shadowOffsetY: number; highlightOpacity: number; highlightThickness: number; elevation: number; }; readonly featured: { ...; }; }'.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path D:\Projects\shomara_math_app\apps\mobile
+npm error workspace @math/mobile@0.1.0
+npm error location D:\Projects\shomara_math_app\apps\mobile
+npm error command failed
+npm error command C:\Windows\system32\cmd.exe /d /s /c tsc --noEmit

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>S03 · کد تأیید</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --canvas: #F5F7F8; --surface: #FFFFFF; --on-surface: #1B2A36; --on-surface-variant: #4D5F6D;
+  --outline: #6B7C88; --outline-variant: #E4EAEE; --primary: #2B5C7A;
+  --surface-variant: #E9EEF1; --primary-container: #D5E5EF; --on-primary-container: #163A4F; --tertiary: #E3A33B; --on-tertiary: #1B2A36; --tertiary-edge: #B07A2A;
+  --violet: #7462E6; --error: #A94438; --error-container: #F7E1DD; --on-error-container: #5C1F17;
+  --neutral-container: #EEE3CF; --on-neutral-container: #3A3026;
+  --font: Vazirmatn, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media all {
+  :root[data-theme="dark"] {
+    --canvas: #0F1A22; --surface: #17242E; --on-surface: #E6EDF2; --on-surface-variant: #B3C0CA;
+    --outline: #8795A0; --outline-variant: #2A3A46; --primary: #8DB9D6; --surface-variant: #213140; --primary-container: #1D3A4E; --on-primary-container: #CFE5F2;
+    --tertiary: #E8B458; --on-tertiary: #2B1E00; --tertiary-edge: #B8862F; --violet: #B3A6FF;
+    --error: #F2A093; --error-container: #3A221E; --on-error-container: #F8D3CC;
+    --neutral-container: #2E2A24; --on-neutral-container: #EADFCB;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; background: var(--canvas); color: var(--on-surface); font-family: var(--font); }
+body { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 12px; }
+.label { font-size: 14px; line-height: 20px; color: var(--on-surface-variant); }
+.screen {
+  width: 360px; max-width: 100%; height: 800px; background: var(--canvas);
+  border: 1px solid var(--outline-variant); border-radius: 28px; overflow: hidden;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 24px calc(24px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 16px;
+}
+.top { display: flex; align-items: center; gap: 12px; }
+.back { width: 48px; height: 48px; flex: 0 0 48px; border: 0; background: none; color: var(--on-surface); border-radius: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.back svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.steps { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+.steps i { display: block; height: 10px; border-radius: 999px; background: var(--surface-variant); }
+.steps i.done { background: var(--primary); }
+.steps i.now { background: var(--tertiary); }
+.hero { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 8px; }
+.icon { width: 72px; height: 72px; border-radius: 50%; background: var(--primary-container); color: var(--on-primary-container); display: flex; align-items: center; justify-content: center; }
+.icon svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+h1 { margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; text-align: center; }
+.sub { margin: 0; font-size: 18px; line-height: 28px; color: var(--on-surface-variant); text-align: center; direction: ltr; }
+.otp { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; direction: ltr; }
+.cell {
+  height: 60px; border: 2px solid var(--outline); border-radius: 16px; background: var(--surface);
+  display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600; color: var(--on-surface);
+}
+.cell.on { border-color: var(--primary); border-width: 3px; }
+.cell.err { border-color: var(--error); color: var(--error); }
+.cell .d { font-variant-numeric: tabular-nums; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; }
+.hint { font-size: 14px; line-height: 20px; color: var(--on-surface-variant); }
+.hint.err { color: var(--error); font-weight: 600; }
+.tbtn { min-height: 48px; border: 0; background: none; color: var(--primary); font-family: var(--font); font-size: 16px; font-weight: 600; padding: 0 12px; cursor: pointer; }
+.tbtn:disabled { color: var(--on-surface-variant); cursor: not-allowed; }
+.tbtn:focus-visible { outline: 3px solid var(--outline); outline-offset: 2px; }
+.spacer { flex: 1; }
+.btn {
+  width: 100%; min-height: 56px; border: 0; border-radius: 20px; background: var(--tertiary); color: var(--on-tertiary);
+  font-family: var(--font); font-size: 18px; font-weight: 600; box-shadow: 0 3px 0 var(--tertiary-edge); cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+}
+.btn:active { transform: translateY(3px) scale(0.985); box-shadow: 0 0 0 var(--tertiary-edge); }
+.btn:disabled { background: var(--surface-variant); color: var(--on-surface-variant); box-shadow: none; cursor: not-allowed; }
+.btn:focus-visible { outline: 3px solid var(--outline); outline-offset: 3px; }
+.banner { display: flex; align-items: center; gap: 12px; border-radius: 20px; padding: 12px 16px; font-size: 16px; line-height: 24px; }
+.banner.neutral { background: var(--neutral-container); color: var(--on-neutral-container); }
+.banner.error { background: var(--error-container); color: var(--on-error-container); }
+.states { display: flex; flex-direction: column; gap: 12px; width: 360px; max-width: 100%; }
+.card { background: var(--surface); border: 1px solid var(--outline-variant); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.cap { font-size: 14px; line-height: 20px; color: var(--on-surface-variant); margin: 0; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+</style>
+</head>
+<body>
+<div class="label">S03 · کد تأیید · ۳۶۰×۸۰۰ · پیش‌نویس ۰٫۲ (بدون شخصیت)</div>
+<main class="screen" aria-label="کد تأیید">
+  <div class="top">
+    <button class="back" type="button" aria-label="برگشت"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="steps" role="img" aria-label="مرحلهٔ ۳ از ۶"><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i></i><i></i></div>
+  </div>
+  <div class="hero">
+    <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="12" rx="3"/><path d="M8 9.5h8M8 13h5"/></svg></div>
+    <h1>کد را وارد کن</h1>
+    <p class="sub">به 0912***6789 پیامک شد.</p>
+  </div>
+  <div class="otp" role="group" aria-label="کد تأیید شش رقمی">
+    <div class="cell on"><span class="d">4</span></div>
+    <div class="cell on"><span class="d">2</span></div>
+    <div class="cell on"><span class="d">7</span></div>
+    <div class="cell on"><span class="d">1</span></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+  <div class="row"><span class="hint">ارسال دوباره تا ۰:۴۵</span><button class="tbtn" type="button" disabled>ارسال دوباره</button></div>
+  <div class="row"><span class="hint">شماره اشتباه است؟</span><button class="tbtn" type="button">شماره را عوض کن</button></div>
+  <div class="spacer"></div>
+  <button class="btn" type="button" disabled>تأیید</button>
+</main>
+
+<section class="states" aria-label="حالت‌های این صفحه">
+  <div class="card">
+    <p class="cap">کد نادرست</p>
+    <div class="otp"><div class="cell err">1</div><div class="cell err">1</div><div class="cell err">1</div><div class="cell err">1</div><div class="cell err">1</div><div class="cell err">1</div></div>
+    <span class="hint err" role="alert">کد درست نیست. دوباره امتحان کن.</span>
+  </div>
+  <div class="card">
+    <p class="cap">کد منقضی شد</p>
+    <div class="banner neutral" role="status">کد منقضی شد. کد تازه می‌فرستیم.</div>
+  </div>
+  <div class="card">
+    <p class="cap">محدودیت تعداد تلاش</p>
+    <div class="banner neutral" role="status">چند بار تلاش کردی. ۱۰ دقیقه صبر کن.</div>
+  </div>
+  <div class="card">
+    <p class="cap">ارائه‌دهنده در دسترس نیست</p>
+    <div class="banner error" role="alert">ارسال کد الان ممکن نیست. دوباره امتحان کن.</div>
+  </div>
+  <div class="card">
+    <p class="cap">آفلاین</p>
+    <div class="banner neutral" role="status">اینترنت نیست. ورودی‌ات حفظ شده است.</div>
+  </div>
+  <div class="card">
+    <p class="cap">در حال بررسی</p>
+    <button class="btn" type="button" disabled>در حال بررسی…</button>
+  </div>
+</section>
+</body>
+</html>

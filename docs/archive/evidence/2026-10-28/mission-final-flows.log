@@ -1,0 +1,12 @@
+=== flow:onboarding ===
+FLOW: PASS (28/28)
+FO=0
+=== flow:path ===
+FLOW_PATH: PASS (29/29)
+FP=0
+=== flow:station ===
+FLOW_STATION: PASS (48/48)
+FS=0
+=== flow:tabs ===
+FLOW_TABS: PASS (18/18)
+FT=0

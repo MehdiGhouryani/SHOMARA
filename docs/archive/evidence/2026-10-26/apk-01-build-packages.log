@@ -1,0 +1,26 @@
+node v24.22.1 | branch chore/apk-preview @ c4a19f572df6a83a5b161e9b60b5774d979e216e | TEMP redirected to node_modules/.cache/tmp (sandbox: esbuild.exe cannot write to %TEMP%)
+
+> math-learning-product@0.1.0 build:packages
+> npm --workspace @math/learning-runtime run build && npm --workspace @math/assignment-runtime run build && npm --workspace @math/adult-projections run build && npm --workspace @math/offline-sync run build && npm --workspace @math/challenge-runtime run typecheck
+
+
+> @math/learning-runtime@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @math/assignment-runtime@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @math/adult-projections@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @math/offline-sync@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @math/challenge-runtime@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+EXIT=0

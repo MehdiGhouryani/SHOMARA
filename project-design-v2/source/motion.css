@@ -1,0 +1,72 @@
+/* Shomara cast v2 — motion layer for the layered SVG characters.
+   Layers are targeted by class (.sh-<layer>), never by id, so several characters can share one DOM.
+   Semantic state lives on the wrapper: .sh-char[data-state="idle|think|encourage|correct|celebrate|recovery"].
+   data-static="true"  -> lesson mode: no looping body motion (blink only). ADR: idle is static in lessons.
+   data-reduced="true" or OS reduce-motion -> no animation at all; the static pose already carries the meaning. */
+.sh-char{display:inline-block;line-height:0;position:relative}
+.sh-char svg{width:100%;height:100%;display:block;overflow:visible}
+.sh-char svg *{transform-box:view-box}
+
+/* blink: every state except closed-eye poses */
+.sh-char .eye{animation:sh-blink 4.6s infinite}
+@keyframes sh-blink{0%,93%,100%{transform:scaleY(1)}95.5%{transform:scaleY(.1)}}
+
+/* IDLE: breathing + gentle tail/crest/antenna */
+.sh-char[data-state="idle"] .sh-body-group{animation:sh-breathe 3.4s ease-in-out infinite}
+.sh-char[data-state="idle"] .sh-tail{animation:sh-sway 3.4s ease-in-out infinite}
+.sh-char[data-state="idle"] .sh-antenna{animation:sh-sway 2.6s ease-in-out infinite}
+.sh-char[data-state="idle"] .sh-float-cube{animation:sh-float 2.8s ease-in-out infinite}
+.sh-char[data-state="idle"][data-character="aria"] .sh-arm-r{animation:sh-wave 1.1s ease-in-out 2}
+@keyframes sh-breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.012,.988)}}
+@keyframes sh-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes sh-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes sh-wave{0%,100%{transform:rotate(0)}30%{transform:rotate(-14deg)}65%{transform:rotate(8deg)}}
+
+/* THINK: slow head ponder, Qbo loading ring spins */
+.sh-char[data-state="think"] .sh-head{animation:sh-ponder 2.8s ease-in-out infinite}
+.sh-char[data-state="think"] .sh-loading{transform-origin:107px 98px;animation:sh-spin 1.4s linear infinite}
+@keyframes sh-ponder{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
+@keyframes sh-spin{to{transform:rotate(360deg)}}
+
+/* ENCOURAGE: one open-hand gesture, then rest */
+.sh-char[data-state="encourage"] .sh-arm-r,.sh-char[data-state="encourage"] .sh-wing-r{animation:sh-offer .9s cubic-bezier(.34,1.56,.64,1) 1 both}
+.sh-char[data-state="encourage"] .sh-float-cube{animation:sh-float 1.6s ease-in-out 2}
+@keyframes sh-offer{0%{transform:rotate(18deg)}100%{transform:rotate(0)}}
+
+/* CORRECT: one small nod + crest/tail pop. Never loops (calm feedback). */
+.sh-char[data-state="correct"] .sh-head{animation:sh-nod .55s ease-out 1}
+.sh-char[data-state="correct"] .sh-crest{animation:sh-pop .5s cubic-bezier(.34,1.56,.64,1) 1}
+.sh-char[data-state="correct"] .sh-tail{animation:sh-pop .5s cubic-bezier(.34,1.56,.64,1) 1}
+.sh-char[data-state="correct"] .sh-fx{animation:sh-fx .6s ease-out 1 both}
+@keyframes sh-nod{0%,100%{transform:translateY(0)}40%{transform:translateY(5px)}}
+@keyframes sh-pop{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes sh-fx{0%{opacity:0;transform:scale(.6)}100%{opacity:1;transform:scale(1)}}
+
+/* CELEBRATE: three hops, arms pump, fx bursts in. Station pass / milestone / reward only. */
+.sh-char[data-state="celebrate"] .sh-root{transform-origin:112px 240px;animation:sh-hop .62s cubic-bezier(.3,.7,.4,1) 3}
+.sh-char[data-state="celebrate"] .sh-arm-l,.sh-char[data-state="celebrate"] .sh-wing-l{animation:sh-pump .31s ease-in-out 6 alternate}
+.sh-char[data-state="celebrate"] .sh-arm-r,.sh-char[data-state="celebrate"] .sh-wing-r{animation:sh-pump-r .31s ease-in-out 6 alternate}
+.sh-char[data-state="celebrate"] .sh-fx{transform-origin:112px 120px;animation:sh-fx .5s ease-out 1 both}
+.sh-char[data-state="celebrate"] .sh-tail-pattern{animation:sh-flow 1.2s linear 1}
+.sh-char[data-state="celebrate"] .sh-cube-tower{animation:sh-drop .6s cubic-bezier(.34,1.56,.64,1) 1 both}
+@keyframes sh-hop{0%,100%{transform:translateY(0) scale(1,1)}12%{transform:translateY(0) scale(1.05,.94)}45%{transform:translateY(-14px) scale(.97,1.04)}80%{transform:translateY(0) scale(1.03,.97)}}
+@keyframes sh-pump{from{transform:rotate(0)}to{transform:rotate(-10deg)}}
+@keyframes sh-pump-r{from{transform:rotate(0)}to{transform:rotate(10deg)}}
+@keyframes sh-flow{to{stroke-dashoffset:-92}}
+@keyframes sh-drop{0%{transform:translateY(-30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+
+/* RECOVERY: slow, warm sway. Calm, never shaking. */
+.sh-char[data-state="recovery"] .sh-body-group{animation:sh-calm 4s ease-in-out infinite}
+.sh-char[data-state="recovery"] .sh-head{animation:sh-ponder 4s ease-in-out infinite}
+@keyframes sh-calm{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+
+/* lesson mode: keep only blink and one-shot reactions */
+.sh-char[data-static="true"][data-state="idle"] *,
+.sh-char[data-static="true"][data-state="think"] .sh-head,
+.sh-char[data-static="true"][data-state="think"] .sh-loading,
+.sh-char[data-static="true"][data-state="recovery"] *{animation:none}
+.sh-char[data-static="true"] .eye{animation:sh-blink 4.6s infinite}
+
+/* accessibility: reduced motion = static pose, same meaning */
+.sh-char[data-reduced="true"] *{animation:none!important}
+@media (prefers-reduced-motion: reduce){.sh-char *{animation:none!important}}

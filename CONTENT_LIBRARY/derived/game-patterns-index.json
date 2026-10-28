@@ -1,0 +1,81 @@
+{
+  "source": "shomara-stage5-shared-references.md",
+  "status": "candidate_templates_not_implemented",
+  "patterns": [
+    {
+      "id": "T01",
+      "name": "لمس‌وشمار",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T02",
+      "name": "چوب‌خط‌ساز",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T03",
+      "name": "انگشت‌های دیجیتال",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T04",
+      "name": "چینه‌ساز",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T05",
+      "name": "الگوساز",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T06",
+      "name": "وصل با خط‌کش",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T07",
+      "name": "قرینه‌ساز",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T08",
+      "name": "مربع شگفت‌انگیز",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T09",
+      "name": "پرندهٔ محور",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T10",
+      "name": "دسته‌بند ده‌تایی",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T11",
+      "name": "صحنهٔ مسئله",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T12",
+      "name": "ساعت",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T13",
+      "name": "ردگیری عدد",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T14",
+      "name": "مقایسه",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    },
+    {
+      "id": "T15",
+      "name": "انتخاب پاسخ",
+      "runtimeAdapterStatus": "NOT_ASSESSED"
+    }
+  ]
+}

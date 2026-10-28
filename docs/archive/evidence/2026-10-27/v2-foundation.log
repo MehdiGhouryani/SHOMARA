@@ -1,0 +1,40 @@
+# SHOMARA V2 foundation + lesson slice — 2026-10-27 — branch ui/shomara-v2-foundation
+
+OWNER DECISION D-021 (recorded in START_HERE §4 + AGENTS.md §0): V1 visual design rejected;
+ADR-0035 / pages-v1 / goldens / V1 parity thresholds are HISTORICAL references. Non-visual rules
+(server-authoritative learning, security, Persian/RTL, no stars/lives, evidence discipline) unchanged.
+
+WHAT WAS BUILT (batches, each verified):
+1. tokens.v2 in packages/design-system/src/tokens.json (single source) — warm garden palette
+   (#0C7A54 primary on #FFF8EF canvas; all text pairs WCAG-audited >= 4.5:1), type scale, space,
+   radius, motion springs, component dims. Additive: V1 groups untouched.
+2. apps/mobile/src/ui/v2/ kit: tokens.ts reader, core.tsx (Button/Card/Chip/ProgressBar),
+   lesson.tsx (interactive CountTray tap-to-count + OptionTile + FeedbackSheet), path.tsx
+   (PathNode states + CharacterSpot idle bob). All reduce-motion aware, all token-only
+   (zero raw hex — enforced by the new verifier), Ionicons not emoji.
+3. apps/mobile/src/station/views2/LessonViewsV2.tsx — pure V2 views mirroring the V1 prop
+   contracts: TeachView2 / QuestionView2 (interactive counting tray for numeric options) /
+   StageResultView2 (toFa counters). Wired into StationFlow for the lesson-slice stages
+   (transitional views2 adapter; other stages still V1).
+4. Verification replacements (task A discipline — intent preserved, target updated):
+   - touchTargets.test resolves K2/R2 like UI tokens; bead token raised 44->48 (real touch target).
+   - flow:station: 5 V1-visual assertions replaced with V2 equivalents (progress 14px, tray a11y,
+     split caption/chip, result digits) — 48/48 PASS.
+   - NEW scripts/verify-ui-v2-foundation.mjs (11 checks): tokens-only, a11y roles, reduce-motion,
+     warm tones, wiring, contract surfaces untouched, toFa — static-all now 77/77.
+5. flow harness: env-gated FLOW_CAPTURE screenshots (v2-teach/question/result.png) — visual
+   evidence of the real rendered V2 screens in Chromium.
+
+GATES (all exit 0): typecheck:all (9) · vitest 486/486 (65 files, +8 touch/V2) · static-all 77/77
+(+verify-ui-v2-foundation) · parity 29/29 (V1 specimens intact = historical) · flows 28/29/48/14 ·
+web build 0 · expo export android 0 (4.6MB).
+
+VISUAL: v2-teach.png / v2-question.png / v2-result.png in this folder — real app render via the
+flow harness in Chromium. Android device verification remains Phase 4 (no SDK on this machine).
+
+NEXT MILESTONES (not done here, honestly):
+- PathView2 + station-start V2 (slice start; path model/layout reuse) + tab screens migration
+- Animated progress fill + confetti motion (needs reanimated-in-harness strategy)
+- StationFlow full decomposition (session orchestration vs presentation) — sliced incrementally
+- Character artwork regeneration (art session; V2 uses existing approved assets)
+- V1 retirement after migration completes (no permanent dual system)

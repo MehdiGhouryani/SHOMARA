@@ -1,0 +1,15 @@
+{
+  "origins": "received user files.zip; byte-for-byte originals",
+  "sha256": {
+    "shomara-ST07-audio-manifest.csv": "4837984e34a3ff4e2b672d5b06ad82f4ca860c3f687a50daeae9d0f072cf348f",
+    "shomara-external-research.md": "6514387fee644f1df3df02a00f2c7271716915b8ff8c545e6a95ef0de3969ca5",
+    "shomara-global-audio-manifest.csv": "594748a059f5390d2cdadd7de30e0a5429348e4388a70b1f9a28bb6a6c0125bc",
+    "shomara-project-summary.md": "2229e6ec8f0428e61ca46e07f3448706c368215ba166af851cfd6492c6523d94",
+    "shomara-stage1-study.md": "b6faa72c04d1d8850411e3e0f39f2d71144d0dec7bee52c38839e1a58f5460cd",
+    "shomara-stage2-research.md": "c3c4545d3bdcbd6d89a8b54deaab56fb6eda8fe25f6095708465b6677df4b1bf",
+    "shomara-stage4-architecture.md": "0cae5297d0ebc5b207a69cc566dde2316e38310f2c15785b507acde8425cbe02",
+    "shomara-stage5-shared-references.md": "e9f49d58fc8ecbe69c05c01fab09385ebbbf134ce9758ada7d864591ca237801",
+    "shomara-stage6-spec-format.md": "b377575990d0d800b8c49131f8b3b0e4b7b64d2bcd83798eb73c2c5bde2d604b",
+    "shomara-stage7-pilot-ST07.md": "876ed4fd7a802041f38f301fb0ea6ad8e2de7b86340e7900d539c0bfacb4158d"
+  }
+}

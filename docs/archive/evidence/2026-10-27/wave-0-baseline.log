@@ -1,0 +1,25 @@
+# Wave 0 baseline — 2026-10-27 — commit 0582f51 (main), Windows, Node v24.22.1, npm 11.19.1
+git status: branch main, clean except untracked SHOMARA_ZCODE_MASTER_PLAN_FA.md (mission file, preserved)
+
+npm ci --no-audit --no-fund                     -> exit 0 (641 packages, ~2m)
+npm run build:packages                          -> exit 0
+npm run typecheck:all                           -> exit 0 (9 workspaces)
+npx vitest run                                  -> exit 0 (53 files, 420/420 passed)
+npm run verify:static:all                       -> exit 0 STATIC_ALL: PASS (75/75)
+npm run parity                                  -> exit 0 PARITY: PASS (29/29)
+npm run flow:onboarding                         -> exit 0 FLOW: PASS (28/28)
+npm run flow:path                               -> exit 0 FLOW_PATH: PASS (29/29)
+npm run flow:station                            -> exit 0 FLOW_STATION: PASS (48/48)
+npm run flow:tabs                               -> exit 0 FLOW_TABS: PASS (14/14)
+npm --workspace @math/web run build             -> exit 0 (Next.js 16.3.6, static+dynamic routes listed)
+(cd apps/mobile && CI=1 EXPO_OFFLINE=1 npx expo export --platform android) -> exit 0 (Hermes 4.6MB)
+npm run verify:migrations                       -> exit 0 MIGRATION_STATIC_GUARD: PASS (73 migrations, latest=0073)
+npm audit --omit=dev                            -> exit 1: 11 vulnerabilities (5 high, 6 moderate, 1 critical)
+  - next 16.3.6 (pinned): CRITICAL set (RCE image optimization, cache poisoning SSG/ISR, SSRF, DoS) -> fix next@16.4.3 (minor bump)
+  - decode-uri-component/query-string via expo-router -> fix = expo-router@58 (breaking, not taken; D8 pattern)
+  - node-forge via @expo/cli/code-signing-certificates -> fix = expo@44 (breaking, not taken; D8 pattern)
+  (vs historical D8 record: 26 issues/15 high; today 11/5+1critical; next is NEW — not part of the accepted D8 Expo/Metro toolchain set)
+npm run verify:p02:full                          -> deferred to Wave E final gates (B6/VD-003)
+
+DISCREPANCY REPORT vs START_HERE §3: all gate counts identical (420, 75/75, 29/29, 28/29/48/14, Hermes 4.6MB) -> no CONFLICT.
+Node: .nvmrc=22, machine=24.22.1 (>=22.18 gate condition holds; nvm not installed on machine, as already recorded in SNAP-20261026-01).

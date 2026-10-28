@@ -1,0 +1,80 @@
+
+{
+  name: [32m'ماجراجویی ریاضی'[39m,
+  slug: [32m'math-learning'[39m,
+  version: [32m'0.1.0'[39m,
+  orientation: [32m'portrait'[39m,
+  userInterfaceStyle: [32m'light'[39m,
+  jsEngine: [32m'hermes'[39m,
+  newArchEnabled: [33mtrue[39m,
+  scheme: [32m'mathlearning'[39m,
+  plugins: [
+    [32m'expo-router'[39m,
+    [
+      [32m'expo-build-properties'[39m,
+      {
+        android: {
+          compileSdkVersion: [33m36[39m,
+          targetSdkVersion: [33m36[39m
+        }
+      }
+    ],
+    [
+      [32m'expo-localization'[39m,
+      {
+        supportsRtl: [33mtrue[39m
+      }
+    ],
+    [
+      [32m'expo-splash-screen'[39m,
+      {
+        image: [32m'./assets/splash-icon.png'[39m,
+        imageWidth: [33m200[39m,
+        resizeMode: [32m'contain'[39m,
+        backgroundColor: [32m'#F5F7F8'[39m
+      }
+    ],
+    [
+      [32m'expo-secure-store'[39m,
+      {
+        configureAndroidBackup: [33mtrue[39m
+      }
+    ],
+    [32m'./plugins/withForceRtl'[39m
+  ],
+  icon: [32m'./assets/icon.png'[39m,
+  description: [90mundefined[39m,
+  sdkVersion: [32m'57.0.0'[39m,
+  platforms: [
+    [32m'ios'[39m,
+    [32m'android'[39m,
+    [32m'web'[39m
+  ],
+  android: {
+    package: [32m'com.mathlearning.app'[39m,
+    permissions: [
+      [32m'INTERNET'[39m,
+      [32m'ACCESS_NETWORK_STATE'[39m
+    ],
+    versionCode: [33m1[39m,
+    adaptiveIcon: {
+      backgroundColor: [32m'#F5F7F8'[39m,
+      foregroundImage: [32m'./assets/adaptive-icon.png'[39m
+    }
+  },
+  ios: {
+    bundleIdentifier: [32m'com.mathlearning.app'[39m,
+    buildNumber: [32m'1'[39m
+  },
+  experiments: {
+    typedRoutes: [33mtrue[39m
+  },
+  extra: {
+    router: {},
+    eas: {
+      projectId: [32m'a268f69d-d2c0-4846-bc57-29bad235f20f'[39m
+    }
+  }
+}
+
+EXIT=0

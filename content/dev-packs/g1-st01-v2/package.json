@@ -1,0 +1,109 @@
+{
+  "schema": "math-content-package/v1",
+  "environment": "STAGING_ONLY",
+  "gradeId": "G1",
+  "stationId": "G1-ST01",
+  "packageVersion": "1.2.0-staging",
+  "items": [
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000001",
+      "required": true,
+      "ordinal": 1
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000002",
+      "required": true,
+      "ordinal": 2
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000003",
+      "required": true,
+      "ordinal": 3
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000004",
+      "required": true,
+      "ordinal": 4
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000005",
+      "required": true,
+      "ordinal": 5
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000006",
+      "required": true,
+      "ordinal": 6
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000007",
+      "required": true,
+      "ordinal": 7
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000008",
+      "required": true,
+      "ordinal": 8
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000009",
+      "required": true,
+      "ordinal": 9
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000010",
+      "required": true,
+      "ordinal": 10
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000011",
+      "required": true,
+      "ordinal": 11
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000012",
+      "required": true,
+      "ordinal": 12
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000013",
+      "required": false,
+      "ordinal": 13
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000014",
+      "required": false,
+      "ordinal": 14
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000015",
+      "required": false,
+      "ordinal": 15
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000016",
+      "required": false,
+      "ordinal": 16
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000017",
+      "required": false,
+      "ordinal": 17
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000018",
+      "required": false,
+      "ordinal": 18
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000019",
+      "required": false,
+      "ordinal": 19
+    },
+    {
+      "contentVersionId": "26000000-0000-4000-8000-000000000020",
+      "required": false,
+      "ordinal": 20
+    }
+  ]
+}

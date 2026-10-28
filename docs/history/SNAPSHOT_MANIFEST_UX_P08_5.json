@@ -1,0 +1,95 @@
+{
+  "phase": "UX-P08.5",
+  "status": "FROZEN",
+  "date": "2026-10-03",
+  "files": [
+    {
+      "path": "packages/contracts/src/path2.ts",
+      "sha256": "a9ee4ae823ff768fb00f76e0fe47de6dbfb728d896914bf69e9803566acc04aa",
+      "bytes": 2121
+    },
+    {
+      "path": "packages/contracts/src/progression.ts",
+      "sha256": "11d3b03dbbd7e7db503bd5baf049103737baf984c8b596a3c1da9331219f1b3f",
+      "bytes": 8516
+    },
+    {
+      "path": "packages/contracts/src/product-surface.ts",
+      "sha256": "8b652c0cdb42ee33f20d8000fa38dfaaf1002332935912818f1048b18e5336b0",
+      "bytes": 6254
+    },
+    {
+      "path": "apps/web/components/DuolingoPath.tsx",
+      "sha256": "84a75d3dc66da66a71c69f600469807d671ad42e3bfef485fcc158426f2eb8c4",
+      "bytes": 14063
+    },
+    {
+      "path": "apps/web/components/DuolingoPath.module.css",
+      "sha256": "3613456dce3bad383e44f736a075c49aa6f1ed07ccde11c26be11bccc78d3e53",
+      "bytes": 7773
+    },
+    {
+      "path": "apps/web/components/StationStartView.tsx",
+      "sha256": "2a52ea36b73aae84bdaac4f6294ca380e3fc1b10a9383e293c27719083fd77c9",
+      "bytes": 2835
+    },
+    {
+      "path": "apps/web/components/StationStartView.module.css",
+      "sha256": "dc6502fdde6c4c7b804f49d853d8b508f793d29a3362080538b273af5cf33b0d",
+      "bytes": 2134
+    },
+    {
+      "path": "apps/web/app/station/[stationId]/start/page.tsx",
+      "sha256": "cf4659f1791fa5ec30f524b35872ed0a4cf2077132954eaccbf002b49cd80812",
+      "bytes": 3377
+    },
+    {
+      "path": "apps/web/app/station/[stationId]/play/page.tsx",
+      "sha256": "a240c089ccc1f6255d826b3694d41d9ad83e35ed0f6fd47aeca5eee54238a0dc",
+      "bytes": 2608
+    },
+    {
+      "path": "apps/mobile/app/(tabs)/index.tsx",
+      "sha256": "ce1e7294de8840ed5e9190a315d28e247948a0fcfff1d81297e9f81839405318",
+      "bytes": 15990
+    },
+    {
+      "path": "docs/reference/PATH_2_CONTRACT.md",
+      "sha256": "ab4a1272be4f26061d92cb574c8d9e757def327ed2594edbc5004f4541f0f8d2",
+      "bytes": 2634
+    },
+    {
+      "path": "docs/reference/PATH_2_1_VISUAL_RULES.md",
+      "sha256": "8b0b7d4b4dc5d58e8699997dd693dfc65fb95bd59de14a32cec4d89b30aa3d56",
+      "bytes": 1785
+    },
+    {
+      "path": "docs/reference/CHILD_PRODUCT_SURFACE.md",
+      "sha256": "9715cb4b53096508d86a7a2ffb20735823ecd5884376b39b3484d1091887db99",
+      "bytes": 4366
+    },
+    {
+      "path": "docs/phases/PHASE_8_5_UI_UX_PATH_2.md",
+      "sha256": "f19aad3936779f73a1a57e8ad3d440c89471b805daae6abc115089d8b5458d71",
+      "bytes": 1726
+    },
+    {
+      "path": "scripts/verify-uiux-path2.mjs",
+      "sha256": "5d6d7dc3c2587e8e8b717aad88cfd4248fbe85fcc5b93259c2b7fa980532856d",
+      "bytes": 5408
+    },
+    {
+      "path": "supabase/migrations/0052_child_path_station_label_refinement_v2.sql",
+      "sha256": "56cdfaa20b56881a3c14b1968abf7ead227136403281af39d0b76d0efb81f5d6",
+      "bytes": 947
+    }
+  ],
+  "validation": [
+    "typecheck:contracts PASS",
+    "typecheck:design-system PASS",
+    "verify:uiux:path2 PASS",
+    "verify:uiux:p8 PASS",
+    "verify:migrations PASS",
+    "changed-source transpile PASS"
+  ]
+}
