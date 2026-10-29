@@ -1,0 +1,4 @@
+interface:
+  display_name: "SHOMARA Android Build"
+  short_description: "Verify Android builds and prepare reproducible debug APKs"
+  default_prompt: "Use @shomara-android-build to run the active Android build gate, preserve blockers, and report reproducible artifact evidence."

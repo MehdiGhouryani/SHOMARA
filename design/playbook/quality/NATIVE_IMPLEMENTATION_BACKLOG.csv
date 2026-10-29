@@ -1,0 +1,21 @@
+work_id,batch,route_family,page_contract,native_module,required_components,required_states,status,blocked_by,exit_evidence
+UI-001,U1,root launch/session,01+16,feature:onboarding,Progress+Feedback+Button,resolving|new|returning|offline|error,NATIVE_PENDING,N02-07,unit+semantics+screenshot+device
+UI-002,U1,onboarding flow,02,feature:onboarding,Progress+Button+Dialog,first|resume|back|saving|error,NATIVE_PENDING,N02-07;UI-001,unit+semantics+screenshot+device
+UI-003,U1,phone and OTP,03,feature:auth,TextField/OTP+Button+Feedback,empty|focused|invalid|sending|paste|expired|cooldown|offline,NATIVE_PENDING,N02-07;UI-001,unit+IME+semantics+screenshot+device
+UI-004,U1,profile setup,04,feature:onboarding,TextField+Card/Choice+Button,empty|invalid|saving|save-fail|resume,NATIVE_PENDING,N02-07;UI-002,unit+semantics+screenshot+device
+UI-005,U1,grade and placement entry,05,feature:placement,Card/Choice+Progress+Dialog,selected|locked|unavailable|loading|exit|resume|error,NATIVE_PENDING,N02-07;UI-004,unit+semantics+screenshot+device
+UI-006,U2,child tab shell,17,feature:child-shell,TopBar/TabBar+Dialog,selected|reselect|deep-link|back|modal|IME|restoration,NATIVE_PENDING,N02-07;UI-001,navigation+semantics+screenshot+device
+UI-007,U2,learning path,06,feature:path,Progress+Card/Choice+Feedback,fresh|current|completed|perfect|locked|offline|error|restore-scroll,NATIVE_PENDING,N02-07;UI-006,unit+navigation+semantics+screenshot+device
+UI-008,U2,station start,07,feature:learning-player,Button+Progress+Feedback,loading|ready|resume|locked|offline|error|starting,NATIVE_PENDING,N02-07;UI-007,unit+navigation+semantics+screenshot+device
+UI-009,U3,teach and discover,08,feature:learning-player,Manipulative+AudioControl+Progress+Button,ready|interactive|audio-unavailable|loading|playing|failed|reduced-motion,NATIVE_PENDING,N02-07;UI-008;content-schema,unit+semantics+screenshot+audio-device
+UI-010,U3,guided practice,09,feature:learning-player,Manipulative+Card/Choice+Feedback+Button,idle|selected|submitting|correct|retry|recovery|offline|error,NATIVE_PENDING,N02-07;UI-009;content-schema,unit+semantics+screenshot+TalkBack-device
+UI-011,U3,assessment,10,feature:learning-player,Card/Choice+Progress+Feedback,idle|selected|submitting|result|disconnect|resume|expired,NATIVE_PENDING,N02-07;UI-010;server-contract,unit+security+semantics+screenshot+device
+UI-012,U3,recovery and result,11,feature:learning-player,Feedback+Progress+Button+Dialog,correct|retry|recovery|pass|fail|offline|resume,NATIVE_PENDING,N02-07;UI-011;server-contract,unit+idempotency+semantics+screenshot+device
+UI-013,U4,practice tab,12,feature:practice,Card/Choice+Progress+Feedback,loading|list|empty|locked|offline|error|history,NATIVE_PENDING,N02-07;UI-006;UI-012,unit+navigation+semantics+screenshot+device
+UI-014,U4,challenge,13,feature:learning-player,Card/Choice+Progress+Feedback+Dialog,unavailable|intro|round|submitting|retry|result|offline,NATIVE_PENDING,N02-07;UI-012;server-contract,unit+security+semantics+screenshot+device
+UI-015,U5,profile and me,14,feature:profile,Card/Choice+Progress+Feedback,loading|ready|empty|offline|error|edit-return,NATIVE_PENDING,N02-07;UI-006,unit+privacy+semantics+screenshot+device
+UI-016,U5,avatar workshop,15,feature:profile,Card/Choice+Button+Dialog,owned|equipped|locked|saving|error,NATIVE_PENDING,N02-07;UI-015;verified-assets,unit+semantics+screenshot+crop-device
+UI-017,U5,settings,15,feature:settings,Card/Choice+AudioControl+Dialog,ready|saving|toggle-fail|restart|error,NATIVE_PENDING,N02-07;UI-015,persistence+semantics+screenshot+device
+UI-018,U5,guardian surface,15+16,feature:guardian,TextField/OTP+Dialog+Feedback,re-auth|loading|ready|empty|offline|error,NATIVE_PENDING,N02-07;UI-003;UI-015,auth+privacy+semantics+screenshot+device
+UI-019,U6,cross-route system states,16,core:designsystem,Progress+Feedback+Dialog,loading|empty|offline|error|permission|missing-asset|pending-sync,NATIVE_PENDING,N02-07;UI-001..018,negative-path+semantics+screenshot+device
+UI-020,U6,full child journey,01-17,app,all,fresh|returning|learn|practice|profile|offline|resume|process-death,NATIVE_PENDING,N02-07;UI-001..019,e2e+TalkBack+200%-font+predictive-back+child-QA

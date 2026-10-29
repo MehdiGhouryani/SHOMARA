@@ -16,8 +16,27 @@ const required = [
   'docs/architecture/REPOSITORY_MAP_FA.md',
   'docs/architecture/PACKAGE_BOUNDARIES_FA.md',
   'docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md',
+  'docs/architecture/ANDROID_MODULE_GRAPH.md',
+  'docs/architecture/ANDROID_BUILD_ENVIRONMENT.md',
+  'docs/adr/ADR-0036-android-native-foundation.md',
+  'skills/shomara-product-design/SKILL.md',
+  'skills/shomara-android-build/SKILL.md',
+  'skills/shomara-design-system/SKILL.md',
+  'skills/shomara-screen-execution/SKILL.md',
+  'skills/shomara-learning-content/SKILL.md',
+  'design/MASTER.md',
+  'design/INSPIRATION_GUARDRAILS.md',
+  'design/playbook/COMPONENT_READINESS.md',
+  'design/playbook/NATIVE_IMPLEMENTATION.md',
+  'content-library/INTEGRATION_GATE.md',
+  'content-library/integration/SOURCE_AUDIT.md',
+  'content-library/integration/PHASE_INTEGRATION.md',
+  'content-library/integration/AUTHORING_CONTRACT_GAPS.md',
+  'content-library/derived/book-pages-index.json',
+  'content-library/derived/curriculum-index.json',
   'harness/roadmap.json', 'harness/file-ledger.json',
   'harness/dependency-map.json', 'harness/WORKLOG.md',
+  'scripts/android-build.mjs', 'scripts/verify-android-build-harness.mjs',
 ];
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), `missing canonical file: ${file}`);
 
@@ -43,6 +62,8 @@ const lock = JSON.parse(fs.readFileSync(path.join(root, 'package-lock.json'), 'u
 assert.equal(nvm, '22.22.0');
 assert.equal(pkg.engines.node, '>=22.18 <23');
 assert.equal(lock.packages[''].engines.node, pkg.engines.node);
+assert.equal(pkg.scripts['harness:resume'], 'node tools/harness.mjs resume');
+assert.equal(pkg.scripts['android:gate'], 'node scripts/android-build.mjs gate');
 
 const start = fs.readFileSync(path.join(root, 'START_HERE.md'), 'utf8');
 assert.match(start, new RegExp(`current_phase: ${roadmap.currentPhase}`));

@@ -1,0 +1,4 @@
+interface:
+  display_name: "SHOMARA Screen Execution"
+  short_description: "Implement SHOMARA routes with verifiable UI evidence"
+  default_prompt: "Use @shomara-screen-execution to implement the active route and update its state, test, screenshot and ledger evidence."

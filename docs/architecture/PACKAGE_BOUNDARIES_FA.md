@@ -27,7 +27,7 @@ feature:A -X-> feature:B implementation
 - ViewModel state immutable و eventها explicit هستند.
 - navigation argument فقط ID پایدار است، نه object بزرگ یا answer key.
 - tokenهای Kotlin و TypeScript از یک JSON canonical تولید می‌شوند.
-- نام package Android با `ir.shomara` نهایی نشده و قبل از N02 باید به‌عنوان تصمیم مالک ثبت شود؛ package فعلی Expo خودکار به Native منتقل نمی‌شود.
+- شناسهٔ Android در ADR-0036 روی `com.mathlearning.app` تثبیت شد تا هویت نصب فعلی حفظ شود؛ namespace ماژول‌ها زیر `com.mathlearning.*` قرار می‌گیرد.
 
 ## Naming
 

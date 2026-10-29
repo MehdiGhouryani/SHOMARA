@@ -1,0 +1,905 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "originals/shomara-stage4-architecture.md",
+  "sourceState": "SOURCE_ONLY",
+  "stations": [
+    {
+      "id": "ST01",
+      "workingTitle": "شمارش و الگو",
+      "chapter": 1,
+      "bookUnit": 1,
+      "platePdfPage": 7,
+      "workPagesPdf": "۸–۱۳",
+      "prerequisites": [],
+      "representations": [
+        "ملموس",
+        "تصویری."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST01-1",
+          "text": "شمردن ۱ تا ۵ شیء با تناظر یک‌به‌یک و گفتن تعداد کل"
+        },
+        {
+          "id": "SK-ST01-2",
+          "text": "تشخیص دو دستهٔ هم‌تعداد و وصل کردن آنها"
+        },
+        {
+          "id": "SK-ST01-3",
+          "text": "ادامهٔ یک الگوی دورنگ و گفتن رابطه‌اش"
+        },
+        {
+          "id": "SK-ST01-4",
+          "text": "نمایش یک عدد کمتر از ۵ با انگشت"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST02",
+      "workingTitle": "جایگاه و جهت",
+      "chapter": 1,
+      "bookUnit": 2,
+      "platePdfPage": 14,
+      "workPagesPdf": "۱۵–۲۰",
+      "prerequisites": [
+        "ST01"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST02-1",
+          "text": "گفتن تعداد ۱ تا ۳ شیء بدون شمردن"
+        },
+        {
+          "id": "SK-ST02-2",
+          "text": "رنگ کردن به تعداد یک دسته بدون شمردن (تناظر)"
+        },
+        {
+          "id": "SK-ST02-3",
+          "text": "گفتن عدد بعد و قبل از یک تعداد (تا ۵)"
+        },
+        {
+          "id": "SK-ST02-4",
+          "text": "نمایش تعداد با دستِ مشخص‌شده (چپ یا راست)"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST03",
+      "workingTitle": "عدد و جمع",
+      "chapter": 1,
+      "bookUnit": 3,
+      "platePdfPage": 21,
+      "workPagesPdf": "۲۲–۲۷",
+      "prerequisites": [
+        "ST01",
+        "ST02"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST03-1",
+          "text": "گفتن تعداد پس از اضافه شدن ۱ یا ۲ شیء بدون شمردن از اول"
+        },
+        {
+          "id": "SK-ST03-2",
+          "text": "نمایش یک عدد تا ۵ با دو دست و انتقال انگشتان"
+        },
+        {
+          "id": "SK-ST03-3",
+          "text": "شمردن اجزای یک شکل ساخته‌شده (مثلاً مثلث‌های یک بالن)"
+        },
+        {
+          "id": "SK-ST03-4",
+          "text": "پر کردن جدول ترکیبی ساده (دو رنگ × دو شکل)"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST04",
+      "workingTitle": "شکل‌ها و ویژگی‌ها",
+      "chapter": 1,
+      "bookUnit": 4,
+      "platePdfPage": 28,
+      "workPagesPdf": "۲۹–۳۴",
+      "prerequisites": [
+        "ST01",
+        "ST03"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST04-1",
+          "text": "شمردن گوشه‌های یک شکل ساده و ساختن آن با میله"
+        },
+        {
+          "id": "SK-ST04-2",
+          "text": "سرشماری با چوب خط (هر شیء یک خط، دستهٔ ۵تایی)"
+        },
+        {
+          "id": "SK-ST04-3",
+          "text": "گفتن جمع دو رنگ چینه به شکل «… و … می‌شود …»"
+        },
+        {
+          "id": "SK-ST04-4",
+          "text": "رسم یک شکل با شابلون"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST05",
+      "workingTitle": "جمع و تفریق",
+      "chapter": 1,
+      "bookUnit": 5,
+      "platePdfPage": 35,
+      "workPagesPdf": "۳۶–۴۱",
+      "prerequisites": [
+        "ST03",
+        "ST04"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST05-1",
+          "text": "پیدا کردن مجموع دو دسته با چوب خط"
+        },
+        {
+          "id": "SK-ST05-2",
+          "text": "گفتن باقی‌مانده پس از کم شدن چند شیء (با انگشت)"
+        },
+        {
+          "id": "SK-ST05-3",
+          "text": "پیدا کردن و کشیدن واحد تکرارشوندهٔ یک الگو"
+        },
+        {
+          "id": "SK-ST05-4",
+          "text": "شمردن لبه‌ها و گوشه‌های یک شکل"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST06",
+      "workingTitle": "جمع با مهره‌ها",
+      "chapter": 2,
+      "bookUnit": 6,
+      "platePdfPage": 42,
+      "workPagesPdf": "۴۳–۴۸",
+      "prerequisites": [
+        "ST05"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST06-1",
+          "text": "پیدا کردن مجموع دو دسته چینه (تا ۵) و رنگ کردن"
+        },
+        {
+          "id": "SK-ST06-2",
+          "text": "تفریق با خط زدن چینه‌ها و گفتن باقی‌مانده"
+        },
+        {
+          "id": "SK-ST06-3",
+          "text": "گفتن یک داستان کوتاه با کم یا زیاد شدن اشیا"
+        },
+        {
+          "id": "SK-ST06-4",
+          "text": "ساختن شکل متقارن با تا کردن یا شابلون"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST07",
+      "workingTitle": "عددهای ۱ و ۲",
+      "chapter": 2,
+      "bookUnit": 7,
+      "platePdfPage": 49,
+      "workPagesPdf": "۵۰–۵۵",
+      "prerequisites": [
+        "ST01",
+        "ST06"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST07-1",
+          "text": "خواندن و نوشتن ۱ و ۲ با جهت درست قلم"
+        },
+        {
+          "id": "SK-ST07-2",
+          "text": "وصل کردن نماد به نمایش‌های مختلف (انگشت، نقطه، شیء)"
+        },
+        {
+          "id": "SK-ST07-3",
+          "text": "دور زدن عدد درست برای یک مجموعه (۱ یا ۲)"
+        },
+        {
+          "id": "SK-ST07-4",
+          "text": "ادامهٔ یک الگوی پیوسته"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST08",
+      "workingTitle": "عددهای ۳ و ۴",
+      "chapter": 2,
+      "bookUnit": 8,
+      "platePdfPage": 56,
+      "workPagesPdf": "۵۷–۶۲",
+      "prerequisites": [
+        "ST07"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST08-1",
+          "text": "خواندن و نوشتن ۳ و ۴"
+        },
+        {
+          "id": "SK-ST08-2",
+          "text": "نوشتن عدد مناسب برای یک مجموعهٔ تا ۴"
+        },
+        {
+          "id": "SK-ST08-3",
+          "text": "گفتن اندازهٔ یک شیء بر حسب تعداد واحد (گیره)"
+        },
+        {
+          "id": "SK-ST08-4",
+          "text": "تکمیل جدول ۴×۴ عددی"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST09",
+      "workingTitle": "صفر و ۵",
+      "chapter": 2,
+      "bookUnit": 9,
+      "platePdfPage": 63,
+      "workPagesPdf": "۶۴–۶۹",
+      "prerequisites": [
+        "ST07",
+        "ST08"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST09-1",
+          "text": "خواندن و نوشتن ۵ و ۰"
+        },
+        {
+          "id": "SK-ST09-2",
+          "text": "تبدیل چوب خط به عدد (۰ تا ۴)"
+        },
+        {
+          "id": "SK-ST09-3",
+          "text": "نوشتن حاصل جمع تا ۵ با نماد"
+        },
+        {
+          "id": "SK-ST09-4",
+          "text": "گفتن «صفر» برای نبودن در یک تصویر"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST10",
+      "workingTitle": "عددهای ۶ و ۷",
+      "chapter": 2,
+      "bookUnit": 10,
+      "platePdfPage": 70,
+      "workPagesPdf": "۷۱–۷۶",
+      "prerequisites": [
+        "ST09"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST10-1",
+          "text": "خواندن و نوشتن ۶ و ۷"
+        },
+        {
+          "id": "SK-ST10-2",
+          "text": "نمایش ۶ و ۷ به‌صورت ۵ و چند با انگشت یا رنگ"
+        },
+        {
+          "id": "SK-ST10-3",
+          "text": "گفتن کدام دسته بیشتر یا کمتر است"
+        },
+        {
+          "id": "SK-ST10-4",
+          "text": "کامل کردن یک شکل قرینه روی شبکه"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST11",
+      "workingTitle": "برابری و عدد ۸",
+      "chapter": 3,
+      "bookUnit": 11,
+      "platePdfPage": 77,
+      "workPagesPdf": "۷۸–۸۳",
+      "prerequisites": [
+        "ST10"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST11-1",
+          "text": "ساختن دسته‌ای هم‌تعداد با دستهٔ داده‌شده"
+        },
+        {
+          "id": "SK-ST11-2",
+          "text": "گذاشتن نماد = بین دو دستهٔ هم‌تعداد"
+        },
+        {
+          "id": "SK-ST11-3",
+          "text": "خواندن و نوشتن ۸ و دیدن آن به‌صورت ۵ و ۳"
+        },
+        {
+          "id": "SK-ST11-4",
+          "text": "سرشماری چند نوع شیء با چوب خط"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST12",
+      "workingTitle": "مقایسه و عدد ۹",
+      "chapter": 3,
+      "bookUnit": 12,
+      "platePdfPage": 84,
+      "workPagesPdf": "۸۵–۹۰",
+      "prerequisites": [
+        "ST11"
+      ],
+      "representations": [
+        "ملموس",
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST12-1",
+          "text": "انتخاب نماد درست بین دو عدد/دسته (< یا > یا =)"
+        },
+        {
+          "id": "SK-ST12-2",
+          "text": "خواندن یک نامساوی از هر دو سو"
+        },
+        {
+          "id": "SK-ST12-3",
+          "text": "خواندن و نوشتن ۹"
+        },
+        {
+          "id": "SK-ST12-4",
+          "text": "نمایش یک عدد به‌صورت ستون رنگی"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST13",
+      "workingTitle": "نشانهٔ جمع",
+      "chapter": 3,
+      "bookUnit": 13,
+      "platePdfPage": 91,
+      "workPagesPdf": "۹۲–۹۷",
+      "prerequisites": [
+        "ST12"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST13-1",
+          "text": "نوشتن عبارت جمع برای یک تصویر"
+        },
+        {
+          "id": "SK-ST13-2",
+          "text": "پیدا کردن همهٔ ترکیب‌های دوتایی یک عدد تا ۱۰"
+        },
+        {
+          "id": "SK-ST13-3",
+          "text": "نوشتن ۱۰ و دیدن آن به‌صورت ۵ و ۵"
+        },
+        {
+          "id": "SK-ST13-4",
+          "text": "پر کردن جدول ترکیب‌ها به ترتیب"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST14",
+      "workingTitle": "تفریق و طول",
+      "chapter": 3,
+      "bookUnit": 14,
+      "platePdfPage": 98,
+      "workPagesPdf": "۹۹–۱۰۴",
+      "prerequisites": [
+        "ST13"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST14-1",
+          "text": "نوشتن عبارت تفریق برای تصویر"
+        },
+        {
+          "id": "SK-ST14-2",
+          "text": "حل جمع و تفریق ساده با رسم شکل"
+        },
+        {
+          "id": "SK-ST14-3",
+          "text": "جمع سه عدد با رنگ‌آمیزی چینه"
+        },
+        {
+          "id": "SK-ST14-4",
+          "text": "گفتن اندازه به‌صورت «کمی بلندتر از …»"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST15",
+      "workingTitle": "گروه‌بندی",
+      "chapter": 3,
+      "bookUnit": 15,
+      "platePdfPage": 105,
+      "workPagesPdf": "۱۰۶–۱۱۱",
+      "prerequisites": [
+        "ST13",
+        "ST14"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST15-1",
+          "text": "ساختن دسته‌های مساوی از یک مجموعه تا ۲۰ و گفتن باقی‌مانده"
+        },
+        {
+          "id": "SK-ST15-2",
+          "text": "ساختن دستهٔ ده‌تایی و گفتن «چند ده‌تایی و چند یکی»"
+        },
+        {
+          "id": "SK-ST15-3",
+          "text": "پر کردن جدول یکی/ده‌تایی"
+        },
+        {
+          "id": "SK-ST15-4",
+          "text": "پر کردن یک جدول ۶×۶ با حدس و آزمایش"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST16",
+      "workingTitle": "ساعت و عددها",
+      "chapter": 4,
+      "bookUnit": 16,
+      "platePdfPage": 112,
+      "workPagesPdf": "۱۱۳–۱۱۸",
+      "prerequisites": [
+        "ST15"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST16-1",
+          "text": "خواندن و نوشتن ۱۱ تا ۱۹ از روی چوب خط و ده‌تایی"
+        },
+        {
+          "id": "SK-ST16-2",
+          "text": "پیدا کردن یک عدد روی محور"
+        },
+        {
+          "id": "SK-ST16-3",
+          "text": "جمع دو عدد با حاصل کمتر از ۱۵ با انگشت"
+        },
+        {
+          "id": "SK-ST16-4",
+          "text": "نوشتن عددهای روی یک ساعت"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST17",
+      "workingTitle": "جمع چندبخشی",
+      "chapter": 4,
+      "bookUnit": 17,
+      "platePdfPage": 119,
+      "workPagesPdf": "۱۲۰–۱۲۵",
+      "prerequisites": [
+        "ST13",
+        "ST16"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST17-1",
+          "text": "پیدا کردن جمع سه عدد"
+        },
+        {
+          "id": "SK-ST17-2",
+          "text": "مقایسهٔ دو عبارت جمع/تفریق با نماد درست"
+        },
+        {
+          "id": "SK-ST17-3",
+          "text": "نشان دادن جمع یا تفریق روی محور"
+        },
+        {
+          "id": "SK-ST17-4",
+          "text": "گفتن طول بین دو عدد واحد"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST18",
+      "workingTitle": "الگو و زمان",
+      "chapter": 4,
+      "bookUnit": 18,
+      "platePdfPage": 126,
+      "workPagesPdf": "۱۲۷–۱۳۲",
+      "prerequisites": [
+        "ST16",
+        "ST17"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST18-1",
+          "text": "ادامهٔ الگوی عددی ۲تا۲تا و ۳تا۳تا روی محور"
+        },
+        {
+          "id": "SK-ST18-2",
+          "text": "پیدا کردن مجموع دو عدد (<۲۰) با چوب خط"
+        },
+        {
+          "id": "SK-ST18-3",
+          "text": "نوشتن ۲۰ و خواندن آن"
+        },
+        {
+          "id": "SK-ST18-4",
+          "text": "ادامهٔ یک الگوی هندسی/عددی"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST19",
+      "workingTitle": "ده‌تایی‌ها و خرید",
+      "chapter": 4,
+      "bookUnit": 19,
+      "platePdfPage": 133,
+      "workPagesPdf": "۱۳۴–۱۳۹",
+      "prerequisites": [
+        "ST15",
+        "ST18"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST19-1",
+          "text": "شمردن ۱۰تا۱۰تا تا ۱۰۰ و نوشتن مضرب‌های ۱۰"
+        },
+        {
+          "id": "SK-ST19-2",
+          "text": "جمع و تفریق دو مضرب ۱۰"
+        },
+        {
+          "id": "SK-ST19-3",
+          "text": "حل مسئلهٔ کلامی یک‌مرحله‌ای با شکل و محور"
+        },
+        {
+          "id": "SK-ST19-4",
+          "text": "انتخاب نماد < = > پس از محاسبه"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST20",
+      "workingTitle": "عددهای دو رقمی",
+      "chapter": 4,
+      "bookUnit": 20,
+      "platePdfPage": 140,
+      "workPagesPdf": "۱۴۱–۱۴۶",
+      "prerequisites": [
+        "ST15",
+        "ST16",
+        "ST19"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی",
+        "ذهنی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST20-1",
+          "text": "نوشتن یک عدد دورقمی از روی شکل (ده‌تایی و یکی) و برعکس"
+        },
+        {
+          "id": "SK-ST20-2",
+          "text": "ادامهٔ شمارش ۵تا۵تا به جلو و عقب"
+        },
+        {
+          "id": "SK-ST20-3",
+          "text": "جمع ذهنی مضرب‌های ۵ و ۱۰"
+        },
+        {
+          "id": "SK-ST20-4",
+          "text": "نوشتن جملهٔ پاسخ مسئله"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST21",
+      "workingTitle": "عددهای ۱ تا ۱۰۰",
+      "chapter": 5,
+      "bookUnit": 21,
+      "platePdfPage": 147,
+      "workPagesPdf": "۱۴۸–۱۵۳",
+      "prerequisites": [
+        "ST19",
+        "ST20"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی",
+        "ذهنی."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST21-1",
+          "text": "شمارش ۵تا۵تا روی جدول و رنگ کردن"
+        },
+        {
+          "id": "SK-ST21-2",
+          "text": "جمع ذهنی مضرب‌های ۱۰"
+        },
+        {
+          "id": "SK-ST21-3",
+          "text": "خواندن یک عدد نوشته‌شده با حروف (تا ۱۰ و مضرب‌های ۱۰)"
+        },
+        {
+          "id": "SK-ST21-4",
+          "text": "گفتن کدام کار زمان بیشتری می‌برد"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST22",
+      "workingTitle": "تقویم و شمارش",
+      "chapter": 5,
+      "bookUnit": 22,
+      "platePdfPage": 154,
+      "workPagesPdf": "۱۵۵–۱۶۰",
+      "prerequisites": [
+        "ST20",
+        "ST21"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST22-1",
+          "text": "ادامهٔ الگوی ۶تا۶تا و ۷تا۷تا روی جدول"
+        },
+        {
+          "id": "SK-ST22-2",
+          "text": "پیدا کردن روز هفته روی تقویم"
+        },
+        {
+          "id": "SK-ST22-3",
+          "text": "تفریق مضرب‌های ۱۰"
+        },
+        {
+          "id": "SK-ST22-4",
+          "text": "حل مسئلهٔ دومرحله‌ای با محور"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST23",
+      "workingTitle": "شمارش گروهی",
+      "chapter": 5,
+      "bookUnit": 23,
+      "platePdfPage": 161,
+      "workPagesPdf": "۱۶۲–۱۶۷",
+      "prerequisites": [
+        "ST21",
+        "ST22"
+      ],
+      "representations": [
+        "تصویری",
+        "نمادی",
+        "ذهنی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST23-1",
+          "text": "ادامهٔ الگوی ۸تا۸تا و ۹تا۹تا"
+        },
+        {
+          "id": "SK-ST23-2",
+          "text": "اجرای یک دستورالعمل چندمرحله‌ای روی شبکه یا خط"
+        },
+        {
+          "id": "SK-ST23-3",
+          "text": "مقایسهٔ دو عدد دورقمی با دهگان برابر"
+        },
+        {
+          "id": "SK-ST23-4",
+          "text": "خواندن یک عدد دورقمی نوشته‌شده با حروف"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST24",
+      "workingTitle": "مسئله‌های چندمرحله‌ای",
+      "chapter": 5,
+      "bookUnit": 24,
+      "platePdfPage": 168,
+      "workPagesPdf": "۱۶۹–۱۷۴",
+      "prerequisites": [
+        "ST19",
+        "ST22"
+      ],
+      "representations": [
+        "نمادی",
+        "ذهنی."
+      ],
+      "hasNamingMismatch": true,
+      "skills": [
+        {
+          "id": "SK-ST24-1",
+          "text": "شناسایی زیرمسئله‌ها و حل مسئلهٔ دومرحله‌ای"
+        },
+        {
+          "id": "SK-ST24-2",
+          "text": "نوشتن عبارت جمع/تفریق برای یک مسئله"
+        },
+        {
+          "id": "SK-ST24-3",
+          "text": "خواندن ساعت‌های دقیق و بیان «گذشته/مانده»"
+        },
+        {
+          "id": "SK-ST24-4",
+          "text": "نوشتن نام چهار شکل"
+        }
+      ],
+      "approval": "unverified"
+    },
+    {
+      "id": "ST25",
+      "workingTitle": "عدد ۱۰۰",
+      "chapter": 5,
+      "bookUnit": 25,
+      "platePdfPage": 175,
+      "workPagesPdf": "۱۷۶–۱۸۱",
+      "prerequisites": [
+        "ST20",
+        "ST24"
+      ],
+      "representations": [
+        "ذهنی",
+        "نمادی."
+      ],
+      "hasNamingMismatch": false,
+      "skills": [
+        {
+          "id": "SK-ST25-1",
+          "text": "خواندن و نوشتن ۱۰۰ و جایش در جدول"
+        },
+        {
+          "id": "SK-ST25-2",
+          "text": "نوشتن دنباله‌های یکی/۵تایی/۱۰تایی بدون شکل"
+        },
+        {
+          "id": "SK-ST25-3",
+          "text": "حل مسئلهٔ دومرحله‌ای با تفریق ۹"
+        },
+        {
+          "id": "SK-ST25-4",
+          "text": "تشخیص اطلاعات اضافی یا ناکافی"
+        }
+      ],
+      "approval": "unverified"
+    }
+  ]
+}

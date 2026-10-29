@@ -12,6 +12,8 @@
 
 ## مقصد V3
 
+ورودی تصمیم N03 از `skills/shomara-design-system/SKILL.md` و قرارداد componentها از `design/playbook/COMPONENT_READINESS.md` می‌آید. انتخاب‌های الهامی فقط پس از فیلتر `design/INSPIRATION_GUARDRAILS.md` معتبرند.
+
 1. `packages/design-system/src/tokens.json` موقتاً canonical می‌ماند.
 2. schema مستقل برای color/type/space/radius/elevation/motion/touch/illustration ساخته می‌شود.
 3. codegen دو خروجی می‌دهد:
@@ -31,6 +33,7 @@
 ### موج B — Compose primitives
 
 - `ShomaraTheme` و component catalog؛
+- state matrix و چهار depth tier برای هر component طبق readiness contract؛
 - screenshot/a11y tests؛
 - سه صفحهٔ نماینده: Auth، Path، Lesson.
 

@@ -1,7 +1,7 @@
 # UI V2 migration ledger (owner decision D-021)
 
-Tracking table required by `DESIGN/guides/MIGRATION.md` §G: every real mobile route, its design
-family (`DESIGN/pages/INDEX.md`), V2 status and evidence. **V1 visual rules/goldens are historical**
+Tracking table for every real mobile route, its design family
+(`design/playbook/pages/`), V2 status and evidence. **V1 visual rules/goldens are historical**
 for migrated screens; nonvisual rules (server-authoritative learning, security, Persian/RTL,
 no stars/lives/streaks, evidence discipline) stay binding (`AGENTS.md` §0).
 
@@ -15,15 +15,15 @@ Status values: `V2` (migrated + verified) · `V1` (historical view still on the 
 | `station/[stationId]/play` → LEARN | LESSONS (teach) | **V2** (`TeachView2`) | Interactive CountTray, replay, one continue | `flow:station` 07 checks · `verify-ui-v2-foundation` | Retry-pose character polish open (batch 2) |
 | `station/[stationId]/play` → question slice | LESSONS (practice/count) | **V2** (`QuestionView2`) | OptionTile + CountTray + warm FeedbackSheet; server-authoritative submit/advance untouched | `flow:station` 08–10 checks (single submit, server-redirect) | Non-single-choice encounters (pattern/review/transfer) still render the V1/legacy player |
 | `station/[stationId]/play` → COMPLETE-on-pass | LESSONS (result) | **V2** (`StageResultView2`) | Celebrate hero, honest «n از ۵», achievement row | `flow:station` 11 checks | Other COMPLETE kinds keep the legacy card (by design, D-008 family) |
-| `station/[stationId]/play` → SIGNATURE_CHALLENGE intro | LESSONS | **V2** (`ChallengeIntroView2`, batch 3) | Featured clay hero (Roka), honest chips (kind + real round count), one start CTA | `flow:station` 48/48 (12 checks) · `verify-ui-v2-foundation` | The player behind «شروع چالش» stays legacy (no approved page, D-008) |
+| `station/[stationId]/play` → SIGNATURE_CHALLENGE intro | LESSONS | **V2** (`ChallengeIntroView2`, batch 3) | Featured clay hero (Roka), honest chips (kind + real round count), one start CTA | `flow:station` 48/48 (12 checks) · `verify-ui-v2-foundation` | Player shell is V2; Native device migration remains open |
 | `station/[stationId]/play` → challenge player / checks / recovery | LESSONS | **V2 chrome** (`LessonPlayerChrome` + `SignatureChallengeView` on tokens.v2, batch F 2026-10-28) | V2 header/progress/feedback card, ClaySurface cards, V2 buttons, V2 cast via the facade (role-preserving aria→main, qbo→number, jiko→roka); round/attempt/idempotency contracts byte-identical | `flow:station` 48/48 (play-pass, idempotency) · `verify-phase3` + `verify-uiux-phase6` assertions replaced with V2 equivalents (D-021) | D-008 superseded for the *player shell* by the owner's playbook contract 13 (2026-10-28); stage-body interaction semantics unchanged |
 | `onboarding` (welcome/phone/code/profile) | SYSTEM_SCREENS + pages 01–04 | **V2** (`onboarding/views2/*`, batch B 2026-10-28) | TextField2 (+۹۸ prefix, LTR digits, warm near-field error), CodeInput2 (six cells, OTP autofill), V2 hero/step-bar/guide bubble; PLACEMENT/RESULT/SYNC_LOADING restyled on tokens.v2 (playbook 10/11/16) | `flow:onboarding` 28/28 on the real V2 screen · `verify-ui-v2-onboarding` (18 checks) · `verify-ui-v1-onboarding` (real-screen half → views2, specimen half historical) | captures `v2-welcome/phone/code/profile.png` |
-| `(tabs)/practice` | SYSTEM_SCREENS (profile/history family) | V1 (`PracticeView`) | Clay rows, honest locked rows | `flow:tabs` 14/14 | Batch 3 |
-| `(tabs)/profile` | SYSTEM_SCREENS | V1 (`MeView`) | Soft identity card, real progress | `flow:tabs` 14/14 | Batch 3 |
-| `(tabs)/_layout` (ChildTabBar) | SYSTEM_SCREENS (tab shell) | **V2** (`ui/v2/TabBar`, batch 4) | icon+label tabs, active pill beyond color, 48dp targets, adapter keeps expo-router emission | `flow:tabs` 18/18 (new shell scenario drives the real ChildTabBar) | Content screens of تمرین/من remain V1 (next batch) |
+| `(tabs)/practice` | SYSTEM_SCREENS (profile/history family) | **V2** (`PracticeView2`) | Clay rows, honest locked/empty states | `flow:tabs` 18/18 · `verify-ui-v2-tabs` | Native device migration remains open |
+| `(tabs)/profile` | SYSTEM_SCREENS | **V2** (`MeView2`) | Soft identity card, real progress and S18 sheet | `flow:tabs` 18/18 · `verify-ui-v2-tabs` | Native device migration remains open |
+| `(tabs)/_layout` (ChildTabBar) | SYSTEM_SCREENS (tab shell) | **V2** (`ui/v2/TabBar`, batch 4) | icon+label tabs, active pill beyond color, 48dp targets, adapter keeps expo-router emission | `flow:tabs` 18/18 (new shell scenario drives the real ChildTabBar) | Native replacement remains open |
 | `unit/[unitId]/jump` | SYSTEM_SCREENS (edge/assessment) | V2 palette (batch E 2026-10-28) | tokens.v2 colors/spacing/radius; honest error card + retry kept; DS-measured type sizes pending a page contract | `flow:path` jump scenario · static gates | Type-scale tokens DEFERRED to a page contract |
-| `settings` | SYSTEM_SCREENS | LEGACY (no approved page; D-009) | Flat rows when redesigned | — | Batch 3/owner decision |
-| `avatar` | SYSTEM_SCREENS | LEGACY (no approved page; D-009) | — | — | Owner decision |
+| `settings` | SYSTEM_SCREENS | **V2** | Persisted accessible setting rows | static gates | Native device persistence test open |
+| `avatar` | SYSTEM_SCREENS | **V2** | Existing five-character workshop with selected/owned/locked states | static gates | Native crop/device test open |
 | `missions` | SYSTEM_SCREENS | LEGACY — **no visual entry point** (D-010) | Keep unreachable from child UI | `path-waivers.mjs` pins it | Owner decision (D-010) |
 | `parent` (guardian) | SYSTEM_SCREENS (guardian/privacy) | V2 palette (batch E 2026-10-28) | tokens.v2 (sky informational cards, danger family only on the type-to-confirm delete); summary/reminder/relogin contracts untouched | contract tests · static gates | Same type-scale note as jump |
 

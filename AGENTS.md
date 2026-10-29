@@ -17,7 +17,7 @@
 3. `node tools/harness.mjs validate` و سپس `node tools/harness.mjs next`
 4. بخش مرتبط `docs/roadmap/SHOMARA_NATIVE_ROADMAP_FA.md`
 5. کد، تست و قراردادهای همان task
-6. برای UI: `DESIGN/SHOMARA_PLAYBOOK/SKILL.md` و قرارداد صفحهٔ مرتبط
+6. Skill مرتبط: build/SDK/Gradle/APK در `shomara-android-build`، تصمیم محصول در `shomara-product-design`، token/component/theme در `shomara-design-system`، اجرای route در `shomara-screen-execution` و محتوا/صوت/CMS در `shomara-learning-content`
 
 `ROADMAP_PHASES.md` یک ledger تاریخی و ورودی verifierهای قدیمی است؛ تا زمان مهاجرت verifierها حذف یا منبع برنامه‌ریزی جاری تلقی نشود.
 
@@ -35,6 +35,8 @@
 10. متن UI از منبع string canonical و رنگ/فاصله/شکل از Design System canonical می‌آید؛ magic value در صفحه ممنوع است.
 11. وابستگی Native، migration دیتابیس و تغییر shared contract باید در roadmap/ADR ثبت و قبل از merge بازبینی شود.
 12. secret، دادهٔ واقعی کودک، keystore و فایل محیطی واقعی هرگز commit یا در لاگ چاپ نمی‌شود.
+13. `content-library/originals/**` منبع پژوهشی byte-protected است؛ ویرایش یا promotion مستقیم آن به runtime ممنوع است.
+14. محتوای آموزشی فقط از زنجیرهٔ `SOURCE_ONLY → MAPPED_TO_REPO → STAGED → VALIDATED → HUMAN_REVIEWED → APPROVED → ENABLED` عبور می‌کند.
 
 ## 4. سیاست Clean و حذف فایل
 
@@ -63,11 +65,14 @@
 - حداقل عرض‌های 360/390/412dp، بزرگ‌نمایی متن، safe area، keyboard و TalkBack بررسی می‌شوند.
 - touch target حداقل 48dp و برای اشیای آموزشی کودک ترجیحاً 72–80dp است.
 - الهام از Duolingo محدود به اصول تعامل و یادگیری است؛ کپی ظاهر، دارایی، شخصیت، متن یا هویت برند ممنوع است.
+- الهام از AVA فقط معماری/فرایند است. UI/UX Pro Max فقط روش تصمیم‌گیری design-system-first را می‌دهد. Claymorphism فقط depth semantic و feedback لمسی است؛ منبع palette/font/framework نیست.
+- پیش از طراحی صفحه، `design/INSPIRATION_GUARDRAILS.md` خوانده و outcome، focal object، anti-pattern و depth tier ثبت می‌شود.
+- قرارداد اختصاصی هر خانواده در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و ترتیب/evidence آن در `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` است؛ status فقط با شواهد نام‌برده تغییر می‌کند.
 
 ## 7. Gate هر فاز
 
 - Clean/legacy: `npm ci`, `build:packages`, `typecheck:all`, `vitest`, static gates و بررسی working tree.
-- Native: Gradle checks، unit tests، lint، Compose screenshot/semantics و build Debug.
+- Native: `npm run android:gate`، unit tests، lint، Compose screenshot/semantics و build Debug؛ debug APK فقط از `npm run android:assemble:debug`.
 - UI route: تست رفتار + screenshot هم‌اندازه + a11y + ledger.
 - پایان فاز: `START_HERE.md`، evidence و لیست `UNVERIFIED/BLOCKED` به‌روز می‌شود.
 

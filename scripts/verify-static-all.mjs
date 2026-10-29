@@ -13,8 +13,9 @@ const root = process.cwd();
 // rewrite generated output; goldens must only change deliberately via `npm run parity:goldens`, guarded by
 // verify-parity-goldens-pinned.mjs), run-p02-gates.mjs is orchestrated separately, probe-v2-widths.mjs is the
 // responsive 360/390/412 probe TOOL (minutes of Chromium per run — executed and recorded per batch, like the
-// generators), and this file cannot run itself.
-const excluded = new Set(['dev.mjs', 'generate-design-system-css.mjs', 'parity-goldens.mjs', 'run-p02-gates.mjs', 'verify-static-all.mjs', 'probe-v2-widths.mjs']);
+// generators), verify-android-environment.mjs and android-build.mjs are fail-closed HOST BUILD tools (run explicitly and in Native CI,
+// not an environment-independent static verifier), and this file cannot run itself.
+const excluded = new Set(['android-build.mjs', 'dev.mjs', 'generate-design-system-css.mjs', 'parity-goldens.mjs', 'run-p02-gates.mjs', 'verify-static-all.mjs', 'verify-android-environment.mjs', 'probe-v2-widths.mjs']);
 const needsDist = ['learning-runtime', 'offline-sync', 'adult-projections', 'assignment-runtime']
   .filter((p) => !existsSync(join(root, 'packages', p, 'dist', 'index.js')));
 if (needsDist.length) {

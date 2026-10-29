@@ -12,8 +12,9 @@
 | `packages/design-system` | token source فعلی | `ACTIVE_MIGRATION_SOURCE` |
 | `supabase` | migration و backend schema | `ACTIVE_PROTECTED` |
 | `content` | dev content packs | `ACTIVE_RESTRICTED` |
-| `CONTENT_LIBRARY` | مواد پژوهشی/draft؛ نه runtime | `DRAFT_RESTRICTED` |
-| `DESIGN/SHOMARA_PLAYBOOK` | قرارداد فرایند UI/UX | `ACTIVE_GUIDANCE` |
+| `content-library` | originals محافظت‌شده، index مشتق و integration gate؛ نه runtime | `DRAFT_RESTRICTED` |
+| `design` | قرارداد برند، فیلتر الهام، component readiness و playbook اجرای UI/UX | `ACTIVE_GUIDANCE` |
+| `skills` | چهار workflow مستقل و triggerپذیر با agent metadata | `CANONICAL_ACTIVE` |
 | `project-design-v2` | pipeline فعال asset/character | `ACTIVE_GENERATOR` |
 | `docs/design-handoff-2026-10` | golden و مرجع V1 | `LEGACY_ACTIVE` تا مهاجرت verifier |
 | `docs/archive` | evidence تاریخی | `HISTORICAL` |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "SHOMARA Learning Content"
+  short_description: "Stage and validate SHOMARA curriculum and audio content"
+  default_prompt: "Use @shomara-learning-content to stage the active curriculum or audio task while preserving source provenance and approval gates."

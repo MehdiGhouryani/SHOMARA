@@ -1,0 +1,4 @@
+interface:
+  display_name: "SHOMARA Design System"
+  short_description: "Build and review SHOMARA tokens and Native UI primitives"
+  default_prompt: "Use @shomara-design-system to implement the active SHOMARA design-system task with token, state, accessibility, RTL and evidence gates."

@@ -29,6 +29,10 @@
 
 `docs/ui-v2-migration-ledger.md` تا پایان مهاجرت consumerهای Expo در جای فعلی می‌ماند، چون Playbook جاری به آن ارجاع دارد.
 
+برای اجرای Native gate ابتدا `skills/shomara-android-build/SKILL.md` و `architecture/ANDROID_BUILD_ENVIRONMENT.md` را بخوان، سپس `npm run android:doctor` و `npm run android:gate` را اجرا کن؛ static verifier جای SDK/Gradle واقعی نیست. debug APK فقط از `npm run android:assemble:debug` و با hash report ساخته می‌شود.
+
+راهنمای UI/UX خارج از `docs/` و در `design/` نگه‌داری می‌شود: از `skills/shomara-product-design/SKILL.md` شروع کنید، سپس `design/MASTER.md`، `design/INSPIRATION_GUARDRAILS.md`، نقشهٔ همهٔ صفحه‌ها در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و صفحهٔ مرتبط در `design/playbook/pages/` را بخوانید. token/theme/component از `skills/shomara-design-system/SKILL.md` و `design/playbook/COMPONENT_READINESS.md` عبور می‌کند. برای پیاده‌سازی route روی Android، `skills/shomara-screen-execution/SKILL.md`، `design/playbook/NATIVE_IMPLEMENTATION.md`، `ROUTE_REGISTRY.md` و backlog اجرایی `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` اجباری‌اند. پژوهش/محتوا در `content-library/` محافظت می‌شود و کار روی آن از `skills/shomara-learning-content/SKILL.md` شروع می‌شود؛ مرز authoring/CMS در `content-library/integration/AUTHORING_CONTRACT_GAPS.md` canonical است.
+
 ## قوانین سند
 
 - یک موضوع فقط یک سند canonical دارد.
@@ -37,3 +41,4 @@
 - سند legacy با banner یا index از canonical جدا می‌شود؛ حذف آن نیازمند consumer map است.
 - لینک به فایل حذف‌شده باید در همان commit اصلاح شود.
 - سند جدید فقط برای contract، architecture، QA یا roadmap واقعی ساخته می‌شود؛ handoff موازی ممنوع است.
+- جزئیات اجرایی مختص عامل در `skills/<name>/references/` می‌رود؛ قرارداد محصول/طراحی در `design/` می‌ماند و بین Skillها کپی نمی‌شود.

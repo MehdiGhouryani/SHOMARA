@@ -1,9 +1,14 @@
 {
   "schemaVersion": 1,
-  "sourceScopes": ["apps/mobile", "apps/web", "packages", "scripts"],
+  "sourceScopes": [
+    "apps/mobile",
+    "apps/web",
+    "packages",
+    "scripts"
+  ],
   "counts": {
-    "sourceFiles": 518,
-    "importEdges": 1780,
+    "sourceFiles": 526,
+    "importEdges": 1813,
     "v1ImportConsumers": 119,
     "v2ImportConsumers": 84,
     "workspaceImportEdges": 107,
@@ -13,16 +18,81 @@
     "v2ExternalConsumerFiles": 22
   },
   "workspaceGraph": [
-    { "name": "@math/adult-projections", "path": "packages/adult-projections", "internalDependencies": ["@math/assignment-runtime"] },
-    { "name": "@math/assignment-runtime", "path": "packages/assignment-runtime", "internalDependencies": ["@math/contracts"] },
-    { "name": "@math/challenge-runtime", "path": "packages/challenge-runtime", "internalDependencies": ["@math/contracts", "@math/learning-runtime"] },
-    { "name": "@math/content-delivery", "path": "packages/content-delivery", "internalDependencies": ["@math/contracts"] },
-    { "name": "@math/contracts", "path": "packages/contracts", "internalDependencies": [] },
-    { "name": "@math/design-system", "path": "packages/design-system", "internalDependencies": [] },
-    { "name": "@math/learning-runtime", "path": "packages/learning-runtime", "internalDependencies": [] },
-    { "name": "@math/mobile", "path": "apps/mobile", "internalDependencies": ["@math/content-delivery", "@math/contracts", "@math/design-system", "@math/learning-runtime", "@math/offline-sync"] },
-    { "name": "@math/offline-sync", "path": "packages/offline-sync", "internalDependencies": ["@math/contracts"] },
-    { "name": "@math/web", "path": "apps/web", "internalDependencies": ["@math/adult-projections", "@math/assignment-runtime", "@math/content-delivery", "@math/contracts", "@math/design-system", "@math/learning-runtime", "@math/offline-sync"] }
+    {
+      "name": "@math/adult-projections",
+      "path": "packages/adult-projections",
+      "internalDependencies": [
+        "@math/assignment-runtime"
+      ]
+    },
+    {
+      "name": "@math/assignment-runtime",
+      "path": "packages/assignment-runtime",
+      "internalDependencies": [
+        "@math/contracts"
+      ]
+    },
+    {
+      "name": "@math/challenge-runtime",
+      "path": "packages/challenge-runtime",
+      "internalDependencies": [
+        "@math/contracts",
+        "@math/learning-runtime"
+      ]
+    },
+    {
+      "name": "@math/content-delivery",
+      "path": "packages/content-delivery",
+      "internalDependencies": [
+        "@math/contracts"
+      ]
+    },
+    {
+      "name": "@math/contracts",
+      "path": "packages/contracts",
+      "internalDependencies": []
+    },
+    {
+      "name": "@math/design-system",
+      "path": "packages/design-system",
+      "internalDependencies": []
+    },
+    {
+      "name": "@math/learning-runtime",
+      "path": "packages/learning-runtime",
+      "internalDependencies": []
+    },
+    {
+      "name": "@math/mobile",
+      "path": "apps/mobile",
+      "internalDependencies": [
+        "@math/content-delivery",
+        "@math/contracts",
+        "@math/design-system",
+        "@math/learning-runtime",
+        "@math/offline-sync"
+      ]
+    },
+    {
+      "name": "@math/offline-sync",
+      "path": "packages/offline-sync",
+      "internalDependencies": [
+        "@math/contracts"
+      ]
+    },
+    {
+      "name": "@math/web",
+      "path": "apps/web",
+      "internalDependencies": [
+        "@math/adult-projections",
+        "@math/assignment-runtime",
+        "@math/content-delivery",
+        "@math/contracts",
+        "@math/design-system",
+        "@math/learning-runtime",
+        "@math/offline-sync"
+      ]
+    }
   ],
   "v1ExternalConsumerFiles": [
     "apps/mobile/parity/entry.tsx",
@@ -81,18 +151,109 @@
   ],
   "textReferences": {
     "/ui/v1/": [
-      "apps/mobile/src/path/ChapterBand.tsx", "apps/mobile/src/path/GoBubble.tsx", "apps/mobile/src/path/PathNode.tsx", "apps/mobile/src/path/PathView.tsx", "apps/mobile/src/profile/views/MeView.tsx", "apps/mobile/src/station/views/ChallengeIntroView.tsx",
-      "docs/archive/evidence/2026-10-18/u3-vitest.log", "docs/archive/evidence/2026-10-23/u4-vitest.log", "docs/archive/evidence/2026-10-24/u5a-vitest.log", "docs/archive/evidence/2026-10-26/apk-03-vitest.log", "docs/archive/evidence/2026-10-28/vitest-b2.log", "docs/archive/evidence/2026-10-28/vitest-b3.log", "docs/archive/evidence/2026-10-28/vitest-b4.log", "docs/archive/evidence/2026-10-28/vitest.log",
-      "scripts/verify-ui-v1-path.mjs", "scripts/verify-ui-v1-question.mjs", "scripts/verify-ui-v1-result.mjs", "scripts/verify-ui-v1-station.mjs", "scripts/verify-ui-v1-tabs.mjs", "scripts/verify-uiux-phase3.mjs"
+      "apps/mobile/src/path/ChapterBand.tsx",
+      "apps/mobile/src/path/GoBubble.tsx",
+      "apps/mobile/src/path/PathNode.tsx",
+      "apps/mobile/src/path/PathView.tsx",
+      "apps/mobile/src/profile/views/MeView.tsx",
+      "apps/mobile/src/station/views/ChallengeIntroView.tsx",
+      "docs/archive/evidence/2026-10-18/u3-vitest.log",
+      "docs/archive/evidence/2026-10-23/u4-vitest.log",
+      "docs/archive/evidence/2026-10-24/u5a-vitest.log",
+      "docs/archive/evidence/2026-10-26/apk-03-vitest.log",
+      "docs/archive/evidence/2026-10-28/vitest-b2.log",
+      "docs/archive/evidence/2026-10-28/vitest-b3.log",
+      "docs/archive/evidence/2026-10-28/vitest-b4.log",
+      "docs/archive/evidence/2026-10-28/vitest.log",
+      "scripts/verify-ui-v1-path.mjs",
+      "scripts/verify-ui-v1-question.mjs",
+      "scripts/verify-ui-v1-result.mjs",
+      "scripts/verify-ui-v1-station.mjs",
+      "scripts/verify-ui-v1-tabs.mjs",
+      "scripts/verify-uiux-phase3.mjs"
     ],
     "/ui/v2/": [
-      "CONTENT_LIBRARY/integration/REPO_COMPATIBILITY.md", "apps/mobile/app/(tabs)/index.tsx", "apps/mobile/app/(tabs)/profile.tsx", "apps/mobile/app/avatar.tsx", "apps/mobile/app/onboarding.tsx", "apps/mobile/app/parent.tsx", "apps/mobile/app/settings.tsx", "apps/mobile/app/station/[stationId]/start.tsx", "apps/mobile/app/unit/[unitId].tsx", "apps/mobile/app/unit/[unitId]/jump.tsx", "apps/mobile/src/navigation/ChildTabBar.tsx", "apps/mobile/src/onboarding/views2/CodeView2.tsx", "apps/mobile/src/onboarding/views2/PhoneView2.tsx", "apps/mobile/src/onboarding/views2/ProfileView2.tsx", "apps/mobile/src/onboarding/views2/WelcomeView2.tsx", "apps/mobile/src/path/PathView2.tsx", "apps/mobile/src/practice/views2/PracticeView2.tsx", "apps/mobile/src/profile/views2/MeView2.tsx", "apps/mobile/src/station/LessonPlayerChrome.tsx", "apps/mobile/src/station/SignatureChallengeView.tsx", "apps/mobile/src/station/StationFlow.tsx", "apps/mobile/src/station/views2/LessonViewsV2.tsx", "apps/mobile/src/station/views2/StationStartV2.tsx", "docs/archive/evidence/2026-10-27/v2-foundation.log", "docs/archive/evidence/2026-10-28/typecheck-b2.log", "docs/ui-v2-migration-ledger.md", "scripts/verify-ui-v1-onboarding.mjs", "scripts/verify-ui-v2-foundation.mjs", "scripts/verify-ui-v2-onboarding.mjs", "scripts/verify-ui-v2-path-station.mjs", "scripts/verify-ui-v2-tabs.mjs"
+      "apps/mobile/app/(tabs)/index.tsx",
+      "apps/mobile/app/(tabs)/profile.tsx",
+      "apps/mobile/app/avatar.tsx",
+      "apps/mobile/app/onboarding.tsx",
+      "apps/mobile/app/parent.tsx",
+      "apps/mobile/app/settings.tsx",
+      "apps/mobile/app/station/[stationId]/start.tsx",
+      "apps/mobile/app/unit/[unitId].tsx",
+      "apps/mobile/app/unit/[unitId]/jump.tsx",
+      "apps/mobile/src/navigation/ChildTabBar.tsx",
+      "apps/mobile/src/onboarding/views2/CodeView2.tsx",
+      "apps/mobile/src/onboarding/views2/PhoneView2.tsx",
+      "apps/mobile/src/onboarding/views2/ProfileView2.tsx",
+      "apps/mobile/src/onboarding/views2/WelcomeView2.tsx",
+      "apps/mobile/src/path/PathView2.tsx",
+      "apps/mobile/src/practice/views2/PracticeView2.tsx",
+      "apps/mobile/src/profile/views2/MeView2.tsx",
+      "apps/mobile/src/station/LessonPlayerChrome.tsx",
+      "apps/mobile/src/station/SignatureChallengeView.tsx",
+      "apps/mobile/src/station/StationFlow.tsx",
+      "apps/mobile/src/station/views2/LessonViewsV2.tsx",
+      "apps/mobile/src/station/views2/StationStartV2.tsx",
+      "content-library/integration/REPO_COMPATIBILITY.md",
+      "docs/archive/evidence/2026-10-27/v2-foundation.log",
+      "docs/archive/evidence/2026-10-28/typecheck-b2.log",
+      "docs/ui-v2-migration-ledger.md",
+      "scripts/verify-ui-v1-onboarding.mjs",
+      "scripts/verify-ui-v2-foundation.mjs",
+      "scripts/verify-ui-v2-onboarding.mjs",
+      "scripts/verify-ui-v2-path-station.mjs",
+      "scripts/verify-ui-v2-tabs.mjs"
     ],
     "design-handoff-2026-10": [
-      "START_HERE.md", "apps/mobile/src/path/__fixtures__/design-trail.json", "apps/mobile/src/ui/v1/README.md", "apps/mobile/src/ui/v1/icons.ts", "docs/README.md", "docs/adr/ADR-0035-ui-v1-from-2026-10-pages.md", "docs/architecture/REPOSITORY_MAP_FA.md", "packages/design-system/src/tokens.json", "scripts/gen-path-fixture.mjs", "scripts/parity-goldens.mjs", "scripts/parity-run.mjs", "scripts/verify-parity-goldens-pinned.mjs", "scripts/verify-ui-v1-foundation.mjs", "scripts/verify-ui-v1-path.mjs", "scripts/verify-ui-v1-question.mjs", "scripts/verify-ui-v1-result.mjs", "scripts/verify-ui-v1-scope.mjs", "scripts/verify-ui-v1-station.mjs", "scripts/verify-ui-v1-tabs.mjs"
+      "START_HERE.md",
+      "apps/mobile/src/path/__fixtures__/design-trail.json",
+      "apps/mobile/src/ui/v1/README.md",
+      "apps/mobile/src/ui/v1/icons.ts",
+      "docs/README.md",
+      "docs/adr/ADR-0035-ui-v1-from-2026-10-pages.md",
+      "docs/architecture/REPOSITORY_MAP_FA.md",
+      "packages/design-system/src/tokens.json",
+      "scripts/gen-path-fixture.mjs",
+      "scripts/parity-goldens.mjs",
+      "scripts/parity-run.mjs",
+      "scripts/verify-parity-goldens-pinned.mjs",
+      "scripts/verify-ui-v1-foundation.mjs",
+      "scripts/verify-ui-v1-path.mjs",
+      "scripts/verify-ui-v1-question.mjs",
+      "scripts/verify-ui-v1-result.mjs",
+      "scripts/verify-ui-v1-scope.mjs",
+      "scripts/verify-ui-v1-station.mjs",
+      "scripts/verify-ui-v1-tabs.mjs"
     ],
     "ROADMAP_PHASES.md": [
-      "AGENTS.md", "README.md", "ROADMAP_PHASES.md", "START_HERE.md", "docs/architecture/REPOSITORY_MAP_FA.md", "docs/archive/evidence/2026-10-07/baseline-manifest.sha256", "docs/qa/phase-logs/P01_product-game-research-design-lock.md", "docs/reference/DEPENDENCY_MATRIX.md", "packages/contracts/src/engagement-policy.ts", "scripts/verify-p01-prototype-isolation.mjs", "scripts/verify-p06-mission-engine.mjs", "scripts/verify-p07-collection.mjs", "scripts/verify-p08-avatar.mjs", "scripts/verify-p09-worlds.mjs", "scripts/verify-p10-batch-a.mjs", "scripts/verify-p10-batch-b.mjs", "scripts/verify-p10-batch-c.mjs", "scripts/verify-p10-batch-d.mjs", "scripts/verify-p10-batch-e-depth.mjs", "scripts/verify-p10-batch-e.mjs", "scripts/verify-p11-rhythm.mjs", "scripts/verify-phase1-product-lock.mjs", "scripts/verify-phase10.mjs", "scripts/verify-phase11-auth.mjs", "scripts/verify-phase2-foundation.mjs", "scripts/verify-phase3.mjs", "scripts/verify-static-all.mjs"
+      "AGENTS.md",
+      "README.md",
+      "ROADMAP_PHASES.md",
+      "START_HERE.md",
+      "docs/architecture/REPOSITORY_MAP_FA.md",
+      "docs/archive/evidence/2026-10-07/baseline-manifest.sha256",
+      "docs/qa/phase-logs/P01_product-game-research-design-lock.md",
+      "docs/reference/DEPENDENCY_MATRIX.md",
+      "packages/contracts/src/engagement-policy.ts",
+      "scripts/verify-p01-prototype-isolation.mjs",
+      "scripts/verify-p06-mission-engine.mjs",
+      "scripts/verify-p07-collection.mjs",
+      "scripts/verify-p08-avatar.mjs",
+      "scripts/verify-p09-worlds.mjs",
+      "scripts/verify-p10-batch-a.mjs",
+      "scripts/verify-p10-batch-b.mjs",
+      "scripts/verify-p10-batch-c.mjs",
+      "scripts/verify-p10-batch-d.mjs",
+      "scripts/verify-p10-batch-e-depth.mjs",
+      "scripts/verify-p10-batch-e.mjs",
+      "scripts/verify-p11-rhythm.mjs",
+      "scripts/verify-phase1-product-lock.mjs",
+      "scripts/verify-phase10.mjs",
+      "scripts/verify-phase11-auth.mjs",
+      "scripts/verify-phase2-foundation.mjs",
+      "scripts/verify-phase3.mjs",
+      "scripts/verify-static-all.mjs"
     ]
   },
   "caveat": "zeroInboundCandidates are review candidates only; route conventions, server loading, code generation and string-based access can create valid consumers."

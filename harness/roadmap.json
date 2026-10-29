@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-10-28",
   "currentPhase": "N02",
-  "currentTask": "N02-01",
+  "currentTask": "N02-07",
   "statusValues": ["TODO", "READY", "IN_PROGRESS", "BLOCKED", "DEFERRED", "DONE", "DONE_WITH_BLOCKER"],
   "canonicalDocs": [
     "AGENTS.md",
@@ -15,6 +15,25 @@
     "docs/architecture/REPOSITORY_MAP_FA.md",
     "docs/architecture/PACKAGE_BOUNDARIES_FA.md",
     "docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md",
+    "docs/architecture/ANDROID_MODULE_GRAPH.md",
+    "docs/architecture/ANDROID_BUILD_ENVIRONMENT.md",
+    "docs/adr/ADR-0036-android-native-foundation.md",
+    "skills/shomara-product-design/SKILL.md",
+    "skills/shomara-android-build/SKILL.md",
+    "skills/shomara-design-system/SKILL.md",
+    "skills/shomara-screen-execution/SKILL.md",
+    "skills/shomara-learning-content/SKILL.md",
+    "design/MASTER.md",
+    "design/INSPIRATION_GUARDRAILS.md",
+    "design/playbook/PAGE_UIUX_BLUEPRINT.md",
+    "design/playbook/COMPONENT_READINESS.md",
+    "design/playbook/NATIVE_IMPLEMENTATION.md",
+    "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv",
+    "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md",
+    "content-library/INTEGRATION_GATE.md",
+    "content-library/integration/SOURCE_AUDIT.md",
+    "content-library/integration/PHASE_INTEGRATION.md",
+    "content-library/integration/AUTHORING_CONTRACT_GAPS.md",
     "harness/roadmap.json",
     "harness/file-ledger.json",
     "harness/dependency-map.json",
@@ -36,7 +55,7 @@
     "gradlew.bat "
   ],
   "humanGates": [
-    { "id": "HG-01", "phase": "N02", "title": "تأیید applicationId نهایی Android و minimum SDK", "status": "OPEN", "evidence": "در ADR معماری Native ثبت شود؛ تصمیم مالک لازم است." },
+    { "id": "HG-01", "phase": "N02", "title": "تأیید applicationId نهایی Android و minimum SDK", "status": "APPROVED", "evidence": "دستور مستقیم مالک برای ادامهٔ پیاده‌سازی؛ applicationId=com.mathlearning.app و minSdk=24 در ADR-0036 ثبت شد." },
     { "id": "HG-02", "phase": "N03", "title": "بازبینی مالک روی Design System V3 و سه صفحهٔ نماینده", "status": "NOT_DUE", "evidence": "Path/Auth/Lesson screenshot روی 360 و 390dp." },
     { "id": "HG-03", "phase": "N07", "title": "تأیید حقوق، moderation و workflow انتشار صوت", "status": "NOT_DUE", "evidence": "CMS/audio release checklist." },
     { "id": "HG-04", "phase": "N08", "title": "QA آموزشی کودک و متخصص محتوا", "status": "NOT_DUE", "evidence": "جلسه و issueهای ثبت‌شده؛ بدون دادهٔ شخصی کودک." },
@@ -67,7 +86,7 @@
       "status": "DONE_WITH_BLOCKER",
       "branch": "chore/n01-clean-architecture",
       "goal": "کاهش سردرگمی و حجم، ساخت نقشهٔ مصرف‌کننده و آماده‌کردن مرزهای مهاجرت بدون شکستن کلاینت فعلی.",
-      "allowedPaths": ["*.md", ".nvmrc", "package.json", "package-lock.json", "docs/**", "harness/**", "tools/**", "scripts/verify-repository-harness.mjs", "DESIGN/SHOMARA_PLAYBOOK/quality/EXECUTION_CHECKPOINT.md", "apps/mobile/**", "packages/design-system/**"],
+      "allowedPaths": ["*.md", ".nvmrc", "package.json", "package-lock.json", "docs/**", "harness/**", "tools/**", "scripts/verify-repository-harness.mjs", "design/playbook/quality/EXECUTION_CHECKPOINT.md", "apps/mobile/**", "packages/design-system/**"],
       "gates": ["npm run harness:validate", "npm run verify:repository", "npm run build:packages", "npm run typecheck:all", "npm run test:unit", "npm run verify:static:all", "git diff --check"],
       "tasks": [
         { "id": "N01-01", "title": "حذف root artifactهای بدون مصرف", "status": "DONE", "dependsOn": ["N00-07"], "acceptance": ["چهار فایل orphan حذف شده", "تاریخچهٔ Git روش بازیابی است"], "evidence": ["file-ledger entries"] },
@@ -85,19 +104,24 @@
     {
       "id": "N02",
       "title": "Android Native Foundation",
-      "status": "BLOCKED",
+      "status": "IN_PROGRESS",
       "branch": "native/n02-foundation",
       "goal": "ایجاد skeleton چندماژوله Android Native بدون مهاجرت عجولانهٔ صفحه.",
-      "allowedPaths": ["apps/android/**", ".github/workflows/**", "docs/adr/**", "docs/architecture/**", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew projects", "./gradlew test", "./gradlew lint", "./gradlew :app:compileDebugKotlin", "git diff --check"],
+      "allowedPaths": ["apps/android/**", ".github/workflows/**", "docs/adr/**", "docs/architecture/**", "docs/roadmap/**", "docs/delivery/**", "docs/README.md", "design/**", "content-library/**", "skills/**", "harness/**", "scripts/android-build.mjs", "scripts/verify-android-build-harness.mjs", "scripts/verify-android-foundation.mjs", "scripts/verify-android-environment.mjs", "scripts/verify-static-all.mjs", "scripts/verify-content-library.mjs", "scripts/verify-project-skills.mjs", "scripts/verify-design-governance.mjs", "scripts/generate-content-indexes.mjs", "scripts/verify-repository-harness.mjs", "tools/harness.mjs", "tools/dependency-audit.mjs", ".gitattributes", ".gitignore", "package.json", "AGENTS.md", "README.md", "ZCODE.md", "START_HERE.md"],
+      "gates": ["npm run verify:android-foundation", "npm run verify:android-build-harness", "npm run verify:content-library", "npm run verify:project-skills", "npm run verify:design-governance", "npm run verify:design-pack", "npm run android:gate", "git diff --check"],
       "tasks": [
-        { "id": "N02-01", "title": "ADR معماری Native و تصمیم applicationId/minSdk", "status": "BLOCKED", "dependsOn": ["N01-10"], "acceptance": ["HG-01 تصویب شده", "نسخه‌های toolchain پین شده"], "evidence": [], "blocker": "HG-01: مالک باید applicationId نهایی و minSdk را تأیید کند" },
-        { "id": "N02-02", "title": "Gradle wrapper و version catalog", "status": "TODO", "dependsOn": ["N02-01"], "acceptance": ["build تکرارپذیر", "repositoryها محدود"], "evidence": [] },
-        { "id": "N02-03", "title": "ماژول app و coreهای پایه", "status": "TODO", "dependsOn": ["N02-02"], "acceptance": ["single activity", "core common/model/testing"], "evidence": [] },
-        { "id": "N02-04", "title": "DI، logging و error model", "status": "TODO", "dependsOn": ["N02-03"], "acceptance": ["بدون secret در log", "error taxonomy تست شده"], "evidence": [] },
-        { "id": "N02-05", "title": "Navigation و placeholder route", "status": "TODO", "dependsOn": ["N02-03"], "acceptance": ["back/deep-link پایه", "state restoration test"], "evidence": [] },
-        { "id": "N02-06", "title": "CI Native و cache امن", "status": "TODO", "dependsOn": ["N02-02"], "acceptance": ["test/lint/compile در CI", "artifact signing ندارد"], "evidence": [] },
-        { "id": "N02-07", "title": "Foundation gate", "status": "TODO", "dependsOn": ["N02-04", "N02-05", "N02-06"], "acceptance": ["compile/lint/unit PASS", "ساختار module graph ثبت شده"], "evidence": [] }
+        { "id": "N02-01", "title": "ADR معماری Native و تصمیم applicationId/minSdk", "status": "DONE", "dependsOn": ["N01-10"], "acceptance": ["HG-01 تصویب شده", "نسخه‌های toolchain پین شده"], "evidence": ["docs/adr/ADR-0036-android-native-foundation.md", "HG-01 APPROVED"] },
+        { "id": "N02-02", "title": "Gradle wrapper و version catalog", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N02-01"], "acceptance": ["build تکرارپذیر", "repositoryها محدود"], "evidence": ["Gradle 9.6 wrapper JAR and distribution SHA-256 pinned", "AGP 9.4.0 and all libraries pinned; FAIL_ON_PROJECT_REPOS"], "blocker": "Runtime dependency resolution could not be executed: Java/Gradle cannot reach the runner proxy." },
+        { "id": "N02-03", "title": "ماژول app و coreهای پایه", "status": "DONE", "dependsOn": ["N02-02"], "acceptance": ["single activity", "core common/model/testing"], "evidence": ["apps/android app + core:common + core:model + core:testing", "docs/architecture/ANDROID_MODULE_GRAPH.md"] },
+        { "id": "N02-04", "title": "DI، logging و error model", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N02-03"], "acceptance": ["بدون secret در log", "error taxonomy تست شده"], "evidence": ["manual composition-root DI", "SafeAppLogger sensitive-key denylist and unit-test sources", "npm run verify:android-foundation PASS"], "blocker": "Kotlin unit-test execution requires Gradle dependency resolution unavailable in this runner." },
+        { "id": "N02-05", "title": "Navigation و placeholder route", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N02-03"], "acceptance": ["back/deep-link پایه", "state restoration test"], "evidence": ["Compose NavHost and mathlearning://foundation deep link", "NavigationSnapshot restoration test source", "FoundationScreen semantics test source"], "blocker": "Compile/device execution requires Android SDK 37 and reachable Gradle dependencies." },
+        { "id": "N02-06", "title": "CI Native و cache امن", "status": "DONE", "dependsOn": ["N02-02"], "acceptance": ["test/lint/compile در CI", "compile SDK صریح و preflight fail-closed", "artifact signing ندارد"], "evidence": [".github/workflows/android-native.yml", "ubuntu-24.04 + explicit platforms;android-37 install", "deterministic environment preflight", "read-only permissions; wrapper validation; no signing/publish step"] },
+        { "id": "N02-07", "title": "Foundation gate", "status": "BLOCKED", "dependsOn": ["N02-04", "N02-05", "N02-06", "N02-08", "N02-09", "N02-10", "N02-11", "N02-12"], "acceptance": ["compile/lint/unit PASS", "ساختار module graph ثبت شده"], "evidence": ["npm run verify:android-foundation PASS", "module graph documented", "deterministic Android environment preflight", "CI installs platforms;android-37 explicitly", "canonical npm run android:gate harness"], "blocker": "BLOCKED_ENV: 2026-10-28 android:doctor found JDK 17 PASS but no Android SDK/platform 37. The canonical gate and debug-APK pipeline are implemented, but compile/lint/unit/APK cannot run until a valid SDK and dependency access exist." },
+        { "id": "N02-08", "title": "Content/Design governance و ساختار Skillها", "status": "DONE", "dependsOn": ["N02-01"], "acceptance": ["originalها byte-protected", "content conflicts و phase ownership ثبت شده", "هر Skill در skills/<name> مستقل و معتبر", "نام rootهای فعال lowercase/kebab-case", "۱۵۰ صفحه و ۱۰۰ skill به‌صورت deterministic index شده"], "evidence": ["content-library/integration/SOURCE_AUDIT.md", "content-library/integration/PHASE_INTEGRATION.md", "content-library/derived/book-pages-index.json", "content-library/derived/curriculum-index.json", "skills/**", "npm run verify:content-library PASS", "npm run verify:project-skills PASS"] },
+        { "id": "N02-09", "title": "UI/UX inspiration governance و Design System Skill", "status": "DONE", "dependsOn": ["N02-08"], "acceptance": ["Duolingo/AVA/UIUXProMax/Clay به adopt-adapt-reject قابل آزمون تبدیل شده‌اند", "Skill مستقل design-system با metadata و progressive reference معتبر است", "ماتریس readiness برای componentهای N03 و depth contract ثبت شده", "main docs و verifierها routing جدید را enforce می‌کنند"], "evidence": ["design/INSPIRATION_GUARDRAILS.md", "design/playbook/COMPONENT_READINESS.md", "skills/shomara-design-system/**", "npm run verify:design-governance PASS", "npm run verify:project-skills PASS"] },
+        { "id": "N02-10", "title": "بازممیزی عمیق originals و تثبیت authoring/CMS boundaries", "status": "DONE", "dependsOn": ["N02-08"], "acceptance": ["هر ۱۰ original دوباره با حفظ byte integrity بررسی شده", "شکاف سه مدل authoring/published/client و lifecycle صوت ثبت شده", "مسائل mastery/scope/privacy بدون حدس به فازهای مالک متصل شده", "content verifier evidence جدید را enforce می‌کند"], "evidence": ["content-library/integration/AUTHORING_CONTRACT_GAPS.md", "CONTENT-013..018", "scripts/verify-content-library.mjs"] },
+        { "id": "N02-11", "title": "قفل UI/UX همهٔ صفحه‌ها و بستهٔ انتقال چت", "status": "DONE", "dependsOn": ["N02-09", "N02-10"], "acceptance": ["۱۷ خانوادهٔ صفحه outcome/focal/CTA/depth/state مشخص دارند", "۲۰ work item Native با dependency و evidence قابل پیگیری‌اند", "Skillها و route registry به blueprint canonical متصل‌اند", "handoff مستقل بدون نیاز به تاریخچهٔ چت موجود است"], "evidence": ["design/playbook/PAGE_UIUX_BLUEPRINT.md", "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv", "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md", "npm run verify:design-governance PASS"] },
+        { "id": "N02-12", "title": "Build harness واحد و مسیر debug APK", "status": "DONE", "dependsOn": ["N02-06", "N02-11"], "acceptance": ["doctor/gate/assemble-debug یک preflight واحد دارند", "CI و local از npm run android:gate استفاده می‌کنند", "گزارش JSON و SHA-256 برای APK موفق تولید می‌شود", "release/signing پیش از N10 ممنوع و verifier شده", "resume harness مسیرها و gateهای فاز جاری را چاپ می‌کند"], "evidence": ["scripts/android-build.mjs", "scripts/verify-android-build-harness.mjs", "skills/shomara-android-build/SKILL.md", "npm run verify:android-build-harness PASS", "npm run android:doctor -- --allow-blocked reproduced BLOCKED_ENV"] }
       ]
     },
     {
@@ -114,8 +138,9 @@
         { "id": "N03-03", "title": "Button/Input/OTP primitives", "status": "TODO", "dependsOn": ["N03-02"], "acceptance": ["state matrix", "48dp semantics"], "evidence": [] },
         { "id": "N03-04", "title": "Card/Choice/Feedback/Progress primitives", "status": "TODO", "dependsOn": ["N03-02"], "acceptance": ["wrong answer warm-neutral", "reduced motion"], "evidence": [] },
         { "id": "N03-05", "title": "Navigation/Dialog/Audio controls", "status": "TODO", "dependsOn": ["N03-02"], "acceptance": ["TalkBack roles", "loading/error states"], "evidence": [] },
-        { "id": "N03-06", "title": "Screenshot catalog در 360/390/412", "status": "TODO", "dependsOn": ["N03-03", "N03-04", "N03-05"], "acceptance": ["light theme", "font scale", "RTL"], "evidence": [] },
-        { "id": "N03-07", "title": "مالک Design System gate", "status": "TODO", "dependsOn": ["N03-06"], "acceptance": ["HG-02 تصویب", "هیچ raw token در feature sample"], "evidence": [] }
+        { "id": "N03-06", "title": "Screenshot catalog در 360/390/412", "status": "TODO", "dependsOn": ["N03-03", "N03-04", "N03-05", "N03-08"], "acceptance": ["light theme", "font scale", "RTL"], "evidence": [] },
+        { "id": "N03-07", "title": "مالک Design System gate", "status": "TODO", "dependsOn": ["N03-06"], "acceptance": ["HG-02 تصویب", "هیچ raw token در feature sample"], "evidence": [] },
+        { "id": "N03-08", "title": "Primitiveهای آموزشی content-aware", "status": "TODO", "dependsOn": ["N03-02"], "acceptance": ["48dp عمومی و 72dp manipulatives", "audio replay/missing state", "math direction مستقل از RTL", "timing/toleranceها configurable"], "evidence": [] }
       ]
     },
     {
@@ -151,8 +176,9 @@
         { "id": "N05-04", "title": "Practice hub", "status": "TODO", "dependsOn": ["N05-01"], "acceptance": ["empty/recommended/history", "no punitive habit"], "evidence": [] },
         { "id": "N05-05", "title": "Profile/avatar/settings", "status": "TODO", "dependsOn": ["N05-01"], "acceptance": ["dirty/saving/saved/error", "reduced motion"], "evidence": [] },
         { "id": "N05-06", "title": "Parent surface boundary", "status": "TODO", "dependsOn": ["N05-01"], "acceptance": ["adult auth boundary", "child shell leak ندارد"], "evidence": [] },
-        { "id": "N05-07", "title": "Shell responsive/a11y/device tests", "status": "TODO", "dependsOn": ["N05-03", "N05-04", "N05-05", "N05-06"], "acceptance": ["360/390/412", "font scale و TalkBack"], "evidence": [] },
-        { "id": "N05-08", "title": "Child shell journey gate", "status": "TODO", "dependsOn": ["N05-07"], "acceptance": ["cold/warm resume", "back/deep link"], "evidence": [] }
+        { "id": "N05-07", "title": "Shell responsive/a11y/device tests", "status": "TODO", "dependsOn": ["N05-03", "N05-04", "N05-05", "N05-06", "N05-09"], "acceptance": ["360/390/412", "font scale و TalkBack"], "evidence": [] },
+        { "id": "N05-08", "title": "Child shell journey gate", "status": "TODO", "dependsOn": ["N05-07"], "acceptance": ["cold/warm resume", "back/deep link"], "evidence": [] },
+        { "id": "N05-09", "title": "Station/chapter metadata و نام‌گذاری مسیر", "status": "TODO", "dependsOn": ["N05-02"], "acceptance": ["ST01–ST25 ID ثابت", "CONTENT-004 resolved", "نام‌های owner-approved و بدون claim حل‌نشده"], "evidence": [] }
       ]
     },
     {
@@ -164,14 +190,17 @@
       "allowedPaths": ["apps/android/feature/lesson/**", "apps/android/core/model/**", "apps/android/core/network/**", "packages/contracts/**", "docs/product/**", "harness/**", "START_HERE.md"],
       "gates": ["./gradlew :feature:lesson:test", "./gradlew connectedCheck", "./gradlew lint", "npm run test:unit", "git diff --check"],
       "tasks": [
-        { "id": "N06-01", "title": "تطبیق API/contract player", "status": "TODO", "dependsOn": ["N05-08"], "acceptance": ["answer key absent", "selected step server-owned"], "evidence": [] },
+        { "id": "N06-01", "title": "تطبیق API/contract player و schema محتوای پژوهش", "status": "TODO", "dependsOn": ["N05-08"], "acceptance": ["answer key absent", "selected step server-owned", "P1–P5 روی state machine نگاشت شده", "CONTENT-008 guarded"], "evidence": [] },
         { "id": "N06-02", "title": "Lesson chrome و lifecycle", "status": "TODO", "dependsOn": ["N06-01"], "acceptance": ["close confirm", "resume checkpoint"], "evidence": [] },
         { "id": "N06-03", "title": "Teach و guided practice", "status": "TODO", "dependsOn": ["N06-02"], "acceptance": ["instruction clarity", "audio fallback"], "evidence": [] },
         { "id": "N06-04", "title": "Assessment و single submit", "status": "TODO", "dependsOn": ["N06-02"], "acceptance": ["duplicate tap blocked", "idempotency preserved"], "evidence": [] },
         { "id": "N06-05", "title": "Feedback/recovery/result", "status": "TODO", "dependsOn": ["N06-04"], "acceptance": ["warm wrong state", "server next action"], "evidence": [] },
         { "id": "N06-06", "title": "Challenge player", "status": "TODO", "dependsOn": ["N06-05"], "acceptance": ["challenge جدا از mastery", "timer semantics"], "evidence": [] },
         { "id": "N06-07", "title": "Player state/a11y tests", "status": "TODO", "dependsOn": ["N06-03", "N06-05", "N06-06"], "acceptance": ["loading/submitting/error/retry", "TalkBack و large text"], "evidence": [] },
-        { "id": "N06-08", "title": "End-to-end station gate", "status": "TODO", "dependsOn": ["N06-07"], "acceptance": ["teach تا result", "offline interruption و resume"], "evidence": [] }
+        { "id": "N06-08", "title": "ST07 draft end-to-end station gate", "status": "TODO", "dependsOn": ["N06-07", "N06-09", "N06-10", "N06-11"], "acceptance": ["teach تا result", "offline interruption و resume", "CONTENT-001/002/003/014/015/017 resolved", "nonproduction flag ثابت"], "evidence": [] },
+        { "id": "N06-09", "title": "Typed authoring staging schema و validator", "status": "TODO", "dependsOn": ["N06-01"], "acceptance": ["source provenance", "promotion state", "server evaluator جدا", "P4/P5 hint policy validated"], "evidence": [] },
+        { "id": "N06-10", "title": "Adapterهای پایلوت T01/T05/T13/T15", "status": "TODO", "dependsOn": ["N06-03", "N06-04", "N06-09"], "acceptance": ["tap alternative برای drag", "taught-numeral guard", "72dp manipulative", "server submission only"], "evidence": [] },
+        { "id": "N06-11", "title": "Authoring/published/client projection boundary", "status": "TODO", "dependsOn": ["N06-01", "N06-09"], "acceptance": ["سه مدل typed و lifecycle mapping", "advance/interaction prose به behavior ID typed نگاشت شده", "snapshot test حذف answer/evaluator/threshold", "prerequisite graph و review-role validator", "telemetry بدون answer key و با data minimization"], "evidence": [] }
       ]
     },
     {
@@ -189,7 +218,9 @@
         { "id": "N07-04", "title": "Audio asset cache و playback state", "status": "TODO", "dependsOn": ["N07-03"], "acceptance": ["download/ready/failed/fallback", "no hardcoded URL"], "evidence": [] },
         { "id": "N07-05", "title": "CMS publishing contract", "status": "TODO", "dependsOn": ["N07-03"], "acceptance": ["rights/moderation/delivery gates", "HG-03 تصویب"], "evidence": [] },
         { "id": "N07-06", "title": "Offline/audio failure tests", "status": "TODO", "dependsOn": ["N07-02", "N07-04"], "acceptance": ["process death", "corrupt checksum", "network loss"], "evidence": [] },
-        { "id": "N07-07", "title": "Offline content gate", "status": "TODO", "dependsOn": ["N07-05", "N07-06"], "acceptance": ["critical journey offline", "sync recovery evidence"], "evidence": [] }
+        { "id": "N07-07", "title": "Offline content gate", "status": "TODO", "dependsOn": ["N07-05", "N07-06", "N07-08", "N07-09"], "acceptance": ["critical journey offline", "sync recovery evidence"], "evidence": [] },
+        { "id": "N07-08", "title": "Draft import برای ۲۳۲ ردیف metadata صوت", "status": "TODO", "dependsOn": ["N07-03", "N07-05"], "acceptance": ["179+53 row idempotent", "همه draft", "فایل مفقود lesson را قفل نمی‌کند", "هیچ auto-approval یا TTS claim"], "evidence": [] },
+        { "id": "N07-09", "title": "Audio asset lifecycle و CMS editorial governance", "status": "TODO", "dependsOn": ["N07-05", "N07-08"], "acceptance": ["script metadata از binary asset version جدا", "voiceProfile مستقل از provider hint", "RBAC و actor/time audit", "impact/orphan/missing reports", "reversible publish/rollback و package checksum"], "evidence": [] }
       ]
     },
     {
@@ -198,7 +229,7 @@
       "status": "TODO",
       "branch": "native/n08-ux-completion",
       "goal": "پوشش همهٔ route/stateها و اثبات کیفیت Native روی دستگاه.",
-      "allowedPaths": ["apps/android/**", "docs/qa/**", "docs/product/**", "DESIGN/SHOMARA_PLAYBOOK/quality/**", "harness/**", "START_HERE.md"],
+      "allowedPaths": ["apps/android/**", "docs/qa/**", "docs/product/**", "design/playbook/quality/**", "harness/**", "START_HERE.md"],
       "gates": ["./gradlew test", "./gradlew connectedCheck", "./gradlew lint", "git diff --check"],
       "tasks": [
         { "id": "N08-01", "title": "Route/state ledger audit", "status": "TODO", "dependsOn": ["N07-07"], "acceptance": ["100% routes classified", "هیچ state حدسی"], "evidence": [] },
@@ -206,8 +237,13 @@
         { "id": "N08-03", "title": "Font scale/RTL/math direction", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["200% text", "number line/math mirror صحیح"], "evidence": [] },
         { "id": "N08-04", "title": "Motion/haptic/reduced motion", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["purposeful/cancelable", "no concurrent celebration transition"], "evidence": [] },
         { "id": "N08-05", "title": "Robustness matrix", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["fast taps/offline/process death", "no dead end"], "evidence": [] },
-        { "id": "N08-06", "title": "Child/educator review", "status": "TODO", "dependsOn": ["N08-02", "N08-03", "N08-04", "N08-05"], "acceptance": ["HG-04 evidence", "privacy-safe findings"], "evidence": [] },
-        { "id": "N08-07", "title": "Native UX acceptance gate", "status": "TODO", "dependsOn": ["N08-06"], "acceptance": ["zero P0/P1", "critical dimensions >=3"], "evidence": [] }
+        { "id": "N08-06", "title": "Child/educator review", "status": "TODO", "dependsOn": ["N08-02", "N08-03", "N08-04", "N08-05", "N08-08", "N08-09", "N08-10", "N08-11", "N08-12"], "acceptance": ["HG-04 evidence", "privacy-safe findings", "curriculum/pronunciation findings separated"], "evidence": [] },
+        { "id": "N08-07", "title": "Native UX و curriculum acceptance gate", "status": "TODO", "dependsOn": ["N08-06"], "acceptance": ["zero P0/P1", "critical dimensions >=3", "فقط APPROVED قابل enable"], "evidence": [] },
+        { "id": "N08-08", "title": "حل source conflict و owner decisionهای محتوا", "status": "TODO", "dependsOn": ["N07-07"], "acceptance": ["CONTENT-001 تا CONTENT-018 disposition", "تصمیم‌ها با evidence و بدون بازنویسی originals"], "evidence": [] },
+        { "id": "N08-09", "title": "تولید ۲۴ station spec در پنج batch", "status": "TODO", "dependsOn": ["N08-08", "N06-08"], "acceptance": ["ST01–06، ST08–12، ST13–17، ST18–22، ST23–25", "هر batch validator و review مستقل", "P0/P1 batch قبلی بسته"], "evidence": [] },
+        { "id": "N08-10", "title": "Cross-station spiral و coverage audit", "status": "TODO", "dependsOn": ["N08-09"], "acceptance": ["۱۵۰ صفحه accounted", "۱۰۰ skill coverage", "prerequisite/spiral/audio ID unique"], "evidence": [] },
+        { "id": "N08-11", "title": "Human review محتوای نوشتاری و audio script", "status": "TODO", "dependsOn": ["N08-09"], "acceptance": ["متخصص پایه اول", "بازبین فارسی و تلفظ", "حقوق asset/audio", "status از VALIDATED به HUMAN_REVIEWED با evidence"], "evidence": [] },
+        { "id": "N08-12", "title": "Curriculum scope و mastery calibration gate", "status": "TODO", "dependsOn": ["N08-08", "N06-08"], "acceptance": ["T08 9×9 و ST23/ST25 include/modify/defer شده", "3/4 mastery و unlock semantics با evidence", "timing/tolerance/audio budgets configurable و device-tested", "decisionها versioned و rollbackable"], "evidence": [] }
       ]
     },
     {

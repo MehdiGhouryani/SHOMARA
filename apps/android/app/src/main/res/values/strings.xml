@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">شمارا</string>
+    <string name="foundation_title">زیرساخت اندروید شمارا</string>
+    <string name="foundation_description">این صفحه فقط برای بررسی مسیر و معماری پایه است.</string>
+</resources>

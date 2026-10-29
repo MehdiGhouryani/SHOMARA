@@ -1,0 +1,62 @@
+name: Android Native
+
+on:
+  pull_request:
+    paths:
+      - "apps/android/**"
+      - ".github/workflows/android-native.yml"
+      - ".nvmrc"
+      - "package.json"
+      - "scripts/android-build.mjs"
+      - "tools/tests/android-build.test.mjs"
+      - "scripts/verify-android-build-harness.mjs"
+      - "scripts/verify-android-environment.mjs"
+  push:
+    branches: [main]
+    paths:
+      - "apps/android/**"
+      - ".github/workflows/android-native.yml"
+      - ".nvmrc"
+      - "package.json"
+      - "scripts/android-build.mjs"
+      - "tools/tests/android-build.test.mjs"
+      - "scripts/verify-android-build-harness.mjs"
+      - "scripts/verify-android-environment.mjs"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-native-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gradle/actions/wrapper-validation@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install compile SDK 37
+        shell: bash
+        run: |
+          if command -v android >/dev/null 2>&1 && android sdk install "platforms;android-37"; then
+            echo "Installed platform 37 with Android CLI."
+          else
+            "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --channel=0 "platforms;android-37"
+          fi
+      - name: Verify build harness contract
+        run: npm run verify:android-build-harness
+      - name: Test build failure and environment handling
+        run: node --test tools/tests/android-build.test.mjs
+      - name: Unit, lint and compile gate
+        run: npm run android:gate

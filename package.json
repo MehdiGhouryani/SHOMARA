@@ -88,7 +88,21 @@
     "harness:validate": "node tools/harness.mjs validate",
     "harness:status": "node tools/harness.mjs status",
     "harness:next": "node tools/harness.mjs next",
-    "verify:repository": "node scripts/verify-repository-harness.mjs"
+    "harness:resume": "node tools/harness.mjs resume",
+    "verify:repository": "node scripts/verify-repository-harness.mjs",
+    "verify:android-foundation": "node scripts/verify-android-foundation.mjs",
+    "android:preflight": "node scripts/verify-android-environment.mjs",
+    "android:doctor": "node scripts/android-build.mjs doctor",
+    "android:gate": "node scripts/android-build.mjs gate",
+    "android:assemble:debug": "node scripts/android-build.mjs assemble-debug",
+    "verify:android-build-harness": "node scripts/verify-android-build-harness.mjs",
+    "test:android-build": "node --test tools/tests/android-build.test.mjs",
+    "verify:content-library": "node scripts/verify-content-library.mjs",
+    "verify:project-skills": "node scripts/verify-project-skills.mjs",
+    "verify:design-governance": "node scripts/verify-design-governance.mjs",
+    "verify:design-pack": "node design/playbook/quality/validate-pack.mjs",
+    "content:indexes:check": "node scripts/generate-content-indexes.mjs --check",
+    "content:indexes:write": "node scripts/generate-content-indexes.mjs --write"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

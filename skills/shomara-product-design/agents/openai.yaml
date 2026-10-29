@@ -1,0 +1,4 @@
+interface:
+  display_name: "SHOMARA Product Design"
+  short_description: "Design child-safe Persian learning experiences"
+  default_prompt: "Use @shomara-product-design to audit and improve the active SHOMARA route without copying external brands or bypassing product gates."

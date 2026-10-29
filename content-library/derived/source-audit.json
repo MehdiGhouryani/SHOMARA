@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-28",
+  "sourceState": "SOURCE_ONLY",
+  "inventory": {
+    "originalFiles": 10,
+    "bookUnits": 25,
+    "workPages": 150,
+    "proposedSkills": 100,
+    "gamePatterns": 15,
+    "completePilotStations": ["ST07"],
+    "remainingStationSpecs": 24,
+    "audioMetadataRows": 232,
+    "audioBinaries": 0
+  },
+  "issues": [
+    {"id":"CONTENT-001","type":"SOURCE_CONFLICT","status":"OPEN","topic":"ST07 numeral-one stroke direction","blocks":["N06"]},
+    {"id":"CONTENT-002","type":"SOURCE_CONFLICT","status":"OPEN","topic":"jump-test question count","blocks":["N06"]},
+    {"id":"CONTENT-003","type":"SOURCE_CONFLICT","status":"OPEN","topic":"hints referenced in independent pool","blocks":["N06"]},
+    {"id":"CONTENT-004","type":"OPEN_DECISION","status":"OPEN","topic":"station and chapter names","blocks":["N05"]},
+    {"id":"CONTENT-005","type":"OPEN_DECISION","status":"OPEN","topic":"religious themes and textbook photos","blocks":["N08"]},
+    {"id":"CONTENT-006","type":"OPEN_DECISION","status":"OPEN","topic":"narrator, speech rate and style","blocks":["N07"]},
+    {"id":"CONTENT-007","type":"OPEN_DECISION","status":"OPEN","topic":"haptic default and SFX licensing","blocks":["N07","N08"]},
+    {"id":"CONTENT-008","type":"CONTRACT_BOUNDARY","status":"GUARDED","topic":"authoring answers must remain server-side","blocks":["N06"]},
+    {"id":"CONTENT-009","type":"MISSING_ARTIFACT","status":"OPEN","topic":"ST07 visual assets","blocks":["N06"]},
+    {"id":"CONTENT-010","type":"MISSING_ARTIFACT","status":"OPEN","topic":"playable approved audio","blocks":["N07"]},
+    {"id":"CONTENT-011","type":"UNVERIFIED_VALUE","status":"OPEN","topic":"timings, tolerance, speech rate and loudness","blocks":["N08"]},
+    {"id":"CONTENT-012","type":"QUALITY_GAP","status":"OPEN","topic":"24 station specifications not authored","blocks":["N08"]},
+    {"id":"CONTENT-013","type":"SCHEMA_GAP","status":"OPEN","topic":"audio script metadata and binary asset lifecycle are conflated","blocks":["N07"]},
+    {"id":"CONTENT-014","type":"UNVERIFIED_SEMANTICS","status":"OPEN","topic":"mastery, unlock and jump semantics need server-owned decisions","blocks":["N06","N08"]},
+    {"id":"CONTENT-015","type":"SCHEMA_GAP","status":"OPEN","topic":"typed authoring behavior, lifecycle mapping and review roles are missing","blocks":["N06"]},
+    {"id":"CONTENT-016","type":"CURRICULUM_SCOPE","status":"OPEN","topic":"grade-one scope and cognitive load of advanced items","blocks":["N08"]},
+    {"id":"CONTENT-017","type":"SOURCE_CONFLICT","status":"OPEN","topic":"T11 always-available audio conflicts with global nonblocking fallback","blocks":["N06","N07"]},
+    {"id":"CONTENT-018","type":"PRIVACY_BOUNDARY","status":"GUARDED","topic":"attempt telemetry must minimize raw child answers and exclude answer keys","blocks":["N06","N10"]}
+  ]
+}

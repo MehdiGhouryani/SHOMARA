@@ -116,6 +116,31 @@ function printTask(task) {
   ].join('\n');
 }
 
+function resumeReport(roadmap) {
+  const result = validateRoadmap(roadmap);
+  if (result.errors.length) return `roadmap invalid\n${result.errors.join('\n')}`;
+  const task = result.tasks.get(roadmap.currentTask);
+  const phase = roadmap.phases.find(({ id }) => id === roadmap.currentPhase);
+  return [
+    `project: ${roadmap.project}`,
+    `branch: ${phase.branch}`,
+    `phase: ${phase.id} — ${phase.title} [${phase.status}]`,
+    `task: ${task.id} — ${task.title} [${task.status}]`,
+    ...(task.blocker ? [`blocker: ${task.blocker}`] : []),
+    '',
+    'read:',
+    '  1. AGENTS.md',
+    '  2. START_HERE.md',
+    '  3. docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md',
+    '',
+    'allowed paths:',
+    ...phase.allowedPaths.map((item) => `  - ${item}`),
+    '',
+    'phase gates:',
+    ...phase.gates.map((item) => `  - ${item}`),
+  ].join('\n');
+}
+
 function main() {
   const roadmap = loadRoadmap();
   const [command = 'status', arg] = process.argv.slice(2);
@@ -149,7 +174,11 @@ function main() {
     console.log(printTask(task));
     return;
   }
-  console.error('Usage: node tools/harness.mjs <validate|status|next|task TASK-ID>');
+  if (command === 'resume') {
+    console.log(resumeReport(roadmap));
+    return;
+  }
+  console.error('Usage: node tools/harness.mjs <validate|status|next|resume|task TASK-ID>');
   process.exitCode = 2;
 }
 

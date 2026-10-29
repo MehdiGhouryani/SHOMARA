@@ -19,7 +19,7 @@
 
 ## 2. اصول تجربهٔ یادگیری
 
-الهام از Duolingo و تجربهٔ پروژهٔ AVA در سطح اصل است، نه کپی پیاده‌سازی:
+الهام از Duolingo، تجربهٔ پروژهٔ AVA، روش design-system-first در UI/UX Pro Max و Claymorphism محدود در سطح اصل است، نه کپی پیاده‌سازی:
 
 - یک هدف آموزشی و یک CTA اصلی در هر state؛
 - feedback فوری، کوتاه، گرم و قابل‌اقدام؛
@@ -28,6 +28,7 @@
 - صوت و محتوای آموزشی data-driven، دارای metadata، نسخه، checksum و fallback؛
 - UI مستقل از منبع فایل صوتی تا CMS آینده بتواند محتوا را مدیریت کند؛
 - هیچ کد، asset، برند یا شخصیت از AVA/Duolingo وارد SHOMARA نمی‌شود.
+- هیچ palette، font، generator یا dependency خارجی صرفاً با استناد به منبع الهام وارد پروژه نمی‌شود؛ ماتریس binding در `design/INSPIRATION_GUARDRAILS.md` است.
 
 ## 3. معماری هدف repository
 
@@ -56,6 +57,9 @@ apps/
 packages/                   # قرارداد و runtime مشترک موجود
 docs/
   adr/ api/ architecture/ product/ qa/ roadmap/ archive/
+design/                     # قرارداد برند و playbook صفحه‌ها
+content-library/            # originals پژوهش، derived index و integration gates
+skills/                     # workflowهای پروژه؛ یک پوشه برای هر Skill
 ```
 
 قواعد وابستگی:
@@ -71,13 +75,13 @@ docs/
 |---|---|---|---|
 | N00 | Repository Reset | baseline، حذف generated artifact، canonical docs، verifier سالم | build/typecheck/test + inventory |
 | N01 | Clean & Boundaries | dependency map، docs dedupe، V1/V2 retirement plan، naming rules | zero broken imports + clean gates |
-| N02 | Native Foundation | `apps/android`، Gradle convention، CI، core modules، sample screen | debug build + lint + unit test |
+| N02 | Native Foundation | `apps/android`، Gradle convention، CI، core modules، build harness واحد، content provenance و Skill structure | `android:gate` + source/skill gates |
 | N03 | Native Design System | token codegen، typography RTL، components، screenshot catalog | screenshot + contrast + 360/390/412 |
 | N04 | Entry & Auth | launch/onboarding/OTP/profile/grade placement | navigation + error/offline + security tests |
 | N05 | Child Shell | مسیر/تمرین/من، unit/station start، settings/avatar | route parity + TalkBack + state restore |
-| N06 | Learning Player | teach/practice/assessment/recovery/result/challenge | server-truth contract + idempotency tests |
-| N07 | Offline, Audio & Content | Room/DataStore/sync/audio cache/content manifest | retry/resume/checksum/fallback tests |
-| N08 | UX Completion | همهٔ stateها، motion، haptic، adaptive/a11y | route ledger 100% tested native |
+| N06 | Learning Player | player state machine، سه projection محتوایی، authoring schema و ST07 draft با T01/T05/T13/T15 | server-truth + answer-stripping + ST07 acceptance |
+| N07 | Offline, Audio & Content | Room/DataStore/sync، audio script/asset lifecycle، CMS governance و ۲۳۲ metadata row draft | retry/resume/checksum/fallback/RBAC/rollback |
+| N08 | UX & Curriculum Completion | همهٔ stateها، پنج batch ایستگاه، scope/mastery calibration، motion/a11y و educational QA | route/content ledger 100% reviewed native |
 | N09 | Cutover | feature parity، حذف Expo/V1/verifierهای تاریخی | native default + no legacy consumer |
 | N10 | Release Readiness | hardening، performance، privacy، APK/AAB pipeline | device matrix + release checklist |
 
@@ -129,6 +133,8 @@ docs/
 - componentهای پایه: Button, TextField, OTP, Card, Choice, FeedbackSheet, Progress, TopBar, TabBar, Dialog, AudioControl.
 - هر component state matrix، semantics، minimum touch target و screenshot test دارد.
 - motion کوتاه، قابل لغو و تابع reduced-motion است؛ animation پیوسته هنگام حل ممنوع.
+- depth چهار سطح flat/hint/soft/featured دارد؛ یک viewport تصمیم حداکثر یک سطح featured دارد و depth روی متن یا به‌عنوان تنها حامل معنا ممنوع است.
+- قرارداد کامل خانواده‌ها و evidence در `design/playbook/COMPONENT_READINESS.md` نگه‌داری می‌شود.
 
 ## 8. Audio و CMS-ready content
 
@@ -144,6 +150,10 @@ AudioAsset(id, locale, purpose, version, checksum, durationMs,
 - UI stateهای unavailable/downloading/ready/failed را می‌شناسد.
 - CMS آینده فقط asset/metadata/ordering را مدیریت می‌کند؛ correctness و progression را تغییر نمی‌دهد.
 - انتشار صوت نیازمند rights + moderation + delivery-ready gate است.
+- script metadata از binary asset version جداست؛ voice/rate موجود در CSV فقط provider hint است.
+- پنل ادمین باید RBAC، audit actor/time، impact analysis، orphan/missing report، version history و rollback داشته باشد.
+
+پژوهش‌های `content-library/originals/**` مستقیماً runtime نیستند. promotion فقط طبق `content-library/integration/PHASE_INTEGRATION.md` انجام می‌شود. قرارداد سه مدل و lifecycle در `content-library/integration/AUTHORING_CONTRACT_GAPS.md` است. ST07 تنها پایلوت کامل است و ۲۴ ایستگاه دیگر بعد از gate پایلوت در پنج batch author می‌شوند؛ answer/evaluator/threshold فایل‌های authoring هرگز وارد child client نمی‌شود.
 
 ## 9. Definition of Done هر صفحه
 

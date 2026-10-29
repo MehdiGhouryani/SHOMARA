@@ -7,3 +7,7 @@
 *.woff2 binary
 *.riv binary
 *.zip binary
+
+# Preserve the byte-exact user-provided audio manifests and their recorded SHA-256.
+content-library/originals/shomara-ST07-audio-manifest.csv binary
+content-library/originals/shomara-global-audio-manifest.csv binary

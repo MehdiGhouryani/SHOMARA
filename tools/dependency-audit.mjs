@@ -74,7 +74,7 @@ function workspacePackages() {
 }
 
 function scanTextReferences(tokens) {
-  const roots = ['apps', 'packages', 'scripts', 'docs', 'DESIGN', 'CONTENT_LIBRARY', 'README.md', 'AGENTS.md', 'START_HERE.md', 'ROADMAP_PHASES.md'];
+  const roots = ['apps', 'packages', 'scripts', 'docs', 'design', 'content-library', 'skills', 'README.md', 'AGENTS.md', 'START_HERE.md', 'ROADMAP_PHASES.md'];
   const results = Object.fromEntries(tokens.map((token) => [token, []]));
   const visit = (target) => {
     if (!fs.existsSync(target)) return;
@@ -202,6 +202,12 @@ function main() {
       return;
     }
     console.log(`DEPENDENCY_MAP: PASS (${audit.counts.sourceFiles} files, ${audit.counts.importEdges} edges)`);
+    return;
+  }
+  if (command === 'write') {
+    const storedPath = path.join(ROOT, 'harness', 'dependency-map.json');
+    fs.writeFileSync(storedPath, `${JSON.stringify(buildDependencySnapshot(audit), null, 2)}\n`);
+    console.log(`DEPENDENCY_MAP: WROTE (${audit.counts.sourceFiles} files, ${audit.counts.importEdges} edges)`);
     return;
   }
   console.log(JSON.stringify(audit.counts, null, 2));
