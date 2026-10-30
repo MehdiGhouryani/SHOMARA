@@ -170,3 +170,44 @@ apk_status: DEBUG_PIPELINE_READY__NOT_BUILT_SDK37_MISSING
 ## 10. کار بعدی دقیق
 
 ابتدا `node tools/harness.mjs resume` و `node tools/harness.mjs task N02-07` را بخوان؛ `npm run android:doctor` و سپس `npm run android:gate` را اجرا کن. پس از status برابر `PASS`، N02 بسته و N03 از U0/`N03-01` شروع شود. اگر debug APK خواسته شد، فقط `npm run android:assemble:debug` معتبر است؛ release/AAB/signing در N02 ممنوع می‌ماند.
+
+## 11. قفل مسیر Track A (ADR-0037، ۲۰۲۶-۱۰-۳۰)
+
+این بخش مسیر موازی بتای قابل‌نصب را ثبت می‌کند. تا وقتی Track A در harness ثبت نشده (L17)، خروجی `node tools/harness.mjs next` همچنان `N02-07` است و کار Track A فقط مطابق ADR-0037 انجام می‌شود.
+
+**تصمیم‌های قفل‌شده (L1 تا L17):** در `docs/adr/ADR-0037-installable-beta-track-lock.md`.
+
+- دو مسیر موازی: Track A (Expo beta با backend، فقط P0/P1 و parity) و Track B (Native طبق roadmap).
+- مبنای خط کاری: `main@6063c55`. شاخه‌های remote فقط مرجع‌اند؛ تاریخچه‌شان با main نامرتبط است و merge یا rebase روی آن‌ها انجام نمی‌شود.
+- اصلاح از شاخه‌ها فقط پس از بازتولید خطا یا نبود قابلیت روی main، با تست و diff جدا.
+- ستاره‌ها از UI کودک حذف می‌شوند (قاعدهٔ ۸ AGENTS مقدم بر MASTER §5).
+- `apps/web` تا پایان ۱.۱ عمومی منتشر نمی‌شود.
+- palette canonical = v2.
+- هیچ URL، کلید، keystore یا credential در repo نیست؛ API base از EAS secret تزریق می‌شود.
+- APK فقط با مجوز صریح فاز و توسط مالک ساخته می‌شود؛ انتشار داخلی تا M3؛ release تا N10/HG-05 ممنوع است.
+- هر فاز شاخهٔ جدا دارد و PASS فقط با فرمان، exit code و evidence معتبر است.
+
+**ورودی‌های باز (I1 تا I6):**
+
+- I1: وضعیت GitHub Actions و branch protection (API در این نشست 403 داد).
+- I2: backend با HTTPS، پروژهٔ Supabase، provider OTP و محل نگه‌داری secrets.
+- I3: اجرای EAS preview توسط مالک.
+- I4: مدل گوشی و نسخهٔ Android.
+- I5: تأیید محتوای seed `0035_grade1_staging_seed.sql`.
+- I6: اصلاح `baseline_commit` (`ef35ce2` در repo وجود ندارد).
+
+**Milestones:**
+
+- M1: APK متصل به backend روی گوشی مالک. gate: 0.5، 1.1، 1.6 و 2.1 تا 2.4.
+- M2: بتای پایدار. gate: فاز ۱ کامل، 2.5، 3.1 تا 3.4، 3.9، 3.10 و I1.
+- M3: آماده برای کودکان واقعی. gate: فازهای ۴ و ۶، بازبینی L7 و تأیید مالک.
+
+**چک‌لیست فعال Track A** (وضعیت هر آیتم فقط با evidence تغییر می‌کند):
+
+- فاز ۰ (مستندات): 0.1 ثبت ADR-0037 — انجام شد روی شاخهٔ `docs/phase0-lock-beta-track` · 0.2 وضعیت CI و branch protection — باز (I1) · 0.3 نگاشت شاخه‌ها — انجام شد (ADR-0037، بخش Context) · 0.4 ثبت Track A در harness — پس از بازبینی · 0.5 تعیین backend — باز (I2) · 0.6 عدم انتشار عمومی `apps/web` — فعال (L5)
+- فاز ۱ (P0، امنیت و محتوا): 1.1 حذف `expectedIndex` از bundle کلاینت · 1.2 جایگزینی denylist با allowlist در `learning-client-content.ts` · 1.3 یک منبع approval برای TS و SQL · 1.4 محتوای p10 با `DRAFT_*` و `status=ACTIVE` · 1.5 تست یکپارچگی دیتابیس در CI · 1.6 guard برای dev identity در production · 1.7 حذف کپی ستاره و افزودن دو فایل به verifier · 1.8 بازبینی seed (I5)
+- فاز ۲ (APK): 2.1 EAS secret برای API base · 2.2 ارتقای RN به ≥ 0.86.2 · 2.3 بیلد توسط مالک (I3) · 2.4 preflight روی بیلد · 2.5 چک‌لیست دستگاه، کپی از `chore/p8-closing` (I4)
+- فاز ۳ (پایداری Expo، بدون قابلیت جدید): 3.1 شروع آفلاین ایستگاه · 3.2 نمایش پاسخ صف‌شده · 3.3 resume بر اساس snapshot سرور · 3.4 `normalizeAuthoritativeContent` · 3.5 اندازهٔ مهره‌ها (۷۲ تا ۸۰dp) · 3.6 کنتراست مرز کنترل‌ها · 3.7 مقادیر جادویی `jump.tsx` · 3.8 انتقال v1 به v2 · 3.9 اجرای تست‌های `.tsx` · 3.10 علت شکست parity · 3.11 حذف داده والدین روی سرور · 3.12 حذف `missions` · 3.13 کامنت‌های قدیمی · 3.14 کد مرده
+- فاز ۴ (gate و CI): 4.1 `core` به‌عنوان required · 4.2 حذف `continue-on-error` از `visual-and-static` · 4.3 ESLint · 4.4 job بیلد APK دستی · 4.5 تبدیل DoD به verifier و ledger · 4.6 verifierها و parity به بخش required
+- فاز ۵ (Native، موازی): 5.1 N02-07 روی runner با SDK 37 · 5.2 ماژول `:core:designsystem` · 5.3 screenshot harness · 5.4 job با emulator · 5.5 DTO و contract tests · 5.6 لایهٔ network، cache و sync · 5.7 U0 تا U6 · 5.8 cutover و release
+- فاز ۶ (پیش از کودکان واقعی): 6.1 سیاست حریم و متن پذیرش · 6.2 حذف داده در سرور · 6.3 تصمیم crash reporting و analytics · 6.4 keystore و secrets · 6.5 سیاست نسخه · 6.6 QA کودک، TalkBack، فونت ۲۰۰٪ و process death · 6.7 فقط محتوای approved در production

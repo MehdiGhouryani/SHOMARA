@@ -196,6 +196,7 @@
       "apps/mobile/src/station/views2/LessonViewsV2.tsx",
       "apps/mobile/src/station/views2/StationStartV2.tsx",
       "content-library/integration/REPO_COMPATIBILITY.md",
+      "docs/adr/ADR-0037-installable-beta-track-lock.md",
       "docs/archive/evidence/2026-10-27/v2-foundation.log",
       "docs/archive/evidence/2026-10-28/typecheck-b2.log",
       "docs/ui-v2-migration-ledger.md",
