@@ -115,3 +115,10 @@
 - fixes: JAVA_HOME در preflight محترم است؛ SDK تأییدشده به Gradle منتقل می‌شود؛ discovery از نصب ناقص عبور می‌کند؛ flag ناشناخته رد می‌شود؛ crash preflight گزارش PASS قبلی را با FAILED جایگزین می‌کند.
 - evidence: شش node:test رفتاری PASS؛ Android foundation/build harness، repository، skills، content، design و diff check PASS؛ dependency map برابر 1813 edge.
 - boundary: doctor/gate/assemble-debug دوباره BLOCKED_ENV؛ SDK 37 موجود نیست. full package regression در محیط بازیابی‌شده اجرا نشد؛ شواهد 502 تست و 82/87 متعلق به checkpoint قبل است. N02 همان 11/12 است.
+
+## 2026-10-30 — Track A lock (ADR-0037)
+
+- decision: ADR-0037 قفل می‌کند: دو مسیر موازی؛ مبنا `main@6063c55`؛ شاخه‌های remote مرجع‌اند؛ ستاره‌ها از UI کودک حذف؛ `apps/web` تا ۱.۱ عمومی نشود؛ palette v2؛ secret فقط در EAS؛ APK با مجوز فاز.
+- audit: ۱۷ شاخهٔ remote با `main` هیچ merge-base ندارند (`git merge-base` خروجی خالی و exit 1)؛ START_HERE روی main `file_version` 35 دارد و شاخه‌ها 18/22/24؛ `baseline_commit` ef35ce2 در repo نیست؛ `apps/android` فقط روی main است؛ checklist دستگاه روی `chore/p7-device-checklist` و `chore/p8-closing`.
+- evidence: `npm ci` exit 0 (648 package)؛ `build:packages` exit 0؛ `typecheck:all` exit 0؛ `vitest run` exit 0 (65 file / 502 test)؛ `harness validate` معتبر؛ `harness next` = N02-07 `BLOCKED_ENV`؛ `verify-repository-harness` PASS؛ `verify-ui-v2-foundation` و `verify-design-governance` PASS؛ `verify-apk-preview` PASS (21)؛ `verify-mobile-release` exit 0؛ `verify:static:all` exit 1 (86/87، parity 1/29)؛ `build:web` exit 0 با `expectedIndex` در chunk کلاینت.
+- boundary: هیچ کد یا verifier تغییر نکرد؛ push نشد؛ GitHub CI و branch protection تأیید نشدند (API 403)؛ Gradle/Android اجرا نشد؛ تست دستگاه انجام نشد؛ Track A هنوز در harness ثبت نشده (L17).
