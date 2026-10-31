@@ -102,6 +102,8 @@ export const V2_TOKENS =
       "buttonH": 56,
       "nodeSize": 72,
       "nodeCurrent": 84,
+      "manipulativeMin": 72,
+      "manipulativeMax": 80,
       "edge": 4,
       "trayBead": 48,
       "progressH": 14,

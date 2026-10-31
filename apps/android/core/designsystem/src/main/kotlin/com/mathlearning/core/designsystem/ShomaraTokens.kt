@@ -81,6 +81,8 @@ object ShomaraTokens {
   val ComponentButtonH = 56.dp
   val ComponentNodeSize = 72.dp
   val ComponentNodeCurrent = 84.dp
+  val ComponentManipulativeMin = 72.dp
+  val ComponentManipulativeMax = 80.dp
   val ComponentEdge = 4.dp
   val ComponentTrayBead = 48.dp
   val ComponentProgressH = 14.dp
