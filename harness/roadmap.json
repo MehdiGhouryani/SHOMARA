@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "project": "SHOMARA",
   "updatedAt": "2026-10-31",
-  "currentPhase": "N02",
-  "currentTask": "N02-07",
+  "currentPhase": "N03",
+  "currentTask": "N03-01",
   "statusValues": ["TODO", "READY", "IN_PROGRESS", "BLOCKED", "DEFERRED", "DONE", "DONE_WITH_BLOCKER"],
   "canonicalDocs": [
     "AGENTS.md",
@@ -127,13 +127,13 @@
     {
       "id": "N03",
       "title": "Native Design System V3",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "branch": "native/n03-design-system",
       "goal": "یک Design System Compose قابل تست و مشترک با token source واحد.",
       "allowedPaths": ["apps/android/core/designsystem/**", "packages/design-system/**", "tools/token-codegen/**", "docs/design/**", "harness/**", "START_HERE.md"],
       "gates": ["./gradlew :core:designsystem:test", "./gradlew :core:designsystem:lint", "./gradlew :core:designsystem:verifyPaparazziDebug", "git diff --check"],
       "tasks": [
-        { "id": "N03-01", "title": "Token schema و codegen TypeScript/Kotlin", "status": "TODO", "dependsOn": ["N02-07", "N01-07"], "acceptance": ["یک JSON canonical", "generated files drift gate"], "evidence": [] },
+        { "id": "N03-01", "title": "Token schema و codegen TypeScript/Kotlin", "status": "DONE", "dependsOn": ["N02-07", "N01-07"], "acceptance": ["یک JSON canonical", "generated files drift gate"], "evidence": ["tools/token-codegen/generate.mjs: single-source codegen from packages/design-system/src/tokens.json (v2 block only, ADR-0037 L6) with schema guard (schemaVersion, #RRGGBB, ascending space, 48dp touch floor, MASTER clay levels)", "generated: packages/design-system/src/tokens.generated.ts + apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraTokens.kt (Compose-ready raw values; Gradle module wiring is N03-02)", "drift gate: node tools/token-codegen/generate.mjs --check = TOKEN_DRIFT: PASS (exit 0) + vitest drift test packages/design-system/src/codegen.drift.test.ts (6 tests)"] },
         { "id": "N03-02", "title": "ShomaraTheme و typography RTL", "status": "TODO", "dependsOn": ["N03-01"], "acceptance": ["Vazirmatn weights", "semantic color/type/shape"], "evidence": [] },
         { "id": "N03-03", "title": "Button/Input/OTP primitives", "status": "TODO", "dependsOn": ["N03-02"], "acceptance": ["state matrix", "48dp semantics"], "evidence": [] },
         { "id": "N03-04", "title": "Card/Choice/Feedback/Progress primitives", "status": "TODO", "dependsOn": ["N03-02"], "acceptance": ["wrong answer warm-neutral", "reduced motion"], "evidence": [] },

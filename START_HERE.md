@@ -1,18 +1,18 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
 
 ```yaml
-file_version: 36
+file_version: 37
 last_updated: 2026-10-31
-snapshot_id: SNAP-20261031-N02-CLOSED
+snapshot_id: SNAP-20261031-N03-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n02-foundation
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
-current_phase: N02
-current_task: N02-07
-phase_status: DONE_12_OF_12
-apk_status: ANDROID_GATE_PASS__DEBUG_APK_NOT_BUILT_NOT_AUTHORISED
+current_phase: N03
+current_task: N03-01
+phase_status: N03_IN_PROGRESS_1_OF_8__U0_DONE
+apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
 ## 0. تصمیم مالک و مرز کار
@@ -131,6 +131,10 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_NOT_BUILT_NOT_AUTHORISED
 
 **نتیجهٔ نهایی N02 (2026-10-31):** هر ۱۲ task پیاده‌سازی شد. `N02-07` با نخستین اجرای واقعی Gradle بسته شد: doctor = READY و gate (test/lint/compile) = PASS با exit 0 روی ماشین مالک (JDK 17 Temurin + `D:\SDK` با platform 37)؛ lint در همان اجرا یک خطای واقعی (`themes.xml`، نیازمند API 27) را آشکار کرد که با qualifier `values-v27` رفع شد. debug APK عمداً ساخته نشد (task صراحتاً مجوز نداد) و instrumentation/emulator به فازهای بعدی موکول است. N03 فقط با go-ahead صریح مالک و از `N03-01` شروع می‌شود.
 
+## 6b. فاز جاری N03 — Native Design System V3 (U0 انجام شد)
+
+- [x] `N03-01` Token schema و codegen TypeScript/Kotlin — `DONE` در 2026-10-31: codegen تک‌منبعی `tools/token-codegen/generate.mjs` که فقط بلاک canonical `v2` از `packages/design-system/src/tokens.json` را می‌خواند (ADR-0037 L6)؛ خروجی‌های generated: `packages/design-system/src/tokens.generated.ts` و `apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraTokens.kt` (مقادیر خام Compose؛ اتصال ماژول Gradle در `N03-02`)؛ drift gate با `--check` (TOKEN_DRIFT: PASS) و تست `packages/design-system/src/codegen.drift.test.ts` (۶ تست). هیچ مقدار v1 یا کپی JSON دومی وارد Native نشد.
+- [ ] `N03-02` ShomaraTheme و typography RTL — بعدی؛ ایجاد ماژول `:core:designsystem` در settings.gradle.kts (خارج از allowedPaths همین task بود).
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.
@@ -171,10 +175,11 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_NOT_BUILT_NOT_AUTHORISED
 
 | 2026-10-28 | SNAP-20261028-NATIVE-N02-BUILD-HARNESS | build محلی و CI به doctor/gate/assemble-debug واحد منتقل شد؛ گزارش JSON و SHA-256، Skill تخصصی و resume report اضافه شد؛ SDK 37 تنها blocker باقی ماند. |
 | 2026-10-31 | SNAP-20261031-N02-CLOSED | N02 با PASS واقعی `android:gate` بسته شد (رفع خطای lint واقعی themes.xml با values-v27)؛ چهار فیکس P0 فاز ۱ Track A (allowlist answer-key، lifecycle provenance، fail-closed dev identity، حذف کپی ستاره) و هاردنینگ verifierها؛ Vitest 67/514، static 87/87، parity 29/29. |
+| 2026-10-31 | SNAP-20261031-N03-U0-01 | checkpoint N02/P0 با commit `0ca03ea` ثبت شد؛ debug APK واقعی ساخته و تأیید شد (PASS، 12,030,634 bytes، SHA-256 06007f6a…)؛ شاخهٔ `native/n03-design-system` ساخته شد و U0/`N03-01` (token codegen TS/Kotlin + drift gate) با تست و گیت سبز بسته شد. |
 
 ## 10. کار بعدی دقیق
 
-`N02-07` و فاز `N02` در 2026-10-31 با شواهد PASS واقعی بسته شدند (اینجا و `harness/WORKLOG.md`). گام بعدی مطابق graph، `N03-01` است؛ اما N03 فقط با go-ahead صریح مالک شروع شود. برای ادامه از چت جدید: `node tools/harness.mjs validate` و سپس `node tools/harness.mjs next` (اکنون `N03-01 [TODO]` را نشان می‌دهد) و `node tools/harness.mjs task N03-01`. اگر debug APK خواسته شد، فقط `npm run android:assemble:debug` معتبر است؛ release/AAB/signing تا N10/HG-05 ممنوع می‌ماند.
+`N02-07` و فاز `N02` در 2026-10-31 با شواهد PASS واقعی بسته شدند (اینجا و `harness/WORKLOG.md`). N03 با go-ahead مالک از `N03-01` (U0) شروع شد و همان task با شواهد بسته شد؛ گام بعدی `N03-02` (ShomaraTheme، typography RTL، ماژول `:core:designsystem`) است و تغییراتش DIFF_READY و بدون commit است. برای ادامه از چت جدید: `node tools/harness.mjs validate` و سپس `node tools/harness.mjs next` (اکنون `N03-01 [TODO]` را نشان می‌دهد) و `node tools/harness.mjs task N03-01`. اگر debug APK خواسته شد، فقط `npm run android:assemble:debug` معتبر است؛ release/AAB/signing تا N10/HG-05 ممنوع می‌ماند.
 
 ## 11. قفل مسیر Track A (ADR-0037، ۲۰۲۶-۱۰-۳۰)
 

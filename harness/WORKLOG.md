@@ -141,3 +141,11 @@
 - verifier: `scripts/verify-phase5.mjs` اکنون خروجی generated Gradle (`build`، `.gradle`) را از اسکن Unity مستثنا می‌کند (منبع در برابر artifact؛ AGENTS §4) — gate دیگر نیازی به پاک‌سازی دستی `build/` ندارد.
 - cleanup: شواهد اجرا از `docs/archive/evidence/2026-10-31/` به خارج از repo منتقل شد: `/tmp/shomara-evidence-2026-10-31` (grounding-report، final-report، ci-honesty-inventory و ۳۳ فایل baseline) تا dependency-map فقط فایل‌های واقعی repo را ببیند؛ `.zcode/` (ابزار عامل محلی) به `.gitignore` افزوده شد؛ ارجاع START_HERE به‌روز شد.
 - evidence note: مسیر قبلی `docs/archive/evidence/2026-10-31/` در دو entry قبلی همین WORKLOG مذکور است؛ مسیر معتبر فعلی `/tmp/shomara-evidence-2026-10-31` است (append-only حفظ شد).
+
+## 2026-10-31 — Stage 4C: commit 0ca03ea، debug APK، شروع N03 (U0/N03-01) — N03-01 changes DIFF_READY
+
+- commit: checkpoint تأییدشدهٔ N02-07 + چهار فیکس P0 با `chore(n02): close N02-07 android gate and resolve P0 security/child-safety gates` (0ca03ea، 25 فایل) روی `zcode/n02-p0-2026-10-31`؛ `.zcode/` و `build/` در status ظاهر نشدند.
+- APK: `npm run android:assemble:debug` (مجوز N02-12) = PASS، `app-debug.apk` با size 12,030,634 bytes و SHA-256 `06007f6a1b53d41eeda285d78379af6147d110d49d2d0b4e1c062918efd382ad`؛ `build-reports/android/assemble-debug.json` status=PASS و `signedForRelease:false`؛ checksum مستقلاً با sha256sum بازتأیید شد. release/AAB/signing همچنان N10/HG-05.
+- branch: `native/n03-design-system` مطابق `harness/roadmap.json` ساخته شد؛ pointer روی N03/N03-01 رفت.
+- N03-01 (U0): codegen تک‌منبعی `tools/token-codegen/generate.mjs` فقط از بلاک `v2` توکن canonical (schemaVersion 2.0.0) خروجی TypeScript (`packages/design-system/src/tokens.generated.ts`) و Kotlin (`apps/android/core/designsystem/.../ShomaraTokens.kt`، مقادیر خام Color/dp/sp/FontWeight) می‌سازد؛ schema guard (hex، ascending space، کف ۴۸dp، سطوح clay استاندارد MASTER)؛ drift gate دو لایه: `--check` CLI و تست vitest `codegen.drift.test.ts` (۶ تست). generated files دست‌نویس نمی‌شوند.
+- boundary: فقط مسیرهای مجاز task (`packages/design-system/**`، `tools/token-codegen/**`، `apps/android/core/designsystem/**`) + `harness/**` و `START_HERE.md` تغییر کرد؛ اتصال ماژول `:core:designsystem` به Gradle عمداً به `N03-02` موکول شد (settings.gradle.kts خارج از allowedPaths این task)؛ هیچ صفحهٔ UI (U1+) شروع نشد؛ N03-01 changes کامیت نشدند.

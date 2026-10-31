@@ -7,13 +7,13 @@
     "scripts"
   ],
   "counts": {
-    "sourceFiles": 528,
-    "importEdges": 1821,
+    "sourceFiles": 530,
+    "importEdges": 1826,
     "v1ImportConsumers": 119,
     "v2ImportConsumers": 84,
     "workspaceImportEdges": 108,
     "deepWorkspaceImports": 0,
-    "zeroInboundCandidates": 4,
+    "zeroInboundCandidates": 5,
     "v1ExternalConsumerFiles": 22,
     "v2ExternalConsumerFiles": 22
   },
@@ -147,7 +147,8 @@
     "apps/mobile/src/components/CharacterAvatar.tsx",
     "apps/mobile/src/components/SemanticAnimationDemo.tsx",
     "apps/mobile/src/performance/runtimeBudget.ts",
-    "apps/mobile/src/state/useGradeExperience.ts"
+    "apps/mobile/src/state/useGradeExperience.ts",
+    "packages/design-system/src/tokens.generated.ts"
   ],
   "textReferences": {
     "/ui/v1/": [
