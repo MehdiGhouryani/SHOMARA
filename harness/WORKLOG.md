@@ -164,3 +164,10 @@
 - N03-03: `ShomaraButton` (۵ حالت، ۳ واریانت، ShomaraTapGuard برای جلوگیری از tap تکراری، ارتفاع ثابت در loading، کاهش depth در pressed)، `ShomaraTextField` (۶ حالت با اولویت قطعی، label پایدار، خطای متنی فارسی actionable، جهت متن LTR برای عدد/تلفن)، `ShomaraOtpInput` (پیشرفت رقم LTR با index، پر شدن سقف‌دار بدون overwrite، backspace، label TalkBack رقمی). همه فقط از ShomaraTokens تغذیه می‌شوند.
 - foundation 1.12 note: BasicTextField قدیمی (value-based) حذف شده؛ مسیر state-owning `rememberTextFieldState` استفاده شد؛ `KeyboardOptions` در `androidx.compose.foundation.text` است.
 - evidence: module test/lint BUILD SUCCESSFUL؛ ۷ (theme) + ۱۴ (primitives) تست JVM؛ هیچ verifier تضعیف نشد.
+
+## 2026-10-31 — MEGA N03 — M3: N03-04 Card/Choice/Feedback/Progress — atomic commit
+
+- `ShomaraCard`/`ShomaraChoiceTile`: ۷ حالت (default/pressed/selected/checked/correct/retry/disabled)، کاهش depth در pressed، جفت‌رنگ گرم توکن برای درست/دوباره، حامل غیررنگی (label فارسی + mark) برای همهٔ وضعیت‌های status دار، انتخاب تکی idempotent، قاعدهٔ «حداکثر یک featured».
+- `ShomaraFeedbackBanner`: چهار kind با ارتفاع ثابت و متن‌های پیش‌فرض گرم هم‌راستا با خطوط تأییدشدهٔ شخصیت‌ها (تست، عدم وجود واژهٔ تنبیهی را الزام می‌کند).
+- `ShomaraProgressBar`: چهار حالت، reducedMotion فقط انیمیشن indeterminate را می‌بندد، آگهی Persian قطعی با toFa، رندر verbatim وضعیت سرور (بدون حدس mastery).
+- evidence: module test/lint BUILD SUCCESSFUL (۳۲/۳۲ JVM)؛ هیچ گیت تضعیف نشد.
