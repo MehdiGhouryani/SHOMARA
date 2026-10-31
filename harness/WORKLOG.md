@@ -208,3 +208,10 @@
 
 - `ShomaraPhoneLogic` (ارقام فارسی/عربی، پیشوندهای 0098/+98/98/0، جداکننده‌ها، فرم canonical 09XXXXXXXXX) و `ShomaraBackLogic` (نقشهٔ back هر گام)؛ صفحات Welcome/Phone فقط از primitiveهای design system ساخته شدند (field عددی LTR، CTA gated).
 - evidence: module test/lint BUILD SUCCESSFUL (۱۳/۱۳).
+
+## 2026-10-31 — N04 — M3: N04-03 OTP request/verify + secure storage — atomic commit
+
+- `ShomaraOtpApi` (OkHttp واقعی؛ endpoint تزریقی در runtime، بدون URL در repo طبق L10)؛ همهٔ مسیرهای منفی با MockWebServer: 429+Retry-After، 400، 5xx، timeout، connection-refused (offline)، endpoint پیکربندی‌نشده = fail-closed بدون هیچ فراخوانی شبکه.
+- `ShomaraOtpThrottle`: cooldown محلی، احترام به Retry-After با cap، escalation محدود روی 429.
+- `PreferencesTokenStore` (DataStore واقعی، تست file-backed روی JVM) + `ShomaraAuthSession`: ذخیرهٔ توکن فقط با verify موفق؛ restore fail-closed (missing/rejected → پاک‌سازی فوری؛ offline → نگه‌داشت برای تلاش بعدی)؛ signOut همیشه پاک می‌کند.
+- evidence: سه ماژول test+lint = BUILD SUCCESSFUL؛ ۱۱+۶+۲۲ = ۳۹ تست، صفر شکست.
