@@ -8,52 +8,13 @@ object ShomaraProfileStrings {
     const val NameHint: String = "مثلاً آریا"
     const val NameInvalid: String = "نام را کوتاه و بدون عدد وارد کن."
     const val GradeLabel: String = "پایهٔ تحصیلی"
-    const val GradeOne: String = "پایهٔ اول"
+    const val GradeOne: String = "پایه اول ابتدایی"
     const val Save: String = "ذخیره"
     const val SaveFailed: String = "ذخیره نشد؛ دوباره تلاش می‌کنیم."
     const val SaveRetry: String = "ذخیره نشد؛ یک بار دیگر امتحان کن."
     const val PlacementSkip: String = "فعلاً رد می‌کنم"
     const val PlacementPending: String = "در حال آماده‌سازی نقطهٔ شروع…"
     const val PlacementTitle: String = "نقطهٔ شروع را پیدا کنیم"
-}
-
-/**
- * Profile draft + save reducer (N04-04): an incomplete draft can never be submitted; a failed
- * save keeps every field and offers a warm retry. The grade comes from the canonical list.
- */
-data class ShomaraProfileDraft(
-    val name: String = "",
-    val gradeId: String = DEFAULT_GRADE_ID,
-) {
-    init {
-        require(gradeId in CANONICAL_GRADE_IDS) { "gradeId must be canonical" }
-    }
-
-    val isNameValid: Boolean
-        get() = name.isNotBlank() && name.length >= 2 && name.none { it.isDigit() } && name == name.trim()
-
-    val isComplete: Boolean
-        get() = isNameValid
-
-    val canSave: Boolean
-        get() = isComplete
-
-    /** Placement can only start from a complete profile. */
-    val canEnterPlacement: Boolean
-        get() = isComplete
-
-    companion object {
-        const val DEFAULT_GRADE_ID: String = "G1"
-        val CANONICAL_GRADE_IDS: List<String> = listOf("G1")
-
-        fun gradeLabel(gradeId: String): String = when (gradeId) {
-            "G1" -> ShomaraProfileStrings.GradeOne
-            else -> throw IllegalArgumentException("unknown grade $gradeId")
-        }
-
-        fun nameValidationError(name: String): String? =
-            if (ShomaraProfileDraft(name = name).isNameValid) null else ShomaraProfileStrings.NameInvalid
-        }
 }
 
 /** Pure save reducer: bounded warm retries, state kept verbatim for resubmission. */
@@ -79,6 +40,11 @@ data class ShomaraProfileSaveState(
         attempt = attempt + 1,
         failureMessage = if (retryable && attempt + 1 > 1) ShomaraProfileStrings.SaveRetry else ShomaraProfileStrings.SaveFailed,
     )
+
+    companion object {
+        /** Restart resume (N04-04): a saved incomplete draft re-enters with Resume semantics. */
+        fun resumed(draft: ShomaraProfileDraft): ShomaraProfileSaveState = ShomaraProfileSaveState(draft = draft)
+    }
 
     /** Deterministic Persian progress note for TalkBack. */
     fun announcement(): String = when {

@@ -31,6 +31,7 @@ data class ShomaraOtpState(
     val digits: List<Int?> = List(length) { null },
     val focusIndex: Int = 0,
     val invalid: Boolean = false,
+    val expired: Boolean = false,
 ) {
     init {
         require(length > 0) { "otp length must be positive" }
@@ -50,7 +51,7 @@ data class ShomaraOtpState(
         val next = digits.toMutableList()
         next[focusIndex] = digit
         val nextFocus = if (focusIndex < length - 1) focusIndex + 1 else focusIndex
-        return copy(digits = next, focusIndex = nextFocus, invalid = false)
+        return copy(digits = next, focusIndex = nextFocus, invalid = false, expired = false)
     }
 
     /** Backspace clears the current cell, or the previous cell when the current one is empty. */
@@ -59,28 +60,44 @@ data class ShomaraOtpState(
         val target = if (next[focusIndex] != null) focusIndex else focusIndex - 1
         if (target < 0) return copy(invalid = false)
         next[target] = null
-        return copy(digits = next, focusIndex = target, invalid = false)
+        return copy(digits = next, focusIndex = target, invalid = false, expired = false)
     }
 
     fun markInvalid(): ShomaraOtpState = copy(invalid = true)
+    fun markExpired(): ShomaraOtpState = copy(expired = true)
     fun reset(): ShomaraOtpState = ShomaraOtpState(length)
+
+    /**
+     * Paste support: a pasted code fills the cells from the leftmost LTR cell in order; extra
+     * digits beyond the length are ignored and the focus lands on the last filled cell.
+     */
+    fun fillFromCode(code: String): ShomaraOtpState {
+        val digits = code.mapNotNull { it.digitToIntOrNull() }.take(length)
+        if (digits.isEmpty()) return this
+        val next: MutableList<Int?> = digits.map { it as Int? }.toMutableList()
+        while (next.size < length) next.add(null)
+        return copy(digits = next, focusIndex = (digits.size - 1).coerceAtLeast(0), invalid = false, expired = false)
+    }
 
     companion object {
         fun empty(length: Int): ShomaraOtpState = ShomaraOtpState(length)
     }
 }
 
-enum class ShomaraOtpFieldState { Empty, Focused, Filled, Invalid, Disabled, Loading }
+enum class ShomaraOtpFieldState { Empty, Focused, Filled, Invalid, Expired, Disabled, Loading }
 
 object ShomaraOtpLogic {
     fun stateFor(state: ShomaraOtpState, focused: Boolean, enabled: Boolean, busy: Boolean): ShomaraOtpFieldState = when {
         !enabled -> ShomaraOtpFieldState.Disabled
         busy -> ShomaraOtpFieldState.Loading
+        state.expired -> ShomaraOtpFieldState.Expired
         state.invalid -> ShomaraOtpFieldState.Invalid
         focused -> ShomaraOtpFieldState.Focused
         state.isComplete -> ShomaraOtpFieldState.Filled
         else -> ShomaraOtpFieldState.Empty
     }
+
+    fun expiredLabel(): String = "کد منقضی شد؛ کد جدید بفرست."
 
     fun cellBorderFor(fieldState: ShomaraOtpFieldState, isFocusCell: Boolean): Color = when {
         fieldState == ShomaraOtpFieldState.Invalid -> ShomaraTokens.ColorDanger

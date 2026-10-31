@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
  */
 class ShomaraOnboardingStateHolder(
     val session: ShomaraAuthSession?,
+    private val draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
 ) {
     var flow by mutableStateOf(ShomaraOnboardingFlow())
     var phone by mutableStateOf("")
@@ -36,6 +37,28 @@ class ShomaraOnboardingStateHolder(
     var profileDraft by mutableStateOf(ShomaraProfileDraft())
     var saveState by mutableStateOf(ShomaraProfileSaveState(profileDraft))
     var placement by mutableStateOf(ShomaraPlacementState())
+    var resumedFromDraft by mutableStateOf(false)
+
+    /**
+     * N04-04 incomplete-profile resume: on start, a saved draft re-enters the profile step with
+     * Resume semantics; the draft is cleared once the profile is saved (or signed out).
+     */
+    suspend fun restoreDraft() {
+        val snapshot = draftStore?.read() ?: return
+        val draft = runCatching {
+            ShomaraProfileDraft(name = snapshot.name, avatarId = snapshot.avatarId, gradeId = snapshot.gradeId)
+        }.getOrNull() ?: return
+        profileDraft = draft
+        saveState = ShomaraProfileSaveState.resumed(draft)
+        flow = flow.advanceTo(OnboardingStep.ProfileSetup)
+        resumedFromDraft = true
+    }
+
+    suspend fun persistDraft() {
+        val active = draftStore ?: return
+        if (profileDraft.isResumable) active.save(com.mathlearning.core.datastore.ShomaraProfileDraftSnapshot(profileDraft.name, profileDraft.avatarId, profileDraft.gradeId))
+        else active.clear()
+    }
 
     suspend fun requestOtp() {
         val canonical = ShomaraPhoneLogic.canonical(phone)
@@ -111,8 +134,10 @@ class ShomaraOnboardingStateHolder(
 }
 
 @Composable
-fun rememberOnboardingStateHolder(session: ShomaraAuthSession?): ShomaraOnboardingStateHolder =
-    remember { ShomaraOnboardingStateHolder(session = session) }
+fun rememberOnboardingStateHolder(
+    session: ShomaraAuthSession?,
+    draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
+): ShomaraOnboardingStateHolder = remember { ShomaraOnboardingStateHolder(session = session, draftStore = draftStore) }
 
 /**
  * Real navigation host (N04-07): renders the current onboarding step from the flow state and
@@ -124,12 +149,14 @@ fun ShomaraOnboardingHost(
     onStepRoute: (String) -> Unit,
     onAuthenticated: () -> Unit,
     modifier: Modifier = Modifier,
+    draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
 ) {
-    val holder = rememberOnboardingStateHolder(session)
+    val holder = rememberOnboardingStateHolder(session, draftStore)
     val scope = rememberCoroutineScope()
     androidx.compose.runtime.LaunchedEffect(holder.flow.step) {
         onStepRoute(holder.flow.stepRoute())
     }
+    androidx.compose.runtime.LaunchedEffect(Unit) { holder.restoreDraft() }
     androidx.compose.foundation.layout.Column(
         modifier = modifier.fillMaxSize().padding(ShomaraTokens.Space16),
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(ShomaraTokens.Space12),
@@ -161,7 +188,12 @@ fun ShomaraOnboardingHost(
                     holder.saveState = holder.saveState.copy(draft = it)
                 },
                 saveState = holder.saveState,
-                onSave = { holder.saveProfile(onComplete = {}) },
+                onSave = {
+                    scope.launch {
+                        holder.persistDraft()
+                        holder.saveProfile(onComplete = {})
+                    }
+                },
             )
             OnboardingStep.GradePlacement -> ShomaraPlacementScreen(
                 state = holder.placement,

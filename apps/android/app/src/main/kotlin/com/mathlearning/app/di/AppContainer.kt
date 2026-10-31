@@ -8,7 +8,9 @@ import com.mathlearning.core.common.logging.AppLogger
 import com.mathlearning.core.common.logging.LogLevel
 import com.mathlearning.core.common.logging.LogSink
 import com.mathlearning.core.common.logging.SafeAppLogger
+import com.mathlearning.core.datastore.PreferencesProfileDraftStore
 import com.mathlearning.core.datastore.PreferencesTokenStore
+import com.mathlearning.core.datastore.ShomaraProfileDraftStore
 import com.mathlearning.core.network.ShomaraOtpApi
 import com.mathlearning.core.network.ShomaraOtpEndpoints
 import com.mathlearning.feature.onboarding.ShomaraAuthSession
@@ -19,6 +21,7 @@ import java.io.File
 interface AppContainer {
     val logger: AppLogger
     val authSession: ShomaraAuthSession
+    val profileDraftStore: ShomaraProfileDraftStore
 }
 
 /**
@@ -43,6 +46,8 @@ class DefaultAppContainer(context: Context) : AppContainer {
         api = ShomaraOtpApi(client = ShomaraOtpApi.defaultClient(), endpoints = { ShomaraRuntimeConfig.otpEndpoints }),
         store = PreferencesTokenStore(dataStore),
     )
+
+    override val profileDraftStore: ShomaraProfileDraftStore = PreferencesProfileDraftStore(dataStore)
 }
 
 private data object AndroidLogSink : LogSink {

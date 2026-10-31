@@ -20,6 +20,15 @@ object OnboardingRoutes {
     const val ProfileSetup: String = "onboarding/profile"
     const val GradePlacement: String = "onboarding/placement"
     val Ordered: List<String> = listOf(Welcome, PhoneInput, OtpVerify, ProfileSetup, GradePlacement)
+
+    /** Process-death resume: rebuild the step from a saved route (unknown routes fall back to Welcome). */
+    fun stepFor(route: String?): OnboardingStep = when (route) {
+        PhoneInput -> OnboardingStep.PhoneInput
+        OtpVerify -> OnboardingStep.OtpVerify
+        ProfileSetup -> OnboardingStep.ProfileSetup
+        GradePlacement -> OnboardingStep.GradePlacement
+        else -> OnboardingStep.Welcome
+    }
 }
 
 /** Persisted session state machine shared by onboarding and session-restore (N04-05). */

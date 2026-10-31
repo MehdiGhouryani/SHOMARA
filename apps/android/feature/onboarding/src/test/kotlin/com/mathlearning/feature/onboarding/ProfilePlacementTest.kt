@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
+import com.mathlearning.core.model.ShomaraGradeCatalog
 import org.junit.Test
 
 /** N04-04 profile/placement logic tests: save retry, incomplete state, server authority. */
@@ -25,10 +26,12 @@ class ProfilePlacementTest {
 
     @Test
     fun `grade ids are canonical - unknown grades rejected at construction`() {
-        assertEquals(listOf("G1"), ShomaraProfileDraft.CANONICAL_GRADE_IDS)
+        assertEquals(listOf("G1"), ShomaraGradeCatalog.Options.filter { it.available }.map { it.id })
         assertEquals(ShomaraProfileStrings.GradeOne, ShomaraProfileDraft.gradeLabel("G1"))
         assertThrows(IllegalArgumentException::class.java) { ShomaraProfileDraft(name = "آریا", gradeId = "G9") }
-        assertThrows(IllegalArgumentException::class.java) { ShomaraProfileDraft.gradeLabel("G2") }
+        // Locked future grades are explained warmly and never selectable.
+        assertThrows(IllegalArgumentException::class.java) { ShomaraProfileDraft(name = "آریا", gradeId = "G2") }
+        assertTrue(ShomaraGradeCatalog.lockedReason("G2").contains("به‌زودی"))
     }
 
     @Test

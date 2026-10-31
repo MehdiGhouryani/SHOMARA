@@ -13,7 +13,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ShomaraTheme {
-                ShomaraApp(authSession = (application as ShomaraApplication).container.authSession)
+                ShomaraApp(
+                    authSession = (application as ShomaraApplication).container.authSession,
+                    profileDraftStore = (application as ShomaraApplication).container.profileDraftStore,
+                )
             }
         }
     }

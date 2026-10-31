@@ -17,7 +17,10 @@ import com.mathlearning.feature.onboarding.ShomaraOnboardingHost
  * real navigation routes so Back/process death behave like navigation, not like hidden state.
  */
 @Composable
-fun ShomaraApp(authSession: com.mathlearning.feature.onboarding.ShomaraAuthSession) {
+fun ShomaraApp(
+    authSession: com.mathlearning.feature.onboarding.ShomaraAuthSession,
+    profileDraftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore,
+) {
     val navController = rememberNavController()
     ShomaraTheme {
         NavHost(
@@ -30,6 +33,7 @@ fun ShomaraApp(authSession: com.mathlearning.feature.onboarding.ShomaraAuthSessi
             ) {
                 ShomaraOnboardingHost(
                     session = authSession,
+                    draftStore = profileDraftStore,
                     onStepRoute = { stepRoute ->
                         // Keep the nav back stack aligned with the logical onboarding step.
                         if (navController.currentDestination?.route != stepRoute) {
