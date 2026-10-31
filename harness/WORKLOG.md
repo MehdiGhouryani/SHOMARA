@@ -171,3 +171,10 @@
 - `ShomaraFeedbackBanner`: چهار kind با ارتفاع ثابت و متن‌های پیش‌فرض گرم هم‌راستا با خطوط تأییدشدهٔ شخصیت‌ها (تست، عدم وجود واژهٔ تنبیهی را الزام می‌کند).
 - `ShomaraProgressBar`: چهار حالت، reducedMotion فقط انیمیشن indeterminate را می‌بندد، آگهی Persian قطعی با toFa، رندر verbatim وضعیت سرور (بدون حدس mastery).
 - evidence: module test/lint BUILD SUCCESSFUL (۳۲/۳۲ JVM)؛ هیچ گیت تضعیف نشد.
+
+## 2026-10-31 — MEGA N03 — M4: N03-05 Navigation/Dialog/Audio — atomic commit
+
+- `ShomaraTabBar`/`ShomaraTopBar`: قرارداد سه تب canonical کودک (مسیر/تمرین/من) با تست سخت‌گیرانه (ترتیب + نبود تب والدین)؛ تب قفل خودش را «قفل + دلیل» اعلام می‌کند؛ جلوگیری از navigation تکراری با همان TapGuard؛ Back فقط وقتی واقعی است؛ badge-free.
+- `ShomaraDialog`/`ShomaraBottomSheet`: خط‌مشی dismiss fail-closed (busy یا غیرقابل‌بستن، back سیستم را هم می‌بندد)، خطا پنجره را باز نگه می‌دارد و با liveRegion polite اعلام می‌شود؛ sheet همان خط‌مشی را دارد.
+- `ShomaraAudioControl`: شش حالت با action map؛ fallback متنی فارسی اجباری برای unavailable/failed؛ قرارداد ثابت `isContentLocked=false` برای همهٔ حالت‌ها (تست‌شده) — درس هرگز پشت صوت قفل نمی‌شود.
+- evidence: module test/lint BUILD SUCCESSFUL (۴۲/۴۲ JVM)؛ هیچ گیت تضعیف نشد.
