@@ -135,7 +135,7 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 
 - [x] `N03-01` Token schema و codegen TypeScript/Kotlin — `DONE` در 2026-10-31: codegen تک‌منبعی `tools/token-codegen/generate.mjs` که فقط بلاک canonical `v2` از `packages/design-system/src/tokens.json` را می‌خواند (ADR-0037 L6)؛ خروجی‌های generated: `packages/design-system/src/tokens.generated.ts` و `apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraTokens.kt` (مقادیر خام Compose؛ اتصال ماژول Gradle در `N03-02`)؛ drift gate با `--check` (TOKEN_DRIFT: PASS) و تست `packages/design-system/src/codegen.drift.test.ts` (۶ تست). هیچ مقدار v1 یا کپی JSON دومی وارد Native نشد.
 - [x] `N03-02` ShomaraTheme و typography RTL — `DONE` در 2026-10-31: ماژول `:core:designsystem` در Gradle سیم‌کشی شد (library + compose compiler، compileSdk 37/minSdk 24/JDK 17) و به لیست verify-android-foundation (۵ ماژول) افزوده شد؛ `ShomaraTheme.kt` با نگاشت slot-by-slot از ShomaraTokens (colorScheme، Typography با وزن‌های v2، Shapes از radius، clay چهار سطحی، و معنای جهت: پیش‌فرض RTL رابط در برابر LTR ریاضی)؛ هر مقدار از token می‌آید، صفر magic value؛ `FontFamily.Default` موقت است چون فایل‌های Vazirmatn در repo نیست و دانلود ممنوع (L10) — منتظر asset مالک؛ `:core:designsystem:test` و `lint` = PASS با ۷/۷ تست.
-- [ ] `N03-03` Button/Input/OTP primitives — بعدی.
+- [x] `N03-03` Button/Input/OTP primitives — `DONE` در 2026-10-31: سه primitive با state matrix کامل، duplicate-tap guard، کاهش عمق clay در pressed، خطای متنی actionable، و OTP با پیشرفت LTR صریح در صفحهٔ RTL؛ ۱۴ تست JVM جدید (مجموع ۲۱).
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

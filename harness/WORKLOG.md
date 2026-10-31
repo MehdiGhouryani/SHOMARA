@@ -157,3 +157,10 @@
 - N03-02: `ShomaraTheme.kt` — نگاشت slot-by-slot colorScheme از ShomaraTokens، پنج سبک تایپوگرافی v2 (وزن/اندازه/ارتفاع خط از token)، پنج tier شعاع، specهای clay چهار سطحی با جفت‌رنگ ثابتِ note توکن، و CompositionLocalهای جهت (پیش‌فرض RTL رابط؛ LTR صریح برای ریاضی طبق MASTER §6). صفر magic value. Vazirmatn: بدون فایل فونت در repo و با ممنوعیت دانلود (L10)، خانواده موقتاً `FontFamily.Default` است — ورودی باز مالک.
 - evidence: `./gradlew :core:designsystem:test :core:designsystem:lint` = BUILD SUCCESSFUL (۷/۷ تست)؛ `npm run android:gate` = PASS؛ TOKEN_DRIFT PASS؛ verify-android-foundation PASS (۵ ماژول)؛ کل سوئیت: static 87/87، typecheck 9/9، vitest 68 فایل/۵۲۰ تست، verify:repository ۵۳۰ فایل/۱۸۲۶ یال.
 - boundary: هیچ UI صفحه‌ای (U1+) شروع نشد؛ N03-03 دست نخورد؛ تغییرات N03-02 کامیت نشدند (DIFF_READY برای بازبینی مالک).
+
+## 2026-10-31 — Stage 4D+ / MEGA N03 — M2: N03-03 Button/Input/OTP — atomic commit
+
+- subagent repair (Action 0.1): هر پنج تعریف (`~/.zcode/agents/shomara-native-engineer.md` + چهار فایل پروژه) به `model: inherit` نرمال و کلیدهای unsupported (thoughtLevel/color/injectAgentsMd) حذف شدند. تست پرتاب (Action 0.2): هر تلاش با خطای provider-side «request has been blocked due to unusual activity» مسدود ماند (یکسان در agentهای مختلف) → کل پروتکل audit→implement→audit مستقیم و مستند اجرا شد.
+- N03-03: `ShomaraButton` (۵ حالت، ۳ واریانت، ShomaraTapGuard برای جلوگیری از tap تکراری، ارتفاع ثابت در loading، کاهش depth در pressed)، `ShomaraTextField` (۶ حالت با اولویت قطعی، label پایدار، خطای متنی فارسی actionable، جهت متن LTR برای عدد/تلفن)، `ShomaraOtpInput` (پیشرفت رقم LTR با index، پر شدن سقف‌دار بدون overwrite، backspace، label TalkBack رقمی). همه فقط از ShomaraTokens تغذیه می‌شوند.
+- foundation 1.12 note: BasicTextField قدیمی (value-based) حذف شده؛ مسیر state-owning `rememberTextFieldState` استفاده شد؛ `KeyboardOptions` در `androidx.compose.foundation.text` است.
+- evidence: module test/lint BUILD SUCCESSFUL؛ ۷ (theme) + ۱۴ (primitives) تست JVM؛ هیچ verifier تضعیف نشد.
