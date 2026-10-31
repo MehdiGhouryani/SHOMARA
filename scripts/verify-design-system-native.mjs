@@ -14,7 +14,7 @@ import path from 'node:path';
 const root = process.cwd();
 const fail = (message) => { console.error(`NATIVE_DESIGN_GUARD: FAIL — ${message}`); process.exit(1); };
 
-const scanRoots = ['apps/android/core/designsystem/src/main/kotlin', 'apps/android/app/src/main/kotlin'];
+const scanRoots = ['apps/android/core/designsystem/src/main/kotlin', 'apps/android/app/src/main/kotlin', 'apps/android/feature/onboarding/src/main/kotlin'];
 const generatedFile = 'ShomaraTokens.kt';
 
 const files = [];

@@ -1,17 +1,17 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
 
 ```yaml
-file_version: 40
+file_version: 41
 last_updated: 2026-10-31
-snapshot_id: SNAP-20261031-N03-HG02-SIGNED
+snapshot_id: SNAP-20261031-N04-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n02-foundation
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
-current_phase: N03
-current_task: N03-07
-phase_status: N03_DONE_8_OF_8__HG02_APPROVED
+current_phase: N04
+current_task: N04-01
+phase_status: N04_IN_PROGRESS_1_OF_7
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -138,6 +138,10 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N03-03` Button/Input/OTP primitives — `DONE` در 2026-10-31: سه primitive با state matrix کامل، duplicate-tap guard، کاهش عمق clay در pressed، خطای متنی actionable، و OTP با پیشرفت LTR صریح در صفحهٔ RTL؛ ۱۴ تست JVM جدید (مجموع ۲۱).
 **نتیجهٔ نهایی N03 (2026-10-31):** هر ۸ task اجرا شد (۷ DONE + N03-07 با DONE_WITH_BLOCKER). گیت‌های ماشینی همه سبزند (۵۶ تست JVM ماژول، android:gate، static 87/87 با verifier جدید صفر-raw-token). HG-02 با دستور مستقیم مالک تأیید شد؛ شواهد screenshot/device (Paparazzi در cache آفلاین نیست) و asset فونت Vazirmatn به‌عنوان ورودی باز باقی‌اند. ثبت کامل: `docs/design/NATIVE_COMPONENT_READINESS_N03.md`.
 
+## 6c. فاز جاری N04 — Auth & Onboarding (Native)
+
+- [x] `N04-01` قرارداد state و route onboarding — `DONE` در 2026-10-31: سه ماژول واقعی Gradle سیم‌کشی شد (:core:network با okhttp/mockwebserver، :core:datastore با datastore-preferences، :feature:onboarding با compose)؛ قرارداد حالت‌ها (New/Restoring/Recover/Error)، مسیرهای canonical و ماشین AuthSession با تست (۷/۷)؛ ورود مهمان در production با ثابت قراردادی ممکن نیست؛ restore با وضعیت Authenticated fail-closed می‌شود.
+- [ ] `N04-02` Welcome و phone input — بعدی.
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

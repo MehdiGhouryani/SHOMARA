@@ -19,5 +19,8 @@ rootProject.name = "SHOMARA"
 include(":app")
 include(":core:common")
 include(":core:designsystem")
+include(":core:datastore")
+include(":core:network")
 include(":core:model")
 include(":core:testing")
+include(":feature:onboarding")

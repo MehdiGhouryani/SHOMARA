@@ -34,7 +34,7 @@ for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), `mi
 
 const settings = read('apps/android/settings.gradle.kts');
 // N03-02: :core:designsystem is a required compiled module (ShomaraTokens/ShomaraTheme).
-for (const module of [':app', ':core:common', ':core:designsystem', ':core:model', ':core:testing']) {
+for (const module of [':app', ':core:common', ':core:designsystem', ':core:datastore', ':core:model', ':core:network', ':core:testing', ':feature:onboarding']) {
   assert.ok(settings.includes(`include("${module}")`), `module not included: ${module}`);
 }
 assert.match(settings, /RepositoriesMode\.FAIL_ON_PROJECT_REPOS/);
@@ -49,7 +49,9 @@ assert.match(appBuild, /applicationId = "com\.mathlearning\.app"/);
 assert.match(appBuild, /compileSdk = 37/);
 assert.match(appBuild, /minSdk = 24/);
 assert.match(appBuild, /targetSdk = 36/);
-assert.ok(!/project\(":(?:data|feature):/.test(appBuild), 'app must not depend on feature/data implementation in N02');
+assert.ok(!/project\(":data:/.test(appBuild), 'app must never depend on a :data: module');
+assert.ok(/project\(":feature:onboarding"\)/.test(appBuild), 'N04: app navigates through the onboarding feature module');
+assert.ok(!/project\(":feature:(?!onboarding)/.test(appBuild), 'only the onboarding feature is wired so far');
 
 const wrapper = read('apps/android/gradle/wrapper/gradle-wrapper.properties');
 assert.match(wrapper, /gradle-9\.6\.0-bin\.zip/);
@@ -95,4 +97,4 @@ const staticOrchestrator = read('scripts/verify-static-all.mjs');
 assert.match(staticOrchestrator, /'verify-android-environment\.mjs'/, 'host preflight must not be misreported as a static verifier');
 assert.match(staticOrchestrator, /'android-build\.mjs'/, 'host build harness must not be misreported as a static verifier');
 
-console.log('ANDROID_FOUNDATION: PASS (5 modules, pinned wrapper/toolchain, no signing or answer-key content)');
+console.log('ANDROID_FOUNDATION: PASS (8 modules, pinned wrapper/toolchain, no signing or answer-key content)');
