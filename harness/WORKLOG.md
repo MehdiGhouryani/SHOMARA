@@ -215,3 +215,8 @@
 - `ShomaraOtpThrottle`: cooldown محلی، احترام به Retry-After با cap، escalation محدود روی 429.
 - `PreferencesTokenStore` (DataStore واقعی، تست file-backed روی JVM) + `ShomaraAuthSession`: ذخیرهٔ توکن فقط با verify موفق؛ restore fail-closed (missing/rejected → پاک‌سازی فوری؛ offline → نگه‌داشت برای تلاش بعدی)؛ signOut همیشه پاک می‌کند.
 - evidence: سه ماژول test+lint = BUILD SUCCESSFUL؛ ۱۱+۶+۲۲ = ۳۹ تست، صفر شکست.
+
+## 2026-10-31 — N04 — M4: N04-04 Profile/placement — atomic commit
+
+- `ShomaraProfileDraft`/`ShomaraProfileSaveState`/`ShomaraPlacementState`: draft ناقص غیرقابل‌ارسال، retry گرم چندمرحله‌ای با حفظ ورودی و پیام Persian قطعی، placement صرفاً رندر تصمیم سرور (skip و تصمیم سرور با ساختار mutually exclusive)، پایهٔ G1-only canonical.
+- evidence: module test/lint BUILD SUCCESSFUL (۲۸/۲۸ feature tests).
