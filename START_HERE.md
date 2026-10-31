@@ -1,9 +1,9 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
 
 ```yaml
-file_version: 37
+file_version: 38
 last_updated: 2026-10-31
-snapshot_id: SNAP-20261031-N03-U0-01
+snapshot_id: SNAP-20261031-N03-DS-02
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n02-foundation
 active_product: SHOMARA
@@ -11,7 +11,7 @@ closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N03
 current_task: N03-01
-phase_status: N03_IN_PROGRESS_1_OF_8__U0_DONE
+phase_status: N03_IN_PROGRESS_2_OF_8
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -134,7 +134,8 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ## 6b. فاز جاری N03 — Native Design System V3 (U0 انجام شد)
 
 - [x] `N03-01` Token schema و codegen TypeScript/Kotlin — `DONE` در 2026-10-31: codegen تک‌منبعی `tools/token-codegen/generate.mjs` که فقط بلاک canonical `v2` از `packages/design-system/src/tokens.json` را می‌خواند (ADR-0037 L6)؛ خروجی‌های generated: `packages/design-system/src/tokens.generated.ts` و `apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraTokens.kt` (مقادیر خام Compose؛ اتصال ماژول Gradle در `N03-02`)؛ drift gate با `--check` (TOKEN_DRIFT: PASS) و تست `packages/design-system/src/codegen.drift.test.ts` (۶ تست). هیچ مقدار v1 یا کپی JSON دومی وارد Native نشد.
-- [ ] `N03-02` ShomaraTheme و typography RTL — بعدی؛ ایجاد ماژول `:core:designsystem` در settings.gradle.kts (خارج از allowedPaths همین task بود).
+- [x] `N03-02` ShomaraTheme و typography RTL — `DONE` در 2026-10-31: ماژول `:core:designsystem` در Gradle سیم‌کشی شد (library + compose compiler، compileSdk 37/minSdk 24/JDK 17) و به لیست verify-android-foundation (۵ ماژول) افزوده شد؛ `ShomaraTheme.kt` با نگاشت slot-by-slot از ShomaraTokens (colorScheme، Typography با وزن‌های v2، Shapes از radius، clay چهار سطحی، و معنای جهت: پیش‌فرض RTL رابط در برابر LTR ریاضی)؛ هر مقدار از token می‌آید، صفر magic value؛ `FontFamily.Default` موقت است چون فایل‌های Vazirmatn در repo نیست و دانلود ممنوع (L10) — منتظر asset مالک؛ `:core:designsystem:test` و `lint` = PASS با ۷/۷ تست.
+- [ ] `N03-03` Button/Input/OTP primitives — بعدی.
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.
@@ -176,10 +177,11 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 | 2026-10-28 | SNAP-20261028-NATIVE-N02-BUILD-HARNESS | build محلی و CI به doctor/gate/assemble-debug واحد منتقل شد؛ گزارش JSON و SHA-256، Skill تخصصی و resume report اضافه شد؛ SDK 37 تنها blocker باقی ماند. |
 | 2026-10-31 | SNAP-20261031-N02-CLOSED | N02 با PASS واقعی `android:gate` بسته شد (رفع خطای lint واقعی themes.xml با values-v27)؛ چهار فیکس P0 فاز ۱ Track A (allowlist answer-key، lifecycle provenance، fail-closed dev identity، حذف کپی ستاره) و هاردنینگ verifierها؛ Vitest 67/514، static 87/87، parity 29/29. |
 | 2026-10-31 | SNAP-20261031-N03-U0-01 | checkpoint N02/P0 با commit `0ca03ea` ثبت شد؛ debug APK واقعی ساخته و تأیید شد (PASS، 12,030,634 bytes، SHA-256 06007f6a…)؛ شاخهٔ `native/n03-design-system` ساخته شد و U0/`N03-01` (token codegen TS/Kotlin + drift gate) با تست و گیت سبز بسته شد. |
+| 2026-10-31 | SNAP-20261031-N03-DS-02 | commit `26f0de5` (N03-01)؛ `:core:designsystem` سیم‌کشی و کامپایل شد؛ ShomaraTheme/typography/clay/direction با صفر magic value پیاده و ۷ تست JVM سبز شد؛ گیت ماژول، android:gate و کل سوئیت PASS؛ N03-02 به‌صورت DIFF_READY. |
 
 ## 10. کار بعدی دقیق
 
-`N02-07` و فاز `N02` در 2026-10-31 با شواهد PASS واقعی بسته شدند (اینجا و `harness/WORKLOG.md`). N03 با go-ahead مالک از `N03-01` (U0) شروع شد و همان task با شواهد بسته شد؛ گام بعدی `N03-02` (ShomaraTheme، typography RTL، ماژول `:core:designsystem`) است و تغییراتش DIFF_READY و بدون commit است. برای ادامه از چت جدید: `node tools/harness.mjs validate` و سپس `node tools/harness.mjs next` (اکنون `N03-01 [TODO]` را نشان می‌دهد) و `node tools/harness.mjs task N03-01`. اگر debug APK خواسته شد، فقط `npm run android:assemble:debug` معتبر است؛ release/AAB/signing تا N10/HG-05 ممنوع می‌ماند.
+`N02-07` و فاز `N02` در 2026-10-31 با شواهد PASS واقعی بسته شدند (اینجا و `harness/WORKLOG.md`). N03 با go-ahead مالک از `N03-01` (U0) شروع شد و همان task با شواهد بسته شد؛ N03-02 (ShomaraTheme و typography RTL) با شواهد بسته شد؛ تغییرات آن DIFF_READY و بدون commit است؛ گام بعدی `N03-03` (Button/Input/OTP primitives) است و فقط با go-ahead مالک شروع شود. برای ادامه از چت جدید: `node tools/harness.mjs validate` و سپس `node tools/harness.mjs next` (اکنون `N03-01 [TODO]` را نشان می‌دهد) و `node tools/harness.mjs task N03-01`. اگر debug APK خواسته شد، فقط `npm run android:assemble:debug` معتبر است؛ release/AAB/signing تا N10/HG-05 ممنوع می‌ماند.
 
 ## 11. قفل مسیر Track A (ADR-0037، ۲۰۲۶-۱۰-۳۰)
 
