@@ -14,7 +14,7 @@
 
 - ۱۵ فایل route داریم: ۱۳ صفحه و ۲ layout. `station/[stationId]/index.tsx` فقط به `start` redirect می‌کند. [کد]
 - در release بدون `EXPO_PUBLIC_API_BASE_URL`، `productionConfigError()` خطا برمی‌گرداند (`runtime.ts:41–43`) و `station/[stationId]/start.tsx:30–31` به `error` می‌رود. [کد] پیش‌بینی: در APK محلی، دکمهٔ شروع ایستگاه غیرفعال و پیام «آماده‌سازی محتوا کامل نشد» دیده می‌شود. [پیش‌بینی]
-- چهار مسیر ورود به ایستگاه از همین `start` عبور می‌کنند: مسیر (`(tabs)/index.tsx:103`)، واحد (`unit/[unitId].tsx:31`)، جامپ (`unit/[unitId]/jump.tsx:118`) و تمرین (`PracticeHubScreen.tsx:63`). [نشانگر] پس تدریس، تمرین، ارزیابی و نتیجه در APK محلی از مسیر عادی دیده نمی‌شوند. این تصمیم مالک است؛ A0 کد را تغییر نمی‌دهد.
+- ورود به ایستگاه از واحد (`unit/[unitId].tsx:31`)، جامپ (`unit/[unitId]/jump.tsx:118`) و تمرین (`PracticeHubScreen.tsx:63`) همیشه از `start` می‌گذرد. مسیر اصلی (`(tabs)/index.tsx:102–103`) فقط وقتی `getResume` برای ایستگاه مقدار ندارد از `start` می‌گذرد؛ اگر مقدار داشته باشد مستقیم به `play` می‌رود. انتظار می‌رود در نصب تازه resume خالی باشد (تأیید نشده). [نشانگر] پس تدریس، تمرین، ارزیابی و نتیجه در APK محلی از مسیر عادی دیده نمی‌شوند؛ این تصمیم مالک است و A0 کد را تغییر نمی‌دهد.
 - AUTH و OTP در حالت محلی رد می‌شوند (`onboarding.tsx:101`، `:109`). [کد] پس تست OTP فقط با backend (I2) ممکن است.
 - کپی «ستاره» در `characters.ts:99` و نمایش آن در `StationFlow.tsx:751` با قاعدهٔ ۸ ناسازگار است. اصلاح در فاز ۱ است. [کد]
 - ناوبری داخلی به `missions` پیدا نشد؛ route هنوز ثبت است و API آن فقط از همان صفحه صدا زده می‌شود. اثبات صفر-مصرف (L8) کامل نیست؛ حذف فقط با تصمیم مالک. [نشانگر]
@@ -101,7 +101,7 @@
 | UI-004 | profile setup | `onboarding.tsx` (مرحلهٔ CHILD) + `views2/ProfileView2` | بخشی | |
 | UI-005 | grade & placement | `onboarding.tsx` (مرحلهٔ PLACEMENT، حدود خط ۲۹۵) | بخشی | [کد] `prepareGradeContent` در حالت محلی اجرا نمی‌شود (`:196`) |
 | UI-006 | child tab shell | `app/(tabs)/_layout.tsx` + `navigation/ChildTabBar` | قابل مشاهده | |
-| UI-007 | learning path | `app/(tabs)/index.tsx` + `path/PathView2` + `path/pathModel` | بخشی | [کد] بنر حالت محلی در `:132`؛ ورود به ایستگاه در `:103` |
+| UI-007 | learning path | `app/(tabs)/index.tsx` + `path/PathView2` + `path/pathModel` | بخشی | [کد] بنر حالت محلی در `:132`؛ ورود به ایستگاه در `:102–103` (بدون resume به `start`، با resume به `play`) |
 | UI-008 | station start | `app/station/[stationId]/start.tsx` + `views2/StationStartV2` | [پیش‌بینی] خطا | [کد] `start.tsx:30–31` بدون استثنای preview به `error` می‌رود؛ دکمه با `startDisabled` (`:107`) غیرفعال می‌شود |
 | UI-009 تا UI-012 | teach، guided practice، assessment، result | `station/[stationId]/play.tsx` (۷ خط) → `StationFlow.tsx` (۹۵۴ خط) + `LessonPlayerChrome` + `views2/LessonViewsV2` | وابسته به UI-008 | [نشانگر] ورود عادی از `start` است؛ روی دستگاه تأیید نشده |
 | UI-013 | practice tab | `app/(tabs)/practice.tsx` → `ui/PracticeHubScreen` (۷۷ خط) | قابل مشاهده | ورود به ایستگاه از `PracticeHubScreen.tsx:63` |

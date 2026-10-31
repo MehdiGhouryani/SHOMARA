@@ -140,3 +140,9 @@
 - calibration: ADR-0037 L11 فرمان‌های EAS را ذکر می‌کند؛ مسیر محلی Gradle فقط با مجوز مالک پوشش می‌یابد و I3 بسته نمی‌شود. RN `0.86.0` و Expo `57.0.26` در lock هستند و با `APK_PREVIEW.md` §4b مطابقت دارند؛ اثر Hermes روی دستگاه تکرار نشده است. `.gitignore` تغییر کد نیست، اما L15 فاز صفر را فقط مستندات تعریف کرده؛ جدا برگشت‌پذیر است.
 - verify (روی این درخت پیش از افزودن این ورودی): `harness validate` = HARNESS_VALID (99 tasks, 11 phases)؛ `verify-repository-harness` = PASS (99 tasks, 59 ledger entries, 1813 dependency edges)؛ `dependency-audit check` = PASS (526 files, 1813 edges)؛ `verify-apk-preview` = PASS (21 checks)؛ `git diff --check` exit 0. ماتریس‌های بخش ۲ و ۳ با نسخهٔ commit شده یکسان‌اند.
 - boundary: هیچ کد اپ تغییر نکرد؛ هیچ APK ساخته یا نصب نشد؛ مقدار `.env` یا credential خوانده یا چاپ نشد (فقط نام فایل‌ها)؛ push فقط به `docs/phase-a0-audit-apk` بود؛ `main` و `roadmap.json` دست‌نخورده‌اند.
+
+## 2026-10-31 — A0 review (تصحیح ورود از مسیر)
+
+- correction: نسخهٔ بازبینی گفته بود هر چهار مسیر ورود به ایستگاه از `start` می‌گذرد. دقیق‌تر: واحد (`unit/[unitId].tsx:31`)، جامپ (`jump.tsx:118`) و تمرین (`PracticeHubScreen.tsx:63`) همیشه به `start` می‌روند؛ مسیر اصلی (`(tabs)/index.tsx:102–103`) وقتی `getResume` مقدار دارد مستقیم به `play` می‌رود. نتیجهٔ اصلی تغییری نکرد: در نصب تازه انتظار می‌رود resume خالی باشد (تأیید نشده).
+- evidence: `git grep` و خواندن `(tabs)/index.tsx:55–66` و `:96–104` در همین درخت.
+- boundary: فقط مستند اصلاح شد؛ کد اپ تغییر نکرد.
