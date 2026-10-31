@@ -225,3 +225,10 @@
 
 - `ShomaraSessionExpiry` (TTL هم‌راستا با پنجرهٔ restore؛ timestamp مفقود = منقضی) + `AuthSession.ensureUnexpired` (session منقضی قبل از هر استفادهٔ کودک‌روی تخریب و secret پاک می‌شود) + `ShomaraAuthGate` (تصمیم خالص سطح: ChildShell/OnboardingRestoring/OnboardingNew در هر ۴ ترکیب).
 - evidence: module test/lint BUILD SUCCESSFUL (۳۲/۳۲ feature tests).
+
+## 2026-10-31 — N04 — M6: N04-06/07 + بستن فاز N04 — atomic commit (DIFF_READY)
+
+- N04-06: قرارداد traversal هر گام (ترتیب TalkBack در ترتیب اعلان؛ عنوان اول، اکشن آخر، برچسب‌های گرم) با تست؛ اعداد cellهای OTP با ارقام فارسی و ترتیب LTR سخت. Screenshot واقعی NATIVE_PENDING (پروتکل N03).
+- N04-07: مسیر launch واقعی — NavHost با startDestination ONBOARDING + deep link، گام‌های منطقی به routeهای واقعی mirror می‌شوند، ورود موفق → FOUNDATION با popUpTo inclusive؛ AppContainer دارای DataStore context-scoped و endpoint تزریقی (null تا backend؛ fail-closed)؛ journey tests: happy path با HTTP واقعی (400 سپس 200)، گیت draft ناقص، throttle بدون فراخوانی شبکه، offline بدون ذخیرهٔ secret؛ back با پاک‌سازی OTP.
+- connectedCheck اجرا نشد (بدون AVD روی این ماشین) — ثبت صادقانه؛ evidence دستگاه در فاز بعد.
+- closure: N04-06/07 DONE؛ فاز N04 DONE (7/7)؛ pointer → N04-07؛ harness next = N05-01.

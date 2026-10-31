@@ -88,7 +88,7 @@ object ShomaraOtpLogic {
         else -> ShomaraTokens.ColorLine
     }
 
-    fun cellLabel(index: Int, length: Int): String = "رقم ${index + 1} از $length"
+    fun cellLabel(index: Int, length: Int): String = "رقم ${ShomaraDigits.toFa(index + 1)} از ${ShomaraDigits.toFa(length)}"
 }
 
 @Composable

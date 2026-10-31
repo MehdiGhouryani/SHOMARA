@@ -15,4 +15,10 @@ class NavigationSnapshotTest {
     fun `falls back safely when saved route is unknown`() {
         assertEquals(AppDestination.FOUNDATION, NavigationSnapshot.restore("removed-route").destination)
     }
+
+    @Test
+    fun `onboarding destination survives process death restore`() {
+        val saved = NavigationSnapshot(AppDestination.ONBOARDING).save()
+        assertEquals(AppDestination.ONBOARDING, NavigationSnapshot.restore(saved).destination)
+    }
 }
