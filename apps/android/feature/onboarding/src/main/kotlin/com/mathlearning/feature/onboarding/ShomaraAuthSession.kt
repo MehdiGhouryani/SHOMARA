@@ -21,6 +21,8 @@ class ShomaraAuthSession(
 ) {
     var authenticatedToken: String? = null
         private set
+    var authenticatedAtMs: Long? = null
+        private set
 
     /** Requests an OTP; enforces the local throttle and records server Retry-After. */
     fun requestOtp(phone: String): RequestOutcome {
@@ -48,6 +50,7 @@ class ShomaraAuthSession(
             if (ShomaraTokenPolicy.isUsable(token)) {
                 store.save(token!!)
                 authenticatedToken = token
+                authenticatedAtMs = now()
                 VerifyOutcome.Verified
             } else {
                 VerifyOutcome.Failed(
@@ -75,6 +78,7 @@ class ShomaraAuthSession(
                 }
             is ShomaraOtpResult.Success -> {
                 authenticatedToken = token
+                if (authenticatedAtMs == null) authenticatedAtMs = now()
                 RestoreOutcome.Verified
             }
         }
@@ -84,6 +88,20 @@ class ShomaraAuthSession(
     suspend fun signOut() {
         store.clear()
         authenticatedToken = null
+        authenticatedAtMs = null
+    }
+
+    /**
+     * Expiry check (N04-05): a session older than the TTL is expired and must be torn down
+     * (fail closed) before anything child-facing can use it. Returns false when it signed out.
+     */
+    suspend fun ensureUnexpired(nowMs: Long): Boolean {
+        if (authenticatedToken == null) return true
+        if (ShomaraSessionExpiry.isExpired(authenticatedAtMs, nowMs)) {
+            signOut()
+            return false
+        }
+        return true
     }
 
     companion object {
@@ -101,4 +119,30 @@ sealed class RequestOutcome {
 sealed class VerifyOutcome {
     data object Verified : VerifyOutcome()
     data class Failed(val failure: com.mathlearning.core.network.ShomaraNetworkFailure) : VerifyOutcome()
+}
+
+/**
+ * Session expiry policy (N04-05): the TTL mirrors the fail-closed restore window in
+ * [com.mathlearning.core.datastore.ShomaraTokenPolicy]. A missing timestamp counts as expired.
+ */
+object ShomaraSessionExpiry {
+    val TtlMs: Long = com.mathlearning.core.datastore.ShomaraTokenPolicy.MaxRestoredSessionMs
+
+    fun expiresAt(authenticatedAtMs: Long): Long = authenticatedAtMs + TtlMs
+
+    fun isExpired(authenticatedAtMs: Long?, nowMs: Long): Boolean = when (authenticatedAtMs) {
+        null -> true
+        else -> nowMs >= expiresAt(authenticatedAtMs)
+    }
+}
+
+/** Pure auth gate: which surface may render for a given session state (N04-05). */
+object ShomaraAuthGate {
+    enum class Surface { ChildShell, OnboardingRestoring, OnboardingNew }
+
+    fun decide(authenticated: Boolean, sessionExpired: Boolean): Surface = when {
+        authenticated && !sessionExpired -> Surface.ChildShell
+        authenticated && sessionExpired -> Surface.OnboardingRestoring // torn down; re-enter through welcome
+        else -> Surface.OnboardingNew
+    }
 }

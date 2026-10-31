@@ -220,3 +220,8 @@
 
 - `ShomaraProfileDraft`/`ShomaraProfileSaveState`/`ShomaraPlacementState`: draft ناقص غیرقابل‌ارسال، retry گرم چندمرحله‌ای با حفظ ورودی و پیام Persian قطعی، placement صرفاً رندر تصمیم سرور (skip و تصمیم سرور با ساختار mutually exclusive)، پایهٔ G1-only canonical.
 - evidence: module test/lint BUILD SUCCESSFUL (۲۸/۲۸ feature tests).
+
+## 2026-10-31 — N04 — M5: N04-05 Session expiry/restore — atomic commit
+
+- `ShomaraSessionExpiry` (TTL هم‌راستا با پنجرهٔ restore؛ timestamp مفقود = منقضی) + `AuthSession.ensureUnexpired` (session منقضی قبل از هر استفادهٔ کودک‌روی تخریب و secret پاک می‌شود) + `ShomaraAuthGate` (تصمیم خالص سطح: ChildShell/OnboardingRestoring/OnboardingNew در هر ۴ ترکیب).
+- evidence: module test/lint BUILD SUCCESSFUL (۳۲/۳۲ feature tests).
