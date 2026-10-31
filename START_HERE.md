@@ -141,7 +141,7 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ## 6c. فاز جاری N04 — Auth & Onboarding (Native)
 
 - [x] `N04-01` قرارداد state و route onboarding — `DONE` در 2026-10-31: سه ماژول واقعی Gradle سیم‌کشی شد (:core:network با okhttp/mockwebserver، :core:datastore با datastore-preferences، :feature:onboarding با compose)؛ قرارداد حالت‌ها (New/Restoring/Recover/Error)، مسیرهای canonical و ماشین AuthSession با تست (۷/۷)؛ ورود مهمان در production با ثابت قراردادی ممکن نیست؛ restore با وضعیت Authenticated fail-closed می‌شود.
-- [ ] `N04-02` Welcome و phone input — بعدی.
+- [x] `N04-02` Welcome و phone input — `DONE` در 2026-10-31 (اعتبارسنجی فارسی با نرمال‌سازی ارقام و پیشوندها، back map قطعی، ۶ تست جدید).
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

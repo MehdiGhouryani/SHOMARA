@@ -203,3 +203,8 @@
 - commit `3f6dd69`: بستهٔ N03-06/07 (catalog، verifier صفر-raw-token، readiness doc) با امضای HG-02 (دستور مستقیم مالک)؛ N03-07 → DONE؛ فاز N03 → DONE (8/8)؛ شاخهٔ `native/n04-auth-onboarding` ساخته شد.
 - N04-01: سه ماژول واقعی Gradle (:core:network/:core:datastore/:feature:onboarding) با کتابخانه‌های pinned (datastore 1.1.1، okhttp+mockwebserver 4.12.0، coroutines 1.8.1)؛ قرارداد حالت/مسیر onboarding با reducer خالص و تست؛ `GuestEntryAllowed=false`؛ restore fail-closed. verify-android-foundation اکنون ۸ ماژول الزام می‌کند و سیاست app→feature:onboarding را چک می‌کند؛ design guard شاخهٔ feature را هم اسکن می‌کند.
 - boundary: هیچ صفحهٔ UI رندر نشد (قرارداد خالص)؛ connectedCheck به فاز دارای device موکول و صادقانه ثبت می‌شود.
+
+## 2026-10-31 — N04 — M2: N04-02 Welcome/Phone — atomic commit
+
+- `ShomaraPhoneLogic` (ارقام فارسی/عربی، پیشوندهای 0098/+98/98/0، جداکننده‌ها، فرم canonical 09XXXXXXXXX) و `ShomaraBackLogic` (نقشهٔ back هر گام)؛ صفحات Welcome/Phone فقط از primitiveهای design system ساخته شدند (field عددی LTR، CTA gated).
+- evidence: module test/lint BUILD SUCCESSFUL (۱۳/۱۳).
