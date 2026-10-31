@@ -14,8 +14,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import com.mathlearning.app.R
+import com.mathlearning.core.designsystem.ShomaraTokens
 
 @Composable
 fun FoundationScreen(modifier: Modifier = Modifier) {
@@ -23,7 +23,7 @@ fun FoundationScreen(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = ShomaraTokens.Space24)
                 .testTag("foundation-screen"),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -36,7 +36,7 @@ fun FoundationScreen(modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(R.string.foundation_description),
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 12.dp),
+                modifier = Modifier.padding(top = ShomaraTokens.Space12),
             )
         }
     }

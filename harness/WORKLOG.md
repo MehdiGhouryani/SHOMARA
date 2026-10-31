@@ -185,3 +185,15 @@
 - `ShomaraNumberTile`/`ShomaraCountersGrid`/`ShomaraEquationSlot`/`ShomaraManipulativeSession`: جایگزین کامل tap-to-select/tap-to-place در کنار drag (هر دو معادل)، tiles قفل از هر دو مسیر بی‌اعتنا می‌شوند، وضعیت retry گرم و با حامل غیررنگی، هندسهٔ ریاضی با CompositionLocal اجباراً LTR مستقل از جهت رابط، toleranceها با default توکن‌مشتق و override تماس‌گیرنده.
 - audio replay/missing قبلاً در N03-05 پوشش داده شد (ارجاع در evidence).
 - evidence: module test/lint BUILD SUCCESSFUL (۵۲/۵۲ JVM)؛ هیچ گیت تضعیف نشد.
+
+## 2026-10-31 — MEGA N03 — M6: N03-06 catalog + N03-07 gate + بستن فاز N03 — atomic commit (DIFF_READY)
+
+- `ShomaraDesignSystemCatalog`: fixture قطعی light theme برای هر ۹ خانواده (RTL رابط + LTR ریاضی)؛ ماتریس ۳۶۰/۳۹۰/۴۱۲ × font scale 1/2 با تست JVM (۴ تست؛ مجموع ماژول ۵۶/۵۶). Screenshot واقعی صادقانه NATIVE_PENDING ماند (Paparazzi در cache آفلاین موجود نبود؛ افزودن plugin تصمیم مالک است).
+- `scripts/verify-design-system-native.mjs`: گیت صفر raw token (hex/dp/sp/FontWeight خارج از ShomaraTokens.kt) روی :core:designsystem و :app + ممنوعه‌های ایمنی کودک؛ اولین اجرا دو literal خام در FoundationScreen.kt (placeholder N02) گرفت که توکنیزه شد و `:app` به `:core:designsystem` وابسته شد؛ PASS (۱۸ فایل Kotlin).
+- ثبت صادقانه: `docs/design/NATIVE_COMPONENT_READINESS_N03.md` — جدول ۹ خانواده با تفکیک JVM/semantics/catalog از screenshot/device.
+- closure: N03-06 = DONE؛ N03-07 = DONE_WITH_BLOCKER (HG-02 امضای مالک + شواهد device/paparazzi)؛ فاز N03 = DONE_WITH_BLOCKER (8/8)؛ harness next = N04-01.
+- boundary: هیچ commit برای این milestone انجام نشد (DIFF_READY)؛ N04 شروع نشد.
+
+## 2026-10-31 — HG-02 owner sign-off؛ بستن نهایی N03 — commit
+
+- HG-02 با دستور مستقیم مالک (goal نشست: «Commit N03-06/07 with owner HG-02 sign-off») به APPROVED رسید؛ N03-07 → DONE و فاز N03 → DONE (8/8). screenshot/device روی Path/Auth/Lesson همچنان NATIVE_PENDING و در readiness doc پیگیری می‌شود.
