@@ -46,10 +46,29 @@ type DbPackage = {
 };
 
 type DbPackageItem = { content_version_id: string; required: boolean; ordinal: number };
-type DbContentVersion = { id: string; content_artifact_id: string; interaction_type: string; experience_form: string; learning_role: string; prompt: string; metadata: Record<string, unknown> | null; status: string };
+type DbContentVersion = { id: string; content_artifact_id: string; interaction_type: string; experience_form: string; learning_role: string; prompt: string; metadata: Record<string, unknown> | null; provenance: Record<string, unknown> | null; status: string };
 type DbContentArtifact = { id: string; artifact_code: string; skill_id: string | null; station_id: string | null };
 type DbSkill = { id: string; code: string };
 type DbManifestItem = { package_id: string; cache_class: 'CURRENT' | 'NEXT' | 'RECENT' | 'FUTURE'; sequence: number; prefetch_rank: number | null };
+
+/**
+ * Single approval source shared with SQL (ADR-0037 item 1.3): the runtime RPC
+ * `runtime_create_encounter` (migration 0053) gates on provenance->>'approvalStatus' with the
+ * same two approved values, and content_versions.status='ACTIVE' is enforced by the select
+ * filter above exactly as the RPC enforces it. approvalStatus lives in the provenance column
+ * (migrations 0046/0057/0067-0071), never in metadata.
+ */
+export const PRODUCTION_APPROVAL_STATUSES = ['CANONICAL_APPROVED', 'PRODUCTION_APPROVED'] as const;
+
+export function contentVersionIsProductionApproved(version: {
+  provenance?: Record<string, unknown> | null;
+  status?: string;
+}): boolean {
+  const provenanceStatus = version.provenance && typeof version.provenance === 'object'
+    ? String((version.provenance as Record<string, unknown>).approvalStatus ?? '')
+    : '';
+  return version.status === 'ACTIVE' && (PRODUCTION_APPROVAL_STATUSES as readonly string[]).includes(provenanceStatus);
+}
 
 async function descriptor(item: (typeof fixtures)[number]): Promise<ContentPackageDescriptor> {
   const bytes = await fs.readFile(item.file);
@@ -138,16 +157,11 @@ async function dbPackage(packageId: string, accessToken: string): Promise<{ desc
   const versions = await supabaseRestSelect<DbContentVersion>(accessToken, 'content_versions', {
     id: `in.(${versionIds.join(',')})`,
     status: 'eq.ACTIVE',
-    select: 'id,content_artifact_id,interaction_type,experience_form,learning_role,prompt,metadata,status',
+    select: 'id,content_artifact_id,interaction_type,experience_form,learning_role,prompt,metadata,provenance,status',
   });
   const versionById = new Map(versions.map((x) => [x.id, x]));
   if (versions.length !== versionIds.length) throw new Error('CONTENT_VERSION_MISSING');
-  const approvalMissing = versions.some((version) => {
-    const provenanceStatus = version.metadata && typeof version.metadata === 'object'
-      ? String((version.metadata as Record<string, unknown>).approvalStatus ?? '')
-      : '';
-    return !['CANONICAL_APPROVED', 'PRODUCTION_APPROVED'].includes(provenanceStatus);
-  });
+  const approvalMissing = versions.some((version) => !contentVersionIsProductionApproved(version));
   if (approvalMissing) throw new Error('CONTENT_NOT_PRODUCTION_APPROVED');
 
   const artifactIds = [...new Set(versions.map((x) => x.content_artifact_id))];

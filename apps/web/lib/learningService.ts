@@ -83,7 +83,6 @@ export class LearningService {
       contentVersionId: '26000000-0000-4000-8000-000000000001',
       learningRole: 'INSTRUCTION' as const,
       experienceForm: 'CONVERSATION_EXPLANATION' as const,
-      expectedIndex: 1,
     };
 
     const activeSession = sessionOverride ?? (await this.ensureActiveSession());

@@ -7,11 +7,11 @@
     "scripts"
   ],
   "counts": {
-    "sourceFiles": 526,
-    "importEdges": 1813,
+    "sourceFiles": 528,
+    "importEdges": 1821,
     "v1ImportConsumers": 119,
     "v2ImportConsumers": 84,
-    "workspaceImportEdges": 107,
+    "workspaceImportEdges": 108,
     "deepWorkspaceImports": 0,
     "zeroInboundCandidates": 4,
     "v1ExternalConsumerFiles": 22,

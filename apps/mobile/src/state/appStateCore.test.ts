@@ -117,7 +117,7 @@ describe('progress', () => {
   it('isStationPassed handles null state', () => expect(isStationPassed(null, 'ST01')).toBe(false));
 });
 
-import { dailyGoalDone, getResume, localDay, recordActivity, setResume, starsEarned, RESUMABLE_STAGES } from './appStateCore';
+import { dailyGoalDone, getResume, localDay, recordActivity, setResume, RESUMABLE_STAGES } from './appStateCore';
 
 describe('mid-station resume (E2)', () => {
   const base = () => createInitialState(profile, false);
@@ -175,12 +175,6 @@ describe('gentle daily goal + stars (no streak, no penalty)', () => {
     const j = JSON.parse(JSON.stringify(recordActivity(createInitialState(profile, false), '2026-09-29')));
     j.lastActiveDay = '29/09/2026';
     expect(parseState(JSON.stringify(j)).ok).toBe(false);
-  });
-  it('stars come only from passed learning stations', () => {
-    expect(starsEarned(null)).toBe(0);
-    const s = createInitialState(profile, false);
-    expect(starsEarned(s)).toBe(0);
-    expect(starsEarned(markStationPassed(s, 'ST01', '2026-09-29T12:00:00.000Z'))).toBe(1);
   });
 });
 

@@ -291,12 +291,6 @@ export function dailyGoalDone(state: AppState | null, today: string): boolean {
   return state?.lastActiveDay === today;
 }
 
-/** Stars come from completed learning stations only; placement never grants a reward. */
-export function starsEarned(state: AppState | null): number {
-  if (!state) return 0;
-  return Object.values(state.progress).filter((p) => p.passed).length;
-}
-
 export function getResume(state: AppState | null, stationId: string): ResumePoint | null {
   return state?.progress[stationId]?.resume ?? null;
 }

@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getSupabaseAuthUser, supabaseRestSelect } from './supabase-http';
-import { devPrincipalAllowed } from './request-principal';
+import { devPrincipalAllowed, isDevRuntime } from './request-principal';
 
 export interface TeacherAuthSession {
   accountId: string;
@@ -73,11 +73,12 @@ const DEV_TEACHER_SEEDS: Record<string, { accountId: string; displayName: string
 
 /**
  * Fail-closed (R-006 / wave A1): the seed-account path only exists when BOTH hold:
- * NODE_ENV is not "production" AND the operator explicitly set ALLOW_DEV_TEACHER_SEEDS=1.
+ * the runtime is explicitly a non-production Node runtime AND the operator explicitly set
+ * ALLOW_DEV_TEACHER_SEEDS=1. An unset/empty NODE_ENV counts as production (ADR-0037 item 1.6).
  * Evaluated per call (never cached at module load).
  */
 export function devTeacherSeedsAllowed(): boolean {
-  return process.env.NODE_ENV !== 'production' && process.env.ALLOW_DEV_TEACHER_SEEDS === '1';
+  return isDevRuntime() && process.env.ALLOW_DEV_TEACHER_SEEDS === '1';
 }
 
 /**

@@ -28,6 +28,14 @@ const files = [
   'apps/mobile/src/ui/v2/Character.tsx',
   'apps/mobile/src/ui/v2/path.tsx',
 ];
+// ADR-0037 item 1.7 / START_HERE §11 phase 1.7: the character line source and the station flow
+// consume child-facing strings, so they join the banned-terms scan but not the tokens-only
+// discipline (characters.ts legitimately holds character art palette data).
+const childSafetyFiles = [
+  ...files,
+  'apps/mobile/src/characters/characters.ts',
+  'apps/mobile/src/station/StationFlow.tsx',
+];
 for (const f of files) if (!fs.existsSync(path.join(root, f))) throw new Error(`missing V2 file: ${f}`);
 must(true, `all ${files.length} V2 path/station sources exist`);
 
@@ -75,7 +83,7 @@ for (const f of files) {
 must(true, 'every Pressable in V2 path/station files declares accessibilityRole');
 
 // 5. child-safety
-for (const f of files) {
+for (const f of childSafetyFiles) {
   const src = read(f);
   const banned = [/ستاره/u, /\bstar\b/i, /\bجان\b/u, /\blives\b/i, /\bstreak\b/i];
   for (const rx of banned) if (rx.test(src)) throw new Error(`banned gamification term ${rx} in ${f}`);

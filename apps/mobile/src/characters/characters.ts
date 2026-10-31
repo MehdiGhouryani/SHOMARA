@@ -35,7 +35,10 @@ export const CHARACTERS: Record<CharacterId, Character> = {
     color: '#218B92',
     bg: '#E3F4F3',
     role: 'راهنمای اصلی',
-    personality: 'بچه‌اژدهای فیروزه‌ای مهربان و صبور؛ هیچ‌وقت عجله نمی‌کند و هیچ‌وقت سرزنش نمی‌کند. هنوز آتش زدن بلد نیست و از ذوق جرقهٔ ستاره‌ای عطسه می‌کند.',
+    // PENDING OWNER REVIEW: the sparkle phrasing in this personality note was reworded to
+    // "جرقه‌های خوشحالی" (ADR-0037 item 1.7, AGENTS rule 8); the field has no child-facing
+    // consumer today but is scanned by the child-safety verifier anyway.
+    personality: 'بچه‌اژدهای فیروزه‌ای مهربان و صبور؛ هیچ‌وقت عجله نمی‌کند و هیچ‌وقت سرزنش نمی‌کند. هنوز آتش زدن بلد نیست و از ذوق جرقه‌های خوشحالی عطسه می‌کند.',
     catchphrase: 'قدم‌به‌قدم با هم!',
     lines: {
       greet: 'سلام! آماده‌ای قدم‌به‌قدم با هم یاد بگیریم؟',
@@ -96,7 +99,10 @@ export const CHARACTERS: Record<CharacterId, Character> = {
       hint: 'تو می‌توانی؛ من مطمئنم!',
       correct: 'جیک‌جیک! معرکه بود!',
       wrong: 'ایراد نداره؛ باز هم امتحان کن!',
-      done: 'جشن بگیریم! ستاره‌ی جدید مال توست!',
+      // ADR-0037 item 1.7 / AGENTS rule 8: stars are removed from child-facing copy.
+      // Replacement wording below is PENDING OWNER REVIEW — it celebrates the completed
+      // station itself and grants no item.
+      done: 'جشن بگیریم! این ایستگاه را کامل کردی!',
     },
   },
 };

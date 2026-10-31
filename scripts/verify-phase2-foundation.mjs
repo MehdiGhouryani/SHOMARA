@@ -29,7 +29,7 @@ const contracts = read('packages/contracts/src/content.ts');
 
 expect(/\| P02 \| Technical foundation verification \+ stabilization \| P00 \| `IN_PROGRESS`/.test(roadmap), 'P02 lifecycle is IN_PROGRESS');
 expect(/P01.*`IN_PROGRESS`/.test(roadmap), 'P01 remains explicitly IN_PROGRESS until human/product/learning review');
-expect(/process\.env\.NODE_ENV !== 'production' && process\.env\.ALLOW_DEV_PRINCIPAL === '1'/.test(principal), 'dev principal requires NODE_ENV != production AND explicit ALLOW_DEV_PRINCIPAL=1 (never backend availability)');
+expect(/return typeof nodeEnv === 'string' && nodeEnv\.length > 0 && nodeEnv !== 'production';[\s\S]{0,200}return isDevRuntime\(\) && process\.env\.ALLOW_DEV_PRINCIPAL === '1';/.test(principal), 'dev principal requires an explicitly non-production runtime AND explicit ALLOW_DEV_PRINCIPAL=1 (unset/empty NODE_ENV counts as production, ADR-0037 item 1.6)');
 expect(/if \(devPrincipalAllowed\(\)\) return devLearningIdentity\(request\);/.test(principal) && !/if \(!isProduction\) return devLearningIdentity/.test(principal), 'dev principal fallback is confined to explicit non-production opt-in and never overrides a Bearer token');
 expect(/if \(!isSupabaseConfigured\(\)\) throw new Error\('SUPABASE_CONFIG_MISSING'\);/.test(principal), 'auth fails closed when Supabase auth config is missing');
 expect(/if \(!bearerToken\(request\)\) \{\s*if \(devPrincipalAllowed\(\)\) return devLearningIdentity\(request\);\s*throw new Error\('AUTH_BEARER_REQUIRED'\);/.test(principal), 'learning routes require a bearer token unless the explicit dev opt-in is active');

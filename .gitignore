@@ -100,3 +100,4 @@ temp/
 # Local delivery packages never belong to source control.
 *.zip
 *.tar.gz
+.zcode/

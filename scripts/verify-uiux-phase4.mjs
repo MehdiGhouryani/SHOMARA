@@ -44,7 +44,9 @@ const checks = {
   avatarNotCompanion: fs.readFileSync(path.join(root, 'docs/reference/ONBOARDING_CONTRACT.md'), 'utf8').includes('avatar') && fs.readFileSync(path.join(root, 'docs/reference/ONBOARDING_CONTRACT.md'), 'utf8').includes('companion'),
   placementSkippableWeb: placement.includes('فعلاً رد می‌کنم') && web.includes('skipPlacement'),
   placementSkippableMobile: mobile.includes('فعلاً رد می‌کنم'),
-  placementNoReward: mobileCore.includes('Stars come from completed learning stations only; placement never grants a reward.') && !mobileCore.includes('1 + Object.values(state.progress)'),
+  // ADR-0037 item 1.7: the dead starsEarned state was removed with zero-consumer proof; the
+  // guard now asserts the reward symbol cannot return and the old placement bonus stays gone.
+  placementNoReward: !mobileCore.includes('starsEarned') && !mobileCore.includes('1 + Object.values(state.progress)'),
   rootFirstRunRedirect: page.includes("router.replace('/welcome')"),
   noOnboardingEmojiWeb: !/[/\\]AuthFlowScreen\.tsx/.test('') && !/[\u{1F300}-\u{1FAFF}]/u.test(web),
   noOnboardingAuthEmoji: !/[\u{1F300}-\u{1FAFF}]/u.test(web) && !/[\u{1F300}-\u{1FAFF}]/u.test(mobile),

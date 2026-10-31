@@ -1,9 +1,9 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
 
 ```yaml
-file_version: 35
-last_updated: 2026-10-28
-snapshot_id: SNAP-20261028-NATIVE-N02-FINAL-REVIEW
+file_version: 36
+last_updated: 2026-10-31
+snapshot_id: SNAP-20261031-N02-CLOSED
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n02-foundation
 active_product: SHOMARA
@@ -11,8 +11,8 @@ closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N02
 current_task: N02-07
-phase_status: IN_PROGRESS_11_OF_12_BLOCKED_ENV
-apk_status: DEBUG_PIPELINE_READY__NOT_BUILT_SDK37_MISSING
+phase_status: DONE_12_OF_12
+apk_status: ANDROID_GATE_PASS__DEBUG_APK_NOT_BUILT_NOT_AUTHORISED
 ```
 
 ## 0. تصمیم مالک و مرز کار
@@ -59,6 +59,8 @@ apk_status: DEBUG_PIPELINE_READY__NOT_BUILT_SDK37_MISSING
 | Android build harness | doctor/gate/assemble-debug + CI واحد + JSON/SHA-256 report | PASS |
 
 پنج failure باقیمانده فقط verifierهای مرورگری‌اند. تلاش نصب Playwright Chromium به‌علت پاسخ دانلود 0-byte/ZIP ناقص شکست خورد. اشکال release verifier که `apps/mobile/parity/dist-flow` را source تلقی می‌کرد اصلاح شد و اکنون مستقل PASS است.
+
+> **Annotation 2026-10-31 (ZCode run):** اعداد تاریخی ۵۱۸ فایل/۱۷۸۰ یال در این سند و `harness/roadmap.json` (N01-05) مال checkpoint 2026-10-28 هستند و بازنویسی نشدند. شمار فعلی `harness/dependency-map.json` در بازتولید بازبینی‌شدهٔ همین تاریخ به‌روز شد (شواهد خارج از repo: `/tmp/shomara-evidence-2026-10-31`). در همان اجرا: `android:gate` با نصب موجود platform 37 روی ماشین محلی PASS شد (رفع خطای lint واقعی themes.xml با qualifier values-v27) و `verify:static:all` با parity کامل 87/87 PASS شد؛ سپس N02-07 و فاز N02 طبق شواهد همان اجرا DONE شدند.
 
 ## 3. موجودی تأییدشده
 
@@ -119,15 +121,15 @@ apk_status: DEBUG_PIPELINE_READY__NOT_BUILT_SDK37_MISSING
 - [x] `N02-10` بازخوانی عمیق هر ۱۰ original، ثبت `CONTENT-013..018` و تثبیت authoring/published/client و audio/CMS lifecycle
 - [x] `N02-11` قفل UI/UX تمام ۱۷ خانواده صفحه، ترتیب U0–U6، backlog بیست‌ردیفی و بستهٔ انتقال مستقل
 - [x] `N02-12` build harness واحد، Skill تخصصی Android، CI هم‌مسیر، گزارش ماشینی و debug APK با hash
-- [ ] `N02-07` اجرای واقعی compile/lint/unit — `BLOCKED_ENV`؛ instrumentation در فاز دارای emulator/device
+- [x] `N02-07` اجرای واقعی compile/lint/unit — `DONE` در 2026-10-31: نخستین اجرای واقعی Gradle روی ماشین مالک (JDK 17 + `D:\SDK` با platform 37)؛ lint خطای واقعی `themes.xml` را گرفت که با qualifier `values-v27` رفع شد و `npm run android:gate` = PASS (exit 0)؛ debug APK عمداً ساخته نشد (task صراحتاً مجوز نداد)؛ instrumentation همچنان به فاز دارای emulator/device موکول است.
 
 پنج Skill پروژه فقط در `skills/<name>/` قرار دارند و `agents/openai.yaml` معتبر دارند: چهار Skill طراحی/اجرا/محتوا و یک Skill مستقل build. `design/MASTER.md` قرارداد برند/UX V3، `INSPIRATION_GUARDRAILS.md` مرز adopt/adapt/reject و `COMPONENT_READINESS.md` قرارداد componentهای N03 را تعریف می‌کند. ۱۵ route زنده در `design/playbook/ROUTE_REGISTRY.md` ثبت شده‌اند. هر ۱۷ خانوادهٔ صفحه outcome/focal/CTA/depth/state اختصاصی دارد و ۲۰ work item Native با dependencies/evidence صریح، تا اجرای واقعی در وضعیت `NATIVE_PENDING` نگه داشته شده‌اند.
 
-محیط Android اکنون build harness قابل‌تکرار دارد: `npm run android:doctor` برای readiness، `npm run android:gate` برای test/lint/compile و `npm run android:assemble:debug` برای gate + APK. workflow روی `ubuntu-24.04` و Node 22 پین شده، `platforms;android-37` را صریح نصب می‌کند و همان gate محلی را اجرا می‌کند. گزارش‌ها generated و خارج از Git هستند؛ APK موفق فقط با مسیر/اندازه/SHA-256 پذیرفته می‌شود. در runner فعلی JDK 17 سبز است، اما SDK root/platform 37 وجود ندارد.
+محیط Android اکنون build harness قابل‌تکرار دارد: `npm run android:doctor` برای readiness، `npm run android:gate` برای test/lint/compile و `npm run android:assemble:debug` برای gate + APK. workflow روی `ubuntu-24.04` و Node 22 پین شده، `platforms;android-37` را صریح نصب می‌کند و همان gate محلی را اجرا می‌کند. گزارش‌ها generated و خارج از Git هستند؛ APK موفق فقط با مسیر/اندازه/SHA-256 پذیرفته می‌شود. در runner ممیزی قبلی JDK 17 سبز بود اما SDK root/platform 37 وجود نداشت؛ در 2026-10-31 همین harness روی ماشین مالک (با SDK موجود) به PASS واقعی رسید.
 
 `content-library/originals/**` شامل ۱۰ فایل byte-protected است: مطالعهٔ ۲۵ بخش/۱۵۰ صفحه، معماری ۱۰۰ مهارت، ۱۵ pattern و ۲۳۲ ردیف metadata صوت. فقط ST07 spec کامل دارد؛ ۲۴ ایستگاه دیگر هنوز باید تولید شوند. ممیزی canonical در `content-library/integration/SOURCE_AUDIT.md`، مرز سه مدل/lifecycle در `AUTHORING_CONTRACT_GAPS.md` و مالکیت فازها در `PHASE_INTEGRATION.md` است. هیچ original، صوت واقعی یا محتوای production فعال نشده است.
 
-**نتیجهٔ فعلی N02:** یازده task از دوازده task پیاده‌سازی شده‌اند. gateهای Native static/build-harness، content provenance/contract، project skills، design governance و design pack سبزند، اما N02 تا اجرای واقعی Gradle و Android SDK بسته نمی‌شود. N03 نباید پیش از رفع یا اجرای `N02-07` شروع شود.
+**نتیجهٔ نهایی N02 (2026-10-31):** هر ۱۲ task پیاده‌سازی شد. `N02-07` با نخستین اجرای واقعی Gradle بسته شد: doctor = READY و gate (test/lint/compile) = PASS با exit 0 روی ماشین مالک (JDK 17 Temurin + `D:\SDK` با platform 37)؛ lint در همان اجرا یک خطای واقعی (`themes.xml`، نیازمند API 27) را آشکار کرد که با qualifier `values-v27` رفع شد. debug APK عمداً ساخته نشد (task صراحتاً مجوز نداد) و instrumentation/emulator به فازهای بعدی موکول است. N03 فقط با go-ahead صریح مالک و از `N03-01` شروع می‌شود.
 
 ## 7. تصمیم‌های محافظت‌شده
 
@@ -144,12 +146,12 @@ apk_status: DEBUG_PIPELINE_READY__NOT_BUILT_SDK37_MISSING
 
 - Chromium در runner فعلی نصب نیست.
 - Node 22.22 با runner موقت اجرا و تأیید شد؛ Node پیش‌فرض میزبان همچنان 24 است.
-- Android preflight: JDK 17 `PASS`؛ Android SDK root و platform 37 `FAIL`.
-- Gradle wrapper نتوانست distribution را بگیرد؛ cacheهای 9.6/8.11 فقط `.part` صفر بایتی‌اند و `services.gradle.org` در این runner `Network is unreachable` است؛ بنابراین compile/lint/unit ادعا نشده است.
+- Android preflight (runner ممیزی 2026-10-28): JDK 17 `PASS`؛ Android SDK root و platform 37 `FAIL`. — **رفع شد در 2026-10-31**: روی ماشین مالک `D:\SDK` با platform 37 موجود است و gate واقعی PASS شد.
+- Gradle wrapper در runner ممیزی distribution را نگرفت (`Network is unreachable`). — **رفع شد در 2026-10-31**: روی ماشین مالک distribution 9.6.0 با checksum پین‌شده دانلود و gate کامل اجرا شد.
 - تست دستگاه واقعی، TalkBack، font scaling و child/educational QA انجام نشده است.
 - مسئله‌های `CONTENT-001` تا `CONTENT-018` طبق source audit باز/محافظت‌شده‌اند؛ به‌ویژه جهت نوشتن ۱، jump/hint policy، mastery/unlock، schema typed، audio lifecycle، curriculum scope و telemetry باید در فاز مالک حل شوند.
 - هیچ ادعای APK/AAB یا production readiness وجود ندارد.
-- مسیر ساخت debug APK کاملاً آماده است، اما خود APK به‌علت نبود SDK 37 ساخته نشده است؛ release/signing همچنان N10/HG-05 است.
+- debug APK ساخته نشده — نه به‌علت blocker محیطی، بلکه چون متن task صراحتاً مجوزش را نداده است؛ release/signing همچنان N10/HG-05 است.
 
 ## 9. تاریخچهٔ کوتاه مسیر جدید
 
@@ -167,13 +169,16 @@ apk_status: DEBUG_PIPELINE_READY__NOT_BUILT_SDK37_MISSING
 | 2026-10-28 | SNAP-20261028-NATIVE-N02-FINAL-UIUX-HANDOFF | قرارداد اختصاصی ۱۷ خانواده صفحه، ترتیب U0–U6 و ۲۰ work item Native قفل شد؛ Skill/route/verifier/harness متصل و handoff مستقل ساخته شد؛ N03 همچنان عمداً پشت N02-07 ماند. |
 | 2026-10-28 | SNAP-20261028-NATIVE-N02-BUILD-HARNESS | build محلی و CI به doctor/gate/assemble-debug واحد منتقل شد؛ گزارش JSON و SHA-256، Skill تخصصی و resume report اضافه شد؛ SDK 37 تنها blocker باقی ماند. |
 
+| 2026-10-28 | SNAP-20261028-NATIVE-N02-BUILD-HARNESS | build محلی و CI به doctor/gate/assemble-debug واحد منتقل شد؛ گزارش JSON و SHA-256، Skill تخصصی و resume report اضافه شد؛ SDK 37 تنها blocker باقی ماند. |
+| 2026-10-31 | SNAP-20261031-N02-CLOSED | N02 با PASS واقعی `android:gate` بسته شد (رفع خطای lint واقعی themes.xml با values-v27)؛ چهار فیکس P0 فاز ۱ Track A (allowlist answer-key، lifecycle provenance، fail-closed dev identity، حذف کپی ستاره) و هاردنینگ verifierها؛ Vitest 67/514، static 87/87، parity 29/29. |
+
 ## 10. کار بعدی دقیق
 
-ابتدا `node tools/harness.mjs resume` و `node tools/harness.mjs task N02-07` را بخوان؛ `npm run android:doctor` و سپس `npm run android:gate` را اجرا کن. پس از status برابر `PASS`، N02 بسته و N03 از U0/`N03-01` شروع شود. اگر debug APK خواسته شد، فقط `npm run android:assemble:debug` معتبر است؛ release/AAB/signing در N02 ممنوع می‌ماند.
+`N02-07` و فاز `N02` در 2026-10-31 با شواهد PASS واقعی بسته شدند (اینجا و `harness/WORKLOG.md`). گام بعدی مطابق graph، `N03-01` است؛ اما N03 فقط با go-ahead صریح مالک شروع شود. برای ادامه از چت جدید: `node tools/harness.mjs validate` و سپس `node tools/harness.mjs next` (اکنون `N03-01 [TODO]` را نشان می‌دهد) و `node tools/harness.mjs task N03-01`. اگر debug APK خواسته شد، فقط `npm run android:assemble:debug` معتبر است؛ release/AAB/signing تا N10/HG-05 ممنوع می‌ماند.
 
 ## 11. قفل مسیر Track A (ADR-0037، ۲۰۲۶-۱۰-۳۰)
 
-این بخش مسیر موازی بتای قابل‌نصب را ثبت می‌کند. تا وقتی Track A در harness ثبت نشده (L17)، خروجی `node tools/harness.mjs next` همچنان `N02-07` است و کار Track A فقط مطابق ADR-0037 انجام می‌شود.
+این بخش مسیر موازی بتای قابل‌نصب را ثبت می‌کند. تا وقتی Track A در harness ثبت نشده (L17)، خروجی `node tools/harness.mjs next` پس از بسته‌شدن N02 اکنون `N03-01` را نشان می‌دهد و کار Track A فقط مطابق ADR-0037 انجام می‌شود.
 
 **تصمیم‌های قفل‌شده (L1 تا L17):** در `docs/adr/ADR-0037-installable-beta-track-lock.md`.
 

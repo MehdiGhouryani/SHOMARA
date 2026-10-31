@@ -46,12 +46,6 @@ export interface EncounterResponse {
   content?: {
     prompt: string;
     interactionType: string;
-    evaluatorConfig?: {
-      version?: string;
-      expectedAnswers?: unknown[];
-      maxScore?: number;
-      checkGroup?: string;
-    };
   };
 }
 
@@ -174,7 +168,6 @@ export interface NodeCanonicalMapping {
   contentVersionId: string;
   learningRole: 'INSTRUCTION' | 'GUIDED_PRACTICE' | 'INDEPENDENT_PRACTICE' | 'REVIEW' | 'MASTERY_CHECK' | 'RECOVERY' | 'TRANSFER';
   experienceForm: 'STORY' | 'PUZZLE' | 'CHALLENGE' | 'BOSS' | 'BUILD_EXPLORE' | 'CONVERSATION_EXPLANATION' | 'MINI_GAME';
-  expectedIndex: number;
 }
 
 export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
@@ -186,7 +179,6 @@ export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
     contentVersionId: '26000000-0000-4000-8000-000000000001',
     learningRole: 'INSTRUCTION',
     experienceForm: 'CONVERSATION_EXPLANATION',
-    expectedIndex: 1,
   },
   'step-2': {
     nodeId: 'step-2',
@@ -196,7 +188,6 @@ export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
     contentVersionId: '26000000-0000-4000-8000-000000000003',
     learningRole: 'GUIDED_PRACTICE',
     experienceForm: 'MINI_GAME',
-    expectedIndex: 1,
   },
   'step-3': {
     nodeId: 'step-3',
@@ -206,7 +197,6 @@ export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
     contentVersionId: '26000000-0000-4000-8000-000000000002',
     learningRole: 'GUIDED_PRACTICE',
     experienceForm: 'PUZZLE',
-    expectedIndex: 1,
   },
   'step-4': {
     nodeId: 'step-4',
@@ -216,7 +206,6 @@ export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
     contentVersionId: '26000000-0000-4000-8000-000000000004',
     learningRole: 'GUIDED_PRACTICE',
     experienceForm: 'MINI_GAME',
-    expectedIndex: 1,
   },
   'step-5': {
     nodeId: 'step-5',
@@ -226,7 +215,6 @@ export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
     contentVersionId: '26000000-0000-4000-8000-000000000005',
     learningRole: 'INDEPENDENT_PRACTICE',
     experienceForm: 'PUZZLE',
-    expectedIndex: 2,
   },
   'step-6': {
     nodeId: 'step-6',
@@ -236,7 +224,6 @@ export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
     contentVersionId: '26000000-0000-4000-8000-000000000006',
     learningRole: 'REVIEW',
     experienceForm: 'MINI_GAME',
-    expectedIndex: 0,
   },
   'step-7': {
     nodeId: 'step-7',
@@ -246,6 +233,5 @@ export const NODE_CANONICAL_MAPPINGS: Record<string, NodeCanonicalMapping> = {
     contentVersionId: '26000000-0000-4000-8000-000000000007',
     learningRole: 'MASTERY_CHECK',
     experienceForm: 'CHALLENGE',
-    expectedIndex: 1,
   },
 };

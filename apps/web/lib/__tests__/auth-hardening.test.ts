@@ -41,6 +41,37 @@ describe('dev principal hardening (A5)', () => {
     const { devPrincipalAllowed } = await import('../request-principal');
     expect(devPrincipalAllowed()).toBe(false);
   });
+
+  it('treats an unset or empty NODE_ENV as production (fail-closed, ADR-0037 item 1.6)', async () => {
+    env.ALLOW_DEV_PRINCIPAL = '1';
+    delete env.NODE_ENV;
+    const mod = await import('../request-principal');
+    expect(mod.devPrincipalAllowed()).toBe(false);
+    env.NODE_ENV = '';
+    expect(mod.devPrincipalAllowed()).toBe(false);
+  });
+
+  it('never lets request input enable the dev principal in production', async () => {
+    env.NODE_ENV = 'production';
+    env.ALLOW_DEV_PRINCIPAL = '1';
+    const { requireRequestPrincipal, devPrincipalAllowed } = await import('../request-principal');
+    expect(devPrincipalAllowed()).toBe(false);
+    const attempts = [
+      req({ 'x-dev-learning-identity-id': 'child-9' }),
+      req({ 'x-dev-account-id': 'parent-9', 'x-dev-roles': 'ADMIN' }),
+      req({ 'x-dev-allow': '1' }),
+      req({ authorization: 'Bearer dev-principal' }),
+    ];
+    for (const attempt of attempts) {
+      await expect(requireRequestPrincipal(attempt)).rejects.toThrow();
+    }
+  });
+
+  it('keeps the dev principal available for local non-production runtimes', async () => {
+    env.ALLOW_DEV_PRINCIPAL = '1';
+    const { devPrincipalAllowed } = await import('../request-principal');
+    expect(devPrincipalAllowed()).toBe(true);
+  });
 });
 
 describe('persistence gates fail closed', () => {

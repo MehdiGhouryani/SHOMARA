@@ -26,12 +26,23 @@ function bearerToken(request: Request): string | null {
 }
 
 /**
- * Dev headers (x-dev-*) are honoured only when BOTH hold: NODE_ENV is not "production" AND the
- * operator explicitly set ALLOW_DEV_PRINCIPAL=1. A request that carries a Bearer token never uses
- * dev headers. Evaluated per call (never cached at module load).
+ * Dev headers (x-dev-*) are honoured only when BOTH hold: the runtime is explicitly a
+ * non-production Node runtime AND the operator explicitly set ALLOW_DEV_PRINCIPAL=1. A request
+ * that carries a Bearer token never uses dev headers. Evaluated per call (never cached at
+ * module load).
+ *
+ * Fail-closed hardening (ADR-0037 item 1.6): an unset or empty NODE_ENV is treated as
+ * production, so a misconfigured deployment can never fall open. Only a defined, non-empty,
+ * non-"production" NODE_ENV (e.g. "development" or "test") counts as a dev runtime. Request
+ * input (headers, query, body) can never influence either condition.
  */
+export function isDevRuntime(): boolean {
+  const nodeEnv = process.env.NODE_ENV;
+  return typeof nodeEnv === 'string' && nodeEnv.length > 0 && nodeEnv !== 'production';
+}
+
 export function devPrincipalAllowed(): boolean {
-  return process.env.NODE_ENV !== 'production' && process.env.ALLOW_DEV_PRINCIPAL === '1';
+  return isDevRuntime() && process.env.ALLOW_DEV_PRINCIPAL === '1';
 }
 
 const DEV_ALLOWED_ROLES = new Set(['PARENT', 'TEACHER']);

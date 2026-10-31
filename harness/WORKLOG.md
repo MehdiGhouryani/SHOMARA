@@ -122,3 +122,22 @@
 - audit: ۱۷ شاخهٔ remote با `main` هیچ merge-base ندارند (`git merge-base` خروجی خالی و exit 1)؛ START_HERE روی main `file_version` 35 دارد و شاخه‌ها 18/22/24؛ `baseline_commit` ef35ce2 در repo نیست؛ `apps/android` فقط روی main است؛ checklist دستگاه روی `chore/p7-device-checklist` و `chore/p8-closing`.
 - evidence: `npm ci` exit 0 (648 package)؛ `build:packages` exit 0؛ `typecheck:all` exit 0؛ `vitest run` exit 0 (65 file / 502 test)؛ `harness validate` معتبر؛ `harness next` = N02-07 `BLOCKED_ENV`؛ `verify-repository-harness` PASS؛ `verify-ui-v2-foundation` و `verify-design-governance` PASS؛ `verify-apk-preview` PASS (21)؛ `verify-mobile-release` exit 0؛ `verify:static:all` exit 1 (86/87، parity 1/29)؛ `build:web` exit 0 با `expectedIndex` در chunk کلاینت.
 - boundary: هیچ کد یا verifier تغییر نکرد؛ push نشد؛ GitHub CI و branch protection تأیید نشدند (API 403)؛ Gradle/Android اجرا نشد؛ تست دستگاه انجام نشد؛ Track A هنوز در harness ثبت نشده (L17).
+
+## 2026-10-31 — ZCode autonomous run (Phases 0-5) — DIFF_READY, uncommitted
+
+- grounding: هشت hotspot با file:line اثبات شد؛ گزارش کامل در `docs/archive/evidence/2026-10-31/grounding-report.md`. محیط محلی برخلاف runner ممیزی: `ANDROID_HOME=D:\SDK` با platform 37 سالم و JDK 17 در `.jdks`؛ `android:doctor` = READY.
+- N02-07: gate واقعی Gradle اجرا شد؛ lint خطای واقعی `themes.xml:5` (windowLightNavigationBar نیازمند API 27 با minSdk 24) را گرفت؛ با qualifier `values-v27` اصلاح و gate = PASS (exit 0). APK ساخته نشد (task صراحتاً مجوز نداد) و N03 شروع نشد.
+- 1.1/1.2: سانیتایزر کلاینت از denylist به allowlist تبدیل شد و `expectedIndex` از mapping ایستای کلاینت حذف شد؛ بازسازی web و grep chunkها = صفر hit برای همهٔ کلیدهای answer-key؛ تست‌های جدید 2 فایل.
+- 1.3: گیت TS حالا همان ستون `provenance` و همان مقادیر SQL را می‌خواند (helper مشترک + تست سازگاری SQL↔TS)؛ code-only، بدون migration.
+- 1.6: هر سه گیت dev (principal، OTP mock، teacher seeds) با `isDevRuntime` fail-closed شدند (NODE_ENV خالی/نامتنظیم = production) + تست‌های production و request-input.
+- 1.7: کپی ستارهٔ `characters.ts` با جملهٔ بدون آیتم جایگزین شد (PENDING OWNER REVIEW)؛ دو فایل (`characters.ts`، `StationFlow.tsx`) به اسکن child-safety verifier اضافه شدند؛ `starsEarned` مرده با zero-consumer proof حذف شد.
+- gates: vitest 67 file / 514 test PASS؛ `verify-ui-v2-path-station` با اسکن گسترده PASS؛ web build و grep chunkها PASS. بقیهٔ gateها در گزارش نهایی 2026-10-31.
+- boundary: هیچ commit/push/tag/APK/EAS/migration انجام نشد؛ همگی DIFF_READY روی شاخهٔ محلی `zcode/n02-p0-2026-10-31`.
+- verifier-alignment (همان اجرا، ادامه): چهار گیت static که جزئیات منبع قدیمی را پین کرده بودند با نگه‌داشتن/تقویت همان قصد به‌روزرسانی شدند، نه تضعیف: `verify-answer-key-boundary` (کلیدهای ممنوع اکنون صریح در سانیتایزر نوشته می‌شوند)، `verify-phase2-foundation` (الگوی جدید و سخت‌گیرانه‌تر `isDevRuntime`)، `verify-uiux-phase4` و `verify-ux-p10-final` (guard جدید: نبود نماد `starsEarned` و نبود باگ قدیمی جایزهٔ placement). خروجی Gradle در `apps/android/**/build` generated است و پس از gate برای اسکن منبع پاک می‌شود (پیشنهاد مالک: exclude-dir=build در `verify-phase5`).
+
+## 2026-10-31 — N02-07 / N02 closure + stage 4B cleanup — DIFF_READY, uncommitted
+
+- closure: `N02-07` BLOCKED → DONE و فاز `N02` IN_PROGRESS → DONE در `harness/roadmap.json`، بر اساس شواهد همان اجرا: `npm run android:gate` = PASS (exit 0) با JDK 17 Temurin و `D:\SDK`/platform 37، رفع خطای lint واقعی `themes.xml` با qualifier `values-v27`، `android:doctor` = READY، و module graph ثبت‌شده در `docs/architecture/ANDROID_MODULE_GRAPH.md`. debug APK عمداً ساخته نشد (متن task مجوز نداد)؛ N03 شروع نشد و فقط با go-ahead مالک از `N03-01` باز می‌شود.
+- verifier: `scripts/verify-phase5.mjs` اکنون خروجی generated Gradle (`build`، `.gradle`) را از اسکن Unity مستثنا می‌کند (منبع در برابر artifact؛ AGENTS §4) — gate دیگر نیازی به پاک‌سازی دستی `build/` ندارد.
+- cleanup: شواهد اجرا از `docs/archive/evidence/2026-10-31/` به خارج از repo منتقل شد: `/tmp/shomara-evidence-2026-10-31` (grounding-report، final-report، ci-honesty-inventory و ۳۳ فایل baseline) تا dependency-map فقط فایل‌های واقعی repo را ببیند؛ `.zcode/` (ابزار عامل محلی) به `.gitignore` افزوده شد؛ ارجاع START_HERE به‌روز شد.
+- evidence note: مسیر قبلی `docs/archive/evidence/2026-10-31/` در دو entry قبلی همین WORKLOG مذکور است؛ مسیر معتبر فعلی `/tmp/shomara-evidence-2026-10-31` است (append-only حفظ شد).
