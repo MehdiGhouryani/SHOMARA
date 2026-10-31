@@ -211,3 +211,14 @@ apk_status: DEBUG_PIPELINE_READY__NOT_BUILT_SDK37_MISSING
 - فاز ۴ (gate و CI): 4.1 `core` به‌عنوان required · 4.2 حذف `continue-on-error` از `visual-and-static` · 4.3 ESLint · 4.4 job بیلد APK دستی · 4.5 تبدیل DoD به verifier و ledger · 4.6 verifierها و parity به بخش required
 - فاز ۵ (Native، موازی): 5.1 N02-07 روی runner با SDK 37 · 5.2 ماژول `:core:designsystem` · 5.3 screenshot harness · 5.4 job با emulator · 5.5 DTO و contract tests · 5.6 لایهٔ network، cache و sync · 5.7 U0 تا U6 · 5.8 cutover و release
 - فاز ۶ (پیش از کودکان واقعی): 6.1 سیاست حریم و متن پذیرش · 6.2 حذف داده در سرور · 6.3 تصمیم crash reporting و analytics · 6.4 keystore و secrets · 6.5 سیاست نسخه · 6.6 QA کودک، TalkBack، فونت ۲۰۰٪ و process death · 6.7 فقط محتوای approved در production
+
+**فاز A0 — ممیزی قابل‌نصب با APK محلی (مجاز؛ ۲۰۲۶-۱۰-۳۱)**
+
+- **مجوز:** مالک پس از پیشنهاد سه تصمیم با «ادامه» موافقت کرد: (۱) ZCode پس از گزارش گراندینگ و baseline متوقف شود و کد تغییر ندهد؛ (۲) فاز A0 مجاز است و APK را مالک می‌سازد؛ (۳) SDK ۳۷ را مالک از SDK Manager نصب می‌کند. این مجوز فقط همین فاز را پوشش می‌دهد (AGENTS §۷، ADR-0037 L11).
+- **مبنا:** `origin/main` = `a25d257` (merge PR #2). شاخهٔ `docs/phase0-lock-beta-track` و شاخه‌های remote مبنا نیستند.
+- **نوع APK:** Expo با حالت local-content و `assembleRelease` با امضای debug قالب Expo. متغیرهای ساخت همان پروفایل `preview` در `eas.json` هستند: `EXPO_PUBLIC_RELEASE_CHANNEL=preview` و `MOBILE_RELEASE_CHANNEL=preview`. `EXPO_PUBLIC_API_BASE_URL` نباید تنظیم شود. با `assembleDebug` این حالت ساخته نمی‌شود، چون `__DEV__` درست است و API به localhost اشاره می‌کند.
+- **سازنده و توزیع:** مالک، محلی (L11). ایجنت APK نمی‌سازد و هیچ credential ندارد. APK فقط روی AVD و گوشی مالک نصب می‌شود (L12). این APK Expo است و Native نیست، پس L13 به آن مربوط نمی‌شود؛ با این حال منتشر نمی‌شود.
+- **شاهد ایجنت:** در worktree موقت از `a25d257`، `npm ci` (648 package)، `npm run build:packages` و `npx expo prebuild --platform android --clean --no-install` همگی exit 0 شدند؛ `package.json` تغییر نکرد؛ `android/` تولیدشده untracked است و در همین فاز در `.gitignore` پوشانده می‌شود.
+- **خروجی مورد انتظار:** اسکرین‌شات ۱۵ فایل route (۱۳ صفحه و ۲ layout) در ۳۶۰/۳۹۰/۴۱۲dp و فونت بزرگ‌شده، logcat، و کاتالوگ صفحه‌ها در `docs/archive/evidence/2026-10-31/`.
+- **محدودیت شناخته‌شده:** RN `0.86.0` در معرض regression Hermes است (`docs/release/APK_PREVIEW.md` §4b) و Expo نسخهٔ `0.86.3` را پیشنهاد می‌کند. اگر crash در راه‌اندازی دیده شد، فقط ثبت می‌شود؛ ارتقای RN/Expo در A0 ممنوع است (L9).
+- **خارج از A0:** هر تغییر کد، اصلاح P0/P1، commit، merge و push جداگانه و با مجوز صریح است (L15).
