@@ -164,13 +164,13 @@
     {
       "id": "N05",
       "title": "Child Shell, Path, Practice & Profile",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "branch": "native/n05-child-shell",
       "goal": "مهاجرت shell سه‌تب و مسیرهای غیر lesson با حفظ جهت‌یابی و state.",
-      "allowedPaths": ["apps/android/feature/path/**", "apps/android/feature/practice/**", "apps/android/feature/profile/**", "apps/android/feature/settings/**", "apps/android/feature/parent/**", "apps/android/app/**", "harness/**", "START_HERE.md"],
+      "allowedPaths": ["apps/android/feature/path/**", "apps/android/feature/practice/**", "apps/android/feature/profile/**", "apps/android/feature/settings/**", "apps/android/feature/parent/**", "apps/android/app/**", "apps/android/settings.gradle.kts", "apps/android/core/model/**", "scripts/verify-android-foundation.mjs", "scripts/verify-design-system-native.mjs", "docs/product/**", "docs/architecture/ANDROID_MODULE_GRAPH.md", "harness/**", "START_HERE.md"],
       "gates": ["./gradlew test", "./gradlew connectedCheck", "./gradlew lint", "git diff --check"],
       "tasks": [
-        { "id": "N05-01", "title": "Child shell و tab navigation", "status": "TODO", "dependsOn": ["N04-07"], "acceptance": ["مسیر/تمرین/من", "state per tab retained"], "evidence": [] },
+        { "id": "N05-01", "title": "Child shell و tab navigation", "status": "DONE", "dependsOn": ["N04-07"], "acceptance": ["مسیر/تمرین/من", "state per tab retained"], "evidence": [":app hosts the child shell (family 17): NavHost with the three canonical tabs, per-tab back-stack entries saved/restored (saveState+restoreState) so switching tabs never loses scroll or selection, re-select no-op, deterministic Back (non-default tab returns to Path; Path exits)", "deep links mathlearning://shell/{path|practice|me} registered per tab; shell route added as AppDestination.SHELL and authentication now lands on the shell", "ShomaraChildShellTest: canonical three-tab order enforced against the design-system contract, reselect no-op, Back map, route/deep-link round-trip", "five real feature modules wired into Gradle (:feature:path/practice/profile/settings/parent, AGP 9.4.0 + compose, compileSdk 37/minSdk 24); verify-android-foundation requires 13 modules", "gradle :app:testDebugUnitTest :app:compileDebugKotlin = BUILD SUCCESSFUL"] },
         { "id": "N05-02", "title": "Path graph و chapter bands", "status": "TODO", "dependsOn": ["N05-01"], "acceptance": ["locked/current/completed", "TalkBack truth"], "evidence": [] },
         { "id": "N05-03", "title": "Unit/jump/station start", "status": "TODO", "dependsOn": ["N05-02"], "acceptance": ["locked/offline/error", "CTA واحد"], "evidence": [] },
         { "id": "N05-04", "title": "Practice hub", "status": "TODO", "dependsOn": ["N05-01"], "acceptance": ["empty/recommended/history", "no punitive habit"], "evidence": [] },

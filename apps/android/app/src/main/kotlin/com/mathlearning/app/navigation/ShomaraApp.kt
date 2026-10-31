@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import com.mathlearning.app.ui.FoundationScreen
 import com.mathlearning.core.designsystem.ShomaraTheme
+import com.mathlearning.app.shell.ShomaraChildShell
 import com.mathlearning.feature.onboarding.ShomaraOnboardingHost
 
 /**
@@ -41,9 +42,15 @@ fun ShomaraApp(
                         }
                     },
                     onAuthenticated = {
-                        navController.navigate(AppDestination.FOUNDATION.route) { popUpTo(AppDestination.ONBOARDING.route) { inclusive = true } }
+                        navController.navigate(AppDestination.SHELL.route) { popUpTo(AppDestination.ONBOARDING.route) { inclusive = true } }
                     },
                 )
+            }
+            composable(
+                route = AppDestination.SHELL.route,
+                deepLinks = listOf(navDeepLink { uriPattern = AppDestination.SHELL.deepLink }),
+            ) {
+                ShomaraChildShell(onOpenParent = { /* parent surface joins in N05-06 */ })
             }
             composable(
                 route = AppDestination.FOUNDATION.route,

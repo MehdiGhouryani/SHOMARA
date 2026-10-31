@@ -242,3 +242,9 @@
 - guard: `verify-design-system-native.mjs` اکنون کل `apps/android/feature` (منابع production، بدون src/test) را اسکن می‌کند — PASS (۲۶ فایل).
 - readiness: `docs/product/ONBOARDING_JOURNEY_READINESS_N04.md` با تفکیک صادقانهٔ اثبات‌شده/NATIVE_PENDING.
 - evidence: feature 50 + model 2 + designsystem 56 تست JVM سبز؛ `:app:compileDebugKotlin` PASS.
+
+## 2026-11-01 — N05 شروع — M1/M2: wiring + N05-01 child shell — atomic commit
+
+- branch: `native/n05-child-shell` ساخته شد؛ پنج ماژول واقعی (:feature:path/practice/profile/settings/parent) به Gradle و verify-android-foundation (۱۳ ماژول) اضافه شد؛ allowedPaths شامل settings/core:model/verifierها/docs طبق الگوی مجاز مالک.
+- N05-01: shell سه‌تب در `:app` (خانوادهٔ ۱۷): NavHost با saveState/restoreState برای هر تب (حفظ واقعی state)، re-select no-op، Back قطعی (تب غیرپیش‌فرض → مسیر؛ پیش‌فرض → خروج)، deep link هر تب؛ احراز موفق اکنون به SHELL می‌رود. تست ۴ موردی JVM.
+- N05-09 data foundation: `ShomaraStationCatalog` (ST01–ST25 با workingTitle از stations-index.json، IDs ثابت CONTENT-004، پرچم provisional) + `ShomaraChapterCatalog` (۵ فصل × ۵ ایستگاه، برچسب ساختاری «فصل ۱..۵» بدون ادعای نام کتاب).

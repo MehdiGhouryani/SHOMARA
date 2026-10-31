@@ -2,7 +2,7 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 41
+file_version: 42
 last_updated: 2026-10-31
 snapshot_id: SNAP-20261031-N04-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
@@ -10,9 +10,9 @@ working_branch: native/n02-foundation
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
-current_phase: N04
-current_task: N04-07
-phase_status: N04_DONE_7_OF_7
+current_phase: N05
+current_task: N05-01
+phase_status: N05_IN_PROGRESS_1_OF_9
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -145,6 +145,10 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N04-02` Welcome و phone input — `DONE` در 2026-10-31 (اعتبارسنجی فارسی با نرمال‌سازی ارقام و پیشوندها، back map قطعی، ۶ تست جدید).
 **نتیجهٔ نهایی N04 (2026-10-31):** هر ۷ task با ۶ commit اتمی بسته شد. سه ماژول واقعی Gradle (:core:network با OkHttp/MockWebServer، :core:datastore با DataStore واقعی، :feature:onboarding با Compose) و مسیر launch واقعی (NavHost از ONBOARDING با deep link؛ ورود موفق به FOUNDATION). ۷۲ تست سه‌ماژوله (network 11، datastore 6، feature 40) + تست navigation اپ. `connectedCheck` اجرا نشد (بدون AVD) — ثبت صادقانه؛ شواهد device در فاز بعد. مسیرهای منفی شبکه با MockWebServer پوشش کامل دارند.
 
+## 6d. فاز جاری N05 — Child Shell, Path, Practice & Profile
+
+- [x] `N05-01` Child shell و tab navigation — `DONE` در 2026-11-01: shell سه‌تب canonical در `:app` با حفظ state واقعی هر تب (saveState/restoreState)، re-select بی‌اثر، Back قطعی، deep link هر تب؛ پنج ماژول واقعی Gradle سیم‌کشی شد (13 ماژول در verifier).
+- [ ] `N05-02` Path graph و chapter bands — بعدی.
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

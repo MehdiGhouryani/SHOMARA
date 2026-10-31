@@ -2,6 +2,7 @@ package com.mathlearning.app.navigation
 
 enum class AppDestination(val route: String, val deepLink: String) {
     ONBOARDING(route = "onboarding", deepLink = "mathlearning://onboarding"),
+    SHELL(route = "shell", deepLink = "mathlearning://shell"),
     FOUNDATION(route = "foundation", deepLink = "mathlearning://foundation"),
     ;
 
