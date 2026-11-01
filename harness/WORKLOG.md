@@ -264,3 +264,8 @@
 
 - `ShomaraPracticeHubScreen`/`ShomaraPracticeHubLogic`: هفت حالت؛ recommended/history verbatim از دادهٔ تماس‌گیرنده (هیچ دادهٔ ساختگی)؛ empty گرم به سمت مسیر؛ ردیف قفل با دلیل گرم و TalkBack؛ صفر اقتصاد/ستاره.
 - evidence: practice 6/6 تست JVM؛ lint سبز.
+
+## 2026-11-01 — N05 — M6: N05-05 profile/avatar/settings — atomic commit
+
+- `:feature:profile` Me (خانوادهٔ ۱۴): facts واقعی (نام + پیشرفت با ارقام فارسی)، حالت‌ها با تست، صفر سطح جعلی (تست سطح field). `:feature:settings` (خانوادهٔ ۱۵): گرید آواتار canonical با equipped/owned، toggle حرکت کمتر، lifecycle ذخیره با revert در شکست.
+- evidence: profile 4/4 + settings 7/7 تست JVM؛ lint سبز.
