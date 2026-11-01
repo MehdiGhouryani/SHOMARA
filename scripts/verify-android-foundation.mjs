@@ -107,4 +107,4 @@ const staticOrchestrator = read('scripts/verify-static-all.mjs');
 assert.match(staticOrchestrator, /'verify-android-environment\.mjs'/, 'host preflight must not be misreported as a static verifier');
 assert.match(staticOrchestrator, /'android-build\.mjs'/, 'host build harness must not be misreported as a static verifier');
 
-console.log('ANDROID_FOUNDATION: PASS (8 modules, pinned wrapper/toolchain, no signing or answer-key content)');
+console.log('ANDROID_FOUNDATION: PASS (16 modules, pinned wrapper/toolchain, no signing or answer-key content)');
