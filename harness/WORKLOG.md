@@ -259,3 +259,8 @@
 
 - `ShomaraStationStartSheet` (۷ حالت، CTA واحد با برچسب قطعی، توضیح گرم قفل، metadata واقعی کاتالوگ) + `ShomaraJumpSheet` (پرش فقط داخل فصل، قفل/آفلاین/خطا confirm را می‌بندد، انتخاب idempotent). شیت‌ها آیندهٔ اتصال به learning-player (N06) را از طریق onStart باز می‌گذارند.
 - evidence: path 16/16 تست JVM؛ lint سبز.
+
+## 2026-11-01 — N05 — M5: N05-04 practice hub — atomic commit
+
+- `ShomaraPracticeHubScreen`/`ShomaraPracticeHubLogic`: هفت حالت؛ recommended/history verbatim از دادهٔ تماس‌گیرنده (هیچ دادهٔ ساختگی)؛ empty گرم به سمت مسیر؛ ردیف قفل با دلیل گرم و TalkBack؛ صفر اقتصاد/ستاره.
+- evidence: practice 6/6 تست JVM؛ lint سبز.
