@@ -274,3 +274,8 @@
 
 - `ShomaraParentGate`: reducer با fail-closed (نبود verifier = ورود ناممکن)، lockout سه‌مرحله‌ای با cooldown، ورود مجدد وقتی Authenticated بی‌اثر. `ShomaraParentSurfaceContract`: فقط progress-report/settings/sign-out — درس/تمرین/شروع ایستگاه ساختاراً رد می‌شوند؛ تب والدین در shell کودک وجود ندارد (ورود فقط از Me → دروازه).
 - evidence: parent 7/7 تست JVM؛ lint سبز.
+
+## 2026-11-01 — N05 — M8: N05-07 responsive/a11y matrix — atomic commit
+
+- `ShomaraShellMatrixTest`: ماتریس ۳۶۰/۳۹۰/۴۱۲ × 1.0/2.0 روی هفت سطح shell؛ برچسب فصل در باند ۳۶۰؛ ارقام OTP فارسی LTR؛ CTA واحد؛ parent خارج از تب‌های کودک. Shell host اکنون سطح‌های واقعی path/practice/me/settings/parent را رندر می‌کند.
+- evidence: app 12/12 تست JVM.

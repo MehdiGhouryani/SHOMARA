@@ -50,7 +50,7 @@ fun ShomaraApp(
                 route = AppDestination.SHELL.route,
                 deepLinks = listOf(navDeepLink { uriPattern = AppDestination.SHELL.deepLink }),
             ) {
-                ShomaraChildShell(onOpenParent = { /* parent surface joins in N05-06 */ })
+                ShomaraChildShell(onSignOut = { /* session sign-out joins the parent surface flow in N06 */ })
             }
             composable(
                 route = AppDestination.FOUNDATION.route,
