@@ -14,6 +14,7 @@ export default defineConfig({
       'packages/assignment-runtime/src/**/*.test.ts',
       'packages/challenge-runtime/src/**/*.test.ts',
       'packages/design-system/src/**/*.test.ts',
+      'packages/content-delivery/src/**/*.test.ts',
       'apps/mobile/src/**/*.test.ts',
       'apps/web/lib/**/*.test.ts',
     ],

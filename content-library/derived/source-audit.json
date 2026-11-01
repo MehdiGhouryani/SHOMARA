@@ -249,5 +249,41 @@
         ]
       }
     }
+  },
+  "n07Resolutions": {
+    "recordedAt": "2026-11-01",
+    "authorizedBy": "owner session goal (MEGA-STAGE N07) + HG-03 approval",
+    "originalsTouched": false,
+    "resolutions": {
+      "CONTENT-006": {
+        "resolution": "voiceProfileId abstract separated from non-authoritative providerVoiceHint (fa-IR-DilaraNeural is a hint only)",
+        "enforcedIn": [
+          "AudioScriptMetadata.providerVoiceHint",
+          "AudioAssetVersion.voiceProfileId"
+        ]
+      },
+      "CONTENT-010": {
+        "resolution": "script metadata (AudioScriptMetadata) and binary asset version (AudioAssetVersion) are strictly separate models with independent lifecycles",
+        "enforcedIn": [
+          "packages/content-delivery/src/cms-audio.ts"
+        ]
+      },
+      "CONTENT-013": {
+        "resolution": " RIGHTS_CLEARED requires LISTENED evidence in the audit trail; every transition is RBAC-gated and audited (actor/role/time/reason); rollback is admin-only",
+        "enforcedIn": [
+          "transitionStage",
+          "rollbackToStage",
+          "buildReports"
+        ]
+      }
+    },
+    "draftImport": {
+      "globalRows": 179,
+      "st07Rows": 53,
+      "total": 232,
+      "scriptStatus": "DRAFT",
+      "publishState": "UNPUBLISHED_NO_BINARY",
+      "zeroBinaries": true
+    }
   }
 }

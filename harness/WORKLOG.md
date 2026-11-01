@@ -327,3 +327,11 @@
 
 - `OutboxSyncEngine`: FIFO، backoff نمایی با jitter و cap، توقف روی اولین خطای retriable، قرنطینه فوری 4xx، Server-Wins (reconcile به پاسخ سرور). `ManifestActivationEngine`: SHA-256 + schema gate قبل از هر write؛ mismatch/unsupported/contaminated → rollback با حفظ نسخه فعال.
 - evidence: sync 12/12 تست JVM (6 sync engine + 6 manifest).
+
+## 2026-11-01 — N07 — M3: N07-04/05/08/09 audio cache + CMS governance — atomic commit
+
+- N07-04: `ShomaraAudioCacheManager` — SHA-256 gate برای ReadyCached؛ خراب → قرنطینه؛ مفقود → fallback متنی؛ هیچ URL hardcoded.
+- N07-05/09: `cms-audio.ts` — تفکیک AudioScriptMetadata/AudioAssetVersion؛ RBAC پنج‌نقشی + audit trail؛ LISTEN_REVIEW_REQUIRED؛ reversible publish/rollback با checksum؛ reports impact/orphan/missing.
+- N07-08: importer idempotent ۲۳۲ ردیف (۱۷۹+۵۳) با قفل DRAFT/UNPUBLISHED_NO_BINARY — TS + Kotlin mirror.
+- HG-03: APPROVED با دستور مستقیم مالک. CONTENT-006/010/013 در source-audit.json ثبت شد.
+- evidence: lesson 42/42 + database 11/11 + 9 Vitest.
