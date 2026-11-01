@@ -54,6 +54,8 @@ dependencies {
     implementation(project(":feature:lesson"))
     implementation(project(":core:network"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
+    implementation(project(":sync"))
     implementation(project(":core:model"))
 
     implementation(libs.androidx.core.ktx)

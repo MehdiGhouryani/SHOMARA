@@ -335,3 +335,9 @@
 - N07-08: importer idempotent ۲۳۲ ردیف (۱۷۹+۵۳) با قفل DRAFT/UNPUBLISHED_NO_BINARY — TS + Kotlin mirror.
 - HG-03: APPROVED با دستور مستقیم مالک. CONTENT-006/010/013 در source-audit.json ثبت شد.
 - evidence: lesson 42/42 + database 11/11 + 9 Vitest.
+
+## 2026-11-01 — N07 — M4: N07-06/07 + بستن فاز N07 — atomic commit
+
+- `OfflineJourneyTest`: سفر بحرانی کامل (manifest کش‌شده → آفلاین → process death → restore → drain idempotent با همان key → Server-Wins به COMPLETED) + قرنطینه SHA-256 خراب برای manifest و باینری صوت.
+- :app به :core:database و :sync وصل شد (AppContainer: localDatabase + outboxSyncEngine؛ transport تا I2 retriable). module graph به N07 (۱۶ ماژول) به‌روز شد.
+- readiness در `docs/content/OFFLINE_CMS_AUDIO_READINESS_N07.md`. closure: فاز N07 DONE (9/9)؛ pointer → N07-07؛ next = N08-01.

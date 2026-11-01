@@ -1,10 +1,11 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
 | 2026-11-01 | SNAP-20261101-N05-PHASE-CLOSED | فاز N05 بسته شد (۹/۹): shell سه‌تب، گراف مسیر، شروع/پرش ایستگاه، practice hub، Me/settings، مرز والدین؛ ۸ commit اتمی؛ connectedCheck/screenshot/device صادقانه NATIVE_PENDING. |
 | 2026-11-01 | SNAP-20261101-N06-PHASE-CLOSED | فاز N06 بسته شد (۱۱/۱۱): مرز سه‌لایه‌ای محتوا، gateway idempotent، player P1..P5، adapters T01/T05/T13/T15، سفر E2E دروازهٔ ST07؛ ۸ disposition CONTENT؛ :app سیم‌کشی شد. |
+| 2026-11-01 | SNAP-20261101-N07-PHASE-CLOSED | فاز N07 بسته شد (۹/۹): database/sync واقعی، sync idempotent Server-Wins، manifest اتمی، audio cache، import ۲۳۲ ردیف DRAFT، CMS governance با HG-03؛ connectedCheck/device صادقانه NATIVE_PENDING. |
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 46
+file_version: 47
 last_updated: 2026-10-31
 snapshot_id: SNAP-20261031-N04-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
@@ -13,8 +14,8 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N07
-current_task: N07-01
-phase_status: N07_IN_PROGRESS_1_OF_9
+current_task: N07-07
+phase_status: N07_DONE_9_OF_9
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -168,6 +169,8 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N07-01` Room/DataStore schema و migration policy — `DONE` در 2026-11-01 (۴ جدول محلی، مهاجرت v1→v2 با حفظ ردیف‌ها، downgrade/corrupt fail-closed، رد فیلدهای ممنوعه قبل از persistence؛ ۶ تست).
 - [x] `N07-02` Offline repository و sync queue — `DONE` در 2026-11-01 (backoff نمایی + jitter، حفظ key، قرنطینه 4xx، Server-Wins با تست؛ ۶ تست).
 - [x] `N07-03` Versioned content manifest — `DONE` در 2026-11-01 (SHA-256 + schema gate قبل از نوشتن، rollback با حفظ نسخه فعال؛ ۶ تست جدید).
+**نتیجهٔ نهایی N07 (2026-11-01):** هر ۹ task با ۴ commit اتمی بسته شد. ماژول‌های واقعی :core:database و :sync (۱۶ ماژول)، sync idempotent با Server-Wins، manifest اتمی SHA-256، audio cache با fallback متنی، importer ۲۳۲ ردیف DRAFT، CMS governance با HG-03 APPROVED و ۸+۳ disposition CONTENT در source-audit.json. ۵۶+ تست JVM جدید و ۹ تست Vitest. connectedCheck/device/real-backend همچنان NATIVE_PENDING.
+
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

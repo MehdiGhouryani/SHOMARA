@@ -8,12 +8,14 @@ import com.mathlearning.core.common.logging.AppLogger
 import com.mathlearning.core.common.logging.LogLevel
 import com.mathlearning.core.common.logging.LogSink
 import com.mathlearning.core.common.logging.SafeAppLogger
+import com.mathlearning.core.database.LocalLearningDatabase
 import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.PreferencesLessonCheckpointStore
 import com.mathlearning.core.datastore.PreferencesProfileDraftStore
 import com.mathlearning.core.datastore.PreferencesTokenStore
 import com.mathlearning.core.datastore.ShomaraProfileDraftStore
 import com.mathlearning.core.network.LessonGateway
+import com.mathlearning.sync.OutboxSyncEngine
 import com.mathlearning.core.network.ShomaraOtpApi
 import com.mathlearning.core.network.ShomaraOtpEndpoints
 import com.mathlearning.feature.onboarding.ShomaraAuthSession
@@ -27,6 +29,8 @@ interface AppContainer {
     val profileDraftStore: ShomaraProfileDraftStore
     val lessonCheckpointStore: LessonCheckpointStore
     val lessonGateway: LessonGateway
+    val localDatabase: LocalLearningDatabase
+    val outboxSyncEngine: OutboxSyncEngine
 }
 
 /**
@@ -62,6 +66,17 @@ class DefaultAppContainer(context: Context) : AppContainer {
     override val lessonGateway: LessonGateway = LessonGateway(
         client = ShomaraOtpApi.defaultClient(),
         submitUrl = { ShomaraRuntimeConfig.lessonSubmitUrl },
+    )
+
+    override val localDatabase: LocalLearningDatabase = LocalLearningDatabase()
+
+    override val outboxSyncEngine: OutboxSyncEngine = OutboxSyncEngine(
+        db = localDatabase,
+        transport = { _, _ ->
+            // Wire the real HTTP transport when the backend lands (I2); until then every send
+            // is retriable so operations stay queued and are never lost.
+            com.mathlearning.sync.SyncTransportResult.Retriable("backend not configured (I2)")
+        },
     )
 }
 

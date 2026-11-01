@@ -1,4 +1,4 @@
-# Android Native module graph — N06 learning player foundation
+# Android Native module graph — N07 offline content foundation
 
 ```text
 app
@@ -7,6 +7,8 @@ app
  ├─ core:designsystem
  ├─ core:network
  ├─ core:datastore
+ ├─ core:database
+ ├─ sync
  ├─ feature:onboarding
  │    ├─ core:common
       ├─ core:model
@@ -35,6 +37,8 @@ only on public core APIs (AGENTS §5). `:app` is the composition root and wires 
 | `feature:onboarding` | onboarding state machine, routes, screens, auth-session orchestration | sibling features, repositories |
 | `feature:path/practice/profile/settings/parent` | child shell tab surfaces (N05) | learning rules, sibling features |
 | `feature:lesson` | P1..P5 lesson player, checkpoint, template adapters, lesson gateway usage | mastery decisions, sibling features, direct DB |
+| `core:database` | local tables (station packages, progress projection, outbox, audio assets) + migration policy | HTTP, UI, mastery decisions |
+| `sync` | idempotent outbox sync engine, backoff, Server-Wins reconcile, manifest activation | UI, lesson rendering |
 | `core:testing` | reusable fakes/fixtures for tests | production implementations |
 
 New feature/domain/data modules are added only by their roadmap tasks. A feature may depend on
