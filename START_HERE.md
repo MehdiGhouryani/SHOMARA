@@ -166,7 +166,8 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ## 6f. فاز جاری N07 — Offline, Sync, Audio & CMS-ready Content
 
 - [x] `N07-01` Room/DataStore schema و migration policy — `DONE` در 2026-11-01 (۴ جدول محلی، مهاجرت v1→v2 با حفظ ردیف‌ها، downgrade/corrupt fail-closed، رد فیلدهای ممنوعه قبل از persistence؛ ۶ تست).
-- [ ] `N07-02` Offline repository و sync queue — بعدی.
+- [x] `N07-02` Offline repository و sync queue — `DONE` در 2026-11-01 (backoff نمایی + jitter، حفظ key، قرنطینه 4xx، Server-Wins با تست؛ ۶ تست).
+- [x] `N07-03` Versioned content manifest — `DONE` در 2026-11-01 (SHA-256 + schema gate قبل از نوشتن، rollback با حفظ نسخه فعال؛ ۶ تست جدید).
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

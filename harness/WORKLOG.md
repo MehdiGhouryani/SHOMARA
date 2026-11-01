@@ -322,3 +322,8 @@
 - branch: `native/n07-offline-content`؛ ماژول‌های `:core:database` و `:sync` سیم‌کشی شدند (verifier ۱۶ ماژول).
 - N07-01: ۴ جدول محلی + migration engine (v1→v2 حفظ کامل؛ downgrade/corrupt fail-closed) + رد فیلدهای ممنوعه قبل از persistence (CONTENT-008).
 - evidence: database 6/6 تست JVM.
+
+## 2026-11-01 — N07 — M2: N07-02 sync queue + N07-03 atomic manifest — atomic commit
+
+- `OutboxSyncEngine`: FIFO، backoff نمایی با jitter و cap، توقف روی اولین خطای retriable، قرنطینه فوری 4xx، Server-Wins (reconcile به پاسخ سرور). `ManifestActivationEngine`: SHA-256 + schema gate قبل از هر write؛ mismatch/unsupported/contaminated → rollback با حفظ نسخه فعال.
+- evidence: sync 12/12 تست JVM (6 sync engine + 6 manifest).
