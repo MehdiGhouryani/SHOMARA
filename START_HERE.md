@@ -3,7 +3,7 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 43
+file_version: 44
 last_updated: 2026-10-31
 snapshot_id: SNAP-20261031-N04-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
@@ -11,9 +11,9 @@ working_branch: native/n02-foundation
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
-current_phase: N05
-current_task: N05-08
-phase_status: N05_DONE_9_OF_9
+current_phase: N06
+current_task: N06-01
+phase_status: N06_IN_PROGRESS_3_OF_11
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -153,6 +153,12 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N05-09` Station/chapter metadata — `DONE` در 2026-11-01 (ST01..ST25 ثابت از stations-index، عنوان‌ها provisional و بدون ادعا، برچسب ساختاری فصل‌ها؛ CONTENT-004 برای UI بسته شد — تغییر نام نهایی ورودی غیرمسدودساز مالک می‌ماند).
 **نتیجهٔ نهایی N05 (2026-11-01):** هر ۹ task با ۸ commit اتمی بسته شد. پنج ماژول واقعی Gradle (path/practice/profile/settings/parent)، shell سه‌تب با حفظ state واقعی، گراف مسیر ۲۵ ایستگاه/۵ فصل از کاتالوگ canonical (CONTENT-004 برای UI بسته — IDs ثابت، عنوان‌ها provisional)، شروع ایستگاه/پرش با CTA واحد، practice hub بدون دادهٔ ساختگی، Me/avatar/settings با lifecycle واقعی، مرز والدین با re-auth fail-closed. ۱۱۰+ تست JVM جدید در کل فاز؛ screenshot/device همچنان NATIVE_PENDING (پروتکل readiness).
 
+## 6e. فاز جاری N06 — Learning Player & Server Truth
+
+- [x] `N06-01` تطبیق API/contract player و schema — `DONE` در 2026-11-01 (مرز سه‌لایه‌ای authoring→published→child با stripper و snapshot tests؛ ۱۳ تست Vitest).
+- [x] `N06-09` Typed authoring staging schema و validator — `DONE` در 2026-11-01 (review-role/DAG/hint-ban validators؛ publish فقط با APPROVED+۴ نقش).
+- [x] `N06-11` Authoring/published/client projection boundary — `DONE` در 2026-11-01 (آینهٔ Kotlin با ۸ تست؛ telemetry حداقلی؛ behavior ID typed).
+- [ ] `N06-02` Lesson chrome و lifecycle — بعدی.
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

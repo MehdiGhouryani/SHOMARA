@@ -287,3 +287,9 @@
 - boundary: هیچ commit پس از این برای فاز N05 لازم نیست؛ screenshot/device/connectedCheck همچنان NATIVE_PENDING (پروتکل readiness).
 - correction: دو closure (N05-02/N05-09) به‌دلیل جاافتادن write در اسکریپت M3 در roadmap.json ثبت نشده بودند؛ اکنون با همان evidence اعمال و validate شد (START_HERE از ابتدا درست بود).
 - correction 2: replace اولیهٔ الگوی feature-dependency در verify-android-foundation.mjs بی‌صدا اعمال نشده بود؛ اکنون شش feature مجاز (onboarding/path/practice/profile/settings/parent) و هنوز :data: ممنوع — PASS (۱۳ ماژول).
+
+## 2026-11-01 — N06 شروع — M1: wiring + N06-01/09/11 — atomic commit
+
+- branch: `native/n06-learning-player`؛ `:feature:lesson` چهاردهمین ماژول Gradle (compose + okhttp/mockwebserver test deps)؛ allowedPaths با مجوز مالک گسترش یافت (originals دست‌نخورده).
+- N06-01/09/11: مرز سه‌لایه‌ای در `packages/contracts/src/content-projection.ts` (lifecycleهای ۷مرحله‌ای، ۴ نقش بازبینی، DAG validator، hint-ban P4/P5، deep-stripping projectors، behaviorId typed، telemetry حداقلی) + آینهٔ Kotlin `:core:model/ContentProjection.kt`. ۱۳ Vitest + ۸ JUnit سبز.
+- boundary: `content-library/originals/**` byte-protected و لمس نشد.

@@ -1,4 +1,4 @@
-# Android Native module graph — N04 onboarding foundation
+# Android Native module graph — N06 learning player foundation
 
 ```text
 app
@@ -7,8 +7,8 @@ app
  ├─ core:designsystem
  ├─ core:network
  ├─ core:datastore
- └─ feature:onboarding
-      ├─ core:common
+ ├─ feature:onboarding
+ │    ├─ core:common
       ├─ core:model
       ├─ core:designsystem
       ├─ core:network
@@ -33,6 +33,8 @@ only on public core APIs (AGENTS §5). `:app` is the composition root and wires 
 | `core:network` | HTTP auth gateway (OkHttp OTP API), network error taxonomy, client-side throttle | token persistence, UI, business rules |
 | `core:datastore` | DataStore-backed `ShomaraTokenStore`, fail-closed restore/expiry policy | HTTP, UI, feature logic |
 | `feature:onboarding` | onboarding state machine, routes, screens, auth-session orchestration | sibling features, repositories |
+| `feature:path/practice/profile/settings/parent` | child shell tab surfaces (N05) | learning rules, sibling features |
+| `feature:lesson` | P1..P5 lesson player, checkpoint, template adapters, lesson gateway usage | mastery decisions, sibling features, direct DB |
 | `core:testing` | reusable fakes/fixtures for tests | production implementations |
 
 New feature/domain/data modules are added only by their roadmap tasks. A feature may depend on
@@ -51,7 +53,7 @@ justifies its build/plugin cost.
 - Host readiness: `npm run android:doctor`
 - Static foundation gate: `npm run verify:android-foundation` (requires all 8 module includes)
 - Zero-raw-token + child-safety guard: `node scripts/verify-design-system-native.mjs`
-  (scans `:core:designsystem`, `:app` and `apps/android/feature/**` production sources)
+  (scans `:core:designsystem`, `:app` and `apps/android/feature/**` production sources; 14 modules)
 - Wrapper/toolchain: `cd apps/android && ./gradlew --version`
 - Full foundation: `npm run android:gate`
 - Debug package when explicitly requested: `npm run android:assemble:debug`
