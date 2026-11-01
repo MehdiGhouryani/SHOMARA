@@ -293,3 +293,8 @@
 - branch: `native/n06-learning-player`؛ `:feature:lesson` چهاردهمین ماژول Gradle (compose + okhttp/mockwebserver test deps)؛ allowedPaths با مجوز مالک گسترش یافت (originals دست‌نخورده).
 - N06-01/09/11: مرز سه‌لایه‌ای در `packages/contracts/src/content-projection.ts` (lifecycleهای ۷مرحله‌ای، ۴ نقش بازبینی، DAG validator، hint-ban P4/P5، deep-stripping projectors، behaviorId typed، telemetry حداقلی) + آینهٔ Kotlin `:core:model/ContentProjection.kt`. ۱۳ Vitest + ۸ JUnit سبز.
 - boundary: `content-library/originals/**` byte-protected و لمس نشد.
+
+## 2026-11-01 — N06 — M2: N06-02/03 chrome + checkpoint + teach/guided — atomic commit
+
+- `LessonCheckpointStore` (DataStore واقعی، کلید session|station، پاک‌سازی فقط با تکمیل سروری) + `ShomaraLessonChromeLogic` (progress سرور-محور + close confirm fail-safe) + P1 teach (صوت هرگز مسدود نیست) + P2/P3 guided (submit ساختاراً تکی؛ نتیجه فقط سرور؛ hint محدود).
+- evidence: lesson 8/8 تست JVM.

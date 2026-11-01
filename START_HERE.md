@@ -158,7 +158,8 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N06-01` تطبیق API/contract player و schema — `DONE` در 2026-11-01 (مرز سه‌لایه‌ای authoring→published→child با stripper و snapshot tests؛ ۱۳ تست Vitest).
 - [x] `N06-09` Typed authoring staging schema و validator — `DONE` در 2026-11-01 (review-role/DAG/hint-ban validators؛ publish فقط با APPROVED+۴ نقش).
 - [x] `N06-11` Authoring/published/client projection boundary — `DONE` در 2026-11-01 (آینهٔ Kotlin با ۸ تست؛ telemetry حداقلی؛ behavior ID typed).
-- [ ] `N06-02` Lesson chrome و lifecycle — بعدی.
+- [x] `N06-02` Lesson chrome و lifecycle — `DONE` در 2026-11-01 (progress سرور-محور، close confirm fail-safe، checkpoint واقعی DataStore؛ ۸ تست).
+- [x] `N06-03` Teach و guided practice — `DONE` در 2026-11-01 (P1 بدون فشار؛ P2/P3 با submit محدود و hint محدود؛ نتیجه فقط از سرور).
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.
