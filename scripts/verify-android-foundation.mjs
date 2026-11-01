@@ -51,7 +51,7 @@ assert.match(appBuild, /minSdk = 24/);
 assert.match(appBuild, /targetSdk = 36/);
 assert.ok(!/project\(":data:/.test(appBuild), 'app must never depend on a :data: module');
 assert.ok(/project\(":feature:onboarding"\)/.test(appBuild), 'N04: app navigates through the onboarding feature module');
-assert.ok(!/project\(":feature:(?!onboarding)/.test(appBuild), 'only the onboarding feature is wired so far');
+assert.ok(!/project\(":feature:(?!onboarding|path|practice|profile|settings|parent)/.test(appBuild), 'only roadmap-wired features are dependencies of app');
 
 const wrapper = read('apps/android/gradle/wrapper/gradle-wrapper.properties');
 assert.match(wrapper, /gradle-9\.6\.0-bin\.zip/);
