@@ -254,3 +254,8 @@
 - `ShomaraPathGraphLogic`: stateها فقط از progress ارائه‌شده (سرور)؛ دقیقاً یک Current؛ perfect⇒completed در ساخت؛ offline → Lock + بنر بازیابی؛ گره‌های قفل تپ‌پذیر (توضیح، نه بن‌بست)؛ برچسب فارسی صریح برای همهٔ وضعیت‌ها (TalkBack truth)؛ restore-scroll.
 - N05-09: ۲۵ ID ثابت ST01..ST25 از stations-index.json؛ عنوان‌ها provisional؛ برچسب ساختاری «فصل ۱..۵» — CONTENT-004 برای UI بسته شد بدون هیچ ادعای حل‌نشده؛ تغییر نام نهایی مالک ورودی غیرمسدودساز ماند.
 - evidence: path 9/9 + model 2/2 تست JVM؛ lint سبز.
+
+## 2026-11-01 — N05 — M4: N05-03 station start + jump sheet — atomic commit
+
+- `ShomaraStationStartSheet` (۷ حالت، CTA واحد با برچسب قطعی، توضیح گرم قفل، metadata واقعی کاتالوگ) + `ShomaraJumpSheet` (پرش فقط داخل فصل، قفل/آفلاین/خطا confirm را می‌بندد، انتخاب idempotent). شیت‌ها آیندهٔ اتصال به learning-player (N06) را از طریق onStart باز می‌گذارند.
+- evidence: path 16/16 تست JVM؛ lint سبز.
