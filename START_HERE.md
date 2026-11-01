@@ -148,7 +148,8 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ## 6d. فاز جاری N05 — Child Shell, Path, Practice & Profile
 
 - [x] `N05-01` Child shell و tab navigation — `DONE` در 2026-11-01: shell سه‌تب canonical در `:app` با حفظ state واقعی هر تب (saveState/restoreState)، re-select بی‌اثر، Back قطعی، deep link هر تب؛ پنج ماژول واقعی Gradle سیم‌کشی شد (13 ماژول در verifier).
-- [ ] `N05-02` Path graph و chapter bands — بعدی.
+- [x] `N05-02` Path graph و chapter bands — `DONE` در 2026-11-01 (نگاشت state فقط از progress سرور، یک Current واحد، برچسب TalkBack صریح، ۵ باند فصل؛ ۹ تست).
+- [x] `N05-09` Station/chapter metadata — `DONE` در 2026-11-01 (ST01..ST25 ثابت از stations-index، عنوان‌ها provisional و بدون ادعا، برچسب ساختاری فصل‌ها؛ CONTENT-004 برای UI بسته شد — تغییر نام نهایی ورودی غیرمسدودساز مالک می‌ماند).
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.
