@@ -316,3 +316,9 @@
 - :app: LESSON destination با deep link؛ شروع ایستگاه از مسیر → lesson → بازگشت به shell؛ gateway/checkpoints از AppContainer.
 - closure: N06-07/08 DONE؛ فاز N06 DONE (11/11)؛ pointer → N06-08؛ next = N07-01.
 - correction 2: `ShomaraAssessmentResultChallenge.kt` comment contained banned token stars → بازنویسی شد؛ `verify-android-foundation` اکنون فایل‌های boundary-guard (ContentProjection.kt که خودش answerKey را ممنوع می‌کند) از forbidden-scan مستثنا می‌کند و feature allowlist شامل lesson شد.
+
+## 2026-11-01 — N07 شروع — M1: wiring + N07-01 — atomic commit
+
+- branch: `native/n07-offline-content`؛ ماژول‌های `:core:database` و `:sync` سیم‌کشی شدند (verifier ۱۶ ماژول).
+- N07-01: ۴ جدول محلی + migration engine (v1→v2 حفظ کامل؛ downgrade/corrupt fail-closed) + رد فیلدهای ممنوعه قبل از persistence (CONTENT-008).
+- evidence: database 6/6 تست JVM.

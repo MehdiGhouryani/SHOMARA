@@ -4,7 +4,7 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 45
+file_version: 46
 last_updated: 2026-10-31
 snapshot_id: SNAP-20261031-N04-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
@@ -12,9 +12,9 @@ working_branch: native/n02-foundation
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
-current_phase: N06
-current_task: N06-08
-phase_status: N06_DONE_11_OF_11
+current_phase: N07
+current_task: N07-01
+phase_status: N07_IN_PROGRESS_1_OF_9
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -163,6 +163,10 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N06-03` Teach و guided practice — `DONE` در 2026-11-01 (P1 بدون فشار؛ P2/P3 با submit محدود و hint محدود؛ نتیجه فقط از سرور).
 **نتیجهٔ نهایی N06 (2026-11-01):** هر ۱۱ task با ۵ commit اتمی بسته شد. مرز سه‌لایه‌ای authoring→published→child با stripper و snapshot tests (۱۳ Vitest + ۸ JUnit)، LessonGateway با idempotency قطعی و MockWebServer، سفر ST07 از teach تا result با قطع میانه و resume دقیق، `nonProductionDraft=true` ثابت، ۸ disposition CONTENT در source-audit.json، و سیم‌کشی واقعی :app (مسیر lesson با deep link). ۵۶ تست lesson+app؛ connectedCheck/screenshot/device همچنان NATIVE_PENDING.
 
+## 6f. فاز جاری N07 — Offline, Sync, Audio & CMS-ready Content
+
+- [x] `N07-01` Room/DataStore schema و migration policy — `DONE` در 2026-11-01 (۴ جدول محلی، مهاجرت v1→v2 با حفظ ردیف‌ها، downgrade/corrupt fail-closed، رد فیلدهای ممنوعه قبل از persistence؛ ۶ تست).
+- [ ] `N07-02` Offline repository و sync queue — بعدی.
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.
