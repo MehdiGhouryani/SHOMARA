@@ -1,0 +1,123 @@
+package com.mathlearning.feature.lesson
+
+import com.mathlearning.core.model.MacroStage
+import com.mathlearning.core.model.ServerLearningConfig
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+/** N06-10 pilot adapter tests: T01/T05/T13/T15 contracts. */
+class ShomaraTemplateAdaptersTest {
+
+    private val config = ServerLearningConfig.DEFAULT
+
+    // ---- T01 ----
+
+    @Test
+    fun `t01 manipulatives stay in the 72-80dp band`() {
+        assertEquals(72, ShomaraManipulativeRules.MinDp)
+        assertEquals(80, ShomaraManipulativeRules.MaxDp)
+        assertTrue(ShomaraManipulativeRules.requireBand(72) == Unit)
+        assertThrows(IllegalArgumentException::class.java) { ShomaraManipulativeRules.requireBand(64) }
+        assertThrows(IllegalArgumentException::class.java) { ShomaraManipulativeRules.requireBand(84) }
+    }
+
+    @Test
+    fun `t01 taught-numeral guard rejects numerals beyond the ceiling`() {
+        val adapter = T01CountAdapter(sessionId = "s1", encounterId = "e1", taughtNumerals = setOf(1, 2, 3), objectCount = 5)
+        assertThrows(IllegalArgumentException::class.java) { adapter.selectNumeral(5) }
+        assertTrue(adapter.selectNumeral(3).chosenNumeral == 3)
+        // Display construction with an over-ceiling numeral is rejected too.
+        assertThrows(IllegalArgumentException::class.java) {
+            T01CountAdapter(sessionId = "s1", encounterId = "e1", taughtNumerals = setOf(1, 2), objectCount = 5, chosenNumeral = 7)
+        }
+    }
+
+    @Test
+    fun `t01 tap-to-count counts each object once and submits minimal ids`() {
+        var adapter = T01CountAdapter(sessionId = "s1", encounterId = "e1", taughtNumerals = setOf(1, 2, 3), objectCount = 4)
+        adapter = adapter.tapObject(1).tapObject(2).tapObject(2)
+        assertEquals(2, adapter.countedSoFar()) // double tap counted once
+        val (submitted, telemetry) = adapter.selectNumeral(2).startSubmit()
+        assertEquals(T01State.Submitted, submitted.state)
+        assertEquals("numeral-2", telemetry.choiceId)
+        assertEquals(MacroStage.P3_GAME, telemetry.macroStage)
+        // Blank session/encounter IDs are caught by the telemetry contract at call time.
+        assertThrows(IllegalArgumentException::class.java) {
+            com.mathlearning.core.model.AttemptTelemetry("", "", telemetry.interactionId, telemetry.choiceId, telemetry.macroStage)
+        }
+    }
+
+    // ---- T05 ----
+
+    @Test
+    fun `t05 drag and tap paths converge on the identical outcome`() {
+        val viaDrag = T05SlotAdapter(slotIds = listOf("s1", "s2"), draggableIds = listOf("d1", "d2"))
+            .dragPlace("d1", "s1")
+        val viaTap = T05SlotAdapter(slotIds = listOf("s1", "s2"), draggableIds = listOf("d1", "d2"))
+            .tapSelect("d1")
+            .tapPlace("s1")
+        assertTrue(viaDrag.sameOutcomeAs(viaTap))
+        assertEquals(mapOf("s1" to "d1"), viaTap.occupied)
+        // Tap-place without a selection is a safe no-op.
+        assertEquals(emptyMap<String, String>(), T05SlotAdapter(listOf("s1"), listOf("d1")).tapPlace("s1").occupied)
+        assertThrows(IllegalArgumentException::class.java) { viaTap.tapSelect("d9") }
+    }
+
+    // ---- T13 ----
+
+    @Test
+    fun `t13 canonical stroke is strictly top-to-bottom (CONTENT-001)`() {
+        val adapter = T13TraceAdapter(config = config)
+        assertEquals(listOf(T13Point.Top, T13Point.Middle, T13Point.Bottom), adapter.canonicalStrokeOrder)
+        assertEquals(28, adapter.traceToleranceDp)
+        // Out-of-order checkpoints are ignored; tolerance breaches demand the fallback.
+        val skipped = adapter.trace(T13Point.Bottom, dragDp = 10)
+        assertTrue(skipped.visitedCheckpoints.isEmpty())
+        assertThrows(IllegalArgumentException::class.java) { adapter.trace(T13Point.Top, dragDp = 99) }
+    }
+
+    @Test
+    fun `t13 tap-checkpoint fallback reaches the identical completion`() {
+        val viaDrag = T13TraceAdapter(config = config).trace(T13Point.Top, 5).trace(T13Point.Middle, 5).trace(T13Point.Bottom, 5)
+        val viaTap = T13TraceAdapter(config = config).tapCheckpoint(T13Point.Top).tapCheckpoint(T13Point.Middle).tapCheckpoint(T13Point.Bottom)
+        assertTrue(viaDrag.completed)
+        assertTrue(viaTap.completed)
+        assertTrue(viaDrag.sameCompletionAs(viaTap))
+        assertTrue(viaTap.tapFallbackUsed)
+        assertFalse(viaDrag.tapFallbackUsed)
+    }
+
+    // ---- T15 ----
+
+    @Test
+    fun `t15 audio is expected-never-blocking with a visible fallback (CONTENT-017)`() {
+        val withoutAudio = T15StoryAdapter(steps = listOf(1, 2), audioAvailable = false)
+        assertFalse(withoutAudio.blockedByAudio)
+        assertEquals("متن داستان", withoutAudio.visiblePromptFallback("متن داستان"))
+        val withAudio = withoutAudio.copy(audioAvailable = true)
+        assertEquals("", withAudio.visiblePromptFallback("متن داستان"))
+    }
+
+    @Test
+    fun `t15 submission payload is server-only minimal ids per step (CONTENT-018)`() {
+        val story = T15StoryAdapter(steps = listOf(1, 2)).answer("choice-a")
+        val telemetry = story.telemetryFor("s1", "e1", "choice-a")
+        assertEquals("T15_STEP_1", telemetry.interactionId)
+        assertEquals(MacroStage.P5_TRANSFER, telemetry.macroStage)
+        assertEquals("choice-a", telemetry.choiceId)
+        val payload = telemetry.asMinimalPayload()
+        assertFalse(payload.values.any { (it as? String)?.contains("answer") == true })
+        val advanced = story.advance()
+        assertEquals(1, advanced.currentStep) // stays in range
+    }
+
+    @Test
+    fun `config trace tolerance is server-owned not hardcoded`() {
+        assertEquals(28, ServerLearningConfig.DEFAULT.traceToleranceDp)
+        assertEquals(28, T13TraceAdapter().traceToleranceDp)
+    }
+}

@@ -303,3 +303,8 @@
 
 - `LessonGateway` (Idempotency-Key قطعی، replay→Duplicate، MockWebServer: 201/200/400/timeout/offline) + `ShomaraAssessmentSession` (P4/P5 فقط؛ صفر hint؛ duplicate-tap ساختاری بسته؛ disconnect→resume با همان key) + `ShomaraResultLogic` (next action verbatim؛ کپی گرم) + `ShomaraChallengeSession` (جدا از mastery با تست reflection؛ timer غیرتنبیهی + reducedMotion).
 - evidence: lesson 23/23 تست JVM.
+
+## 2026-11-01 — N06 — M4: N06-10 adapters T01/T05/T13/T15 — atomic commit
+
+- چهار adapter خالص: T01 (شمارش با باند ۷۲–۸۰ و taught-numeral guard)، T05 (drag و tap-درخت هم‌نتیجه)، T13 (خط کرسing بالابه‌پایین برای ۱ + tolerance سروری ۲۸dp + fallback تپ با همان تکمیل)، T15 (صوت EXPECTED_NEVER_BLOCKING با fallback متنی؛ telemetry حداقلی P5).
+- evidence: lesson 32/32 تست JVM.
