@@ -285,3 +285,4 @@
 - `ShomaraShellJourneyTest`: cold start → تب پیش‌فرض؛ warm resume → تب دقیق ذخیره‌شده + round-trip SHELL در NavigationSnapshot؛ deep link درست و رد لینک والدین؛ Back journey قطعی (Me→مسیر→خروج)؛ tab switch بدون duplicate. احراز موفق اکنون روی SHELL فرود می‌آید (مهاجرت launch کامل).
 - closure: N05-08 DONE؛ فاز N05 DONE (9/9)؛ pointer → N05-08؛ harness next = N06-01.
 - boundary: هیچ commit پس از این برای فاز N05 لازم نیست؛ screenshot/device/connectedCheck همچنان NATIVE_PENDING (پروتکل readiness).
+- correction: دو closure (N05-02/N05-09) به‌دلیل جاافتادن write در اسکریپت M3 در roadmap.json ثبت نشده بودند؛ اکنون با همان evidence اعمال و validate شد (START_HERE از ابتدا درست بود).
