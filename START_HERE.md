@@ -1,8 +1,9 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-01 | SNAP-20261101-N05-PHASE-CLOSED | فاز N05 بسته شد (۹/۹): shell سه‌تب، گراف مسیر، شروع/پرش ایستگاه، practice hub، Me/settings، مرز والدین؛ ۸ commit اتمی؛ connectedCheck/screenshot/device صادقانه NATIVE_PENDING. |
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 42
+file_version: 43
 last_updated: 2026-10-31
 snapshot_id: SNAP-20261031-N04-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
@@ -11,8 +12,8 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N05
-current_task: N05-01
-phase_status: N05_IN_PROGRESS_1_OF_9
+current_task: N05-08
+phase_status: N05_DONE_9_OF_9
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -150,6 +151,8 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N05-01` Child shell و tab navigation — `DONE` در 2026-11-01: shell سه‌تب canonical در `:app` با حفظ state واقعی هر تب (saveState/restoreState)، re-select بی‌اثر، Back قطعی، deep link هر تب؛ پنج ماژول واقعی Gradle سیم‌کشی شد (13 ماژول در verifier).
 - [x] `N05-02` Path graph و chapter bands — `DONE` در 2026-11-01 (نگاشت state فقط از progress سرور، یک Current واحد، برچسب TalkBack صریح، ۵ باند فصل؛ ۹ تست).
 - [x] `N05-09` Station/chapter metadata — `DONE` در 2026-11-01 (ST01..ST25 ثابت از stations-index، عنوان‌ها provisional و بدون ادعا، برچسب ساختاری فصل‌ها؛ CONTENT-004 برای UI بسته شد — تغییر نام نهایی ورودی غیرمسدودساز مالک می‌ماند).
+**نتیجهٔ نهایی N05 (2026-11-01):** هر ۹ task با ۸ commit اتمی بسته شد. پنج ماژول واقعی Gradle (path/practice/profile/settings/parent)، shell سه‌تب با حفظ state واقعی، گراف مسیر ۲۵ ایستگاه/۵ فصل از کاتالوگ canonical (CONTENT-004 برای UI بسته — IDs ثابت، عنوان‌ها provisional)، شروع ایستگاه/پرش با CTA واحد، practice hub بدون دادهٔ ساختگی، Me/avatar/settings با lifecycle واقعی، مرز والدین با re-auth fail-closed. ۱۱۰+ تست JVM جدید در کل فاز؛ screenshot/device همچنان NATIVE_PENDING (پروتکل readiness).
+
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

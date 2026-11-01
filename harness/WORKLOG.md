@@ -279,3 +279,9 @@
 
 - `ShomaraShellMatrixTest`: ماتریس ۳۶۰/۳۹۰/۴۱۲ × 1.0/2.0 روی هفت سطح shell؛ برچسب فصل در باند ۳۶۰؛ ارقام OTP فارسی LTR؛ CTA واحد؛ parent خارج از تب‌های کودک. Shell host اکنون سطح‌های واقعی path/practice/me/settings/parent را رندر می‌کند.
 - evidence: app 12/12 تست JVM.
+
+## 2026-11-01 — N05 — M9: N05-08 journey gate + بستن فاز N05 — atomic commit
+
+- `ShomaraShellJourneyTest`: cold start → تب پیش‌فرض؛ warm resume → تب دقیق ذخیره‌شده + round-trip SHELL در NavigationSnapshot؛ deep link درست و رد لینک والدین؛ Back journey قطعی (Me→مسیر→خروج)؛ tab switch بدون duplicate. احراز موفق اکنون روی SHELL فرود می‌آید (مهاجرت launch کامل).
+- closure: N05-08 DONE؛ فاز N05 DONE (9/9)؛ pointer → N05-08؛ harness next = N06-01.
+- boundary: هیچ commit پس از این برای فاز N05 لازم نیست؛ screenshot/device/connectedCheck همچنان NATIVE_PENDING (پروتکل readiness).
