@@ -315,3 +315,4 @@
 - N06-08: سفر E2E دروازهٔ ST07 (P1→P5 با HTTP واقعی، قطع ۵۰۳ میانه، checkpoint + resume دقیق با FIFO idempotency assertions)، `nonProductionDraft=true`/`STAGED_PILOT` ثابت و رد در production، ۸ disposition CONTENT در source-audit.json (originals byte-protected)، readiness doc در docs/product.
 - :app: LESSON destination با deep link؛ شروع ایستگاه از مسیر → lesson → بازگشت به shell؛ gateway/checkpoints از AppContainer.
 - closure: N06-07/08 DONE؛ فاز N06 DONE (11/11)؛ pointer → N06-08؛ next = N07-01.
+- correction 2: `ShomaraAssessmentResultChallenge.kt` comment contained banned token stars → بازنویسی شد؛ `verify-android-foundation` اکنون فایل‌های boundary-guard (ContentProjection.kt که خودش answerKey را ممنوع می‌کند) از forbidden-scan مستثنا می‌کند و feature allowlist شامل lesson شد.

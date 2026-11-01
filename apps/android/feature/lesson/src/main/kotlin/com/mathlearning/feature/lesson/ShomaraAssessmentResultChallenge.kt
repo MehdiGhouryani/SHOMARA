@@ -89,8 +89,8 @@ object ShomaraResultLogic {
 
 /**
  * N06-06 challenge player: STRICTLY separated from station mastery. Round timers are
- * non-punitive (respecting reducedMotion), completion carries zero stars/coins, and a challenge
- * result never changes station unlock state.
+ * non-punitive (respecting reducedMotion), completion grants no reward-economy items, and a
+ * challenge result never changes station unlock state.
  */
 enum class ShomaraChallengeState { Unavailable, Intro, Round, Submitting, Retry, Result, Offline }
 

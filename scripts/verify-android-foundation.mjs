@@ -51,7 +51,7 @@ assert.match(appBuild, /minSdk = 24/);
 assert.match(appBuild, /targetSdk = 36/);
 assert.ok(!/project\(":data:/.test(appBuild), 'app must never depend on a :data: module');
 assert.ok(/project\(":feature:onboarding"\)/.test(appBuild), 'N04: app navigates through the onboarding feature module');
-assert.ok(!/project\(":feature:(?!onboarding|path|practice|profile|settings|parent)/.test(appBuild), 'only roadmap-wired features are dependencies of app');
+assert.ok(!/project\(":feature:(?!onboarding|path|practice|profile|settings|parent|lesson)/.test(appBuild), 'only roadmap-wired features are dependencies of app');
 
 const wrapper = read('apps/android/gradle/wrapper/gradle-wrapper.properties');
 assert.match(wrapper, /gradle-9\.6\.0-bin\.zip/);
@@ -61,11 +61,15 @@ assert.equal(crypto.createHash('sha256').update(wrapperJar).digest('hex'), '497c
 
 const sourceRoots = ['apps/android/app/src/main/kotlin', 'apps/android/core'];
 const forbidden = [/answerKey/i, /correctAnswer/i, /google-services\.json/i, /signingConfig\s*=/];
+// N06 boundary-guard files legitimately NAME the banned keys inside their denylists — that is
+// the enforcement itself (CONTENT-008). They are audited by the projection guard tests instead.
+const boundaryGuardFiles = new Set(['apps\\android\\core\\model\\src\\main\\kotlin\\com\\mathlearning\\core\\model\\ContentProjection.kt']);
 const walk = (target) => {
   for (const entry of fs.readdirSync(target, { withFileTypes: true })) {
     const full = path.join(target, entry.name);
     if (entry.isDirectory()) walk(full);
     else if (/\.(kt|kts|xml)$/.test(entry.name)) {
+      if (boundaryGuardFiles.has(path.relative(root, full))) continue;
       const text = fs.readFileSync(full, 'utf8');
       for (const pattern of forbidden) assert.ok(!pattern.test(text), `forbidden client content ${pattern} in ${path.relative(root, full)}`);
     }
