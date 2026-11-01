@@ -308,3 +308,10 @@
 
 - چهار adapter خالص: T01 (شمارش با باند ۷۲–۸۰ و taught-numeral guard)، T05 (drag و tap-درخت هم‌نتیجه)، T13 (خط کرسing بالابه‌پایین برای ۱ + tolerance سروری ۲۸dp + fallback تپ با همان تکمیل)، T15 (صوت EXPECTED_NEVER_BLOCKING با fallback متنی؛ telemetry حداقلی P5).
 - evidence: lesson 32/32 تست JVM.
+
+## 2026-11-01 — N06 — M5: N06-07/08 + بستن فاز N06 — atomic commit
+
+- N06-07: ماتریس player (۳ عرض × دو font scale × ۴ حالت) با آگهی Persian قطعی.
+- N06-08: سفر E2E دروازهٔ ST07 (P1→P5 با HTTP واقعی، قطع ۵۰۳ میانه، checkpoint + resume دقیق با FIFO idempotency assertions)، `nonProductionDraft=true`/`STAGED_PILOT` ثابت و رد در production، ۸ disposition CONTENT در source-audit.json (originals byte-protected)، readiness doc در docs/product.
+- :app: LESSON destination با deep link؛ شروع ایستگاه از مسیر → lesson → بازگشت به shell؛ gateway/checkpoints از AppContainer.
+- closure: N06-07/08 DONE؛ فاز N06 DONE (11/11)؛ pointer → N06-08؛ next = N07-01.

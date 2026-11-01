@@ -1,9 +1,10 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
 | 2026-11-01 | SNAP-20261101-N05-PHASE-CLOSED | فاز N05 بسته شد (۹/۹): shell سه‌تب، گراف مسیر، شروع/پرش ایستگاه، practice hub، Me/settings، مرز والدین؛ ۸ commit اتمی؛ connectedCheck/screenshot/device صادقانه NATIVE_PENDING. |
+| 2026-11-01 | SNAP-20261101-N06-PHASE-CLOSED | فاز N06 بسته شد (۱۱/۱۱): مرز سه‌لایه‌ای محتوا، gateway idempotent، player P1..P5، adapters T01/T05/T13/T15، سفر E2E دروازهٔ ST07؛ ۸ disposition CONTENT؛ :app سیم‌کشی شد. |
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 44
+file_version: 45
 last_updated: 2026-10-31
 snapshot_id: SNAP-20261031-N04-U0-01
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
@@ -12,8 +13,8 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N06
-current_task: N06-01
-phase_status: N06_IN_PROGRESS_3_OF_11
+current_task: N06-08
+phase_status: N06_DONE_11_OF_11
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 
@@ -160,6 +161,8 @@ apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 - [x] `N06-11` Authoring/published/client projection boundary — `DONE` در 2026-11-01 (آینهٔ Kotlin با ۸ تست؛ telemetry حداقلی؛ behavior ID typed).
 - [x] `N06-02` Lesson chrome و lifecycle — `DONE` در 2026-11-01 (progress سرور-محور، close confirm fail-safe، checkpoint واقعی DataStore؛ ۸ تست).
 - [x] `N06-03` Teach و guided practice — `DONE` در 2026-11-01 (P1 بدون فشار؛ P2/P3 با submit محدود و hint محدود؛ نتیجه فقط از سرور).
+**نتیجهٔ نهایی N06 (2026-11-01):** هر ۱۱ task با ۵ commit اتمی بسته شد. مرز سه‌لایه‌ای authoring→published→child با stripper و snapshot tests (۱۳ Vitest + ۸ JUnit)، LessonGateway با idempotency قطعی و MockWebServer، سفر ST07 از teach تا result با قطع میانه و resume دقیق، `nonProductionDraft=true` ثابت، ۸ disposition CONTENT در source-audit.json، و سیم‌کشی واقعی :app (مسیر lesson با deep link). ۵۶ تست lesson+app؛ connectedCheck/screenshot/device همچنان NATIVE_PENDING.
+
 ## 7. تصمیم‌های محافظت‌شده
 
 - فارسی/RTL و Android-first.

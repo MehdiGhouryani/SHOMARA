@@ -44,7 +44,9 @@ fun ShomaraChildShell(
     childName: String? = null,
     completedStations: Int = 0,
     reducedMotion: Boolean = false,
-    onPathStationTap: (String) -> Unit = {},
+    lessonGateway: com.mathlearning.core.network.LessonGateway? = null,
+    lessonCheckpoints: com.mathlearning.core.datastore.LessonCheckpointStore? = null,
+    onStartStation: (String) -> Unit = {},
 ) {
     val navController = rememberNavController()
     var currentTab by rememberSaveable { mutableStateOf(ShomaraShellTab.Default) }
@@ -78,7 +80,7 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Path.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Path.deepLink }),
                 ) {
-                    ShomaraPathScreen(progress = pathProgress, onStationTap = onPathStationTap)
+                    ShomaraPathScreen(progress = pathProgress, onStationTap = onStartStation)
                 }
                 composable(
                     route = ShomaraShellTab.Practice.route,

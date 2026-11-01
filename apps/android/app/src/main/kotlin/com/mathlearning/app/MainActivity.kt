@@ -16,6 +16,8 @@ class MainActivity : ComponentActivity() {
                 ShomaraApp(
                     authSession = (application as ShomaraApplication).container.authSession,
                     profileDraftStore = (application as ShomaraApplication).container.profileDraftStore,
+                    lessonGateway = (application as ShomaraApplication).container.lessonGateway,
+                    lessonCheckpoints = (application as ShomaraApplication).container.lessonCheckpointStore,
                 )
             }
         }

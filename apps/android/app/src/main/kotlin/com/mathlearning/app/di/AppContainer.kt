@@ -8,9 +8,12 @@ import com.mathlearning.core.common.logging.AppLogger
 import com.mathlearning.core.common.logging.LogLevel
 import com.mathlearning.core.common.logging.LogSink
 import com.mathlearning.core.common.logging.SafeAppLogger
+import com.mathlearning.core.datastore.LessonCheckpointStore
+import com.mathlearning.core.datastore.PreferencesLessonCheckpointStore
 import com.mathlearning.core.datastore.PreferencesProfileDraftStore
 import com.mathlearning.core.datastore.PreferencesTokenStore
 import com.mathlearning.core.datastore.ShomaraProfileDraftStore
+import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.core.network.ShomaraOtpApi
 import com.mathlearning.core.network.ShomaraOtpEndpoints
 import com.mathlearning.feature.onboarding.ShomaraAuthSession
@@ -22,6 +25,8 @@ interface AppContainer {
     val logger: AppLogger
     val authSession: ShomaraAuthSession
     val profileDraftStore: ShomaraProfileDraftStore
+    val lessonCheckpointStore: LessonCheckpointStore
+    val lessonGateway: LessonGateway
 }
 
 /**
@@ -32,6 +37,9 @@ interface AppContainer {
 object ShomaraRuntimeConfig {
     @Volatile
     var otpEndpoints: ShomaraOtpEndpoints? = null
+
+    @Volatile
+    var lessonSubmitUrl: String? = null
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
@@ -48,6 +56,13 @@ class DefaultAppContainer(context: Context) : AppContainer {
     )
 
     override val profileDraftStore: ShomaraProfileDraftStore = PreferencesProfileDraftStore(dataStore)
+
+    override val lessonCheckpointStore: LessonCheckpointStore = PreferencesLessonCheckpointStore(dataStore)
+
+    override val lessonGateway: LessonGateway = LessonGateway(
+        client = ShomaraOtpApi.defaultClient(),
+        submitUrl = { ShomaraRuntimeConfig.lessonSubmitUrl },
+    )
 }
 
 private data object AndroidLogSink : LogSink {

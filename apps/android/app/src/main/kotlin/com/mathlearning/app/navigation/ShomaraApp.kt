@@ -21,6 +21,8 @@ import com.mathlearning.feature.onboarding.ShomaraOnboardingHost
 fun ShomaraApp(
     authSession: com.mathlearning.feature.onboarding.ShomaraAuthSession,
     profileDraftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore,
+    lessonGateway: com.mathlearning.core.network.LessonGateway,
+    lessonCheckpoints: com.mathlearning.core.datastore.LessonCheckpointStore,
 ) {
     val navController = rememberNavController()
     ShomaraTheme {
@@ -47,10 +49,27 @@ fun ShomaraApp(
                 )
             }
             composable(
+                route = AppDestination.LESSON.route,
+                deepLinks = listOf(navDeepLink { uriPattern = "mathlearning://lesson/{stationId}" }),
+            ) { entry ->
+                val stationId = entry.arguments?.getString("stationId") ?: "ST07"
+                com.mathlearning.feature.lesson.ShomaraLessonHost(
+                    stationId = stationId,
+                    gateway = lessonGateway,
+                    checkpointStore = lessonCheckpoints,
+                    onExitToShell = { navController.popBackStack(AppDestination.SHELL.route, inclusive = false) },
+                )
+            }
+            composable(
                 route = AppDestination.SHELL.route,
                 deepLinks = listOf(navDeepLink { uriPattern = AppDestination.SHELL.deepLink }),
             ) {
-                ShomaraChildShell(onSignOut = { /* session sign-out joins the parent surface flow in N06 */ })
+                ShomaraChildShell(
+                    onSignOut = { /* session sign-out joins the parent surface flow in N06 */ },
+                    onStartStation = { stationId -> navController.navigate("lesson/$stationId") },
+                    lessonGateway = lessonGateway,
+                    lessonCheckpoints = lessonCheckpoints,
+                )
             }
             composable(
                 route = AppDestination.FOUNDATION.route,
