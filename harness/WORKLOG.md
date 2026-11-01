@@ -269,3 +269,8 @@
 
 - `:feature:profile` Me (خانوادهٔ ۱۴): facts واقعی (نام + پیشرفت با ارقام فارسی)، حالت‌ها با تست، صفر سطح جعلی (تست سطح field). `:feature:settings` (خانوادهٔ ۱۵): گرید آواتار canonical با equipped/owned، toggle حرکت کمتر، lifecycle ذخیره با revert در شکست.
 - evidence: profile 4/4 + settings 7/7 تست JVM؛ lint سبز.
+
+## 2026-11-01 — N05 — M7: N05-06 parent boundary — atomic commit
+
+- `ShomaraParentGate`: reducer با fail-closed (نبود verifier = ورود ناممکن)، lockout سه‌مرحله‌ای با cooldown، ورود مجدد وقتی Authenticated بی‌اثر. `ShomaraParentSurfaceContract`: فقط progress-report/settings/sign-out — درس/تمرین/شروع ایستگاه ساختاراً رد می‌شوند؛ تب والدین در shell کودک وجود ندارد (ورود فقط از Me → دروازه).
+- evidence: parent 7/7 تست JVM؛ lint سبز.
