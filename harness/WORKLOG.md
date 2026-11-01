@@ -298,3 +298,8 @@
 
 - `LessonCheckpointStore` (DataStore واقعی، کلید session|station، پاک‌سازی فقط با تکمیل سروری) + `ShomaraLessonChromeLogic` (progress سرور-محور + close confirm fail-safe) + P1 teach (صوت هرگز مسدود نیست) + P2/P3 guided (submit ساختاراً تکی؛ نتیجه فقط سرور؛ hint محدود).
 - evidence: lesson 8/8 تست JVM.
+
+## 2026-11-01 — N06 — M3: N06-04/05/06 assessment/result/challenge — atomic commit
+
+- `LessonGateway` (Idempotency-Key قطعی، replay→Duplicate، MockWebServer: 201/200/400/timeout/offline) + `ShomaraAssessmentSession` (P4/P5 فقط؛ صفر hint؛ duplicate-tap ساختاری بسته؛ disconnect→resume با همان key) + `ShomaraResultLogic` (next action verbatim؛ کپی گرم) + `ShomaraChallengeSession` (جدا از mastery با تست reflection؛ timer غیرتنبیهی + reducedMotion).
+- evidence: lesson 23/23 تست JVM.

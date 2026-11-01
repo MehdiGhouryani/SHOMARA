@@ -47,6 +47,24 @@ object ShomaraJson {
         return null
     }
 
+    /** Extracts a bare JSON boolean (true/false); null when absent or not a boolean. */
+    fun extractBoolean(json: String, key: String): Boolean? {
+        val needle = "\"$key\""
+        val keyIndex = json.indexOf(needle)
+        if (keyIndex < 0) return null
+        var i = keyIndex + needle.length
+        while (i < json.length && json[i].isWhitespace()) i += 1
+        if (i >= json.length || json[i] != ':') return null
+        i += 1
+        while (i < json.length && json[i].isWhitespace()) i += 1
+        if (i >= json.length) return null
+        return when {
+            json.startsWith("true", i) -> true
+            json.startsWith("false", i) -> false
+            else -> null
+        }
+    }
+
     fun escape(value: String): String = buildString {
         for (c in value) when (c) {
             '"' -> append("\\\"")
