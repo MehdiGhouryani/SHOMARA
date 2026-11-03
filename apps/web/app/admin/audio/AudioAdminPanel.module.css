@@ -41,4 +41,8 @@
 .audit{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .audit li{font-size:13px}
 .audit p{margin:2px 0 0}
+.rollbackBtn{border-color:var(--ds-text-muted);color:var(--ds-text-secondary)}
+.uploadBlock{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--ds-border-default);padding-top:14px}
+.uploadBlock h3{margin:0;font-size:15px}
+.uploadBlock input[type="file"]{min-height:44px;font-size:13px;font-family:inherit}
 @media(max-width:720px){.editGrid{grid-template-columns:1fr}.textCell{max-width:200px}}

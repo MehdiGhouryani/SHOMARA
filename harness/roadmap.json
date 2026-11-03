@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-03",
   "currentPhase": "N08",
-  "currentTask": "N08-13",
+  "currentTask": "N08-01",
   "statusValues": [
     "TODO",
     "READY",
@@ -1923,7 +1923,7 @@
         {
           "id": "N08-13",
           "title": "پنل CMS صوت ادمین (وب) — مدیریت خط‌های صوتی از پنل",
-          "status": "IN_PROGRESS",
+          "status": "DONE_WITH_BLOCKER",
           "dependsOn": [
             "N07-09"
           ],
@@ -1940,10 +1940,11 @@
             "6 API routes: scripts list/detail/edit (diff display/TTS), binary upload (sha256/duration validation, no fake binaries), transition, rollback, reports — all gated by requireRequestAccountPrincipal(ADMIN)",
             "supabase/migrations/0074_audio_cms_tables.sql: audio_scripts/script_versions/asset_versions/audit with RLS (admin write, teacher read) — static guards PASS (74 migrations)",
             "apps/web/app/admin/audio/page.tsx + CSS module: RTL Persian panel (filter, edit, stage transition, audit trail, reports bar) on existing DS tokens",
+            "Upload UI (commit 2): browser-side SHA-256 via crypto.subtle + real decoded duration via Audio metadata — no guessed metadata, empty files rejected; rollback button per asset",
             "Vitest 8/8 new (admin-audio.test.ts): seed 232 idempotent, RBAC mapping, fake-binary rejection, transition ladder, rollback, impact report",
-            "Gates: vitest 562/562, static 88/88, repository PASS, content PASS, typecheck web clean"
+            "Gates: vitest 562/562, static 88/88, repository PASS, content PASS, typecheck web clean (both commits)"
           ],
-          "blocker": "Production persistence: in-memory repository fails closed in production (AUDIO_ADMIN_BACKEND_NOT_CONFIGURED) until the Supabase-backed implementation is wired; TTS generation itself stays owner-gated (voice + credentials); upload UI needs object storage decision"
+          "blocker": "Production persistence: in-memory repository fails closed in production (AUDIO_ADMIN_BACKEND_NOT_CONFIGURED) until the Supabase-backed implementation is wired (migration 0074 schema ready). Binary BYTES still need an object-storage decision before they flow to children; TTS generation stays owner-gated (voice + credentials)."
         }
       ]
     },

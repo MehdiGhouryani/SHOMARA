@@ -364,3 +364,10 @@
 - `apps/web/app/admin/audio/page.tsx`: پنل فارسی RTL روی AdultRouteShell و tokenهای موجود — فیلتر/جست‌وجو، ویرایش دوگانهٔ متن، دکمه‌های گردش وضعیت، تاریخچهٔ audit، نوار گزارش‌ها (missing/impact/orphan)؛ stateهای loading/error/retry.
 - evidence: Vitest جدید ۸/۸ (admin-audio.test.ts)؛ کل ۵۶۲/۵۶۲؛ static 88/88؛ repository PASS (۱۰۰ task، ۵۴۶ فایل، ۱۸۷۳ یال)؛ content PASS؛ typecheck وب clean؛ migration guards PASS.
 - blocker: پیوست‌سازی production (الان in-memory با fail-closed)، تولید TTS واقعی نیازمند voice + credential مالک، تصمیم object storage برای آپلود.
+
+## 2026-11-03 — N08 — M3: N08-13 کامل شد (DONE_WITH_BLOCKER) + شروع N08-01
+
+- UI آپلود در پنل اضافه شد: checksum SHA-256 با crypto.subtle سمت مرورگر + مدت‌زمان از decode واقعی Audio metadata — هیچ متادیتای حدسی؛ فایل خالی رد می‌شود؛ دکمهٔ rollback در بلوک asset.
+- N08-13 → DONE_WITH_BLOCKER: همهٔ ۶ بند acceptance با evidence ثبت شد؛ blocker صادقانه: persistence (in-memory fail-closed تا wiring Supabase — schema آماده در 0074)، bytes در object storage، TTS واقعی owner-gated.
+- gates: vitest 562/562 · static 88/88 · typecheck web clean · harness VALID.
+- next: N08-01 (Route/state ledger audit) — آغاز شد.

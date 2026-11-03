@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AdultRouteShell } from '../../../components/AdultRouteShell';
 import { toPersianDigits } from '../../../lib/persian';
 import styles from './AudioAdminPanel.module.css';
@@ -67,6 +67,7 @@ export default function AudioAdminPage() {
   const [editing, setEditing] = useState<{ textDisplay: string; textTts: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const uploadFileRef = useRef<HTMLInputElement | null>(null);
 
   const load = useCallback(() => {
     setError(null);
@@ -134,6 +135,67 @@ export default function AudioAdminPage() {
       openDetail(audioId);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'خطای تغییر وضعیت');
+    }
+  }
+
+  async function uploadFile(audioId: string) {
+    const file = uploadFileRef.current?.files?.[0];
+    if (!file) {
+      setError('ابتدا فایل صوتی (opus/mp3/ogg) را انتخاب کنید.');
+      return;
+    }
+    if (file.size === 0) {
+      setError('فایل خالی قابل ثبت نیست (ادعای صوت بدون فایل ممنوع است).');
+      return;
+    }
+    setSaving(true);
+    setNotice(null);
+    try {
+      // 1. checksum in browser (crypto.subtle is available on https/localhost)
+      const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
+      const sha256 = Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+      // 2. duration from a real decode — never guessed
+      const durationMs = await new Promise<number>((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const audio = new Audio();
+        audio.preload = 'metadata';
+        audio.onloadedmetadata = () => {
+          const d = Math.round((audio.duration || 0) * 1000);
+          URL.revokeObjectURL(url);
+          if (d <= 0) reject(new Error('طول فایل قابل خواندن نیست — فایل صوتی معتبر انتخاب کنید.'));
+          else resolve(d);
+        };
+        audio.onerror = () => { URL.revokeObjectURL(url); reject(new Error('مرورگر نتوانست فایل را باز کند.')); };
+        audio.src = url;
+      });
+      const format = file.name.split('.').pop()?.toLowerCase() ?? '';
+      await api(`/api/v1/admin/audio/assets/${encodeURIComponent(audioId)}/upload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sha256, durationMs, bytes: file.size, format, sourceKind: 'HUMAN_UPLOAD', voiceProfileId: 'vp-owner-upload' }),
+      });
+      setNotice(`فایل ثبت شد: ${toPersianDigits(Math.round(durationMs / 100) / 10)} ثانیه · SHA-256 تأیید شد.`);
+      load();
+      openDetail(audioId);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'خطای ثبت فایل');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function rollbackOne(audioId: string) {
+    setNotice(null);
+    try {
+      const result = await api<{ asset: { publishState: string } }>(`/api/v1/admin/audio/assets/${encodeURIComponent(audioId)}/rollback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: 'بازگشت به مرحلهٔ قبل از پنل' }),
+      });
+      setNotice(`بازگردانده شد به «${PUBLISH_STAGE_FA[result.asset.publishState] ?? result.asset.publishState}».`);
+      openDetail(audioId);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'خطای بازگردانی');
     }
   }
 
@@ -225,6 +287,7 @@ export default function AudioAdminPage() {
                   {(['TECHNICALLY_VALIDATED', 'APPROVED', 'PUBLISHED'] as const).map((stage) => (
                     <button key={stage} type="button" onClick={() => transition(selected.script.audioId, stage)}>{PUBLISH_STAGE_FA[stage]}</button>
                   ))}
+                  <button type="button" className={styles.rollbackBtn} onClick={() => rollbackOne(selected.script.audioId)}>بازگردانی یک مرحله</button>
                 </div>
                 <h3>تاریخچهٔ گردش</h3>
                 <ul className={styles.audit}>
@@ -238,8 +301,17 @@ export default function AudioAdminPage() {
                 </ul>
               </div>
             ) : (
-              <p className={styles.muted}>هنوز فایل صوتی برای این خط ثبت نشده است. پس از تولید TTS خارجی، ادمین فایل را با checksum در سیستم ثبت می‌کند؛ ادعای وجود صوت بدون فایل ممنوع است.</p>
+              <p className={styles.muted}>هنوز فایل صوتی برای این خط ثبت نشده است.</p>
             )}
+
+            <div className={styles.uploadBlock}>
+              <h3>ثبت فایل صوتی جدید</h3>
+              <p className={styles.muted}>checksum و مدت‌زمان از خود فایل خوانده و سمت مرورگر محاسبه می‌شود — بدون فایل واقعی هیچ ثبت‌شدنی نیست.</p>
+              <input ref={uploadFileRef} type="file" accept="audio/ogg, audio/mpeg, audio/mp3, .opus" aria-label="انتخاب فایل صوتی" />
+              <button type="button" className={styles.saveBtn} disabled={saving} onClick={() => uploadFile(selected.script.audioId)}>
+                {saving ? 'در حال ثبت…' : 'ثبت با checksum'}
+              </button>
+            </div>
           </section>
         ) : null}
       </div>
