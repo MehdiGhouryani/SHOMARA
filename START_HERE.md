@@ -1,4 +1,5 @@
 ﻿# START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-04 | SNAP-20261104-N08-05-DONE | N08-05 DONE و **دومین P0 روی دستگاه**: تمام deep linkهای اپ مرده بودند — `ShomaraApp` برای onboarding/shell/lesson الگوی `navDeepLink` ثبت می‌کرد ولی manifest فقط `mathlearning://foundation` را اعلام کرده بود، پس adb می‌گفت «unable to resolve Intent». حالا هر چهار host اعلام شده و `DeepLinkManifestTest` (با negative control) drift را می‌شکند. همچنین **BackHandler صفر بود**: back سیستمی درس را فوراً می‌بست در حالی که دکمهٔ خروج تأیید می‌گرفت؛ حالا هر دو یک مسیر دارند (bar #1 می‌پرسد، bar #2 می‌ماند) و روی دستگاه اثبات شد. tap سریع single-flight شد، `choiceId="opt-1"` قلابی حذف شد، و باگ «مرحلهٔ آخر بی‌نهایت تکرار می‌شد» بسته شد. ۱۳ تست جدید؛ P0 باقی‌ماندهٔ roadmap: هیچ task اجرایی نمانده — بقیهٔ N08 منتظر تصمیم محتوایی مالک است. |
 | 2026-11-04 | SNAP-20261104-N08-04-DONE | N08-04 DONE و یک **P0 واقعی که فقط با نصب APK پیدا شد**: اپ اصلاً باز نمی‌شد — `IllegalArgumentException: Navigation destination that matches route onboarding/welcome ...` چون هر مرحلهٔ آنبوردینگ به یک route جدا navigate می‌شد ولی گراف فقط `onboarding` را ثبت کرده بود (ROUTE_REGISTRY: onboarding یک route با مراحل داخلی است). حالا با `AppNavigationRoutes` + `RegisteredRoutesTest` مکانیکی قفل شده و روی دستگاه تأیید شد (pid زنده، بدون FATAL). reduced motion واقعی شد (پس‌زمینهٔ سیستمی + انتخاب کودک، هر یک کافی)، celebration gate «بدون هم‌زمانی» را می‌بندد، و **پایداری تنظیمات دیگر قلابی نیست**: قبلاً `onSave` پیام «ذخیره شد» می‌داد بدون هیچ نوشتن؛ حالا DataStore واقعی است. ۳۰ تست instrumented و ۷۰ تست واحد سبز، negative control گرفته شد، APK ساخته/نصب/اجرا شد. |
 | 2026-11-04 | SNAP-20261104-N08-03-DONE | N08-03 DONE: نقص برش ۲۰۰٪ رفع شد و روی امولاتور واقعی اثبات شد (۲۶ تست instrumented، failures=0) — و **یک P0 واقعی که ممیزی قبلی اشتباه گفته بود**: `ShomaraTheme` هرگز `LocalLayoutDirection` را Rtl نمی‌کرد، پس روی دستگاه en-US کل رابط LTR رندر می‌شد؛ حالا ریشه RTL است و ریاضی LTR می‌ماند. دو negative control ثابت می‌کند تست‌ها توخالی نیستند. |
 | 2026-11-04 | SNAP-20261104-N08-03-PREP | N08-03 آماده‌سازی (بدون تغییر کد): نقص ۲۰۰٪ با اندازه‌گیری واقعی اثبات شد — ShomaraButton در DeviceConfigurationOverride.FontScale(2.0) مقدار didOverflowHeight=true می‌دهد (line0bottom=155px در جعبهٔ 56dp)، یعنی برچسب بریده می‌شود؛ جهت‌دهی ریاضی/RTL از قبل درست و مستند است. |
@@ -13,9 +14,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 54
+file_version: 55
 last_updated: 2026-11-04
-snapshot_id: SNAP-20261104-N08-04-DONE
+snapshot_id: SNAP-20261104-N08-05-DONE
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n08-ux-completion
 working_branch_pushed: false
@@ -23,9 +24,9 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N08
-current_task: N08-05
-phase_status: N08_IN_PROGRESS_5_OF_13
-apk_status: DEBUG_APK_BUILT_AND_INSTALLED__LAUNCH_VERIFIED
+current_task: N08-BLOCKED_ON_OWNER_CONTENT_DECISIONS
+phase_status: N08_4_OF_13_DONE__REMAINDER_BLOCKED
+apk_status: DEBUG_APK_BUILT_INSTALLED__LAUNCH_AND_DEEPLINK_VERIFIED
 ```
 
 ## 0. تصمیم مالک و مرز کار

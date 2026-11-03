@@ -18,11 +18,21 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--
+              N08-05: the NavHost registers deep links for onboarding, shell and lesson/{stationId},
+              but this manifest declared ONLY mathlearning://foundation — so Android could never
+              deliver the others and every in-app deep link was dead. One filter with several <data>
+              entries covers every path on the mathlearning scheme; the foundation host is kept so
+              existing links keep resolving.
+            -->
             <intent-filter android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="mathlearning" android:host="foundation" />
+                <data android:scheme="mathlearning" android:host="onboarding" />
+                <data android:scheme="mathlearning" android:host="shell" />
+                <data android:scheme="mathlearning" android:host="lesson" />
             </intent-filter>
         </activity>
     </application>

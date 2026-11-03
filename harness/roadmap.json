@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-04T01:50:00.000Z",
+  "updatedAt": "2026-11-04T02:20:00.000Z",
   "currentPhase": "N08",
-  "currentTask": "N08-05",
+  "currentTask": "N08-06",
   "statusValues": [
     "TODO",
     "READY",
@@ -1844,7 +1844,7 @@
         {
           "id": "N08-05",
           "title": "Robustness matrix",
-          "status": "TODO",
+          "status": "DONE",
           "dependsOn": [
             "N08-01"
           ],
@@ -1852,7 +1852,24 @@
             "fast taps/offline/process death",
             "no dead end"
           ],
-          "evidence": []
+          "evidence": [
+            "SECOND P0 FOUND ON DEVICE — every in-app deep link was dead: ShomaraApp registers navDeepLink patterns for onboarding, shell and lesson/{stationId}, but AndroidManifest.xml declared ONLY mathlearning://foundation. adb returned \"Activity not started, unable to resolve Intent { act=VIEW dat=mathlearning://lesson/... }\". Fixed by declaring all four hosts in one VIEW filter; verified on device that mathlearning://lesson/ST07 now lands on the lesson surface.",
+            "New DeepLinkManifestTest (3 JVM assertions) reads the REAL AndroidManifest.xml and fails if a NavHost deep-link host is undeclared. NEGATIVE CONTROL: deleting the onboarding/shell/lesson <data> entries failed 2 of 3 tests with \"deep link host 'lesson' is registered in the NavHost but not declared\" — the test detects the original defect. Restored and re-ran green.",
+            "BACK GESTURE: the app had ZERO BackHandler registrations, so system back popped the lesson screen instantly while the on-screen exit button asked for confirmation — two paths, opposite behaviour. Added ShomaraBackLogic + shomaraBackHandler (core:designsystem). Verified ON DEVICE: back #1 shows \"آیا می‌خواهی از ایستگاه خارج شوی؟\" with خروج/می‌مانم; back #2 dismisses and KEEPS the child in the lesson (uiautomator dumps back1.xml/back2.xml, pid unchanged).",
+            "FAST TAPS: the submit button had no in-flight guard and submitCurrent is suspend, so a double tap could send two answers for one encounter. ShomaraLessonSubmitGate enforces single-flight; the guard is re-checked inside the coroutine because two lambdas can queue before recomposition. Test proves 25 queued taps produce exactly 1 in-flight submission.",
+            "FAKE ANSWER REMOVED: the lesson host hardcoded choiceId = \"opt-1\" and a debug button \"ثبت پاسخ نمونه\", sending an answer the child never chose. Now the id comes from ShomaraLessonOptions.firstOptionId(stage); when the server projection has supplied no options the surface shows \"گزینه‌های این تمرین هنوز از سرور نیامده‌اند\" and submits nothing. Verified on device via the lesson deep link.",
+            "DEAD END FOUND AND CLOSED: the stage walk used MacroStage.entries[(i+1).coerceAtMost(lastIndex)], which at the final stage silently re-entered the SAME stage forever — a loop disguised as progress. ShomaraLessonStageWalk.next now returns null past the final stage and the host shows an honest \"منتظر تأیید سرور هستیم\" state. NEGATIVE CONTROL: restoring the clamp failed 2 tests. Restored and re-ran green.",
+            "STALE ERROR CLEARED: an interruption banner was set on failure and never cleared on the next success, so a recovered child kept seeing the old error. ShomaraLessonBannerPolicy.afterSuccess clears it (asserted).",
+            "OFFLINE ENTRY verified on device with airplane mode ON + wifi/data disabled: process relaunched, pid alive, no FATAL, the Persian welcome surface rendered normally.",
+            "PROCESS DEATH verified on device: am force-stop -> pid empty -> relaunch -> pid 31703 alive, no FATAL, welcome surface rendered.",
+            "RAPID TAP stress on the welcome CTA (10 fast taps) and repeated back presses: pid stable throughout, no FATAL. 20 consecutive back presses can never reach ConfirmedExit (asserted).",
+            "ShomaraLessonRobustnessTest: 13 JVM tests (fast taps, back, stage walk, banner). feature:lesson total 55 tests, 0 failures.",
+            "./gradlew test lint connectedCheck => BUILD SUCCESSFUL, exit 0 (all three, one invocation).",
+            "npm run typecheck:all => exit 0; npx vitest run => 73 files / 564 tests passed; npm run verify:static:all => STATIC_ALL PASS 89/89; npm run verify:content-library => PASS; node tools/harness.mjs validate => HARNESS_VALID; git diff --check => exit 0.",
+            "New dependency registered (AGENTS rule 11): core:designsystem now exposes androidx.activity:activity-compose for BackHandler, with core-ktx / lifecycle-runtime-compose / savedstate pinned in gradle/libs.versions.toml so resolution uses versions this project already builds with (activity-compose alone drags in older uncached artifacts).",
+            "Debug APK rebuilt and installed: apps/android/app/build/outputs/apk/debug/app-debug.apk, 13,496,808 bytes (12.87 MB), sha256 3063f2b57498ce3eb48fa2f63ea3f03958d43e1e96d240f338fdca98bcbf31a3; adb install -r => Success; adb shell am start => pid 32384 alive, no FATAL EXCEPTION on emulator-5554 (sdk_gphone64_x86_64 / Android 15 / API 35).",
+            "HONEST LIMITATION (not a claim of completion): the lesson option list still comes from a server projection this local build does not have, so the lesson surface currently shows the dependency notice instead of options. That is the correct child-safe unavailable state, not a working practice loop. Practice Hub empty collections, guardian gate credentials and backend-configured sync remain open."
+          ]
         },
         {
           "id": "N08-06",

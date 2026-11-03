@@ -27,6 +27,15 @@ dependencies {
     api(libs.androidx.compose.ui)
     api(libs.androidx.compose.material3)
 
+    // N08-05: BackHandler lives here so every feature shares one back-gesture policy instead of
+    // each one registering its own (previously: none at all).
+    // core-ktx / lifecycle / savedstate are declared alongside it so the graph resolves to the
+    // versions this project already pins; activity-compose alone would drag in older ones.
+    api(libs.androidx.activity.compose)
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.lifecycle.runtime.compose)
+    api(libs.androidx.savedstate)
+
     testImplementation(libs.junit4)
 
     // N08-02: Compose semantics tests are instrumented (androidTest) — the

@@ -480,3 +480,55 @@ sha256 `451359541d9dff53d748f3a7bf073181903c4703ffbd3ef5352509b9b7616815`؛ `adb
 **باز مانده:** `CONTENT-007` (hapticsPolicy) هنوز تصمیم مالک است؛ هیچ haptic اضافه نشد.
 خودِ حرکت celebration وجود ندارد (فقط gate آن). TalkBack gesture path همچنان NATIVE_PENDING.
 `harness next` → **N08-05**.
+
+## 2026-11-04 — N08 — M10: N08-05 بسته شد + P0 «همهٔ deep linkها مرده بودند»
+
+**دومین P0 که فقط با اجرای واقعی روی دستگاه پیدا شد.** هیچ تستی آن را نمی‌گرفت چون تست‌ها گراف
+ناوبری را روی دستگاه اجرا نمی‌کنند:
+
+```
+Error: Activity not started, unable to resolve Intent { act=VIEW
+dat=mathlearning://lesson/... pkg=com.mathlearning.app }
+```
+
+علت: `ShomaraApp` برای `onboarding`/`shell`/`lesson/{stationId}` الگوی `navDeepLink` ثبت
+می‌کرد، اما `AndroidManifest.xml` فقط `mathlearning://foundation` را اعلام کرده بود. Android
+بقیه را در سطح OS رد می‌کرد. حالا هر چهار host اعلام شده‌اند و `DeepLinkManifestTest` خودِ
+manifest واقعی را می‌خواند؛ negative control (حذف سه `<data>`) دقیقاً دو تست را شکست.
+
+**BackHandler صفر بود.** هیچ `BackHandler` در کل `apps/android` وجود نداشت، پس back سیستمی
+صفحهٔ درس را فوراً می‌بست، در حالی که دکمهٔ روی صفحه تأیید می‌گرفت — دو مسیر با رفتار متضاد.
+حالا `ShomaraBackLogic` + `shomaraBackHandler` هست و روی دستگاه اثبات شد: bar اول می‌پرسد
+(«آیا می‌خواهی از ایستگاه خارج شوی؟» با خروج/می‌مانم)، bar دوم سؤال را می‌بندد و کودک می‌ماند.
+
+**سه نقص دیگر در lesson:**
+- **tap سریع:** دکمهٔ ثبت پاسخ هیچ قفل in-flight نداشت و `submitCurrent` suspend است؛ یک
+  double-tap می‌توانست دو پاسخ بفرستد. `ShomaraLessonSubmitGate` single-flight می‌کند و
+  تست ثابت می‌کند ۲۵ tap صف‌شده فقط **یک** ارسال در جریان می‌سازد.
+- **پاسخ قلابی:** هاست همیشه `choiceId = "opt-1"` می‌فرستاد (با دکمهٔ دیباگ «ثبت پاسخ نمونه»).
+  حالا id از گزینهٔ واقعی می‌آید؛ وقتی projection سرور گزینه‌ای نداده، سطح پیام صادقانهٔ
+  «گزینه‌های این تمرین هنوز از سرور نیامده‌اند» را نشان می‌دهد و چیزی نمی‌فرستد.
+- **بن‌بست:** پیمایش مرحله با `coerceAtMost(lastIndex)` در مرحلهٔ آخر همان مرحله را **بی‌نهایت**
+  تکرار می‌کرد. حالا `next` بعد از مرحلهٔ آخر `null` می‌دهد و وضعیت صادقانهٔ «منتظر تأیید
+  سرور» نمایش داده می‌شود. negative control (برگرداندن clamp) دو تست را شکست.
+
+**آزمون‌های روی دستگاه:** offline (airplane mode) → اپ باز شد، pid زنده، بدون FATAL. process death
+(`am force-stop` سپس relaunch) → بدون FATAL. ۱۰ tap سریع روی CTA و backهای تکراری → pid پایدار.
+deep link `mathlearning://lesson/ST07` → سطح درس رندر شد.
+
+**وابستگی جدید (ثبت طبق قاعدهٔ ۱۱ AGENTS):** `core:designsystem` حالا
+`androidx.activity:activity-compose` را برای BackHandler صادر می‌کند، همراه با pin کردن
+core-ktx / lifecycle-runtime-compose / savedstate در `gradle/libs.versions.toml` (نسخه‌هایی که
+پروژه از قبل با آن‌ها build می‌شود؛ activity-compose تنها، نسخه‌های قدیمی و uncached می‌کشید).
+
+**شواهد:** `gradlew test lint connectedCheck` exit 0؛ ۱۳ تست جدید (lesson total 55)؛
+`typecheck:all` 0؛ `vitest` ۵۶۴/۵۶۴؛ `verify:static:all` ۸۹/۸۹؛ `verify:content-library` PASS؛
+harness VALID؛ `git diff --check` 0.
+
+**APK نهایی:** `apps/android/app/build/outputs/apk/debug/app-debug.apk` — ۱۳٬۴۹۶٬۸۰۸ بایت،
+sha256 `3063f2b57498ce3eb48fa2f63ea3f03958d43e1e96d240f338fdca98bcbf31a3`؛ نصب و اجرا روی
+emulator-5554 (sdk_gphone64_x86_64 / Android 15 / API 35).
+
+**وضعیت roadmap:** `node tools/harness.mjs next` → **«No executable task remains.»**
+بقیهٔ N08 (۰۶..۱۲) به N08-08 وابسته‌اند که سه تصمیم محتوایی مالک را باز دارد
+(CONTENT-005/006/007/016). این بن‌بست صادقانه ثبت شد، نه با ساختن task قلابی.
