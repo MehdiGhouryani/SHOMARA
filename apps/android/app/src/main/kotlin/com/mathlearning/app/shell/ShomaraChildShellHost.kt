@@ -27,6 +27,7 @@ import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
 import com.mathlearning.feature.path.ShomaraPathProgress
 import com.mathlearning.feature.path.ShomaraPathScreen
+import com.mathlearning.feature.practice.ShomaraPracticeCatalog
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
 import com.mathlearning.feature.profile.ShomaraMeScreen
 import com.mathlearning.feature.settings.ShomaraSettingsSaveState
@@ -96,7 +97,24 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Practice.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Practice.deepLink }),
                 ) {
-                    ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList())
+                    // N08 §4: this used to pass emptyList()/emptyList(), so the tab could ONLY ever
+                    // render the empty state. The list now derives from the canonical 25-station
+                    // catalog plus the child's real progress: reached stations are practiseable,
+                    // unreached ones appear LOCKED with a warm reason (never fabricated practice).
+                    val practiceItems = remember(pathProgress) {
+                        ShomaraPracticeCatalog.itemsFor(
+                            completedStationIds = pathProgress.completedStationIds,
+                            currentStationId = pathProgress.currentStationId,
+                        )
+                    }
+                    val practiceRecent = remember(pathProgress) {
+                        ShomaraPracticeCatalog.recentFor(pathProgress.completedStationIds)
+                    }
+                    ShomaraPracticeHubScreen(
+                        items = practiceItems,
+                        recent = practiceRecent,
+                        onItemTap = onStartStation,
+                    )
                 }
                 composable(
                     route = ShomaraShellTab.Me.route,
