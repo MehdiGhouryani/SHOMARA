@@ -6,10 +6,12 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
@@ -206,12 +208,28 @@ object ShomaraColorScheme {
     )
 }
 
+/**
+ * N08-03 P0 fix: the interface direction is pinned RTL at the ROOT composition, independent of the
+ * device locale. Before this, `ShomaraTheme` only called MaterialTheme, so on an en-US device the
+ * whole app rendered LTR — `android:supportsRtl="true"` merely means the app *respects* the device
+ * direction, it does not make a Persian product RTL. Persian is the product language (AGENTS §3.7),
+ * so the shell, navigation, tab order and row layout must be RTL on every device.
+ *
+ * Math content stays LTR: components that carry mathematical meaning opt in explicitly via
+ * [ShomaraManipulativeRules.mathDirection] / `CompositionLocalProvider`, never by inheriting this.
+ */
 @Composable
 fun ShomaraTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = ShomaraColorScheme.Light,
-        typography = ShomaraTypography.Material,
-        shapes = ShomaraShapes.Material,
-        content = content,
-    )
+    CompositionLocalProvider(
+        LocalLayoutDirection provides ShomaraDirections.DefaultInterfaceDirection,
+        LocalShomaraInterfaceDirection provides ShomaraDirections.DefaultInterfaceDirection,
+        LocalShomaraMathDirection provides ShomaraDirections.DefaultMathDirection,
+    ) {
+        MaterialTheme(
+            colorScheme = ShomaraColorScheme.Light,
+            typography = ShomaraTypography.Material,
+            shapes = ShomaraShapes.Material,
+            content = content,
+        )
+    }
 }

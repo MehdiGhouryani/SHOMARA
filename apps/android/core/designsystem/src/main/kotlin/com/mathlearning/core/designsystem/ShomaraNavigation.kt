@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.style.TextAlign
 
 /**
  * Child shell contract (START_HERE §7, protected decision): exactly three canonical tabs —
@@ -138,31 +141,42 @@ fun ShomaraTopBar(
             .padding(horizontal = ShomaraTokens.Space12, vertical = ShomaraTokens.Space4),
         contentAlignment = Alignment.Center,
     ) {
-        if (onBack != null) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .defaultMinSize(minWidth = ShomaraTopBarLogic.backTouchTarget(), minHeight = ShomaraTopBarLogic.backTouchTarget())
-                    .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
-                    .semantics { role = Role.Button; stateDescription = "بازگشت" }
-                    .clickable(role = Role.Button) {
-                        if (tapGuard.begin()) {
-                            try { onBack() } finally { tapGuard.end() }
+        // N08-03: the title is laid out in a Row that RESERVES the back/trailing slots instead of
+        // centring over them in a Box. At 200% font scale a centred title used to overlap the back
+        // affordance; now it wraps inside its own weighted column and the bar grows in height.
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (onBack != null) {
+                Box(
+                    modifier = Modifier
+                        .defaultMinSize(minWidth = ShomaraTopBarLogic.backTouchTarget(), minHeight = ShomaraTopBarLogic.backTouchTarget())
+                        .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                        .semantics { role = Role.Button; stateDescription = "بازگشت" }
+                        .clickable(role = Role.Button) {
+                            if (tapGuard.begin()) {
+                                try { onBack() } finally { tapGuard.end() }
+                            }
                         }
-                    }
-                    .padding(ShomaraTokens.Space8),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "→", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                        .padding(ShomaraTokens.Space8),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = "→", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                }
+                Spacer(modifier = Modifier.width(ShomaraTokens.Space8))
             }
-        }
-        Text(
-            text = title,
-            style = ShomaraTypography.Title,
-            color = ShomaraTokens.ColorInk,
-        )
-        if (trailing != null) {
-            Box(modifier = Modifier.align(Alignment.CenterEnd)) { trailing() }
+            Text(
+                text = title,
+                style = ShomaraTypography.Title,
+                color = ShomaraTokens.ColorInk,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f),
+            )
+            if (trailing != null) {
+                Spacer(modifier = Modifier.width(ShomaraTokens.Space8))
+                trailing()
+            }
         }
     }
 }

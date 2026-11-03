@@ -52,11 +52,16 @@ class ShomaraPrimitives03Test {
     }
 
     @Test
-    fun `button keeps 48dp floor and stable loading geometry`() {
+    fun `button keeps 48dp floor and a token minimum instead of a fixed height`() {
         assertEquals(ShomaraTokens.ComponentTouchMin, ShomaraButtonLogic.MinTouchTarget)
         assertEquals(ShomaraTokens.ComponentButtonH, ShomaraButtonLogic.Height)
-        assertEquals(ShomaraButtonLogic.Height, ShomaraButtonLogic.loadingHeight())
+        // N08-03: the canonical 56dp is a MINIMUM — the button grows with its label instead of
+        // clipping it at large font scales (measured didOverflowHeight=true at 200% before).
+        assertEquals(ShomaraTokens.ComponentButtonH, ShomaraButtonLogic.minHeight())
+        assertEquals(ShomaraTokens.Space12, ShomaraButtonLogic.VerticalPadding)
         assertTrue(ShomaraButtonLogic.Height >= ShomaraButtonLogic.MinTouchTarget)
+        // Essential action labels are never clamped to a fixed line count.
+        assertTrue(ShomaraButtonLogic.MaxLabelLines > 2)
     }
 
     @Test

@@ -1,4 +1,5 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-04 | SNAP-20261104-N08-03-DONE | N08-03 DONE: نقص برش ۲۰۰٪ رفع شد و روی امولاتور واقعی اثبات شد (۲۶ تست instrumented، failures=0) — و **یک P0 واقعی که ممیزی قبلی اشتباه گفته بود**: `ShomaraTheme` هرگز `LocalLayoutDirection` را Rtl نمی‌کرد، پس روی دستگاه en-US کل رابط LTR رندر می‌شد؛ حالا ریشه RTL است و ریاضی LTR می‌ماند. دو negative control ثابت می‌کند تست‌ها توخالی نیستند. |
 | 2026-11-04 | SNAP-20261104-N08-03-PREP | N08-03 آماده‌سازی (بدون تغییر کد): نقص ۲۰۰٪ با اندازه‌گیری واقعی اثبات شد — ShomaraButton در DeviceConfigurationOverride.FontScale(2.0) مقدار didOverflowHeight=true می‌دهد (line0bottom=155px در جعبهٔ 56dp)، یعنی برچسب بریده می‌شود؛ جهت‌دهی ریاضی/RTL از قبل درست و مستند است. |
 | 2026-11-04 | SNAP-20261104-N08-02-A11Y-INSTRUMENTED | N08-02 DONE_WITH_BLOCKER: ۱۰ تست instrumented Compose semantics روی امولاتور واقعی سبز شد (Pixel_6a/API37، failures=0)؛ دو باگ دسترسی‌پذیری واقعی در ShomaraButton/ShomaraCard پیدا و رفع شد؛ gesture path واقعی TalkBack صادقانه هنوز NATIVE_PENDING. |
 | 2026-11-03 | SNAP-20261103-N08-02-A11Y-STATIC | N08-02 بخش ماشینی: تست جدید a11yRoles — هر کنترل تعاملی V2 باید role+label واقعی داشته باشد (۵۶۴/۵۶۴)؛ gesture path واقعی TalkBack صادقانه NATIVE_PENDING (نیازمند دستگاه). |
@@ -11,18 +12,19 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 52
+file_version: 53
 last_updated: 2026-11-04
-snapshot_id: SNAP-20261104-N08-03-PREP
+snapshot_id: SNAP-20261104-N08-03-DONE
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n08-ux-completion
+working_branch_pushed: false
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N08
-current_task: N08-02
-phase_status: N08_IN_PROGRESS_2_OF_13
-apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
+current_task: N08-04
+phase_status: N08_IN_PROGRESS_4_OF_13
+apk_status: ANDROID_GATE_PASS__DEBUG_APK_PENDING_REBUILD
 ```
 
 ## 0. تصمیم مالک و مرز کار

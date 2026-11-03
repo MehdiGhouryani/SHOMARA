@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +25,7 @@ import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 
 /**
@@ -85,8 +85,22 @@ object ShomaraButtonLogic {
         }
     }
 
-    /** Loading keeps geometry: same fixed height, same single content row. */
-    fun loadingHeight(): Dp = Height
+    /**
+     * N08-03: the canonical 56dp is a MINIMUM, never a fixed height. A button whose label grows at
+     * 200% font scale must grow with it — a fixed `.height(...)` plus `maxLines = 1` measured
+     * `didOverflowHeight = true` at font scale 2.0 (line bottom 155px inside a 56dp box).
+     */
+    fun minHeight(): Dp = Height
+
+    /** Vertical breathing room inside the pill; the token-driven source of the extra height. */
+    val VerticalPadding: Dp = ShomaraTokens.Space12
+
+    /**
+     * Essential action labels are NEVER truncated (no `maxLines`, no ellipsis): clamping an action
+     * label hides what the child is agreeing to. A pathologically long label is a content defect
+     * caught by the string audit, not something the component silently hides from the child.
+     */
+    val MaxLabelLines: Int = Int.MAX_VALUE
 }
 
 @Composable
@@ -128,8 +142,7 @@ fun ShomaraButton(
     val interactive = ShomaraButtonLogic.isEnabled(state)
     Box(
         modifier = modifier
-            .height(ShomaraButtonLogic.loadingHeight())
-            .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget)
+            .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget, minHeight = ShomaraButtonLogic.minHeight())
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics(mergeDescendants = true) {
                 role = Role.Button
@@ -150,7 +163,10 @@ fun ShomaraButton(
                     }
                 } else it
             }
-            .padding(horizontal = ShomaraTokens.Space16),
+            .padding(
+                horizontal = ShomaraTokens.Space16,
+                vertical = ShomaraButtonLogic.VerticalPadding,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8), verticalAlignment = Alignment.CenterVertically) {
@@ -165,7 +181,8 @@ fun ShomaraButton(
                 text = text,
                 style = ShomaraTypography.Title,
                 color = content,
-                maxLines = 1,
+                textAlign = TextAlign.Center,
+                maxLines = ShomaraButtonLogic.MaxLabelLines,
             )
         }
     }

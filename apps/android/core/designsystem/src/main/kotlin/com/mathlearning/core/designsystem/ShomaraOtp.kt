@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 
 /**
@@ -117,8 +120,14 @@ fun ShomaraOtpInput(
     enabled: Boolean = true,
 ) {
     // Strict LTR progression: the row direction is forced LTR even inside an RTL screen.
+    // The row fills the available width so the four cells share it evenly — a digit scaled to
+    // 200% grows in height (min height is a floor, not a cap) yet can never push the row past
+    // the screen edge into horizontal overflow.
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8), modifier = modifier) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+            modifier = modifier.fillMaxWidth(),
+        ) {
             repeat(state.length) { index -> OtpCell(state, index, onStateChange, fieldState, enabled) }
         }
     }
@@ -134,14 +143,19 @@ private fun RowScope.OtpCell(
 ) {
     val digit = state.digits[index]
     val isFocusCell = index == state.focusIndex
+    // N08-03: the 48dp bead is the MINIMUM target, not a fixed box. A 40sp digit becomes 80sp at
+    // 200% font scale and a fixed .size() would clip it; weight(1f) also guarantees the four cells
+    // share the row width so a scaled digit can never push the row into horizontal overflow.
     val cellModifier = Modifier
-        .size(ShomaraTokens.ComponentTrayBead)
+        .weight(1f)
+        .defaultMinSize(minWidth = ShomaraTokens.ComponentTrayBead, minHeight = ShomaraTokens.ComponentTrayBead)
         .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
         .border(
             width = if (fieldState == ShomaraOtpFieldState.Invalid || (fieldState == ShomaraOtpFieldState.Focused && isFocusCell)) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
             color = ShomaraOtpLogic.cellBorderFor(fieldState, isFocusCell),
             shape = RoundedCornerShape(ShomaraTokens.RadiusSm),
         )
+        .padding(vertical = ShomaraTokens.Space8)
         .semantics {
             contentDescription = ShomaraOtpLogic.cellLabel(index, state.length)
         }
@@ -160,6 +174,8 @@ private fun RowScope.OtpCell(
                 text = digit.toString(),
                 style = ShomaraTypography.BigNum,
                 color = ShomaraTokens.ColorInk,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
             )
         }
     }

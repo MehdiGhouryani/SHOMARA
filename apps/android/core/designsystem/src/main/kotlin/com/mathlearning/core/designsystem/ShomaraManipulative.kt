@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -21,6 +23,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 
@@ -149,9 +152,11 @@ fun ShomaraNumberTile(
     ShomaraManipulativeRules.requireBand(size)
     val (container, border, content) = manipulativeColors(state)
     val semanticsLabel = state.stateLabel()
+    // N08-03: the 72–80dp band is the MINIMUM educational target, not a fixed box. A 40sp digit
+    // becomes 80sp at 200% font scale; a fixed .size() clipped it, so the tile grows instead.
     Box(
         modifier = modifier
-            .size(size)
+            .defaultMinSize(minWidth = size, minHeight = size)
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics {
@@ -159,10 +164,11 @@ fun ShomaraNumberTile(
                 contentDescription = label
                 if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
             }
-            .clickable(enabled = enabled && state != ShomaraManipulativeState.Locked, role = Role.Button) { onTap(tileId) },
+            .clickable(enabled = enabled && state != ShomaraManipulativeState.Locked, role = Role.Button) { onTap(tileId) }
+            .padding(ShomaraTokens.Space8),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text = label, style = ShomaraTypography.BigNum, color = content)
+        Text(text = label, style = ShomaraTypography.BigNum, color = content, textAlign = TextAlign.Center)
     }
 }
 
@@ -179,7 +185,10 @@ fun ShomaraCountersGrid(
         repeat(count) { index ->
             Box(
                 modifier = Modifier
-                    .size(ShomaraTokens.ComponentTrayBead)
+                    // N08-03: the bead is a minimum target with no text inside, so a fixed size is
+                    // correct here — it carries no label that could clip. Kept as defaultMinSize so
+                    // an ancestor that grows the row never shrinks the touch target below 48dp.
+                    .defaultMinSize(minWidth = ShomaraTokens.ComponentTrayBead, minHeight = ShomaraTokens.ComponentTrayBead)
                     .background(ShomaraTokens.ColorPrimarySoft, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .semantics {

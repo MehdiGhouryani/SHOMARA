@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-03T20:46:46.186Z",
+  "updatedAt": "2026-11-03T21:46:42.496Z",
   "currentPhase": "N08",
-  "currentTask": "N08-02",
+  "currentTask": "N08-04",
   "statusValues": [
     "TODO",
     "READY",
@@ -1784,7 +1784,7 @@
         {
           "id": "N08-03",
           "title": "Font scale/RTL/math direction",
-          "status": "TODO",
+          "status": "DONE",
           "dependsOn": [
             "N08-01"
           ],
@@ -1793,12 +1793,20 @@
             "number line/math mirror صحیح"
           ],
           "evidence": [
-            "Prep audit executed 2026-11-04 (read-only; no product code changed): direction handling is already principled — ShomaraManipulativeRules.mathDirection(interfaceDirection) returns LayoutDirection.Ltr unconditionally (math geometry never mirrors), ShomaraOtp forces LayoutDirection.Ltr for digit order, ShomaraTextField pins TextDirection.Ltr for numericLtr and Rtl otherwise, ShomaraTheme provides LayoutDirection.Rtl at the root. Covered by existing JVM tests: \"math direction is LTR independent of the interface direction\" (ShomaraManipulativeTest) plus Theme/Primitives-03 direction assertions.",
-            "PREP FINDING — CONFIRMED DEFECT at 200% font scale (measured on the real emulator, not inferred): ShomaraButton sets .height(ShomaraButtonLogic.loadingHeight()) = fixed ShomaraTokens.ComponentButtonH (56.dp) and Text(maxLines = 1). An instrumented probe wrapped the button in DeviceConfigurationOverride.FontScale and read TextLayoutResult via SemanticsActions.GetTextLayoutResult: scale=1.0 → lines=1 height=97px line0bottom=97.0 didOverflowHeight=false; scale=2.0 → lines=1 height=147px line0bottom=155.0 didOverflowHeight=TRUE. So at 200% the label is clipped inside a fixed-height box. Evidence command: cd apps/android && ./gradlew :core:designsystem:connectedDebugAndroidTest -Dhttp.proxyHost= -Dhttps.proxyHost= (probe file removed after measurement).",
-            "PREP FINDING — supporting measurements: getUnclippedBoundsInRoot on the button and its label both returned 56.0dp at scale=1.0 AND scale=2.0, proving the box (not the text) decides the height and the text is being constrained rather than allowed to grow.",
-            "PREP FINDING — second risk surface (unverified, to confirm during implementation): ShomaraFeedback progress bars use fixed .height(ShomaraTokens.ComponentProgressH) but carry no text, so they are likely safe; ShomaraNavigation/ShomaraTextField/ShomaraCard use defaultMinSize(minHeight=...) rather than .height(...), so they grow correctly. The only .height(...) + text combination found across all 58 main .kt files is ShomaraButton.",
-            "PREP FINDING — required work for N08-03 acceptance: (1) replace the fixed button height with a minHeight + vertical padding so labels grow at 200% (keep 48dp touch floor and the canonical 56dp as the MINIMUM); (2) verify the Persian label does not wrap awkwardly — decide maxLines policy (allow 2 lines vs. ellipsis) with the owner; (3) add instrumented tests asserting didOverflowHeight=false at 100% AND 200% for button/card/textfield/OTP; (4) assert number-line/manipulative geometry stays LTR at 200% under RTL interface; (5) capture screenshots at 100%/200% for the ledger.",
-            "Not started: this entry is preparation only. No implementation, no status change, no product code modified."
+            "DONE 2026-11-04. Font-scale defect fixed and proven on a real emulator, with NEGATIVE CONTROLS that show the tests are not vacuous.",
+            "IMPLEMENTED (real defect, previously measured): ShomaraButton replaced .height(56.dp)+maxLines=1 with defaultMinSize(minHeight=ComponentButtonH) + Space12 vertical padding + unlimited lines + centred text. Public logic renamed loadingHeight() -> minHeight() (56dp is now a MINIMUM, not a fixed box).",
+            "IMPLEMENTED (second clipping surface found during this task, NOT in the prep audit): ShomaraOtp OtpCell used .size(48dp) around a 40sp digit. Now weight(1f)+defaultMinSize(48dp)+vertical padding, inside a fillMaxWidth LTR row — digits grow vertically and can never push the row past the screen edge.",
+            "IMPLEMENTED: ShomaraNumberTile used .size(72..80dp) around a 40sp label; now defaultMinSize(minWidth/minHeight=size)+Space8 padding. ShomaraCountersGrid beads converted to defaultMinSize (no text inside, so no clip risk, but the target can no longer be squeezed).",
+            "IMPLEMENTED: ShomaraTopBar laid the title in a Box with align(CenterEnd/CenterStart) siblings, so a long title overlapped the Back button at large text. Restructured to a Row with a weighted title and reserved Back/trailing slots; the bar grows in height instead of overlapping.",
+            "P0 DISCOVERED AND FIXED (the prep audit got this WRONG): ShomaraTheme only called MaterialTheme and never provided LocalLayoutDirection. android:supportsRtl=true makes an app RESPECT the device direction; it does NOT make a Persian product RTL. On the en-US emulator the whole UI rendered LTR. ShomaraTheme now wraps MaterialTheme in CompositionLocalProvider(LocalLayoutDirection = Rtl, LocalShomaraInterfaceDirection = Rtl, LocalShomaraMathDirection = Ltr). Math stays LTR by explicit opt-in (ShomaraManipulativeRules.mathDirection / ShomaraEquationSlot), never by inheriting the shell direction.",
+            "EVIDENCE instrumented (real emulator Pixel_6a, Android 15 / API 37): cd apps/android && ./gradlew :core:designsystem:connectedDebugAndroidTest => BUILD SUCCESSFUL, exit 0; XML \"TEST-Pixel_6a(AVD) - 15.xml\" tests=26 failures=0 errors=0 (ShomaraFontScaleTest 16 + ShomaraInteractiveSemanticsTest 10).",
+            "EVIDENCE the 16 font-scale tests cover: button label didOverflowHeight=false at 1.0/1.3/1.5/2.0 across 5 real Persian CTAs; button box height grows 100%->200%; 56dp token floor respected at normal scale; card / feedback banner / text-field label / OTP digit no vertical clip at all four scales; OTP row stays inside the viewport at 200% and keeps strict LTR cell order; equation operand order LTR at 200%; number tile no clip at 200%; long Persian label wraps instead of truncating; ShomaraTheme provides Rtl on an en-US device; RTL shell does not mirror math.",
+            "EVIDENCE NEGATIVE CONTROL A (fixed-height regression): temporarily restoring .height(56.dp)+maxLines=1 made exactly 3 tests fail with \"button box must grow with the label: 100%=147 px, 200%=147 px\" and \"long label clipped at 200%\", proving the assertions detect the original defect instead of passing vacuously. Fix restored afterwards and the suite re-ran green.",
+            "EVIDENCE NEGATIVE CONTROL B (RTL regression): temporarily removing the CompositionLocalProvider from ShomaraTheme made themeProvidesRtlInterfaceDirectionRegardlessOfDeviceLocale and rtlShellDoesNotMirrorMathContent fail. Fix restored afterwards and the suite re-ran green.",
+            "EVIDENCE JVM: ./gradlew test => BUILD SUCCESSFUL, exit 0; designsystem unit tests 56/56 (ShomaraPrimitives03Test updated: the loadingHeight assertion became minHeight / VerticalPadding / MaxLabelLines contract tests).",
+            "EVIDENCE lint: ./gradlew lint => BUILD SUCCESSFUL, exit 0.",
+            "NOT CLAIMED: 130%/150% are asserted for VERTICAL clipping only; full visual screenshot capture at 100%/200% for SCREEN_LEDGER is still pending and recorded as such.",
+            "NOT CLAIMED: the real TalkBack gesture walkthrough remains a separate NATIVE_PENDING gate, unchanged by this task."
           ]
         },
         {
