@@ -399,3 +399,15 @@
 - وابستگی تست جدید (قاعدهٔ ۱۱): `androidx.compose.ui:ui-test-junit4` و `:ui-test-manifest` به‌صورت `androidTestImplementation` در `apps/android/core/designsystem/build.gradle.kts` اضافه شدند و از version catalog + Compose BOM موجود resolve می‌شوند (alias جدید یا pin نسخه اضافه نشد). فقط تستی‌اند و در artifact اپ منتشر نمی‌شوند؛ به‌صورت گذرا `androidx.test:core:1.5.0` و `espresso-core:3.5.0` را می‌کشند (اکنون cache شده).
 - N08-02 → DONE_WITH_BLOCKER: همهٔ معیارهای غیردستگاهی سبز؛ تنها «gesture path» واقعی (قدم‌زدن با TalkBack، اکتشاف سوایپ، فعال‌سازی با دوبار ضربه، تأیید شنیداری) باقی است که بدون سرویس TalkBack فعال روی دستگاه قابل اثبات نیست و ادعا هم نمی‌شود.
 - gates: vitest 564/564 (۷۳ فایل) · static 89/89 · repository PASS (۱۰۰ task، ۵۹ ledger، ۱۸۷۸ یال) · content PASS · harness VALID (۱۰۰ task، ۱۱ فاز).
+
+## 2026-11-04 — N08 — M7: پیش‌آماده‌سازی N08-03 (Font scale/RTL/math direction)
+
+- ممیزی فقط‌خواندنی، بدون تغییر کد محصول. مبنای کار: `DeviceConfigurationOverride.FontScale` روی امولاتور واقعی.
+- **نقص تأییدشده با اندازه‌گیری (نه حدس):** `ShomaraButton` ارتفاع ثابت `ComponentButtonH = 56.dp` دارد و `Text(maxLines = 1)`. با خواندن `TextLayoutResult` از طریق `SemanticsActions.GetTextLayoutResult`:
+  - `scale=1.0` → `lines=1 height=97px line0bottom=97.0 didOverflowHeight=false`
+  - `scale=2.0` → `lines=1 height=147px line0bottom=155.0 didOverflowHeight=TRUE`
+  یعنی در بزرگ‌نمایی ۲۰۰٪ برچسب فارسی داخل جعبهٔ ۵۶dp بریده می‌شود. اندازه‌گیری مکمل: `getUnclippedBoundsInRoot` برای دکمه و برچسب هر دو ۵۶.۰dp در هر دو scale — یعنی جعبه ارتفاع را تعیین می‌کند و متن مجبور به جا شدن در آن است.
+- سطح ریسک دوم: `ShomaraFeedback` هم `.height(ComponentProgressH)` دارد ولی متن ندارد (احتمالاً بی‌خطر)؛ `ShomaraNavigation`/`ShomaraTextField`/`ShomaraCard` از `defaultMinSize(minHeight=…)` استفاده می‌کنند و درست رشد می‌کنند. تنها ترکیب «.height ثابت + متن» در همهٔ ۵۸ فایل main همین `ShomaraButton` است.
+- جهت‌دهی از قبل درست است: `ShomaraManipulativeRules.mathDirection()` همیشه `LayoutDirection.Ltr` برمی‌گرداند (هندسهٔ ریاضی هرگز آینه نمی‌شود)، `ShomaraOtp` برای ترتیب رقم Ltr را force می‌کند، `ShomaraTextField` برای `numericLtr` مقدار `TextDirection.Ltr` می‌دهد، و `ShomaraTheme` ریشه را Rtl می‌کند. تست JVM موجود «math direction is LTR independent of the interface direction» این را پوشش می‌دهد.
+- کار لازم برای پذیرش N08-03 ثبت شد: (۱) جایگزینی ارتفاع ثابت دکمه با minHeight + padding عمودی تا برچسب در ۲۰۰٪ رشد کند (کف لمسی ۴۸dp و ۵۶dp به‌عنوان حداقل حفظ شود)؛ (۲) تصمیم مالک دربارهٔ سیاست `maxLines` (اجازهٔ ۲ خط یا ellipsis)؛ (۳) تست‌های instrumented که `didOverflowHeight=false` را در ۱۰۰٪ و ۲۰۰٪ برای button/card/textfield/OTP اثبات کنند؛ (۴) اثبات LTR ماندن هندسهٔ number-line/manipulative در ۲۰۰٪ زیر رابط RTL؛ (۵) اسکرین‌شات ۱۰۰٪/۲۰۰٪ برای ledger.
+- وضعیت N08-03 همچنان `TODO` است؛ هیچ کد محصولی تغییر نکرد و هیچ ادعای پیشرفت ثبت نشد.

@@ -1792,7 +1792,14 @@
             "200% text",
             "number line/math mirror صحیح"
           ],
-          "evidence": []
+          "evidence": [
+            "Prep audit executed 2026-11-04 (read-only; no product code changed): direction handling is already principled — ShomaraManipulativeRules.mathDirection(interfaceDirection) returns LayoutDirection.Ltr unconditionally (math geometry never mirrors), ShomaraOtp forces LayoutDirection.Ltr for digit order, ShomaraTextField pins TextDirection.Ltr for numericLtr and Rtl otherwise, ShomaraTheme provides LayoutDirection.Rtl at the root. Covered by existing JVM tests: \"math direction is LTR independent of the interface direction\" (ShomaraManipulativeTest) plus Theme/Primitives-03 direction assertions.",
+            "PREP FINDING — CONFIRMED DEFECT at 200% font scale (measured on the real emulator, not inferred): ShomaraButton sets .height(ShomaraButtonLogic.loadingHeight()) = fixed ShomaraTokens.ComponentButtonH (56.dp) and Text(maxLines = 1). An instrumented probe wrapped the button in DeviceConfigurationOverride.FontScale and read TextLayoutResult via SemanticsActions.GetTextLayoutResult: scale=1.0 → lines=1 height=97px line0bottom=97.0 didOverflowHeight=false; scale=2.0 → lines=1 height=147px line0bottom=155.0 didOverflowHeight=TRUE. So at 200% the label is clipped inside a fixed-height box. Evidence command: cd apps/android && ./gradlew :core:designsystem:connectedDebugAndroidTest -Dhttp.proxyHost= -Dhttps.proxyHost= (probe file removed after measurement).",
+            "PREP FINDING — supporting measurements: getUnclippedBoundsInRoot on the button and its label both returned 56.0dp at scale=1.0 AND scale=2.0, proving the box (not the text) decides the height and the text is being constrained rather than allowed to grow.",
+            "PREP FINDING — second risk surface (unverified, to confirm during implementation): ShomaraFeedback progress bars use fixed .height(ShomaraTokens.ComponentProgressH) but carry no text, so they are likely safe; ShomaraNavigation/ShomaraTextField/ShomaraCard use defaultMinSize(minHeight=...) rather than .height(...), so they grow correctly. The only .height(...) + text combination found across all 58 main .kt files is ShomaraButton.",
+            "PREP FINDING — required work for N08-03 acceptance: (1) replace the fixed button height with a minHeight + vertical padding so labels grow at 200% (keep 48dp touch floor and the canonical 56dp as the MINIMUM); (2) verify the Persian label does not wrap awkwardly — decide maxLines policy (allow 2 lines vs. ellipsis) with the owner; (3) add instrumented tests asserting didOverflowHeight=false at 100% AND 200% for button/card/textfield/OTP; (4) assert number-line/manipulative geometry stays LTR at 200% under RTL interface; (5) capture screenshots at 100%/200% for the ledger.",
+            "Not started: this entry is preparation only. No implementation, no status change, no product code modified."
+          ]
         },
         {
           "id": "N08-04",
