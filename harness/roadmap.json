@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-03",
   "currentPhase": "N08",
-  "currentTask": "N08-01",
+  "currentTask": "N08-02",
   "statusValues": [
     "TODO",
     "READY",
@@ -1744,7 +1744,7 @@
         {
           "id": "N08-01",
           "title": "Route/state ledger audit",
-          "status": "TODO",
+          "status": "DONE",
           "dependsOn": [
             "N07-07"
           ],
@@ -1752,7 +1752,12 @@
             "100% routes classified",
             "هیچ state حدسی"
           ],
-          "evidence": []
+          "evidence": [
+            "scripts/verify-n08-01-ledger.mjs: new verifier — walks apps/mobile/app/**/*.tsx (15 routes) + apps/web/app/**/page.tsx (16 pages), asserts every one appears in design/playbook/quality/SCREEN_LEDGER.csv and every ledger path exists on disk; exit 0 PASS",
+            "SCREEN_LEDGER.csv grown 21→34 rows: station index redirect classified REDIRECT-ONLY; unit placement split from jump (jump LEGACY-UNSTYLED with restyle queued behind placement contract); 13 WEB-PARITY rows classifying every web page (web is reference/CMS surface until cutover); admin/audio classified ADMIN-CMS (N08-13)",
+            "No guessed states: rows carry either tested evidence (flow counts, contract tests) or explicit WEB-PARITY/ADMIN-CMS/REDIRECT-ONLY classification — no n/a screen_state on app routes",
+            "Gates: verify-n08-01-ledger PASS · static 89/89 (new verifier included) · vitest 562/562 · repository PASS"
+          ]
         },
         {
           "id": "N08-02",

@@ -371,3 +371,11 @@
 - N08-13 → DONE_WITH_BLOCKER: همهٔ ۶ بند acceptance با evidence ثبت شد؛ blocker صادقانه: persistence (in-memory fail-closed تا wiring Supabase — schema آماده در 0074)، bytes در object storage، TTS واقعی owner-gated.
 - gates: vitest 562/562 · static 88/88 · typecheck web clean · harness VALID.
 - next: N08-01 (Route/state ledger audit) — آغاز شد.
+
+## 2026-11-03 — N08 — M4: N08-01 DONE (route/state ledger audit با verifier جدید)
+
+- `scripts/verify-n08-01-ledger.mjs`: ممیزی ماشینی — همهٔ ۱۵ route اکسپو و ۱۶ صفحهٔ وب باید در SCREEN_LEDGER.csv طبقه‌بندی شده باشند و هر مسیر ledger واقعاً روی دیسک وجود داشته باشد (blocked روی drift).
+- SCREEN_LEDGER.csv از ۲۱ به ۳۴ ردیف رسید: redirect ایستگاه (REDIRECT-ONLY)، جدایی placement از jump (jump با LEGACY-UNSTYLED و restyle در صف)، ۱۳ ردیف WEB-PARITY برای همهٔ صفحات وب (تا cutover فقط سطح مرجع/CMS)، admin/audio به‌عنوان ADMIN-CMS.
+- state حدسی حذف شد: هر ردیف یا evidence تست دارد یا طبقه‌بندی صریح سطح (WEB-PARITY/ADMIN-CMS/REDIRECT-ONLY).
+- N08-01 → DONE با evidence؛ currentTask → N08-02 (TalkBack/focus order — نیازمند device، احتمالاً NATIVE_PENDING صادقانه).
+- gates: verify-n08-01 PASS · static 89/89 · vitest 562/562 · repository PASS (۱۰۰ task، ۵۴۷ فایل، ۱۸۷۵ یال).
