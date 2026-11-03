@@ -1,4 +1,4 @@
-﻿# START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+# START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
 | 2026-11-04 | SNAP-20261104-N08-05-DONE | N08-05 DONE و **دومین P0 روی دستگاه**: تمام deep linkهای اپ مرده بودند — `ShomaraApp` برای onboarding/shell/lesson الگوی `navDeepLink` ثبت می‌کرد ولی manifest فقط `mathlearning://foundation` را اعلام کرده بود، پس adb می‌گفت «unable to resolve Intent». حالا هر چهار host اعلام شده و `DeepLinkManifestTest` (با negative control) drift را می‌شکند. همچنین **BackHandler صفر بود**: back سیستمی درس را فوراً می‌بست در حالی که دکمهٔ خروج تأیید می‌گرفت؛ حالا هر دو یک مسیر دارند (bar #1 می‌پرسد، bar #2 می‌ماند) و روی دستگاه اثبات شد. tap سریع single-flight شد، `choiceId="opt-1"` قلابی حذف شد، و باگ «مرحلهٔ آخر بی‌نهایت تکرار می‌شد» بسته شد. ۱۳ تست جدید؛ P0 باقی‌ماندهٔ roadmap: هیچ task اجرایی نمانده — بقیهٔ N08 منتظر تصمیم محتوایی مالک است. |
 | 2026-11-04 | SNAP-20261104-N08-04-DONE | N08-04 DONE و یک **P0 واقعی که فقط با نصب APK پیدا شد**: اپ اصلاً باز نمی‌شد — `IllegalArgumentException: Navigation destination that matches route onboarding/welcome ...` چون هر مرحلهٔ آنبوردینگ به یک route جدا navigate می‌شد ولی گراف فقط `onboarding` را ثبت کرده بود (ROUTE_REGISTRY: onboarding یک route با مراحل داخلی است). حالا با `AppNavigationRoutes` + `RegisteredRoutesTest` مکانیکی قفل شده و روی دستگاه تأیید شد (pid زنده، بدون FATAL). reduced motion واقعی شد (پس‌زمینهٔ سیستمی + انتخاب کودک، هر یک کافی)، celebration gate «بدون هم‌زمانی» را می‌بندد، و **پایداری تنظیمات دیگر قلابی نیست**: قبلاً `onSave` پیام «ذخیره شد» می‌داد بدون هیچ نوشتن؛ حالا DataStore واقعی است. ۳۰ تست instrumented و ۷۰ تست واحد سبز، negative control گرفته شد، APK ساخته/نصب/اجرا شد. |
 | 2026-11-04 | SNAP-20261104-N08-03-DONE | N08-03 DONE: نقص برش ۲۰۰٪ رفع شد و روی امولاتور واقعی اثبات شد (۲۶ تست instrumented، failures=0) — و **یک P0 واقعی که ممیزی قبلی اشتباه گفته بود**: `ShomaraTheme` هرگز `LocalLayoutDirection` را Rtl نمی‌کرد، پس روی دستگاه en-US کل رابط LTR رندر می‌شد؛ حالا ریشه RTL است و ریاضی LTR می‌ماند. دو negative control ثابت می‌کند تست‌ها توخالی نیستند. |
@@ -24,9 +24,10 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N08
-current_task: N08-BLOCKED_ON_OWNER_CONTENT_DECISIONS
-phase_status: N08_4_OF_13_DONE__REMAINDER_BLOCKED
+current_task: N08-06
+phase_status: N08_4_OF_13_DONE__N08_06_BLOCKED_ON_OWNER_CONTENT_DECISIONS
 apk_status: DEBUG_APK_BUILT_INSTALLED__LAUNCH_AND_DEEPLINK_VERIFIED
+blocked_note: N02-07 DONE so it is no longer a blocker; N08-06..12 wait on N08-08 which holds OWNER_DECISION_PENDING for CONTENT-005/006/007/016. harness next reports no executable task.
 ```
 
 ## 0. تصمیم مالک و مرز کار
