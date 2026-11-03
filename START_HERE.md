@@ -1,4 +1,5 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-03 | SNAP-20261103-N08-02-A11Y-STATIC | N08-02 بخش ماشینی: تست جدید a11yRoles — هر کنترل تعاملی V2 باید role+label واقعی داشته باشد (۵۶۴/۵۶۴)؛ gesture path واقعی TalkBack صادقانه NATIVE_PENDING (نیازمند دستگاه). |
 | 2026-11-03 | SNAP-20261103-N08-01-LEDGER-AUDIT | N08-13 بسته شد با DONE_WITH_BLOCKER (آپلود UI + rollback در پنل)؛ N08-01 DONE: ممیزی ledger route/state با verifier جدید — ۱۵ route اکسپو + ۱۶ صفحه وب = ۱۰۰٪ طبقه‌بندی در SCREEN_LEDGER.csv (۳۴ ردیف)؛ static 89/89. |
 | 2026-11-03 | SNAP-20261103-N08-13-CMS-AUDIO-PANEL | پنل CMS صوت ادمین شروع شد: seed idempotent ۲۳۲ ردیف، ۶ API route با RBAC ادمین، migration 0074 با RLS، UI فارسی RTL، ۸ تست جدید؛ production persistence و TTS واقعی owner-gated. |
 | 2026-11-03 | SNAP-20261103-N08-08-LEDGER | فاز N08 شروع شد: ledger کامل ۱۸ disposition در dispositions.ts (۱۴ بسته، ۴ تصمیم مالک باز) + CALIBRATION_V1 نسخه‌دار با rollback؛ verify-phase5 بدون وابستگی به grep سیستم؛ ۱۲ تست جدید؛ n08Resolutions در source-audit ثبت شد. |

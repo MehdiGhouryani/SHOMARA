@@ -379,3 +379,10 @@
 - state حدسی حذف شد: هر ردیف یا evidence تست دارد یا طبقه‌بندی صریح سطح (WEB-PARITY/ADMIN-CMS/REDIRECT-ONLY).
 - N08-01 → DONE با evidence؛ currentTask → N08-02 (TalkBack/focus order — نیازمند device، احتمالاً NATIVE_PENDING صادقانه).
 - gates: verify-n08-01 PASS · static 89/89 · vitest 562/562 · repository PASS (۱۰۰ task، ۵۴۷ فایل، ۱۸۷۵ یال).
+
+## 2026-11-03 — N08 — M5: N08-02 بخش ماشینی (roles/states حقیقی)
+
+- `apps/mobile/src/ui/a11yRoles.test.ts` (۲ تست): ممیزی ایستای همهٔ دایرکتوری‌های V2 — هر Pressable/Button2 باید accessibilityRole و accessibilityLabel داشته باشد؛ پوسته‌های focus-forwarding (role="none") معاف ولی CodeInput2 الان label هم دارد.
+- forms.tsx: TextField2 وضعیت invalid را اعلام می‌کند (accessibilityState)؛ label روی پوستهٔ CodeInput2.
+- N08-02 → IN_PROGRESS: بخش «roles/states حقیقی» ماشینی و سبز؛ «gesture path» (قدم‌زدن واقعی TalkBack روی دستگاه) صادقانه NATIVE_PENDING.
+- gates: vitest 564/564 · static 89/89 · repository PASS (۵۴۸ فایل، ۱۸۷۸ یال) · harness VALID.
