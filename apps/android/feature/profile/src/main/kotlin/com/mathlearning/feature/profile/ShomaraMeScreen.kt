@@ -87,10 +87,13 @@ fun ShomaraMeScreen(
                         Text(text = f.progressLine(), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
                     }
                 }
-                MeRow(label = "آواتار و تنظیمات", description = "ظاهر و preferenceهای واقعی", onClick = onOpenSettings)
-            }
+                }
             ShomaraMeState.EditReturn -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "تغییرات ذخیره شد.")
         }
+        // N08 §4 dead end fixed: this row used to live INSIDE the Ready branch, so a child
+        // whose profile is not complete yet had no way to reach avatar/settings at all — the
+        // surface existed but was unreachable. Settings is a valid destination in every state.
+        MeRow(label = "آواتار و تنظیمات", description = "ظاهر و preferenceهای واقعی", onClick = onOpenSettings)
         MeRow(label = "بخش والدین", description = "با تأیید بزرگ‌ترها باز می‌شود", onClick = onOpenParent)
     }
 }

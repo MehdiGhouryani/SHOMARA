@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -135,58 +136,83 @@ fun ShomaraChildShell(
                     )
                 }
                 composable(route = "shell/settings") {
-                    // N08-04 / family 15: the settings surface now reads and writes the REAL
+                    // N08-04 / family 15: the settings surface reads and writes the REAL
                     // DataStore-backed store. Previously the state lived only in `remember` and the
                     // screen announced "ذخیره شد." while nothing was persisted — a misleading
                     // success state that silently reset on process death.
-                    val settingsState by settingsStore.state.collectAsStateWithLifecycle(
+                    //
+                    // The screen's own state machine is authoritative (Clean -> Dirty -> Saving ->
+                    // Saved/Error). An earlier version of this wiring bypassed it by rebuilding the
+                    // state from the store snapshot and calling startSave(), which requires Dirty;
+                    // tapping an avatar then threw "save started from an invalid state" and killed
+                    // the app. The machine is now driven in order.
+                    val persisted by settingsStore.state.collectAsStateWithLifecycle(
                         initialValue = ShomaraSettingsSnapshot.Defaults,
                     )
-                    var saveState by remember { mutableStateOf(ShomaraSettingsSaveState.Clean) }
-                    var errorText by remember { mutableStateOf<String?>(null) }
-                    val scope = rememberCoroutineScope()
-                    val screenState = ShomaraSettingsState(
-                        avatarId = settingsState.avatarId,
-                        reducedMotion = settingsState.reducedMotion,
-                    ).let { base ->
-                        when (saveState) {
-                            ShomaraSettingsSaveState.Saving -> base.startSave().copy(save = ShomaraSettingsSaveState.Saving)
-                            ShomaraSettingsSaveState.Saved -> base.copy(save = ShomaraSettingsSaveState.Saved)
-                            ShomaraSettingsSaveState.Error -> base.copy(save = ShomaraSettingsSaveState.Error, errorText = errorText)
-                            else -> base.copy(save = ShomaraSettingsSaveState.Clean)
+                    var screenState by remember {
+                        mutableStateOf(
+                            ShomaraSettingsState(
+                                avatarId = persisted.avatarId,
+                                reducedMotion = persisted.reducedMotion,
+                            ),
+                        )
+                    }
+                    // SEEDING BUG (found on device): `collectAsStateWithLifecycle` starts at
+                    // ShomaraSettingsSnapshot.Defaults and only later emits the real stored value.
+                    // Seeding `remember` from the placeholder meant the screen believed the avatar
+                    // was the DEFAULT, so the first interaction wrote that default back over the
+                    // child's saved choice — choosing "moon", relaunching, then toggling anything
+                    // silently reset it to "sun". This seeds ONCE from the first real emission and
+                    // then leaves the screen state authoritative for in-flight edits.
+                    var seededFromStore by remember { mutableStateOf(false) }
+                    LaunchedEffect(persisted) {
+                        if (!seededFromStore) {
+                            screenState = ShomaraSettingsState(
+                                avatarId = persisted.avatarId,
+                                reducedMotion = persisted.reducedMotion,
+                            )
+                            seededFromStore = true
                         }
                     }
+                    val scope = rememberCoroutineScope()
+
+                    // Persist a chosen value, driving the real state machine.
+                    fun persist(avatarId: String, reducedMotion: Boolean) {
+                        if (!screenState.canSave) return // already Saving: ignore a second tap
+                        val saving = screenState.startSave()
+                        screenState = saving
+                        scope.launch {
+                            screenState = try {
+                                settingsStore.save(
+                                    ShomaraSettingsSnapshot(avatarId = avatarId, reducedMotion = reducedMotion),
+                                )
+                                saving.onSaveSuccess()
+                            } catch (throwable: Throwable) {
+                                // A real write failure is surfaced, never swallowed and never
+                                // replaced by a success message.
+                                saving.onSaveFailure(throwable.message ?: ShomaraSettingsStrings.SaveFailed)
+                            }
+                        }
+                    }
+
                     ShomaraSettingsScreen(
                         state = screenState,
                         onAvatarSelect = { avatarId ->
-                            scope.launch {
-                                saveState = ShomaraSettingsSaveState.Saving
-                                errorText = null
-                                saveState = try {
-                                    settingsStore.save(ShomaraSettingsSnapshot(avatarId = avatarId, reducedMotion = screenState.reducedMotion))
-                                    ShomaraSettingsSaveState.Saved
-                                } catch (throwable: Throwable) {
-                                    // A real write failure is surfaced, never silently swallowed and
-                                    // never replaced by a success message.
-                                    errorText = throwable.message ?: ShomaraSettingsStrings.SaveFailed
-                                    ShomaraSettingsSaveState.Error
-                                }
-                            }
+                            // withAvatar marks Dirty (or returns unchanged if it is the same id).
+                            screenState = screenState.withAvatar(avatarId)
+                            persist(screenState.avatarId, screenState.reducedMotion)
                         },
                         onReducedMotionChange = { enabled ->
-                            scope.launch {
-                                saveState = ShomaraSettingsSaveState.Saving
-                                errorText = null
-                                saveState = try {
-                                    settingsStore.save(ShomaraSettingsSnapshot(avatarId = screenState.avatarId, reducedMotion = enabled))
-                                    ShomaraSettingsSaveState.Saved
-                                } catch (throwable: Throwable) {
-                                    errorText = throwable.message ?: ShomaraSettingsStrings.SaveFailed
-                                    ShomaraSettingsSaveState.Error
-                                }
+                            screenState = screenState.withReducedMotion(enabled)
+                            persist(screenState.avatarId, screenState.reducedMotion)
+                        },
+                        onSave = {
+                            // Retained for the screen contract: values are already persisted on
+                            // selection, so this only acknowledges the last result.
+                            if (screenState.save == ShomaraSettingsSaveState.Dirty) {
+                                persist(screenState.avatarId, screenState.reducedMotion)
                             }
                         },
-                        onSave = { saveState = ShomaraSettingsSaveState.Saved },
                     )
                 }
                 composable(route = "shell/parent") {
