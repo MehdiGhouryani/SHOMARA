@@ -17,7 +17,7 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N08
-current_task: N08-01
+current_task: N08-02
 phase_status: N08_IN_PROGRESS_2_OF_13
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
