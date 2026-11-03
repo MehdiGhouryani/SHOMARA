@@ -58,9 +58,7 @@ export function TextField2({ label, value, onChangeText, placeholder, prefix, lt
           autoFocus={autoFocus ?? false}
           onFocus={() => setHasFocus(true)}
           onBlur={() => setHasFocus(false)}
-          accessibilityLabel={label}
-          accessibilityState={error ? { invalid: true } : undefined}
-          accessibilityState={error ? { invalid: true } : undefined}
+          accessibilityLabel={error ? `${label}، ${error}` : label}
           testID={testID}
           style={[type2('body'), styles.text, ltr ? { writingDirection: 'ltr', textAlign: 'right' } : null]}
         />

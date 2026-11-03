@@ -113,14 +113,14 @@ export type ContentIssueId = keyof typeof CONTENT_DISPOSITIONS;
 /** Issues whose final owner decision is still open (honest blocker list for N08 gates). */
 export const OPEN_OWNER_DECISIONS: readonly ContentIssueId[] = Object.freeze(
   (Object.keys(CONTENT_DISPOSITIONS) as ContentIssueId[]).filter(
-    (id) => CONTENT_DISPOSITIONS[id].decision === OWNER_DECISION_PENDING,
+    (id) => CONTENT_DISPOSITIONS[id]?.decision === OWNER_DECISION_PENDING,
   ),
 );
 
 /** True only when every audited issue is closed with recorded evidence. */
 export function allDispositionsClosed(): boolean {
   return (Object.keys(CONTENT_DISPOSITIONS) as ContentIssueId[]).every(
-    (id) => CONTENT_DISPOSITIONS[id].decision === RESOLVED || CONTENT_DISPOSITIONS[id].decision === RESOLVED_FOR_UI,
+    (id) => CONTENT_DISPOSITIONS[id]?.decision === RESOLVED || CONTENT_DISPOSITIONS[id]?.decision === RESOLVED_FOR_UI,
   );
 }
 
