@@ -9,13 +9,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
+import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.designsystem.ShomaraTab
 import com.mathlearning.core.designsystem.ShomaraTabBar
 import com.mathlearning.feature.parent.ShomaraParentGate
@@ -25,8 +29,11 @@ import com.mathlearning.feature.path.ShomaraPathProgress
 import com.mathlearning.feature.path.ShomaraPathScreen
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
 import com.mathlearning.feature.profile.ShomaraMeScreen
+import com.mathlearning.feature.settings.ShomaraSettingsSaveState
 import com.mathlearning.feature.settings.ShomaraSettingsScreen
 import com.mathlearning.feature.settings.ShomaraSettingsState
+import com.mathlearning.feature.settings.ShomaraSettingsStrings
+import kotlinx.coroutines.launch
 
 /**
  * Child shell host (N05-01 / family 17): three fixed tabs with REAL per-tab state retention
@@ -46,6 +53,9 @@ fun ShomaraChildShell(
     reducedMotion: Boolean = false,
     lessonGateway: com.mathlearning.core.network.LessonGateway? = null,
     lessonCheckpoints: com.mathlearning.core.datastore.LessonCheckpointStore? = null,
+    // Required: the settings surface persists real preferences, so the caller must supply the real
+    // store. A fabricated/in-memory default would reintroduce the misleading "saved" state.
+    settingsStore: ShomaraSettingsStore,
     onStartStation: (String) -> Unit = {},
 ) {
     val navController = rememberNavController()
@@ -107,12 +117,58 @@ fun ShomaraChildShell(
                     )
                 }
                 composable(route = "shell/settings") {
-                    var settingsState by remember { mutableStateOf(ShomaraSettingsState(avatarId = "sun", reducedMotion = reducedMotion)) }
+                    // N08-04 / family 15: the settings surface now reads and writes the REAL
+                    // DataStore-backed store. Previously the state lived only in `remember` and the
+                    // screen announced "ذخیره شد." while nothing was persisted — a misleading
+                    // success state that silently reset on process death.
+                    val settingsState by settingsStore.state.collectAsStateWithLifecycle(
+                        initialValue = ShomaraSettingsSnapshot.Defaults,
+                    )
+                    var saveState by remember { mutableStateOf(ShomaraSettingsSaveState.Clean) }
+                    var errorText by remember { mutableStateOf<String?>(null) }
+                    val scope = rememberCoroutineScope()
+                    val screenState = ShomaraSettingsState(
+                        avatarId = settingsState.avatarId,
+                        reducedMotion = settingsState.reducedMotion,
+                    ).let { base ->
+                        when (saveState) {
+                            ShomaraSettingsSaveState.Saving -> base.startSave().copy(save = ShomaraSettingsSaveState.Saving)
+                            ShomaraSettingsSaveState.Saved -> base.copy(save = ShomaraSettingsSaveState.Saved)
+                            ShomaraSettingsSaveState.Error -> base.copy(save = ShomaraSettingsSaveState.Error, errorText = errorText)
+                            else -> base.copy(save = ShomaraSettingsSaveState.Clean)
+                        }
+                    }
                     ShomaraSettingsScreen(
-                        state = settingsState,
-                        onAvatarSelect = { settingsState = settingsState.withAvatar(it) },
-                        onReducedMotionChange = { settingsState = settingsState.withReducedMotion(it) },
-                        onSave = { settingsState = settingsState.startSave().onSaveSuccess() },
+                        state = screenState,
+                        onAvatarSelect = { avatarId ->
+                            scope.launch {
+                                saveState = ShomaraSettingsSaveState.Saving
+                                errorText = null
+                                saveState = try {
+                                    settingsStore.save(ShomaraSettingsSnapshot(avatarId = avatarId, reducedMotion = screenState.reducedMotion))
+                                    ShomaraSettingsSaveState.Saved
+                                } catch (throwable: Throwable) {
+                                    // A real write failure is surfaced, never silently swallowed and
+                                    // never replaced by a success message.
+                                    errorText = throwable.message ?: ShomaraSettingsStrings.SaveFailed
+                                    ShomaraSettingsSaveState.Error
+                                }
+                            }
+                        },
+                        onReducedMotionChange = { enabled ->
+                            scope.launch {
+                                saveState = ShomaraSettingsSaveState.Saving
+                                errorText = null
+                                saveState = try {
+                                    settingsStore.save(ShomaraSettingsSnapshot(avatarId = screenState.avatarId, reducedMotion = enabled))
+                                    ShomaraSettingsSaveState.Saved
+                                } catch (throwable: Throwable) {
+                                    errorText = throwable.message ?: ShomaraSettingsStrings.SaveFailed
+                                    ShomaraSettingsSaveState.Error
+                                }
+                            }
+                        },
+                        onSave = { saveState = ShomaraSettingsSaveState.Saved },
                     )
                 }
                 composable(route = "shell/parent") {

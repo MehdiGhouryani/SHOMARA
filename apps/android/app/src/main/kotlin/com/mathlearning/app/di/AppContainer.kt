@@ -12,8 +12,10 @@ import com.mathlearning.core.database.LocalLearningDatabase
 import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.PreferencesLessonCheckpointStore
 import com.mathlearning.core.datastore.PreferencesProfileDraftStore
+import com.mathlearning.core.datastore.PreferencesSettingsStore
 import com.mathlearning.core.datastore.PreferencesTokenStore
 import com.mathlearning.core.datastore.ShomaraProfileDraftStore
+import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.sync.OutboxSyncEngine
 import com.mathlearning.core.network.ShomaraOtpApi
@@ -31,6 +33,9 @@ interface AppContainer {
     val lessonGateway: LessonGateway
     val localDatabase: LocalLearningDatabase
     val outboxSyncEngine: OutboxSyncEngine
+
+    /** Persisted child preferences (N08-04): avatar + reduced motion, real DataStore. */
+    val settingsStore: ShomaraSettingsStore
 }
 
 /**
@@ -62,6 +67,8 @@ class DefaultAppContainer(context: Context) : AppContainer {
     override val profileDraftStore: ShomaraProfileDraftStore = PreferencesProfileDraftStore(dataStore)
 
     override val lessonCheckpointStore: LessonCheckpointStore = PreferencesLessonCheckpointStore(dataStore)
+
+    override val settingsStore: ShomaraSettingsStore = PreferencesSettingsStore(dataStore)
 
     override val lessonGateway: LessonGateway = LessonGateway(
         client = ShomaraOtpApi.defaultClient(),

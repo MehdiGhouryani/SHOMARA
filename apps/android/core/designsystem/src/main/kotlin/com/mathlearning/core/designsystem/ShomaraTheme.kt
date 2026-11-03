@@ -219,11 +219,19 @@ object ShomaraColorScheme {
  * [ShomaraManipulativeRules.mathDirection] / `CompositionLocalProvider`, never by inheriting this.
  */
 @Composable
-fun ShomaraTheme(content: @Composable () -> Unit) {
+fun ShomaraTheme(
+    reducedMotion: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    // N08-04: the persisted preference and the system animator scale are merged ONCE here, so no
+    // component has to re-derive the rule and no screen can accidentally animate while the child
+    // asked for stillness.
+    val effectiveReducedMotion = rememberSystemReducedMotion(reducedMotion)
     CompositionLocalProvider(
         LocalLayoutDirection provides ShomaraDirections.DefaultInterfaceDirection,
         LocalShomaraInterfaceDirection provides ShomaraDirections.DefaultInterfaceDirection,
         LocalShomaraMathDirection provides ShomaraDirections.DefaultMathDirection,
+        LocalShomaraReducedMotion provides effectiveReducedMotion,
     ) {
         MaterialTheme(
             colorScheme = ShomaraColorScheme.Light,

@@ -426,3 +426,57 @@
 - `./gradlew test` SUCCESS (designsystem unit 56/56) · `./gradlew lint` SUCCESS · `harness validate` HARNESS_VALID (۱۰۰ task، ۱۱ فاز).
 - N08-03 → **DONE**. `harness next` → **N08-04** (Motion/haptic/reduced motion).
 - ادعا نشده: اسکرین‌شات ۱۰۰٪/۲۰۰٪ برای `SCREEN_LEDGER` هنوز گرفته نشده؛ ۱۳۰٪/۱۵۰٪ فقط برای برش عمودی assert شده‌اند؛ gesture path واقعی TalkBack همچنان NATIVE_PENDING.
+
+## 2026-11-04 — N08 — M9: N08-04 بسته شد + P0 «اپ باز نمی‌شد» رفع شد
+
+**P0 که فقط با نصب APK پیدا شد.** تست‌ها همه سبز بودند، اما اپ روی دستگاه در همان فریم اول می‌مرد:
+
+```
+FATAL EXCEPTION: main
+java.lang.IllegalArgumentException: Navigation destination that matches route
+onboarding/welcome cannot be found in the navigation graph
+```
+
+علت: `ShomaraOnboardingHost` هر مرحلهٔ آنبوردینگ را به بالا گزارش می‌داد و اپ هر کدام را به
+`navController.navigate(...)` تبدیل می‌کرد، در حالی که گراف فقط `onboarding` را ثبت کرده بود.
+طبق `design/playbook/ROUTE_REGISTRY.md`، `onboarding` **یک** route است و مراحلش داخلی‌اند؛ پس
+راه‌حل درست «ثبت پنج route قلابی» نبود، بلکه «navigate نکردن به مراحل» بود. یک گارد مکانیکی
+(`AppNavigationRoutes.isRegistered`) و `RegisteredRoutesTest` (۶ assertion روی JVM) اضافه شد تا
+این رگرسیون در `./gradlew test` بشکند، نه فقط وقتی کسی اپ را باز کند.
+
+تأیید روی دستگاه: `am start` → pid 27130 زنده، `logcat -s AndroidRuntime:E` بدون FATAL،
+و `uiautomator` صفحهٔ خوش‌آمد فارسی را نشان می‌دهد.
+
+**N08-04 (reduced motion).** یافتهٔ مهم: در کل `apps/android` هیچ API انیمیشن Compose وجود
+ندارد. تنها حرکت واقعی، indicator نامعین پیشرفت است که مثل هر infinite transition، تنظیم
+animator سیستمی را نادیده می‌گیرد. پس کار «حذف انیمیشن» نبود؛ «واقعی کردن احترام به تنظیم» بود.
+
+- `ShomaraMotionLogic`: دو سیگنال مستقل (انتخاب کودک **یا** `ANIMATOR_DURATION_SCALE == 0`) و
+  یک resolver. تنظیم ناخوانا «خاموش» تلقی نمی‌شود تا حرکت بی‌دلیل قطع نشود. مدت‌ها از token
+  می‌آیند و در حالت reduced به صفر (cut) تبدیل می‌شوند، نه به انیمیشن سریع‌تر.
+- `ShomaraCelebrationGate`: قاعدهٔ «بدون celebration هم‌زمان» — celebration دوم اولی را لغو
+  می‌کند و پایانِ کهنه نمی‌تواند جانشینش را پاک کند.
+- reduced motion فقط **حرکت** را حذف می‌کند نه **اطلاعات**: fraction و پیام وضعیت فارسی می‌مانند.
+
+**سطح ناقص بسته‌شده: پایداری تنظیمات قلابی بود.** صفحهٔ تنظیمات avatar/reducedMotion را در
+`remember { mutableStateOf }` نگه می‌داشت و `onSave` تابع `startSave().onSaveSuccess()` را
+صدا می‌زد؛ یعنی پیام «ذخیره شد.» نمایش می‌داد بدون اینکه چیزی نوشته شود. `PreferencesSettingsStore`
+واقعی (DataStore، خواندن fail-closed، رد avatar ناشناس در نوشتن) اضافه شد، شل به آن وصل شد و
+پارامتر **اجباری** شد تا حالت موفقیت قلابی برنگردد. `MainActivity` هم همان store را می‌خواند و
+`reducedMotion` را به `ShomaraTheme` می‌دهد — پیش از این، آن toggle اصلاً نمی‌توانست اثری داشته باشد.
+
+**شواهد:** `gradlew test`/`lint`/`connectedCheck` exit 0 (۳۰ تست instrumented روی Pixel_6a،
+۷۰ تست واحد designsystem، ۱۱ تست datastore)؛ negative control روی `ShomaraProgressBar` دقیقاً
+`indeterminateProgressStopsWhenReducedMotionIsOn` را شکست؛ `typecheck:all` exit 0؛
+`vitest` ۵۶۴/۵۶۴؛ `verify:static:all` ۸۹/۸۹؛ `verify:content-library` PASS؛ harness VALID.
+
+**APK:** `apps/android/app/build/outputs/apk/debug/app-debug.apk` — ۱۳٬۶۲۳٬۰۸۱ بایت،
+sha256 `451359541d9dff53d748f3a7bf073181903c4703ffbd3ef5352509b9b7616815`؛ `adb install -r`
+موفق و اجرا شد روی emulator-5554 (sdk_gphone64_x86_64 / Android 15 / API 35).
+
+**شاهد واقعی font-scale برای N08-03** (از uiautomator، نه ادعای کد): در ۲۰۰٪ جعبهٔ دکمهٔ «ادامه»
+از w=195/h=161 به w=261/h=219 پیکسل رشد می‌کند و متن بدنه به دو خط می‌شکند.
+
+**باز مانده:** `CONTENT-007` (hapticsPolicy) هنوز تصمیم مالک است؛ هیچ haptic اضافه نشد.
+خودِ حرکت celebration وجود ندارد (فقط gate آن). TalkBack gesture path همچنان NATIVE_PENDING.
+`harness next` → **N08-05**.

@@ -1,4 +1,5 @@
-# START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+﻿# START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-04 | SNAP-20261104-N08-04-DONE | N08-04 DONE و یک **P0 واقعی که فقط با نصب APK پیدا شد**: اپ اصلاً باز نمی‌شد — `IllegalArgumentException: Navigation destination that matches route onboarding/welcome ...` چون هر مرحلهٔ آنبوردینگ به یک route جدا navigate می‌شد ولی گراف فقط `onboarding` را ثبت کرده بود (ROUTE_REGISTRY: onboarding یک route با مراحل داخلی است). حالا با `AppNavigationRoutes` + `RegisteredRoutesTest` مکانیکی قفل شده و روی دستگاه تأیید شد (pid زنده، بدون FATAL). reduced motion واقعی شد (پس‌زمینهٔ سیستمی + انتخاب کودک، هر یک کافی)، celebration gate «بدون هم‌زمانی» را می‌بندد، و **پایداری تنظیمات دیگر قلابی نیست**: قبلاً `onSave` پیام «ذخیره شد» می‌داد بدون هیچ نوشتن؛ حالا DataStore واقعی است. ۳۰ تست instrumented و ۷۰ تست واحد سبز، negative control گرفته شد، APK ساخته/نصب/اجرا شد. |
 | 2026-11-04 | SNAP-20261104-N08-03-DONE | N08-03 DONE: نقص برش ۲۰۰٪ رفع شد و روی امولاتور واقعی اثبات شد (۲۶ تست instrumented، failures=0) — و **یک P0 واقعی که ممیزی قبلی اشتباه گفته بود**: `ShomaraTheme` هرگز `LocalLayoutDirection` را Rtl نمی‌کرد، پس روی دستگاه en-US کل رابط LTR رندر می‌شد؛ حالا ریشه RTL است و ریاضی LTR می‌ماند. دو negative control ثابت می‌کند تست‌ها توخالی نیستند. |
 | 2026-11-04 | SNAP-20261104-N08-03-PREP | N08-03 آماده‌سازی (بدون تغییر کد): نقص ۲۰۰٪ با اندازه‌گیری واقعی اثبات شد — ShomaraButton در DeviceConfigurationOverride.FontScale(2.0) مقدار didOverflowHeight=true می‌دهد (line0bottom=155px در جعبهٔ 56dp)، یعنی برچسب بریده می‌شود؛ جهت‌دهی ریاضی/RTL از قبل درست و مستند است. |
 | 2026-11-04 | SNAP-20261104-N08-02-A11Y-INSTRUMENTED | N08-02 DONE_WITH_BLOCKER: ۱۰ تست instrumented Compose semantics روی امولاتور واقعی سبز شد (Pixel_6a/API37، failures=0)؛ دو باگ دسترسی‌پذیری واقعی در ShomaraButton/ShomaraCard پیدا و رفع شد؛ gesture path واقعی TalkBack صادقانه هنوز NATIVE_PENDING. |
@@ -12,9 +13,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 53
+file_version: 54
 last_updated: 2026-11-04
-snapshot_id: SNAP-20261104-N08-03-DONE
+snapshot_id: SNAP-20261104-N08-04-DONE
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n08-ux-completion
 working_branch_pushed: false
@@ -22,9 +23,9 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N08
-current_task: N08-04
-phase_status: N08_IN_PROGRESS_4_OF_13
-apk_status: ANDROID_GATE_PASS__DEBUG_APK_PENDING_REBUILD
+current_task: N08-05
+phase_status: N08_IN_PROGRESS_5_OF_13
+apk_status: DEBUG_APK_BUILT_AND_INSTALLED__LAUNCH_VERIFIED
 ```
 
 ## 0. تصمیم مالک و مرز کار

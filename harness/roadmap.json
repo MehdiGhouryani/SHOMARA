@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-03T21:46:42.496Z",
+  "updatedAt": "2026-11-04T01:50:00.000Z",
   "currentPhase": "N08",
-  "currentTask": "N08-04",
+  "currentTask": "N08-05",
   "statusValues": [
     "TODO",
     "READY",
@@ -1812,7 +1812,7 @@
         {
           "id": "N08-04",
           "title": "Motion/haptic/reduced motion",
-          "status": "TODO",
+          "status": "DONE",
           "dependsOn": [
             "N08-01"
           ],
@@ -1820,7 +1820,26 @@
             "purposeful/cancelable",
             "no concurrent celebration transition"
           ],
-          "evidence": []
+          "evidence": [
+            "P0 LAUNCH CRASH found by installing the APK and reading logcat, not by reading code: \"Navigation destination that matches route onboarding/welcome cannot be found in the navigation graph\". ShomaraOnboardingHost reported every onboarding STEP route and the app navigated to it, but ROUTE_REGISTRY.md defines onboarding as ONE route with internal steps. Fixed by guarding against unregistered routes (AppNavigationRoutes.isRegistered) instead of registering five fake destinations; the host already renders each step from its own state.",
+            "Device verified fix: adb shell am start -> pid 27130 alive; adb logcat -s AndroidRuntime:E -> no FATAL EXCEPTION; uiautomator dump shows the Persian welcome screen. Before the fix the process died on the first frame.",
+            "New regression test apps/android/app/src/test/.../RegisteredRoutesTest.kt (6 JVM assertions): every AppDestination is registered, onboarding steps are NOT registered, the internal step list equals OnboardingRoutes.Ordered, no duplicate routes. This fails on `./gradlew test` instead of only when a device launches the app.",
+            "Animation audit: apps/android contains zero Compose animation APIs (no animate*AsState, AnimatedVisibility, infinite transition). The only real motion is the indeterminate progress indicator, which ignores the platform animator scale unless the app checks it.",
+            "ShomaraMotionLogic merge rule: reduced motion is (persisted preference OR system animator scale == 0). An unreadable/absent setting is NOT treated as off, so motion is never disabled speculatively. Durations derive from tokens and collapse to 0 (a cut) rather than playing faster.",
+            "ShomaraCelebrationGate implements \"no concurrent celebration transition\": a second celebration cancels the first, stale completions cannot clear their replacement, concurrentCount() is 0 or 1 by construction.",
+            "rememberSystemReducedMotion reads Settings.Global.ANIMATOR_DURATION_SCALE once and merges it with the preference; ShomaraTheme provides LocalShomaraReducedMotion and ShomaraProgressBar defaults to it, so a screen cannot forget the flag.",
+            "Reduced motion removes movement, never information: determinate progress keeps its fraction and every state keeps a Persian announcement (asserted).",
+            "DEAD-END SURFACE CLOSED — settings persistence was fake: the screen kept avatar/reduced-motion in remember{mutableStateOf} and onSave called startSave().onSaveSuccess(), announcing \"ذخیره شد.\" while writing nothing. New PreferencesSettingsStore (core:datastore) is real DataStore with fail-closed reads, unknown-avatar fallback and write-time validation; ShomaraChildShellHost persists on every change and surfaces real errors; the parameter is required so the fake default cannot return.",
+            "MainActivity now reads the settings store and passes reducedMotion into ShomaraTheme; before this the toggle could not have had any effect. ShomaraApp no longer wraps its own default ShomaraTheme(), which would have reset the flag to system-only.",
+            "./gradlew test => BUILD SUCCESSFUL exit 0 (design-system unit 70/70 including ShomaraMotionTest 14; datastore 11 including 5 new settings tests on a real file-backed DataStore with a reload through a second store instance).",
+            "./gradlew lint => BUILD SUCCESSFUL exit 0",
+            "./gradlew connectedCheck => BUILD SUCCESSFUL exit 0; design-system instrumented 30 tests 0 failures (FontScale 16 + InteractiveSemantics 10 + ReducedMotion 4) on Pixel_6a / Android 15 (API 35).",
+            "NEGATIVE CONTROL: reverting ShomaraProgressBar to `reducedMotion = false` failed exactly indeterminateProgressStopsWhenReducedMotionIsOn -> the instrumented test detects the real defect rather than passing vacuously. Restored and re-ran green.",
+            "npm run typecheck:all => exit 0; npx vitest run => 73 files / 564 tests passed exit 0; npm run verify:static:all => STATIC_ALL PASS 89/89 exit 0; npm run verify:content-library => PASS exit 0; node tools/harness.mjs validate => HARNESS_VALID exit 0; git diff --check => exit 0.",
+            "Debug APK built and installed: apps/android/app/build/outputs/apk/debug/app-debug.apk, 13,623,081 bytes, sha256 451359541d9dff53d748f3a7bf073181903c4703ffbd3ef5352509b9b7616815; adb install -r => Success on emulator-5554.",
+            "Real-device font-scale witness for N08-03 (uiautomator, not a source claim): at 200% the ادامه button box grows w=195/h=161 -> w=261/h=219 px and the body text wraps to two lines instead of clipping.",
+            "BLOCKED / NOT CLAIMED: CONTENT-007 hapticsPolicy is still OWNER_DECISION_PENDING, so NO haptic feedback was added anywhere. Celebration motion itself does not exist yet — only its non-concurrency gate. TalkBack gesture walkthrough remains NATIVE_PENDING."
+          ]
         },
         {
           "id": "N08-05",

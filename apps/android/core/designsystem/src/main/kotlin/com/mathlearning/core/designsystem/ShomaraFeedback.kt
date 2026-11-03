@@ -139,7 +139,11 @@ object ShomaraProgressLogic {
 fun ShomaraProgressBar(
     state: ShomaraProgressState,
     modifier: Modifier = Modifier,
-    reducedMotion: Boolean = false,
+    // N08-04: defaults to the composition-wide flag (persisted preference OR system animator scale)
+    // so a screen cannot forget to pass it. An indeterminate bar under reduced motion renders a
+    // static placeholder instead of a Compose rememberInfiniteTransition, which ignores the
+    // platform setting on its own.
+    reducedMotion: Boolean = LocalShomaraReducedMotion.current,
 ) {
     val kind = ShomaraProgressLogic.kindFor(state)
     val height = ShomaraTokens.ComponentProgressH
