@@ -386,3 +386,16 @@
 - forms.tsx: TextField2 وضعیت invalid را اعلام می‌کند (accessibilityState)؛ label روی پوستهٔ CodeInput2.
 - N08-02 → IN_PROGRESS: بخش «roles/states حقیقی» ماشینی و سبز؛ «gesture path» (قدم‌زدن واقعی TalkBack روی دستگاه) صادقانه NATIVE_PENDING.
 - gates: vitest 564/564 · static 89/89 · repository PASS (۵۴۸ فایل، ۱۸۷۸ یال) · harness VALID.
+
+## 2026-11-04 — N08 — M6: N08-02 بسته شد با DONE_WITH_BLOCKER (تست‌های instrumented واقعی)
+
+- مکان تست اصلاح شد: API تست Compose فقط برای variant اندروید resolve می‌شود؛ variantهای `jvmStubs` ماژول `ui-test` خالی منتشر می‌شوند، بنابراین `testImplementation` منجر به `Unresolved reference 'onNode'` می‌شد. تست‌ها به `androidTest` منتقل شدند — همان‌جا که واقعاً می‌توان semantics را assert کرد.
+- `apps/android/core/designsystem/src/androidTest/kotlin/com/mathlearning/core/designsystem/ShomaraInteractiveSemanticsTest.kt` (جدید، ۱۰ تست): قرارداد ماشینی role/label/state/error/action برای همهٔ کنترل‌های تعاملی design system.
+- دو باگ واقعی دسترسی‌پذیری با همین تست‌ها پیدا و رفع شد (نه آرایشی):
+  1. `ShomaraButton`: `clickable` کامپوز حتی با `enabled=false` اکشن `OnClick` را به سرویس‌های دسترسی‌پذیری تبلیغ می‌کند. حالا حالت‌های Disabled/Loading اصلاً modifier `clickable` نمی‌گیرند و `semantics(mergeDescendants = true)` اعلام می‌شود تا TalkBack برچسب+وضعیت را یک گره بخواند.
+  2. `ShomaraCard`: حالت Disabled نه `disabled()` داشت و نه کلیکش متوقف می‌شد. حالا `disabled()` + `semantics(mergeDescendants = true)` و `clickable(enabled = false)`.
+- شاهد: `cd apps/android && ./gradlew :core:designsystem:connectedDebugAndroidTest -Dhttp.proxyHost= -Dhttps.proxyHost=` → BUILD SUCCESSFUL؛ نتیجه در `build/outputs/androidTest-results/connected/debug/TEST-Pixel_6a(AVD) - 15.xml`: `tests="10" failures="0" errors="0"` روی امولاتور واقعی Pixel_6a (Android 15).
+- gateهای فاز N08 اجرا شد: `./gradlew test` SUCCESS · `./gradlew lint` SUCCESS · `./gradlew connectedCheck` SUCCESS (با امولاتور) · `git diff --check` exit 0 · `npm run android:gate` → ANDROID_BUILD: PASS.
+- وابستگی تست جدید (قاعدهٔ ۱۱): `androidx.compose.ui:ui-test-junit4` و `:ui-test-manifest` به‌صورت `androidTestImplementation` در `apps/android/core/designsystem/build.gradle.kts` اضافه شدند و از version catalog + Compose BOM موجود resolve می‌شوند (alias جدید یا pin نسخه اضافه نشد). فقط تستی‌اند و در artifact اپ منتشر نمی‌شوند؛ به‌صورت گذرا `androidx.test:core:1.5.0` و `espresso-core:3.5.0` را می‌کشند (اکنون cache شده).
+- N08-02 → DONE_WITH_BLOCKER: همهٔ معیارهای غیردستگاهی سبز؛ تنها «gesture path» واقعی (قدم‌زدن با TalkBack، اکتشاف سوایپ، فعال‌سازی با دوبار ضربه، تأیید شنیداری) باقی است که بدون سرویس TalkBack فعال روی دستگاه قابل اثبات نیست و ادعا هم نمی‌شود.
+- gates: vitest 564/564 (۷۳ فایل) · static 89/89 · repository PASS (۱۰۰ task، ۵۹ ledger، ۱۸۷۸ یال) · content PASS · harness VALID (۱۰۰ task، ۱۱ فاز).

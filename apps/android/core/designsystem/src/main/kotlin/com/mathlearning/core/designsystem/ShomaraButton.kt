@@ -121,25 +121,34 @@ fun ShomaraButton(
         ShomaraButtonState.Pressed -> "فشرده"
         else -> ""
     }
+    // Disabled/Loading buttons must not expose an OnClick action to a11y
+    // services: Compose's clickable keeps advertising OnClick even when
+    // enabled=false, so quiet states skip the clickable modifier entirely
+    // (found by the instrumented N08-02 semantics tests).
+    val interactive = ShomaraButtonLogic.isEnabled(state)
     Box(
         modifier = modifier
             .height(ShomaraButtonLogic.loadingHeight())
             .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget)
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .semantics {
+            .semantics(mergeDescendants = true) {
                 role = Role.Button
                 if (state == ShomaraButtonState.Disabled) disabled()
                 if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
             }
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                enabled = ShomaraButtonLogic.isEnabled(state),
-                role = Role.Button,
-            ) {
-                if (tapGuard.begin()) {
-                    try { onClick() } finally { tapGuard.end() }
-                }
+            .let {
+                if (interactive) {
+                    it.clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        enabled = true,
+                        role = Role.Button,
+                    ) {
+                        if (tapGuard.begin()) {
+                            try { onClick() } finally { tapGuard.end() }
+                        }
+                    }
+                } else it
             }
             .padding(horizontal = ShomaraTokens.Space16),
         contentAlignment = Alignment.Center,

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-03",
+  "updatedAt": "2026-11-03T20:46:46.186Z",
   "currentPhase": "N08",
   "currentTask": "N08-02",
   "statusValues": [
@@ -1715,7 +1715,7 @@
     {
       "id": "N08",
       "title": "UX Completion, Accessibility & Educational QA",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "branch": "native/n08-ux-completion",
       "goal": "پوشش همهٔ route/stateها و اثبات کیفیت Native روی دستگاه.",
       "allowedPaths": [
@@ -1762,20 +1762,24 @@
         {
           "id": "N08-02",
           "title": "TalkBack و focus order",
-          "status": "IN_PROGRESS",
+          "status": "DONE_WITH_BLOCKER",
           "dependsOn": [
             "N08-01"
           ],
           "acceptance": [
-            "roles/states حقیقی",
-            "gesture path"
+            "roles/states حقیقی — machine-verified by instrumented Compose semantics tests",
+            "gesture path — REAL TalkBack walkthrough still NATIVE_PENDING (device/emulator with TalkBack)"
           ],
           "evidence": [
-            "apps/mobile/src/ui/a11yRoles.test.ts (new, 2 tests): static audit of all V2 view dirs — every Pressable/Button2 must declare accessibilityRole AND accessibilityLabel; focus-forwarding shells (accessibilityRole='none') exempted but CodeInput2 shell now also carries accessibilityLabel={label}",
-            "forms.tsx hardening: TextField2 TextInput now announces invalid state (accessibilityState={{invalid}} when error); CodeInput2 outer Pressable labeled",
-            "Gates: vitest 564/564 (2 new) · static 89/89 · repository PASS (548 files, 1878 edges)"
+            "apps/android/core/designsystem/src/androidTest/kotlin/com/mathlearning/core/designsystem/ShomaraInteractiveSemanticsTest.kt (new, 10 tests): instrumented Compose semantics contract for every interactive design-system control — Role.Button + label + OnClick on enabled button; disabled button announces stateDescription \"غیرفعال\" and exposes NO OnClick action; loading button announces \"در حال انجام\" and exposes NO OnClick; selected card announces stateDescription \"انتخاب‌شده\" + selected + OnClick fires; disabled card announces \"غیرفعال\" and exposes NO OnClick; OTP cells carry per-digit contentDescription \"رقم N از M\" and are clickable for direct focus (focusIndex asserted); disabled OTP cells expose NO OnClick; invalid TextField announces the actionable error string via SemanticsProperties.Error AND renders it as readable text; valid TextField exposes no error semantics",
+            "Command: cd apps/android && ./gradlew :core:designsystem:connectedDebugAndroidTest -Dhttp.proxyHost= -Dhttps.proxyHost=  →  BUILD SUCCESSFUL; result XML apps/android/core/designsystem/build/outputs/androidTest-results/connected/debug/TEST-Pixel_6a(AVD) - 15.xml reports tests=\"10\" failures=\"0\" errors=\"0\" (emulator Pixel_6a, Android 15, API 37 image)",
+            "REAL component fixes found by these tests (not cosmetic): (1) ShomaraButton — Compose clickable keeps advertising the OnClick action even when enabled=false, so disabled/loading buttons now skip the clickable modifier entirely and declare semantics(mergeDescendants=true) so TalkBack still reads label+state as one node; (2) ShomaraCard — Disabled state had no disabled() semantics and its clickable still fired, now declares disabled() + semantics(mergeDescendants=true) and passes enabled=false to clickable",
+            "Gates executed this commit: ./gradlew test → BUILD SUCCESSFUL; ./gradlew lint → BUILD SUCCESSFUL; ./gradlew connectedCheck → BUILD SUCCESSFUL (real emulator); git diff --check → exit 0; npm run typecheck:all → PASS; vitest → 564/564 (73 files); verify-static-all → 89/89; verify-repository-harness → PASS (100 tasks, 59 ledger entries, 1878 edges); verify-content-library → PASS; harness validate → HARNESS_VALID (100 tasks, 11 phases); npm run android:gate → ANDROID_BUILD: PASS",
+            "New test dependencies (rule 11 registration): androidx.compose.ui:ui-test-junit4 and :ui-test-manifest added as androidTestImplementation in apps/android/core/designsystem/build.gradle.kts, resolved via the existing version catalog + Compose BOM (no new catalog alias, no version pin added). They are test-only and do not ship in the app artifact; transitively pull androidx.test:core:1.5.0 + espresso-core:3.5.0 (now cached).",
+            "Test placement rationale: Compose test APIs resolve only for the android variant — the JVM jvmStubs variants of ui-test are published empty, so `testImplementation` yields Unresolved reference for onNode/onAllNodes. Tests therefore live in androidTest, which is where they can genuinely assert semantics.",
+            "Prior evidence retained: apps/mobile/src/ui/a11yRoles.test.ts (static V2 audit, 2 tests); forms.tsx TextField2/CodeInput2 label+state hardening"
           ],
-          "blocker": "gesture path (real TalkBack focus-order walkthrough) requires an Android device/emulator with TalkBack — NATIVE_PENDING; static role/state contract is machine-verified"
+          "blocker": "REAL TalkBack gesture walkthrough (focus-order traversal by ear, swipe exploration, double-tap activation, focus-ring visuals) requires a device/emulator session with the TalkBack service actually enabled and spoken feedback confirmed. Compose semantics assertions prove the accessibility TREE is correct; they cannot prove the spoken experience. Not claimed as verified."
         },
         {
           "id": "N08-03",

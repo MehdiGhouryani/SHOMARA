@@ -1,4 +1,5 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-04 | SNAP-20261104-N08-02-A11Y-INSTRUMENTED | N08-02 DONE_WITH_BLOCKER: ۱۰ تست instrumented Compose semantics روی امولاتور واقعی سبز شد (Pixel_6a/API37، failures=0)؛ دو باگ دسترسی‌پذیری واقعی در ShomaraButton/ShomaraCard پیدا و رفع شد؛ gesture path واقعی TalkBack صادقانه هنوز NATIVE_PENDING. |
 | 2026-11-03 | SNAP-20261103-N08-02-A11Y-STATIC | N08-02 بخش ماشینی: تست جدید a11yRoles — هر کنترل تعاملی V2 باید role+label واقعی داشته باشد (۵۶۴/۵۶۴)؛ gesture path واقعی TalkBack صادقانه NATIVE_PENDING (نیازمند دستگاه). |
 | 2026-11-03 | SNAP-20261103-N08-01-LEDGER-AUDIT | N08-13 بسته شد با DONE_WITH_BLOCKER (آپلود UI + rollback در پنل)؛ N08-01 DONE: ممیزی ledger route/state با verifier جدید — ۱۵ route اکسپو + ۱۶ صفحه وب = ۱۰۰٪ طبقه‌بندی در SCREEN_LEDGER.csv (۳۴ ردیف)؛ static 89/89. |
 | 2026-11-03 | SNAP-20261103-N08-13-CMS-AUDIO-PANEL | پنل CMS صوت ادمین شروع شد: seed idempotent ۲۳۲ ردیف، ۶ API route با RBAC ادمین، migration 0074 با RLS، UI فارسی RTL، ۸ تست جدید؛ production persistence و TTS واقعی owner-gated. |
@@ -9,9 +10,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 50
-last_updated: 2026-11-03
-snapshot_id: SNAP-20261103-N08-01-LEDGER-AUDIT
+file_version: 51
+last_updated: 2026-11-04
+snapshot_id: SNAP-20261104-N08-02-A11Y-INSTRUMENTED
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n08-ux-completion
 active_product: SHOMARA

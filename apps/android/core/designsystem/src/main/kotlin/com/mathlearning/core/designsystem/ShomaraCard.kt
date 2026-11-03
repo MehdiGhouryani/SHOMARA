@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -89,14 +90,17 @@ fun ShomaraCard(
             .defaultMinSize(minHeight = ShomaraTokens.ComponentRowH)
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .semantics {
+            .semantics(mergeDescendants = true) {
                 val label = ShomaraCardLogic.stateLabelFor(resolved)
                 if (label.isNotEmpty()) stateDescription = label
                 if (resolved == ShomaraCardState.Selected || resolved == ShomaraCardState.Checked) selected = true
+                if (resolved == ShomaraCardState.Disabled) disabled()
             }
             .let {
                 if (onClick != null && ShomaraClay.specFor(resolvedDepth) != ShomaraClay.Flat) {
-                    it.clickable {
+                    it.clickable(
+                        enabled = resolved != ShomaraCardState.Disabled,
+                    ) {
                         if (tapGuard.begin()) {
                             pressed = true
                             try { onClick() } finally { pressed = false; tapGuard.end() }
