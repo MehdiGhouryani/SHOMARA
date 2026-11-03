@@ -1,5 +1,8 @@
 import type { ContentManifest, ContentPackageDescriptor, EntitlementCheck, CacheClass } from '@math/contracts';
 
+export * from './dispositions';
+export * from './cms-audio';
+
 export interface ContentRepository {
   getManifest(gradeId: string): Promise<ContentManifest>;
   getPackage(packageId: string): Promise<ContentPackageDescriptor | null>;

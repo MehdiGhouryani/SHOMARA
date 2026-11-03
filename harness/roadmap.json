@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-10-31",
-  "currentPhase": "N07",
-  "currentTask": "N07-07",
+  "updatedAt": "2026-11-03",
+  "currentPhase": "N08",
+  "currentTask": "N08-08",
   "statusValues": ["TODO", "READY", "IN_PROGRESS", "BLOCKED", "DEFERRED", "DONE", "DONE_WITH_BLOCKER"],
   "canonicalDocs": [
     "AGENTS.md",
@@ -229,7 +229,7 @@
       "status": "TODO",
       "branch": "native/n08-ux-completion",
       "goal": "پوشش همهٔ route/stateها و اثبات کیفیت Native روی دستگاه.",
-      "allowedPaths": ["apps/android/**", "docs/qa/**", "docs/product/**", "design/playbook/quality/**", "harness/**", "START_HERE.md"],
+      "allowedPaths": ["apps/android/**", "packages/contracts/**", "packages/content-delivery/**", "content-library/derived/**", "content-library/integration/**", "docs/architecture/**", "docs/qa/**", "docs/product/**", "design/playbook/quality/**", "scripts/**", "harness/**", "START_HERE.md"],
       "gates": ["./gradlew test", "./gradlew connectedCheck", "./gradlew lint", "git diff --check"],
       "tasks": [
         { "id": "N08-01", "title": "Route/state ledger audit", "status": "TODO", "dependsOn": ["N07-07"], "acceptance": ["100% routes classified", "هیچ state حدسی"], "evidence": [] },
@@ -239,7 +239,7 @@
         { "id": "N08-05", "title": "Robustness matrix", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["fast taps/offline/process death", "no dead end"], "evidence": [] },
         { "id": "N08-06", "title": "Child/educator review", "status": "TODO", "dependsOn": ["N08-02", "N08-03", "N08-04", "N08-05", "N08-08", "N08-09", "N08-10", "N08-11", "N08-12"], "acceptance": ["HG-04 evidence", "privacy-safe findings", "curriculum/pronunciation findings separated"], "evidence": [] },
         { "id": "N08-07", "title": "Native UX و curriculum acceptance gate", "status": "TODO", "dependsOn": ["N08-06"], "acceptance": ["zero P0/P1", "critical dimensions >=3", "فقط APPROVED قابل enable"], "evidence": [] },
-        { "id": "N08-08", "title": "حل source conflict و owner decisionهای محتوا", "status": "TODO", "dependsOn": ["N07-07"], "acceptance": ["CONTENT-001 تا CONTENT-018 disposition", "تصمیم‌ها با evidence و بدون بازنویسی originals"], "evidence": [] },
+        { "id": "N08-08", "title": "حل source conflict و owner decisionهای محتوا", "status": "IN_PROGRESS", "dependsOn": ["N07-07"], "acceptance": ["CONTENT-001 تا CONTENT-018 disposition", "تصمیم‌ها با evidence و بدون بازنویسی originals"], "evidence": ["packages/content-delivery/src/dispositions.ts: 18/18 disposition ledger (14 closed with n06/n07/N08 evidence, 4 honest OWNER_DECISION_PENDING: CONTENT-005/006/007/016)", "content-library/derived/source-audit.json n08Resolutions (recorded 2026-11-03, originalsTouched=false)", "packages/content-delivery/src/__tests__/dispositions.test.ts: 12/12 PASS"], "blocker": "OWNER_DECISION_PENDING on CONTENT-005 (neutral vs cultural packs), CONTENT-006 (final narrator voice), CONTENT-007 (haptics default), CONTENT-016 (T08 9×9 / ST23 / ST25 final scope) — each guarded in code; final owner decision required before N08-09 mass authoring" },
         { "id": "N08-09", "title": "تولید ۲۴ station spec در پنج batch", "status": "TODO", "dependsOn": ["N08-08", "N06-08"], "acceptance": ["ST01–06، ST08–12، ST13–17، ST18–22، ST23–25", "هر batch validator و review مستقل", "P0/P1 batch قبلی بسته"], "evidence": [] },
         { "id": "N08-10", "title": "Cross-station spiral و coverage audit", "status": "TODO", "dependsOn": ["N08-09"], "acceptance": ["۱۵۰ صفحه accounted", "۱۰۰ skill coverage", "prerequisite/spiral/audio ID unique"], "evidence": [] },
         { "id": "N08-11", "title": "Human review محتوای نوشتاری و audio script", "status": "TODO", "dependsOn": ["N08-09"], "acceptance": ["متخصص پایه اول", "بازبین فارسی و تلفظ", "حقوق asset/audio", "status از VALIDATED به HUMAN_REVIEWED با evidence"], "evidence": [] },

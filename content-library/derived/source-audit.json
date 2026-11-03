@@ -285,5 +285,72 @@
       "publishState": "UNPUBLISHED_NO_BINARY",
       "zeroBinaries": true
     }
+  },
+  "n08Resolutions": {
+    "recordedAt": "2026-11-03",
+    "authorizedBy": "owner session directive (fix bugs, complete half-done work, reach stable state)",
+    "originalsTouched": false,
+    "resolutions": {
+      "CONTENT-004": {
+        "resolution": "RESOLVED_FOR_UI: ST01..ST25 IDs fixed from stations-index.json; titles stay provisional; structural chapter labels only. Final path copy remains an explicit owner decision",
+        "enforcedIn": [
+          "packages/content-delivery/src/dispositions.ts CONTENT_DISPOSITIONS"
+        ]
+      },
+      "CONTENT-005": {
+        "resolution": "OWNER_DECISION_PENDING: neutral pedagogical framing guarded in coded ST07 adapters; textbook artwork copying forbidden; neutral-first vs cultural packs decision open",
+        "enforcedIn": [
+          "packages/content-delivery/src/dispositions.ts OPEN_OWNER_DECISIONS"
+        ]
+      },
+      "CONTENT-006": {
+        "resolution": "OWNER_DECISION_PENDING: voiceProfileId abstract + providerVoiceHint non-authoritative (N07 guard); final narrator voice and sample listening decision open",
+        "enforcedIn": [
+          "packages/content-delivery/src/dispositions.ts OPEN_OWNER_DECISIONS"
+        ]
+      },
+      "CONTENT-007": {
+        "resolution": "OWNER_DECISION_PENDING: subtle/none haptics on retry, reducedMotion disables celebratory haptics, SFX needs RIGHTS_CLEARED provenance; default ON-light vs OFF decision open",
+        "enforcedIn": [
+          "packages/content-delivery/src/dispositions.ts CALIBRATION_V1.hapticsPolicy"
+        ]
+      },
+      "CONTENT-009": {
+        "resolution": "CODED_PRIMITIVE_PROVENANCE: ST07 visuals as deterministic Compose canvas primitives; no unverified bitmap claimed",
+        "enforcedIn": [
+          "apps/android/feature/lesson canvas adapters"
+        ]
+      },
+      "CONTENT-011": {
+        "resolution": "CALIBRATION_V1 versioned config with rollback guard; values are audited initial values, device/child calibration evidence pending (N08-06/07)",
+        "enforcedIn": [
+          "packages/content-delivery/src/dispositions.ts CALIBRATION_V1",
+          "applyCalibration",
+          "rollbackCalibration"
+        ]
+      },
+      "CONTENT-012": {
+        "resolution": "5-batch staging plan (A: ST01-06, B: ST08-12, C: ST13-17, D: ST18-22, E: ST23-25) with per-batch validators; production blocked until N08-08/12 close",
+        "enforcedIn": [
+          "content-library/integration/PHASE_INTEGRATION.md",
+          "packages/content-delivery/src/dispositions.ts CONTENT-012"
+        ]
+      },
+      "CONTENT-016": {
+        "resolution": "OWNER_DECISION_PENDING: t08GridAllowed caps interactive grids at 6 (5×5/6×6 progressive); ST23 concrete-bundles-first and ST25 capstone-only recorded as config; Grade-1 specialist review required (N08-11)",
+        "enforcedIn": [
+          "packages/content-delivery/src/dispositions.ts t08GridAllowed",
+          "st23RequiresConcreteBundles",
+          "st25IsCapstoneOnly"
+        ]
+      }
+    },
+    "openOwnerDecisions": [
+      "CONTENT-005",
+      "CONTENT-006",
+      "CONTENT-007",
+      "CONTENT-016"
+    ],
+    "ledger": "packages/content-delivery/src/dispositions.ts"
   }
 }

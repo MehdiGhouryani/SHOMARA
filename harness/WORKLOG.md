@@ -341,3 +341,15 @@
 - `OfflineJourneyTest`: سفر بحرانی کامل (manifest کش‌شده → آفلاین → process death → restore → drain idempotent با همان key → Server-Wins به COMPLETED) + قرنطینه SHA-256 خراب برای manifest و باینری صوت.
 - :app به :core:database و :sync وصل شد (AppContainer: localDatabase + outboxSyncEngine؛ transport تا I2 retriable). module graph به N07 (۱۶ ماژول) به‌روز شد.
 - readiness در `docs/content/OFFLINE_CMS_AUDIO_READINESS_N07.md`. closure: فاز N07 DONE (9/9)؛ pointer → N07-07؛ next = N08-01.
+
+## 2026-11-03 — N08 شروع — M1: تثبیت کار نیمه‌کارهٔ N08-08 + رفع دو شکست گیت — atomic commit
+
+- branch: `native/n08-ux-completion`؛ کار نیمه‌کارهٔ untracked قبلی (dispositions.ts + ویرایش roadmap) کامل و صادقانه بازسازی شد.
+- N08-08: ledger کامل ۱۸ disposition در `packages/content-delivery/src/dispositions.ts` — ۱۴ مورد بسته با evidence ثبت‌شدهٔ n06/n07/N08، ۴ مورد (CONTENT-005/006/007/016) صادقانه `OWNER_DECISION_PENDING` با guard کدی موجود؛ `OPEN_OWNER_DECISIONS` صریح؛ `allDispositionsClosed()` تا تصمیم مالک false می‌ماند. originals دست‌نخورده.
+- N08-12 (پیش‌زمینه): `CALIBRATION_V1` نسخه‌دار (idleReplay ۸۰۰۰ms، traceTolerance 28dp، transitions 250/350/450ms، rate −15٪، mastery 3/4، T08 cap 6) + `applyCalibration` رد نزول نسخه + `rollbackCalibration` + gateهای `t08GridAllowed`/`st23`/`st25`. device-tested calibration به N08-06/07 موکول است.
+- export از index.ts بستهٔ content-delivery؛ ۱۲ تست جدید (`dispositions.test.ts`) — مجموع پکیج ۲۱/۲۱.
+- `content-library/derived/source-audit.json`: `n08Resolutions` ثبت شد (recordedAt 2026-11-03، originalsTouched=false، openOwnerDecisions صریح).
+- bugfix: `scripts/verify-phase5.mjs` وابستگی به `grep` سیستم (ENOENT روی ویندوز بدون Git usr/bin) با اسکن معادل Node جایگزین شد — همان scope/exclude/case-insensitivity، بدون تضعیف شدت.
+- hygiene: `harness/dependency-map.json` بازتولید شد (۵۳۷ فایل، ۱۸۳۸ یال)؛ roadmap updatedAt=2026-11-03 و currentTask=N08-08 با status IN_PROGRESS + blocker صریح؛ START_HERE فیلدهای yaml به N08 به‌روز شد (file_version 48).
+- gates: vitest 554/554 PASS؛ `verify:static:all` **88/88 PASS** (قبلاً 86/88 به‌دلیل grep ENOENT + dependency drift)؛ `verify:repository` PASS؛ `verify:content-library` PASS؛ harness VALID.
+- blocker: چهار تصمیم مالک باز (بستهٔ خنثی/فرهنگی، صدای راوی نهایی، پیش‌فرض haptics، scope نهایی T08/ST23/ST25) — قبل از N08-09 (تولید انبوه ۲۴ ایستگاه) لازم است.
