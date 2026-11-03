@@ -1762,7 +1762,7 @@
         {
           "id": "N08-02",
           "title": "TalkBack و focus order",
-          "status": "TODO",
+          "status": "IN_PROGRESS",
           "dependsOn": [
             "N08-01"
           ],
@@ -1770,7 +1770,12 @@
             "roles/states حقیقی",
             "gesture path"
           ],
-          "evidence": []
+          "evidence": [
+            "apps/mobile/src/ui/a11yRoles.test.ts (new, 2 tests): static audit of all V2 view dirs — every Pressable/Button2 must declare accessibilityRole AND accessibilityLabel; focus-forwarding shells (accessibilityRole='none') exempted but CodeInput2 shell now also carries accessibilityLabel={label}",
+            "forms.tsx hardening: TextField2 TextInput now announces invalid state (accessibilityState={{invalid}} when error); CodeInput2 outer Pressable labeled",
+            "Gates: vitest 564/564 (2 new) · static 89/89 · repository PASS (548 files, 1878 edges)"
+          ],
+          "blocker": "gesture path (real TalkBack focus-order walkthrough) requires an Android device/emulator with TalkBack — NATIVE_PENDING; static role/state contract is machine-verified"
         },
         {
           "id": "N08-03",

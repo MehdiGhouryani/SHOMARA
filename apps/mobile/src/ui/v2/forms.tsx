@@ -59,6 +59,8 @@ export function TextField2({ label, value, onChangeText, placeholder, prefix, lt
           onFocus={() => setHasFocus(true)}
           onBlur={() => setHasFocus(false)}
           accessibilityLabel={label}
+          accessibilityState={error ? { invalid: true } : undefined}
+          accessibilityState={error ? { invalid: true } : undefined}
           testID={testID}
           style={[type2('body'), styles.text, ltr ? { writingDirection: 'ltr', textAlign: 'right' } : null]}
         />
@@ -90,7 +92,7 @@ export function CodeInput2({ value, onChangeText, length = 6, autoFocus, onSubmi
   const ref = useRef<RNTextInput>(null);
   const cells = Array.from({ length }, (_, i) => value[i] ?? '');
   return (
-    <Pressable accessibilityRole="none" onPress={() => ref.current?.focus()} style={styles.shell} testID={testID}>
+    <Pressable accessibilityRole="none" accessibilityLabel={label} onPress={() => ref.current?.focus()} style={styles.shell} testID={testID}>
       <View style={styles.codeRow} accessibilityRole="none">
         {cells.map((digit, index) => {
           const current = index === value.length && value.length < length;
