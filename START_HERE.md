@@ -1,4 +1,5 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-03 | SNAP-20261103-N08-13-CMS-AUDIO-PANEL | پنل CMS صوت ادمین شروع شد: seed idempotent ۲۳۲ ردیف، ۶ API route با RBAC ادمین، migration 0074 با RLS، UI فارسی RTL، ۸ تست جدید؛ production persistence و TTS واقعی owner-gated. |
 | 2026-11-03 | SNAP-20261103-N08-08-LEDGER | فاز N08 شروع شد: ledger کامل ۱۸ disposition در dispositions.ts (۱۴ بسته، ۴ تصمیم مالک باز) + CALIBRATION_V1 نسخه‌دار با rollback؛ verify-phase5 بدون وابستگی به grep سیستم؛ ۱۲ تست جدید؛ n08Resolutions در source-audit ثبت شد. |
 | 2026-11-01 | SNAP-20261101-N05-PHASE-CLOSED | فاز N05 بسته شد (۹/۹): shell سه‌تب، گراف مسیر، شروع/پرش ایستگاه، practice hub، Me/settings، مرز والدین؛ ۸ commit اتمی؛ connectedCheck/screenshot/device صادقانه NATIVE_PENDING. |
 | 2026-11-01 | SNAP-20261101-N06-PHASE-CLOSED | فاز N06 بسته شد (۱۱/۱۱): مرز سه‌لایه‌ای محتوا، gateway idempotent، player P1..P5، adapters T01/T05/T13/T15، سفر E2E دروازهٔ ST07؛ ۸ disposition CONTENT؛ :app سیم‌کشی شد. |
@@ -6,17 +7,17 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 48
+file_version: 49
 last_updated: 2026-11-03
-snapshot_id: SNAP-20261103-N08-08-LEDGER
+snapshot_id: SNAP-20261103-N08-13-CMS-AUDIO-PANEL
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
 working_branch: native/n08-ux-completion
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N08
-current_task: N08-08
-phase_status: N08_IN_PROGRESS_0_OF_12
+current_task: N08-13
+phase_status: N08_IN_PROGRESS_0_OF_13
 apk_status: ANDROID_GATE_PASS__DEBUG_APK_BUILT_SHA256_06007F6A
 ```
 

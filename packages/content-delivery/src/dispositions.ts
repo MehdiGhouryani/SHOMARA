@@ -56,7 +56,7 @@ export const CONTENT_DISPOSITIONS: Readonly<Record<string, ContentDisposition>> 
   },
   'CONTENT-006': {
     decision: OWNER_DECISION_PENDING,
-    evidence: 'GUARD TODAY (n07Resolutions): voiceProfileId abstract; fa-IR-DilaraNeural kept only as non-authoritative providerVoiceHint. Final narrator voice + sample listening: owner decision open',
+    evidence: 'GUARD TODAY (n07Resolutions): voiceProfileId abstract; fa-IR-DilaraNeural kept only as non-authoritative providerVoiceHint. OWNER DIRECTION 2026-11-03: narration is managed by admins from the CMS web panel (audio selection/listening/final approval happen there); the concrete narrator choice is recorded when the owner completes panel-based sample listening',
   },
   'CONTENT-007': {
     decision: OWNER_DECISION_PENDING,

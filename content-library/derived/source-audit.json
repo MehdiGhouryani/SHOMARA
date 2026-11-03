@@ -304,9 +304,10 @@
         ]
       },
       "CONTENT-006": {
-        "resolution": "OWNER_DECISION_PENDING: voiceProfileId abstract + providerVoiceHint non-authoritative (N07 guard); final narrator voice and sample listening decision open",
+        "resolution": "OWNER_DECISION_PENDING: voiceProfileId abstract + providerVoiceHint non-authoritative (N07 guard). OWNER DIRECTION 2026-11-03: narration is administered from the CMS web panel — audio selection, listening and final approval happen there (N08-13); the concrete narrator choice is recorded when panel-based sample listening is completed",
         "enforcedIn": [
-          "packages/content-delivery/src/dispositions.ts OPEN_OWNER_DECISIONS"
+          "packages/content-delivery/src/dispositions.ts OPEN_OWNER_DECISIONS",
+          "N08-13 CMS audio admin panel"
         ]
       },
       "CONTENT-007": {

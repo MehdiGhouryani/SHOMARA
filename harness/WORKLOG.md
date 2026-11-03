@@ -353,3 +353,14 @@
 - hygiene: `harness/dependency-map.json` بازتولید شد (۵۳۷ فایل، ۱۸۳۸ یال)؛ roadmap updatedAt=2026-11-03 و currentTask=N08-08 با status IN_PROGRESS + blocker صریح؛ START_HERE فیلدهای yaml به N08 به‌روز شد (file_version 48).
 - gates: vitest 554/554 PASS؛ `verify:static:all` **88/88 PASS** (قبلاً 86/88 به‌دلیل grep ENOENT + dependency drift)؛ `verify:repository` PASS؛ `verify:content-library` PASS؛ harness VALID.
 - blocker: چهار تصمیم مالک باز (بستهٔ خنثی/فرهنگی، صدای راوی نهایی، پیش‌فرض haptics، scope نهایی T08/ST23/ST25) — قبل از N08-09 (تولید انبوه ۲۴ ایستگاه) لازم است.
+
+## 2026-11-03 — N08 — M2: N08-13 پنل CMS صوت ادمین (وب) + ثبت جهت مالک — atomic commit
+
+- تصمیم مالک ثبت شد: مدیریت صوت‌ها از پنل CMS وب (CONTENT-006 در dispositions + n08Resolutions به‌روز؛ انتخاب نهایی صدای راوی با شنیدن نمونه در پنل).
+- roadmap: task N08-13 اضافه شد (dependsOn N07-09)؛ allowedPaths فاز N08 با apps/web/** و supabase/migrations/** گسترش یافت؛ currentTask → N08-13.
+- `apps/web/lib/admin-audio.ts`: adapter نازک روی هستهٔ governance تست‌شدهٔ cms-audio (RBAC پنج‌نقشی، LISTEN_REVIEW_REQUIRED، checksum، reports)؛ seed idempotent ۲۳۲ ردیف DRAFT از CSVهای byte-protected (فقط خواندن)؛ production fail-closed (AUDIO_ADMIN_BACKEND_NOT_CONFIGURED).
+- ۶ API route زیر `apps/web/app/api/v1/admin/audio/`: scripts list/filter، detail + تاریخچهٔ متن، PATCH ویرایش text_display/text_tts، upload binary (اعتبارسنجی SHA-256/duration؛ رد binary جعلی)، transition با RBAC، rollback ادمین، reports. همه با `requireRequestAccountPrincipal(request, 'ADMIN')`.
+- `supabase/migrations/0074_audio_cms_tables.sql`: چهار جدول (scripts/script_versions/asset_versions/audit) + RLS (admin write، teacher read) + ایندکس‌ها. محتوای CSV در migration تکرار نشد (خطر drift) — seed از importer اجرا می‌شود. static guards: 74 migration PASS.
+- `apps/web/app/admin/audio/page.tsx`: پنل فارسی RTL روی AdultRouteShell و tokenهای موجود — فیلتر/جست‌وجو، ویرایش دوگانهٔ متن، دکمه‌های گردش وضعیت، تاریخچهٔ audit، نوار گزارش‌ها (missing/impact/orphan)؛ stateهای loading/error/retry.
+- evidence: Vitest جدید ۸/۸ (admin-audio.test.ts)؛ کل ۵۶۲/۵۶۲؛ static 88/88؛ repository PASS (۱۰۰ task، ۵۴۶ فایل، ۱۸۷۳ یال)؛ content PASS؛ typecheck وب clean؛ migration guards PASS.
+- blocker: پیوست‌سازی production (الان in-memory با fail-closed)، تولید TTS واقعی نیازمند voice + credential مالک، تصمیم object storage برای آپلود.

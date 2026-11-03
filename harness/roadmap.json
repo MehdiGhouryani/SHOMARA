@@ -3,8 +3,16 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-03",
   "currentPhase": "N08",
-  "currentTask": "N08-08",
-  "statusValues": ["TODO", "READY", "IN_PROGRESS", "BLOCKED", "DEFERRED", "DONE", "DONE_WITH_BLOCKER"],
+  "currentTask": "N08-13",
+  "statusValues": [
+    "TODO",
+    "READY",
+    "IN_PROGRESS",
+    "BLOCKED",
+    "DEFERRED",
+    "DONE",
+    "DONE_WITH_BLOCKER"
+  ],
   "canonicalDocs": [
     "AGENTS.md",
     "START_HERE.md",
@@ -55,11 +63,41 @@
     "gradlew.bat "
   ],
   "humanGates": [
-    { "id": "HG-01", "phase": "N02", "title": "تأیید applicationId نهایی Android و minimum SDK", "status": "APPROVED", "evidence": "دستور مستقیم مالک برای ادامهٔ پیاده‌سازی؛ applicationId=com.mathlearning.app و minSdk=24 در ADR-0036 ثبت شد." },
-    { "id": "HG-02", "phase": "N03", "title": "بازبینی مالک روی Design System V3 و سه صفحهٔ نماینده", "status": "APPROVED", "evidence": "مالک با دستور مستقیم در نشست 2026-10-31 (goal: Commit N03-06/07 with owner HG-02 sign-off) بستهٔ Design System V3 را تصویب کرد؛ گیت‌های ماشینی (56/56 JVM، android:gate، 88/88 static، صفر raw token) سبز؛ screenshot/device روی Path/Auth/Lesson همچنان NATIVE_PENDING و در docs/design/NATIVE_COMPONENT_READINESS_N03.md پیگیری می‌شود." },
-    { "id": "HG-03", "phase": "N07", "title": "تأیید حقوق، moderation و workflow انتشار صوت", "status": "APPROVED", "evidence": "مالک با دستور مستقیم در نشست 2026-11-01 (goal: CMS publishing contract with owner HG-03 approval) قرارداد انتشار CMS و lifecycle صوت را تصویب کرد؛ RBAC پنج‌نقشی + audit trail + reports + reversible publish در packages/content-delivery/src/cms-audio.ts با ۹ تست Vitest پیاده و تأیید شد؛ هیچ باینری صوتی وجود ندارد و هر ۲۳۲ ردیف DRAFT/UNPUBLISHED_NO_BINARY می‌مانند." },
-    { "id": "HG-04", "phase": "N08", "title": "QA آموزشی کودک و متخصص محتوا", "status": "NOT_DUE", "evidence": "جلسه و issueهای ثبت‌شده؛ بدون دادهٔ شخصی کودک." },
-    { "id": "HG-05", "phase": "N10", "title": "مجوز صریح ساخت artifact نهایی و signing", "status": "NOT_DUE", "evidence": "release checklist + owner approval." }
+    {
+      "id": "HG-01",
+      "phase": "N02",
+      "title": "تأیید applicationId نهایی Android و minimum SDK",
+      "status": "APPROVED",
+      "evidence": "دستور مستقیم مالک برای ادامهٔ پیاده‌سازی؛ applicationId=com.mathlearning.app و minSdk=24 در ADR-0036 ثبت شد."
+    },
+    {
+      "id": "HG-02",
+      "phase": "N03",
+      "title": "بازبینی مالک روی Design System V3 و سه صفحهٔ نماینده",
+      "status": "APPROVED",
+      "evidence": "مالک با دستور مستقیم در نشست 2026-10-31 (goal: Commit N03-06/07 with owner HG-02 sign-off) بستهٔ Design System V3 را تصویب کرد؛ گیت‌های ماشینی (56/56 JVM، android:gate، 88/88 static، صفر raw token) سبز؛ screenshot/device روی Path/Auth/Lesson همچنان NATIVE_PENDING و در docs/design/NATIVE_COMPONENT_READINESS_N03.md پیگیری می‌شود."
+    },
+    {
+      "id": "HG-03",
+      "phase": "N07",
+      "title": "تأیید حقوق، moderation و workflow انتشار صوت",
+      "status": "APPROVED",
+      "evidence": "مالک با دستور مستقیم در نشست 2026-11-01 (goal: CMS publishing contract with owner HG-03 approval) قرارداد انتشار CMS و lifecycle صوت را تصویب کرد؛ RBAC پنج‌نقشی + audit trail + reports + reversible publish در packages/content-delivery/src/cms-audio.ts با ۹ تست Vitest پیاده و تأیید شد؛ هیچ باینری صوتی وجود ندارد و هر ۲۳۲ ردیف DRAFT/UNPUBLISHED_NO_BINARY می‌مانند."
+    },
+    {
+      "id": "HG-04",
+      "phase": "N08",
+      "title": "QA آموزشی کودک و متخصص محتوا",
+      "status": "NOT_DUE",
+      "evidence": "جلسه و issueهای ثبت‌شده؛ بدون دادهٔ شخصی کودک."
+    },
+    {
+      "id": "HG-05",
+      "phase": "N10",
+      "title": "مجوز صریح ساخت artifact نهایی و signing",
+      "status": "NOT_DUE",
+      "evidence": "release checklist + owner approval."
+    }
   ],
   "phases": [
     {
@@ -68,16 +106,129 @@
       "status": "DONE_WITH_BLOCKER",
       "branch": "chore/p00-repository-baseline",
       "goal": "حذف artifact تولیدی، تثبیت canonical docs و baseline قابل اثبات.",
-      "allowedPaths": [".gitignore", "AGENTS.md", "README.md", "START_HERE.md", "docs/**", "scripts/verify-mobile-release.mjs", "apps/web/lib/__tests__/**", "parity-out-expo/**"],
-      "gates": ["npm run build:packages", "npm run typecheck:all", "npm run test:unit", "npm run verify:static:all", "git diff --check"],
+      "allowedPaths": [
+        ".gitignore",
+        "AGENTS.md",
+        "README.md",
+        "START_HERE.md",
+        "docs/**",
+        "scripts/verify-mobile-release.mjs",
+        "apps/web/lib/__tests__/**",
+        "parity-out-expo/**"
+      ],
+      "gates": [
+        "npm run build:packages",
+        "npm run typecheck:all",
+        "npm run test:unit",
+        "npm run verify:static:all",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N00-01", "title": "ثبت clone و baseline commit", "status": "DONE", "dependsOn": [], "acceptance": ["commit و branch ثبت شده", "working tree اولیه بررسی شده"], "evidence": ["START_HERE.md §2"] },
-        { "id": "N00-02", "title": "حذف parity-out-expo از Git", "status": "DONE", "dependsOn": ["N00-01"], "acceptance": ["صفر فایل tracked", "مسیر در gitignore"], "evidence": ["125 فایل و 8.35MB حذف شد"] },
-        { "id": "N00-03", "title": "تثبیت AGENTS و START_HERE", "status": "DONE", "dependsOn": ["N00-01"], "acceptance": ["SHOMARA تنها محصول فعال", "AVA بسته اعلام شده"], "evidence": ["commit f43bb02"] },
-        { "id": "N00-04", "title": "اصلاح scope release verifier", "status": "DONE", "dependsOn": ["N00-02"], "acceptance": ["generated parity output اسکن نمی‌شود", "release verifier PASS"], "evidence": ["scripts/verify-mobile-release.mjs"] },
-        { "id": "N00-05", "title": "ایزوله‌سازی unit test OTP", "status": "DONE", "dependsOn": ["N00-01"], "acceptance": ["fetch mock شده", "هیچ شبکهٔ واقعی از unit test"], "evidence": ["503/503 Vitest PASS"] },
-        { "id": "N00-06", "title": "تأیید Node 22 toolchain", "status": "DONE", "dependsOn": ["N00-04", "N00-05"], "acceptance": ["build/typecheck PASS", "503/503 tests PASS"], "evidence": ["Node 22.22.0 run"] },
-        { "id": "N00-07", "title": "اجرای browser gates", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N00-06"], "acceptance": ["blocker دقیق ثبت شده", "gate ضعیف نشده"], "evidence": ["Chromium download 0-byte/invalid ZIP"], "blocker": "BLOCKED_ENV: Chromium unavailable in runner" }
+        {
+          "id": "N00-01",
+          "title": "ثبت clone و baseline commit",
+          "status": "DONE",
+          "dependsOn": [],
+          "acceptance": [
+            "commit و branch ثبت شده",
+            "working tree اولیه بررسی شده"
+          ],
+          "evidence": [
+            "START_HERE.md §2"
+          ]
+        },
+        {
+          "id": "N00-02",
+          "title": "حذف parity-out-expo از Git",
+          "status": "DONE",
+          "dependsOn": [
+            "N00-01"
+          ],
+          "acceptance": [
+            "صفر فایل tracked",
+            "مسیر در gitignore"
+          ],
+          "evidence": [
+            "125 فایل و 8.35MB حذف شد"
+          ]
+        },
+        {
+          "id": "N00-03",
+          "title": "تثبیت AGENTS و START_HERE",
+          "status": "DONE",
+          "dependsOn": [
+            "N00-01"
+          ],
+          "acceptance": [
+            "SHOMARA تنها محصول فعال",
+            "AVA بسته اعلام شده"
+          ],
+          "evidence": [
+            "commit f43bb02"
+          ]
+        },
+        {
+          "id": "N00-04",
+          "title": "اصلاح scope release verifier",
+          "status": "DONE",
+          "dependsOn": [
+            "N00-02"
+          ],
+          "acceptance": [
+            "generated parity output اسکن نمی‌شود",
+            "release verifier PASS"
+          ],
+          "evidence": [
+            "scripts/verify-mobile-release.mjs"
+          ]
+        },
+        {
+          "id": "N00-05",
+          "title": "ایزوله‌سازی unit test OTP",
+          "status": "DONE",
+          "dependsOn": [
+            "N00-01"
+          ],
+          "acceptance": [
+            "fetch mock شده",
+            "هیچ شبکهٔ واقعی از unit test"
+          ],
+          "evidence": [
+            "503/503 Vitest PASS"
+          ]
+        },
+        {
+          "id": "N00-06",
+          "title": "تأیید Node 22 toolchain",
+          "status": "DONE",
+          "dependsOn": [
+            "N00-04",
+            "N00-05"
+          ],
+          "acceptance": [
+            "build/typecheck PASS",
+            "503/503 tests PASS"
+          ],
+          "evidence": [
+            "Node 22.22.0 run"
+          ]
+        },
+        {
+          "id": "N00-07",
+          "title": "اجرای browser gates",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N00-06"
+          ],
+          "acceptance": [
+            "blocker دقیق ثبت شده",
+            "gate ضعیف نشده"
+          ],
+          "evidence": [
+            "Chromium download 0-byte/invalid ZIP"
+          ],
+          "blocker": "BLOCKED_ENV: Chromium unavailable in runner"
+        }
       ]
     },
     {
@@ -86,19 +237,199 @@
       "status": "DONE_WITH_BLOCKER",
       "branch": "chore/n01-clean-architecture",
       "goal": "کاهش سردرگمی و حجم، ساخت نقشهٔ مصرف‌کننده و آماده‌کردن مرزهای مهاجرت بدون شکستن کلاینت فعلی.",
-      "allowedPaths": ["*.md", ".nvmrc", "package.json", "package-lock.json", "docs/**", "harness/**", "tools/**", "scripts/verify-repository-harness.mjs", "design/playbook/quality/EXECUTION_CHECKPOINT.md", "apps/mobile/**", "packages/design-system/**"],
-      "gates": ["npm run harness:validate", "npm run verify:repository", "npm run build:packages", "npm run typecheck:all", "npm run test:unit", "npm run verify:static:all", "git diff --check"],
+      "allowedPaths": [
+        "*.md",
+        ".nvmrc",
+        "package.json",
+        "package-lock.json",
+        "docs/**",
+        "harness/**",
+        "tools/**",
+        "scripts/verify-repository-harness.mjs",
+        "design/playbook/quality/EXECUTION_CHECKPOINT.md",
+        "apps/mobile/**",
+        "packages/design-system/**"
+      ],
+      "gates": [
+        "npm run harness:validate",
+        "npm run verify:repository",
+        "npm run build:packages",
+        "npm run typecheck:all",
+        "npm run test:unit",
+        "npm run verify:static:all",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N01-01", "title": "حذف root artifactهای بدون مصرف", "status": "DONE", "dependsOn": ["N00-07"], "acceptance": ["چهار فایل orphan حذف شده", "تاریخچهٔ Git روش بازیابی است"], "evidence": ["file-ledger entries"] },
-        { "id": "N01-02", "title": "استانداردسازی Node و package metadata", "status": "DONE", "dependsOn": ["N01-01"], "acceptance": [".nvmrc دقیق", "package و lockfile هم‌راستا"], "evidence": ["Node 22.22.0; engine >=22.18 <23"] },
-        { "id": "N01-03", "title": "ایجاد harness و resume protocol", "status": "DONE", "dependsOn": ["N01-01"], "acceptance": ["validate/status/next/task", "schema و verifier", "ZCODE مستقل"], "evidence": ["harness/**", "tools/harness.mjs"] },
-        { "id": "N01-04", "title": "ثبت repository map و package boundaries", "status": "DONE", "dependsOn": ["N01-03"], "acceptance": ["مسیرهای active/legacy/historical مشخص", "قواعد dependency Native ثبت شده"], "evidence": ["docs/architecture/**", "harness/file-ledger.json"] },
-        { "id": "N01-05", "title": "ساخت consumer/dependency map برای V1/V2 و workspaceها", "status": "DONE", "dependsOn": ["N01-04"], "acceptance": ["importهای V1/V2 شمرده و مسیر مصرف ثبت شود", "workspace graph و deep imports مشخص شود", "هیچ فایل active به‌اشتباه zero-consumer اعلام نشود"], "evidence": ["harness/dependency-map.json: 518 source files / 1780 import edges", "22 V1 and 22 V2 external consumer files; zero deep workspace imports"] },
-        { "id": "N01-06", "title": "دسته‌بندی و dedupe اسناد", "status": "DONE", "dependsOn": ["N01-05"], "acceptance": ["هر سند current یا historical برچسب دارد", "لینک شکسته صفر", "verifier-dependent docs حفظ شده"], "evidence": ["docs/README.md documentation index", "docs/roadmap/PHASE_CHECKLISTS_FA.md"] },
-        { "id": "N01-07", "title": "طرح یکپارچه‌سازی Design System", "status": "DONE", "dependsOn": ["N01-05"], "acceptance": ["token source واحد انتخاب شده", "خروجی TypeScript/Kotlin تعریف شده", "V1/V2 retirement order ثبت شده"], "evidence": ["docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md", "packages/design-system/src/tokens.json retained as transitional canonical source"] },
-        { "id": "N01-08", "title": "حذف batch اول dead code با zero-consumer proof", "status": "DONE", "dependsOn": ["N01-05", "N01-06"], "acceptance": ["consumer search قبل/بعد", "typecheck/tests سبز", "حذف‌ها در ledger"], "evidence": ["apps/mobile/src/path/PathBanner.tsx removed after corrected TS ESM resolution audit", "four remaining zero-inbound candidates retained because verifier/string consumers exist"] },
-        { "id": "N01-09", "title": "بازنشستگی UI V1 و goldenهای قدیمی", "status": "BLOCKED", "dependsOn": ["N01-07", "N01-08"], "acceptance": ["تمام routeها بدون import V1", "معادل V3 verifier موجود", "browser gate سبز"], "evidence": [], "blocker": "Chromium و تکمیل consumer migration لازم است" },
-        { "id": "N01-10", "title": "بستن N01 و ساخت package checkpoint", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N01-06", "N01-07", "N01-08"], "acceptance": ["harness معتبر", "گیت‌های غیرمرورگری سبز", "ZIP کامل و checksum", "blockerها ثبت شده"], "evidence": ["Node 22 build/typecheck and 65 files / 502 tests PASS", "repository/release/dependency gates PASS", "static 76/81; five Chromium gates BLOCKED_ENV", "docs/delivery/SHOMARA_N01_CHECKPOINT.md"] }
+        {
+          "id": "N01-01",
+          "title": "حذف root artifactهای بدون مصرف",
+          "status": "DONE",
+          "dependsOn": [
+            "N00-07"
+          ],
+          "acceptance": [
+            "چهار فایل orphan حذف شده",
+            "تاریخچهٔ Git روش بازیابی است"
+          ],
+          "evidence": [
+            "file-ledger entries"
+          ]
+        },
+        {
+          "id": "N01-02",
+          "title": "استانداردسازی Node و package metadata",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-01"
+          ],
+          "acceptance": [
+            ".nvmrc دقیق",
+            "package و lockfile هم‌راستا"
+          ],
+          "evidence": [
+            "Node 22.22.0; engine >=22.18 <23"
+          ]
+        },
+        {
+          "id": "N01-03",
+          "title": "ایجاد harness و resume protocol",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-01"
+          ],
+          "acceptance": [
+            "validate/status/next/task",
+            "schema و verifier",
+            "ZCODE مستقل"
+          ],
+          "evidence": [
+            "harness/**",
+            "tools/harness.mjs"
+          ]
+        },
+        {
+          "id": "N01-04",
+          "title": "ثبت repository map و package boundaries",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-03"
+          ],
+          "acceptance": [
+            "مسیرهای active/legacy/historical مشخص",
+            "قواعد dependency Native ثبت شده"
+          ],
+          "evidence": [
+            "docs/architecture/**",
+            "harness/file-ledger.json"
+          ]
+        },
+        {
+          "id": "N01-05",
+          "title": "ساخت consumer/dependency map برای V1/V2 و workspaceها",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-04"
+          ],
+          "acceptance": [
+            "importهای V1/V2 شمرده و مسیر مصرف ثبت شود",
+            "workspace graph و deep imports مشخص شود",
+            "هیچ فایل active به‌اشتباه zero-consumer اعلام نشود"
+          ],
+          "evidence": [
+            "harness/dependency-map.json: 518 source files / 1780 import edges",
+            "22 V1 and 22 V2 external consumer files; zero deep workspace imports"
+          ]
+        },
+        {
+          "id": "N01-06",
+          "title": "دسته‌بندی و dedupe اسناد",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-05"
+          ],
+          "acceptance": [
+            "هر سند current یا historical برچسب دارد",
+            "لینک شکسته صفر",
+            "verifier-dependent docs حفظ شده"
+          ],
+          "evidence": [
+            "docs/README.md documentation index",
+            "docs/roadmap/PHASE_CHECKLISTS_FA.md"
+          ]
+        },
+        {
+          "id": "N01-07",
+          "title": "طرح یکپارچه‌سازی Design System",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-05"
+          ],
+          "acceptance": [
+            "token source واحد انتخاب شده",
+            "خروجی TypeScript/Kotlin تعریف شده",
+            "V1/V2 retirement order ثبت شده"
+          ],
+          "evidence": [
+            "docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md",
+            "packages/design-system/src/tokens.json retained as transitional canonical source"
+          ]
+        },
+        {
+          "id": "N01-08",
+          "title": "حذف batch اول dead code با zero-consumer proof",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-05",
+            "N01-06"
+          ],
+          "acceptance": [
+            "consumer search قبل/بعد",
+            "typecheck/tests سبز",
+            "حذف‌ها در ledger"
+          ],
+          "evidence": [
+            "apps/mobile/src/path/PathBanner.tsx removed after corrected TS ESM resolution audit",
+            "four remaining zero-inbound candidates retained because verifier/string consumers exist"
+          ]
+        },
+        {
+          "id": "N01-09",
+          "title": "بازنشستگی UI V1 و goldenهای قدیمی",
+          "status": "BLOCKED",
+          "dependsOn": [
+            "N01-07",
+            "N01-08"
+          ],
+          "acceptance": [
+            "تمام routeها بدون import V1",
+            "معادل V3 verifier موجود",
+            "browser gate سبز"
+          ],
+          "evidence": [],
+          "blocker": "Chromium و تکمیل consumer migration لازم است"
+        },
+        {
+          "id": "N01-10",
+          "title": "بستن N01 و ساخت package checkpoint",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N01-06",
+            "N01-07",
+            "N01-08"
+          ],
+          "acceptance": [
+            "harness معتبر",
+            "گیت‌های غیرمرورگری سبز",
+            "ZIP کامل و checksum",
+            "blockerها ثبت شده"
+          ],
+          "evidence": [
+            "Node 22 build/typecheck and 65 files / 502 tests PASS",
+            "repository/release/dependency gates PASS",
+            "static 76/81; five Chromium gates BLOCKED_ENV",
+            "docs/delivery/SHOMARA_N01_CHECKPOINT.md"
+          ]
+        }
       ]
     },
     {
@@ -107,21 +438,292 @@
       "status": "DONE",
       "branch": "native/n02-foundation",
       "goal": "ایجاد skeleton چندماژوله Android Native بدون مهاجرت عجولانهٔ صفحه.",
-      "allowedPaths": ["apps/android/**", ".github/workflows/**", "docs/adr/**", "docs/architecture/**", "docs/roadmap/**", "docs/delivery/**", "docs/README.md", "design/**", "content-library/**", "skills/**", "harness/**", "scripts/android-build.mjs", "scripts/verify-android-build-harness.mjs", "scripts/verify-android-foundation.mjs", "scripts/verify-android-environment.mjs", "scripts/verify-static-all.mjs", "scripts/verify-content-library.mjs", "scripts/verify-project-skills.mjs", "scripts/verify-design-governance.mjs", "scripts/generate-content-indexes.mjs", "scripts/verify-repository-harness.mjs", "tools/harness.mjs", "tools/dependency-audit.mjs", ".gitattributes", ".gitignore", "package.json", "AGENTS.md", "README.md", "ZCODE.md", "START_HERE.md"],
-      "gates": ["npm run verify:android-foundation", "npm run verify:android-build-harness", "npm run verify:content-library", "npm run verify:project-skills", "npm run verify:design-governance", "npm run verify:design-pack", "npm run android:gate", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/**",
+        ".github/workflows/**",
+        "docs/adr/**",
+        "docs/architecture/**",
+        "docs/roadmap/**",
+        "docs/delivery/**",
+        "docs/README.md",
+        "design/**",
+        "content-library/**",
+        "skills/**",
+        "harness/**",
+        "scripts/android-build.mjs",
+        "scripts/verify-android-build-harness.mjs",
+        "scripts/verify-android-foundation.mjs",
+        "scripts/verify-android-environment.mjs",
+        "scripts/verify-static-all.mjs",
+        "scripts/verify-content-library.mjs",
+        "scripts/verify-project-skills.mjs",
+        "scripts/verify-design-governance.mjs",
+        "scripts/generate-content-indexes.mjs",
+        "scripts/verify-repository-harness.mjs",
+        "tools/harness.mjs",
+        "tools/dependency-audit.mjs",
+        ".gitattributes",
+        ".gitignore",
+        "package.json",
+        "AGENTS.md",
+        "README.md",
+        "ZCODE.md",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "npm run verify:android-foundation",
+        "npm run verify:android-build-harness",
+        "npm run verify:content-library",
+        "npm run verify:project-skills",
+        "npm run verify:design-governance",
+        "npm run verify:design-pack",
+        "npm run android:gate",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N02-01", "title": "ADR معماری Native و تصمیم applicationId/minSdk", "status": "DONE", "dependsOn": ["N01-10"], "acceptance": ["HG-01 تصویب شده", "نسخه‌های toolchain پین شده"], "evidence": ["docs/adr/ADR-0036-android-native-foundation.md", "HG-01 APPROVED"] },
-        { "id": "N02-02", "title": "Gradle wrapper و version catalog", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N02-01"], "acceptance": ["build تکرارپذیر", "repositoryها محدود"], "evidence": ["Gradle 9.6 wrapper JAR and distribution SHA-256 pinned", "AGP 9.4.0 and all libraries pinned; FAIL_ON_PROJECT_REPOS"], "blocker": "Runtime dependency resolution could not be executed: Java/Gradle cannot reach the runner proxy." },
-        { "id": "N02-03", "title": "ماژول app و coreهای پایه", "status": "DONE", "dependsOn": ["N02-02"], "acceptance": ["single activity", "core common/model/testing"], "evidence": ["apps/android app + core:common + core:model + core:testing", "docs/architecture/ANDROID_MODULE_GRAPH.md"] },
-        { "id": "N02-04", "title": "DI، logging و error model", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N02-03"], "acceptance": ["بدون secret در log", "error taxonomy تست شده"], "evidence": ["manual composition-root DI", "SafeAppLogger sensitive-key denylist and unit-test sources", "npm run verify:android-foundation PASS"], "blocker": "Kotlin unit-test execution requires Gradle dependency resolution unavailable in this runner." },
-        { "id": "N02-05", "title": "Navigation و placeholder route", "status": "DONE_WITH_BLOCKER", "dependsOn": ["N02-03"], "acceptance": ["back/deep-link پایه", "state restoration test"], "evidence": ["Compose NavHost and mathlearning://foundation deep link", "NavigationSnapshot restoration test source", "FoundationScreen semantics test source"], "blocker": "Compile/device execution requires Android SDK 37 and reachable Gradle dependencies." },
-        { "id": "N02-06", "title": "CI Native و cache امن", "status": "DONE", "dependsOn": ["N02-02"], "acceptance": ["test/lint/compile در CI", "compile SDK صریح و preflight fail-closed", "artifact signing ندارد"], "evidence": [".github/workflows/android-native.yml", "ubuntu-24.04 + explicit platforms;android-37 install", "deterministic environment preflight", "read-only permissions; wrapper validation; no signing/publish step"] },
-        { "id": "N02-07", "title": "Foundation gate", "status": "DONE", "dependsOn": ["N02-04", "N02-05", "N02-06", "N02-08", "N02-09", "N02-10", "N02-11", "N02-12"], "acceptance": ["compile/lint/unit PASS", "ساختار module graph ثبت شده"], "evidence": ["npm run android:gate PASS (exit 0, 2026-10-31, local machine: JDK 17 Temurin + D:\\SDK with platforms;android-37)", "first real Gradle run surfaced a genuine lint error (themes.xml windowLightNavigationBar requires API 27 with minSdk 24); fixed with values-v27/themes.xml qualifier, then gate PASS", "npm run android:doctor READY (exit 0)", "module graph documented (docs/architecture/ANDROID_MODULE_GRAPH.md)", "npm run verify:android-foundation PASS", "deterministic Android environment preflight", "CI installs platforms;android-37 explicitly (stable channel)", "canonical npm run android:gate harness", "run evidence: /tmp/shomara-evidence-2026-10-31 + build-reports/android/gate.json (generated)"], "closureNote": "2026-10-31: previous BLOCKED_ENV (2026-10-28 audit runner without SDK 37) resolved on the owner's machine; gate evidence verified by the same session that produced it; debug APK intentionally not built (task text does not authorise assemble-debug); N03 must start only from N03-01 per owner go-ahead." },
-        { "id": "N02-08", "title": "Content/Design governance و ساختار Skillها", "status": "DONE", "dependsOn": ["N02-01"], "acceptance": ["originalها byte-protected", "content conflicts و phase ownership ثبت شده", "هر Skill در skills/<name> مستقل و معتبر", "نام rootهای فعال lowercase/kebab-case", "۱۵۰ صفحه و ۱۰۰ skill به‌صورت deterministic index شده"], "evidence": ["content-library/integration/SOURCE_AUDIT.md", "content-library/integration/PHASE_INTEGRATION.md", "content-library/derived/book-pages-index.json", "content-library/derived/curriculum-index.json", "skills/**", "npm run verify:content-library PASS", "npm run verify:project-skills PASS"] },
-        { "id": "N02-09", "title": "UI/UX inspiration governance و Design System Skill", "status": "DONE", "dependsOn": ["N02-08"], "acceptance": ["Duolingo/AVA/UIUXProMax/Clay به adopt-adapt-reject قابل آزمون تبدیل شده‌اند", "Skill مستقل design-system با metadata و progressive reference معتبر است", "ماتریس readiness برای componentهای N03 و depth contract ثبت شده", "main docs و verifierها routing جدید را enforce می‌کنند"], "evidence": ["design/INSPIRATION_GUARDRAILS.md", "design/playbook/COMPONENT_READINESS.md", "skills/shomara-design-system/**", "npm run verify:design-governance PASS", "npm run verify:project-skills PASS"] },
-        { "id": "N02-10", "title": "بازممیزی عمیق originals و تثبیت authoring/CMS boundaries", "status": "DONE", "dependsOn": ["N02-08"], "acceptance": ["هر ۱۰ original دوباره با حفظ byte integrity بررسی شده", "شکاف سه مدل authoring/published/client و lifecycle صوت ثبت شده", "مسائل mastery/scope/privacy بدون حدس به فازهای مالک متصل شده", "content verifier evidence جدید را enforce می‌کند"], "evidence": ["content-library/integration/AUTHORING_CONTRACT_GAPS.md", "CONTENT-013..018", "scripts/verify-content-library.mjs"] },
-        { "id": "N02-11", "title": "قفل UI/UX همهٔ صفحه‌ها و بستهٔ انتقال چت", "status": "DONE", "dependsOn": ["N02-09", "N02-10"], "acceptance": ["۱۷ خانوادهٔ صفحه outcome/focal/CTA/depth/state مشخص دارند", "۲۰ work item Native با dependency و evidence قابل پیگیری‌اند", "Skillها و route registry به blueprint canonical متصل‌اند", "handoff مستقل بدون نیاز به تاریخچهٔ چت موجود است"], "evidence": ["design/playbook/PAGE_UIUX_BLUEPRINT.md", "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv", "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md", "npm run verify:design-governance PASS"] },
-        { "id": "N02-12", "title": "Build harness واحد و مسیر debug APK", "status": "DONE", "dependsOn": ["N02-06", "N02-11"], "acceptance": ["doctor/gate/assemble-debug یک preflight واحد دارند", "CI و local از npm run android:gate استفاده می‌کنند", "گزارش JSON و SHA-256 برای APK موفق تولید می‌شود", "release/signing پیش از N10 ممنوع و verifier شده", "resume harness مسیرها و gateهای فاز جاری را چاپ می‌کند"], "evidence": ["scripts/android-build.mjs", "scripts/verify-android-build-harness.mjs", "skills/shomara-android-build/SKILL.md", "npm run verify:android-build-harness PASS", "npm run android:doctor -- --allow-blocked reproduced BLOCKED_ENV"] }
+        {
+          "id": "N02-01",
+          "title": "ADR معماری Native و تصمیم applicationId/minSdk",
+          "status": "DONE",
+          "dependsOn": [
+            "N01-10"
+          ],
+          "acceptance": [
+            "HG-01 تصویب شده",
+            "نسخه‌های toolchain پین شده"
+          ],
+          "evidence": [
+            "docs/adr/ADR-0036-android-native-foundation.md",
+            "HG-01 APPROVED"
+          ]
+        },
+        {
+          "id": "N02-02",
+          "title": "Gradle wrapper و version catalog",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N02-01"
+          ],
+          "acceptance": [
+            "build تکرارپذیر",
+            "repositoryها محدود"
+          ],
+          "evidence": [
+            "Gradle 9.6 wrapper JAR and distribution SHA-256 pinned",
+            "AGP 9.4.0 and all libraries pinned; FAIL_ON_PROJECT_REPOS"
+          ],
+          "blocker": "Runtime dependency resolution could not be executed: Java/Gradle cannot reach the runner proxy."
+        },
+        {
+          "id": "N02-03",
+          "title": "ماژول app و coreهای پایه",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-02"
+          ],
+          "acceptance": [
+            "single activity",
+            "core common/model/testing"
+          ],
+          "evidence": [
+            "apps/android app + core:common + core:model + core:testing",
+            "docs/architecture/ANDROID_MODULE_GRAPH.md"
+          ]
+        },
+        {
+          "id": "N02-04",
+          "title": "DI، logging و error model",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N02-03"
+          ],
+          "acceptance": [
+            "بدون secret در log",
+            "error taxonomy تست شده"
+          ],
+          "evidence": [
+            "manual composition-root DI",
+            "SafeAppLogger sensitive-key denylist and unit-test sources",
+            "npm run verify:android-foundation PASS"
+          ],
+          "blocker": "Kotlin unit-test execution requires Gradle dependency resolution unavailable in this runner."
+        },
+        {
+          "id": "N02-05",
+          "title": "Navigation و placeholder route",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N02-03"
+          ],
+          "acceptance": [
+            "back/deep-link پایه",
+            "state restoration test"
+          ],
+          "evidence": [
+            "Compose NavHost and mathlearning://foundation deep link",
+            "NavigationSnapshot restoration test source",
+            "FoundationScreen semantics test source"
+          ],
+          "blocker": "Compile/device execution requires Android SDK 37 and reachable Gradle dependencies."
+        },
+        {
+          "id": "N02-06",
+          "title": "CI Native و cache امن",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-02"
+          ],
+          "acceptance": [
+            "test/lint/compile در CI",
+            "compile SDK صریح و preflight fail-closed",
+            "artifact signing ندارد"
+          ],
+          "evidence": [
+            ".github/workflows/android-native.yml",
+            "ubuntu-24.04 + explicit platforms;android-37 install",
+            "deterministic environment preflight",
+            "read-only permissions; wrapper validation; no signing/publish step"
+          ]
+        },
+        {
+          "id": "N02-07",
+          "title": "Foundation gate",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-04",
+            "N02-05",
+            "N02-06",
+            "N02-08",
+            "N02-09",
+            "N02-10",
+            "N02-11",
+            "N02-12"
+          ],
+          "acceptance": [
+            "compile/lint/unit PASS",
+            "ساختار module graph ثبت شده"
+          ],
+          "evidence": [
+            "npm run android:gate PASS (exit 0, 2026-10-31, local machine: JDK 17 Temurin + D:\\SDK with platforms;android-37)",
+            "first real Gradle run surfaced a genuine lint error (themes.xml windowLightNavigationBar requires API 27 with minSdk 24); fixed with values-v27/themes.xml qualifier, then gate PASS",
+            "npm run android:doctor READY (exit 0)",
+            "module graph documented (docs/architecture/ANDROID_MODULE_GRAPH.md)",
+            "npm run verify:android-foundation PASS",
+            "deterministic Android environment preflight",
+            "CI installs platforms;android-37 explicitly (stable channel)",
+            "canonical npm run android:gate harness",
+            "run evidence: /tmp/shomara-evidence-2026-10-31 + build-reports/android/gate.json (generated)"
+          ],
+          "closureNote": "2026-10-31: previous BLOCKED_ENV (2026-10-28 audit runner without SDK 37) resolved on the owner's machine; gate evidence verified by the same session that produced it; debug APK intentionally not built (task text does not authorise assemble-debug); N03 must start only from N03-01 per owner go-ahead."
+        },
+        {
+          "id": "N02-08",
+          "title": "Content/Design governance و ساختار Skillها",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-01"
+          ],
+          "acceptance": [
+            "originalها byte-protected",
+            "content conflicts و phase ownership ثبت شده",
+            "هر Skill در skills/<name> مستقل و معتبر",
+            "نام rootهای فعال lowercase/kebab-case",
+            "۱۵۰ صفحه و ۱۰۰ skill به‌صورت deterministic index شده"
+          ],
+          "evidence": [
+            "content-library/integration/SOURCE_AUDIT.md",
+            "content-library/integration/PHASE_INTEGRATION.md",
+            "content-library/derived/book-pages-index.json",
+            "content-library/derived/curriculum-index.json",
+            "skills/**",
+            "npm run verify:content-library PASS",
+            "npm run verify:project-skills PASS"
+          ]
+        },
+        {
+          "id": "N02-09",
+          "title": "UI/UX inspiration governance و Design System Skill",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-08"
+          ],
+          "acceptance": [
+            "Duolingo/AVA/UIUXProMax/Clay به adopt-adapt-reject قابل آزمون تبدیل شده‌اند",
+            "Skill مستقل design-system با metadata و progressive reference معتبر است",
+            "ماتریس readiness برای componentهای N03 و depth contract ثبت شده",
+            "main docs و verifierها routing جدید را enforce می‌کنند"
+          ],
+          "evidence": [
+            "design/INSPIRATION_GUARDRAILS.md",
+            "design/playbook/COMPONENT_READINESS.md",
+            "skills/shomara-design-system/**",
+            "npm run verify:design-governance PASS",
+            "npm run verify:project-skills PASS"
+          ]
+        },
+        {
+          "id": "N02-10",
+          "title": "بازممیزی عمیق originals و تثبیت authoring/CMS boundaries",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-08"
+          ],
+          "acceptance": [
+            "هر ۱۰ original دوباره با حفظ byte integrity بررسی شده",
+            "شکاف سه مدل authoring/published/client و lifecycle صوت ثبت شده",
+            "مسائل mastery/scope/privacy بدون حدس به فازهای مالک متصل شده",
+            "content verifier evidence جدید را enforce می‌کند"
+          ],
+          "evidence": [
+            "content-library/integration/AUTHORING_CONTRACT_GAPS.md",
+            "CONTENT-013..018",
+            "scripts/verify-content-library.mjs"
+          ]
+        },
+        {
+          "id": "N02-11",
+          "title": "قفل UI/UX همهٔ صفحه‌ها و بستهٔ انتقال چت",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-09",
+            "N02-10"
+          ],
+          "acceptance": [
+            "۱۷ خانوادهٔ صفحه outcome/focal/CTA/depth/state مشخص دارند",
+            "۲۰ work item Native با dependency و evidence قابل پیگیری‌اند",
+            "Skillها و route registry به blueprint canonical متصل‌اند",
+            "handoff مستقل بدون نیاز به تاریخچهٔ چت موجود است"
+          ],
+          "evidence": [
+            "design/playbook/PAGE_UIUX_BLUEPRINT.md",
+            "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv",
+            "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md",
+            "npm run verify:design-governance PASS"
+          ]
+        },
+        {
+          "id": "N02-12",
+          "title": "Build harness واحد و مسیر debug APK",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-06",
+            "N02-11"
+          ],
+          "acceptance": [
+            "doctor/gate/assemble-debug یک preflight واحد دارند",
+            "CI و local از npm run android:gate استفاده می‌کنند",
+            "گزارش JSON و SHA-256 برای APK موفق تولید می‌شود",
+            "release/signing پیش از N10 ممنوع و verifier شده",
+            "resume harness مسیرها و gateهای فاز جاری را چاپ می‌کند"
+          ],
+          "evidence": [
+            "scripts/android-build.mjs",
+            "scripts/verify-android-build-harness.mjs",
+            "skills/shomara-android-build/SKILL.md",
+            "npm run verify:android-build-harness PASS",
+            "npm run android:doctor -- --allow-blocked reproduced BLOCKED_ENV"
+          ]
+        }
       ]
     },
     {
@@ -130,17 +732,173 @@
       "status": "DONE",
       "branch": "native/n03-design-system",
       "goal": "یک Design System Compose قابل تست و مشترک با token source واحد.",
-      "allowedPaths": ["apps/android/core/designsystem/**", "apps/android/settings.gradle.kts", "scripts/verify-android-foundation.mjs", "scripts/verify-design-system-native.mjs", "packages/design-system/**", "tools/token-codegen/**", "docs/design/**", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew :core:designsystem:test", "./gradlew :core:designsystem:lint", "./gradlew :core:designsystem:verifyPaparazziDebug", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/core/designsystem/**",
+        "apps/android/settings.gradle.kts",
+        "scripts/verify-android-foundation.mjs",
+        "scripts/verify-design-system-native.mjs",
+        "packages/design-system/**",
+        "tools/token-codegen/**",
+        "docs/design/**",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "./gradlew :core:designsystem:test",
+        "./gradlew :core:designsystem:lint",
+        "./gradlew :core:designsystem:verifyPaparazziDebug",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N03-01", "title": "Token schema و codegen TypeScript/Kotlin", "status": "DONE", "dependsOn": ["N02-07", "N01-07"], "acceptance": ["یک JSON canonical", "generated files drift gate"], "evidence": ["tools/token-codegen/generate.mjs: single-source codegen from packages/design-system/src/tokens.json (v2 block only, ADR-0037 L6) with schema guard (schemaVersion, #RRGGBB, ascending space, 48dp touch floor, MASTER clay levels)", "generated: packages/design-system/src/tokens.generated.ts + apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraTokens.kt (Compose-ready raw values; Gradle module wiring is N03-02)", "drift gate: node tools/token-codegen/generate.mjs --check = TOKEN_DRIFT: PASS (exit 0) + vitest drift test packages/design-system/src/codegen.drift.test.ts (6 tests)"] },
-        { "id": "N03-02", "title": "ShomaraTheme و typography RTL", "status": "DONE", "dependsOn": ["N03-01"], "acceptance": ["Vazirmatn weights", "semantic color/type/shape"], "evidence": [":core:designsystem wired into apps/android/settings.gradle.kts with build.gradle.kts (AGP 9.4.0 library + compose compiler, compileSdk 37, minSdk 24, JDK 17) and included in verify-android-foundation module list (5 modules)", "ShomaraTheme.kt: material3 light color scheme mapped slot-by-slot from ShomaraTokens, ShomaraTypography (5 v2 type styles with token weights), ShomaraShapes (5 radius tiers), ShomaraClay specs/colors for the four MASTER tiers, direction semantics (RTL interface default vs LTR math CompositionLocals)", "zero magic values: every theme value resolves through generated ShomaraTokens; no Vazirmatn binaries exist in repo and downloads are forbidden (ADR-0037 L10) so family resolves to FontFamily.Default pending owner-provided TTF assets (recorded pending input)", "gradle: ./gradlew :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL exit 0, 7/7 unit tests; npm run android:gate = PASS; full suite green (static 87/87, unit 68 files/520 tests)"] },
-        { "id": "N03-03", "title": "Button/Input/OTP primitives", "status": "DONE", "dependsOn": ["N03-02"], "acceptance": ["state matrix", "48dp semantics"], "evidence": ["ShomaraButton.kt: default/pressed/focused/disabled/loading matrix, Primary/Secondary/Ghost variants, ShomaraTapGuard duplicate-tap latch, fixed ComponentButtonH height (loading without layout jump), pressed clay depth reduction (Soft->Hint, Ghost stays Flat), 48dp floor via ComponentTouchMin, TalkBack role/stateDescription", "ShomaraTextField.kt: empty/focused/filled/invalid/disabled/loading with deterministic priority mapping, persistent label, actionable Persian error text (not color-only), ClaySoft/Featured border tokens, numeric/phone LTR text direction vs Persian RTL", "ShomaraOtp.kt: ShomaraOtpState LTR index progression with capped fill (no silent overwrite), backspace semantics, per-digit Persian TalkBack labels, LTR-forced row inside RTL screens, ComponentTrayBead cell size", "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (21/21 JVM tests incl. 14 primitives tests)"] },
-        { "id": "N03-04", "title": "Card/Choice/Feedback/Progress primitives", "status": "DONE", "dependsOn": ["N03-02"], "acceptance": ["wrong answer warm-neutral", "reduced motion"], "evidence": ["ShomaraCard.kt: 7-state matrix with pressed clay depth reduction, disabled flat, warm token pairs for correct (primarySoft/primary) and retry (amberSoft/amberEdge), non-color carriers (Persian stateLabel + mark glyph) for every status state, single-select idempotent ShomaraChoiceLogic, maxFeaturedSurfaces()=1", "ShomaraFeedback.kt: correct/retry/recovery/error with fixed banner height, canonical warm-neutral defaults mirroring approved Persian lines (no punitive framing; test-enforced), token tone pairs", "ShomaraProgressBar: determinate/indeterminate/paused/offline, reducedMotion stops only the indeterminate animation, single deterministic Persian announcement with toFa digits, renders caller/server state verbatim (no mastery guessing)", "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (32/32 JVM tests incl. 11 new)"] },
-        { "id": "N03-05", "title": "Navigation/Dialog/Audio controls", "status": "DONE", "dependsOn": ["N03-02"], "acceptance": ["TalkBack roles", "loading/error states"], "evidence": ["ShomaraNavigation.kt: child tab bar pinned to exactly the three canonical tabs (مسیر/تمرین/من; guardian outside; test-enforced), locked tabs announce lock reason via TalkBack stateDescription, duplicate navigation prevented (re-tap/locked tap keep selection), real Back semantics (shown only when a real route exists), badge-free, Role.Tab/Role.Button", "ShomaraDialog.kt: open/busy/error/dismiss-blocked with fail-closed dismiss policy (busy or non-dismissible blocks back/system dismiss too), polite liveRegion error and block-reason announcements, confirm disabled while busy, sheet honors identical policy (ExperimentalMaterial3Api opt-in)", "ShomaraAudio.kt: unavailable/loading/playing/paused/failed/cached with state machine actions (play/pause/retry/none), mandatory visible Persian text fallback for unavailable/failed, contract constant isContentLocked=false for every state (lesson never gated behind audio)", "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (42/42 JVM tests incl. 10 new)"] },
-        { "id": "N03-06", "title": "Screenshot catalog در 360/390/412", "status": "DONE", "dependsOn": ["N03-03", "N03-04", "N03-05", "N03-08"], "acceptance": ["light theme", "font scale", "RTL"], "evidence": ["ShomaraDesignSystemCatalog.kt: deterministic light-theme fixtures for all nine component families with LTR math inside RTL", "ShomaraCatalogMatrixTest: 360/390/412dp x 1.0f/2.0f font-scale matrix coverage verified on JVM (4 tests; module total 56/56)", "honest split: rendered screenshots at real widths are a Paparazzi/device gate and stay NATIVE_PENDING (plugin not available offline; dependency decision is the owner's) - recorded in docs/design/NATIVE_COMPONENT_READINESS_N03.md"] },
-        { "id": "N03-07", "title": "مالک Design System gate", "status": "DONE", "dependsOn": ["N03-06"], "acceptance": ["HG-02 تصویب", "هیچ raw token در feature sample"], "evidence": ["scripts/verify-design-system-native.mjs: zero raw tokens (hex/dp/sp/FontWeight) outside generated ShomaraTokens.kt across :core:designsystem and :app + banned child-safety terms = PASS (18 Kotlin files); placeholder FoundationScreen tokenized as the first consumer", "all machine gates green: module test/lint 56/56, android:gate PASS, full static suite 88/88 incl. this new verifier", "HG-02 APPROVED by owner instruction 2026-10-31; Paparazzi/device screenshot evidence remains tracked NATIVE_PENDING in docs/design/NATIVE_COMPONENT_READINESS_N03.md"] },
-        { "id": "N03-08", "title": "Primitiveهای آموزشی content-aware", "status": "DONE", "dependsOn": ["N03-02"], "acceptance": ["48dp عمومی و 72dp manipulatives", "audio replay/missing state", "math direction مستقل از RTL", "timing/toleranceها configurable"], "evidence": ["canonical band tokens: v2.component.manipulativeMin=72/manipulativeMax=80 added to tokens.json and regenerated through the N03-01 codegen (drift gate PASS); AGENTS §6 band is now token data, no magic values", "ShomaraManipulative.kt: ShomaraNumberTile (band-enforced via requireBand), ShomaraCountersGrid (48dp beads with Persian TalkBack labels), ShomaraEquationSlot (CompositionLocal-forced LTR math independent of interface direction), ShomaraManipulativeSession reducer with full tap-to-select/tap-to-place alternative AND equivalent drag flow (locked tiles ignore both), warm retry states, non-color Persian labels", "ShomaraManipulativeTolerance: selectionTimeoutMs/retryClearDelayMs/dragThresholdDp with token-derived defaults and caller overrides", "audio replay/missing state covered by N03-05 ShomaraAudioControl (isContentLocked=false contract)", "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (52/52 JVM tests incl. 10 new)"] }
+        {
+          "id": "N03-01",
+          "title": "Token schema و codegen TypeScript/Kotlin",
+          "status": "DONE",
+          "dependsOn": [
+            "N02-07",
+            "N01-07"
+          ],
+          "acceptance": [
+            "یک JSON canonical",
+            "generated files drift gate"
+          ],
+          "evidence": [
+            "tools/token-codegen/generate.mjs: single-source codegen from packages/design-system/src/tokens.json (v2 block only, ADR-0037 L6) with schema guard (schemaVersion, #RRGGBB, ascending space, 48dp touch floor, MASTER clay levels)",
+            "generated: packages/design-system/src/tokens.generated.ts + apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraTokens.kt (Compose-ready raw values; Gradle module wiring is N03-02)",
+            "drift gate: node tools/token-codegen/generate.mjs --check = TOKEN_DRIFT: PASS (exit 0) + vitest drift test packages/design-system/src/codegen.drift.test.ts (6 tests)"
+          ]
+        },
+        {
+          "id": "N03-02",
+          "title": "ShomaraTheme و typography RTL",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-01"
+          ],
+          "acceptance": [
+            "Vazirmatn weights",
+            "semantic color/type/shape"
+          ],
+          "evidence": [
+            ":core:designsystem wired into apps/android/settings.gradle.kts with build.gradle.kts (AGP 9.4.0 library + compose compiler, compileSdk 37, minSdk 24, JDK 17) and included in verify-android-foundation module list (5 modules)",
+            "ShomaraTheme.kt: material3 light color scheme mapped slot-by-slot from ShomaraTokens, ShomaraTypography (5 v2 type styles with token weights), ShomaraShapes (5 radius tiers), ShomaraClay specs/colors for the four MASTER tiers, direction semantics (RTL interface default vs LTR math CompositionLocals)",
+            "zero magic values: every theme value resolves through generated ShomaraTokens; no Vazirmatn binaries exist in repo and downloads are forbidden (ADR-0037 L10) so family resolves to FontFamily.Default pending owner-provided TTF assets (recorded pending input)",
+            "gradle: ./gradlew :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL exit 0, 7/7 unit tests; npm run android:gate = PASS; full suite green (static 87/87, unit 68 files/520 tests)"
+          ]
+        },
+        {
+          "id": "N03-03",
+          "title": "Button/Input/OTP primitives",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-02"
+          ],
+          "acceptance": [
+            "state matrix",
+            "48dp semantics"
+          ],
+          "evidence": [
+            "ShomaraButton.kt: default/pressed/focused/disabled/loading matrix, Primary/Secondary/Ghost variants, ShomaraTapGuard duplicate-tap latch, fixed ComponentButtonH height (loading without layout jump), pressed clay depth reduction (Soft->Hint, Ghost stays Flat), 48dp floor via ComponentTouchMin, TalkBack role/stateDescription",
+            "ShomaraTextField.kt: empty/focused/filled/invalid/disabled/loading with deterministic priority mapping, persistent label, actionable Persian error text (not color-only), ClaySoft/Featured border tokens, numeric/phone LTR text direction vs Persian RTL",
+            "ShomaraOtp.kt: ShomaraOtpState LTR index progression with capped fill (no silent overwrite), backspace semantics, per-digit Persian TalkBack labels, LTR-forced row inside RTL screens, ComponentTrayBead cell size",
+            "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (21/21 JVM tests incl. 14 primitives tests)"
+          ]
+        },
+        {
+          "id": "N03-04",
+          "title": "Card/Choice/Feedback/Progress primitives",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-02"
+          ],
+          "acceptance": [
+            "wrong answer warm-neutral",
+            "reduced motion"
+          ],
+          "evidence": [
+            "ShomaraCard.kt: 7-state matrix with pressed clay depth reduction, disabled flat, warm token pairs for correct (primarySoft/primary) and retry (amberSoft/amberEdge), non-color carriers (Persian stateLabel + mark glyph) for every status state, single-select idempotent ShomaraChoiceLogic, maxFeaturedSurfaces()=1",
+            "ShomaraFeedback.kt: correct/retry/recovery/error with fixed banner height, canonical warm-neutral defaults mirroring approved Persian lines (no punitive framing; test-enforced), token tone pairs",
+            "ShomaraProgressBar: determinate/indeterminate/paused/offline, reducedMotion stops only the indeterminate animation, single deterministic Persian announcement with toFa digits, renders caller/server state verbatim (no mastery guessing)",
+            "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (32/32 JVM tests incl. 11 new)"
+          ]
+        },
+        {
+          "id": "N03-05",
+          "title": "Navigation/Dialog/Audio controls",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-02"
+          ],
+          "acceptance": [
+            "TalkBack roles",
+            "loading/error states"
+          ],
+          "evidence": [
+            "ShomaraNavigation.kt: child tab bar pinned to exactly the three canonical tabs (مسیر/تمرین/من; guardian outside; test-enforced), locked tabs announce lock reason via TalkBack stateDescription, duplicate navigation prevented (re-tap/locked tap keep selection), real Back semantics (shown only when a real route exists), badge-free, Role.Tab/Role.Button",
+            "ShomaraDialog.kt: open/busy/error/dismiss-blocked with fail-closed dismiss policy (busy or non-dismissible blocks back/system dismiss too), polite liveRegion error and block-reason announcements, confirm disabled while busy, sheet honors identical policy (ExperimentalMaterial3Api opt-in)",
+            "ShomaraAudio.kt: unavailable/loading/playing/paused/failed/cached with state machine actions (play/pause/retry/none), mandatory visible Persian text fallback for unavailable/failed, contract constant isContentLocked=false for every state (lesson never gated behind audio)",
+            "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (42/42 JVM tests incl. 10 new)"
+          ]
+        },
+        {
+          "id": "N03-06",
+          "title": "Screenshot catalog در 360/390/412",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-03",
+            "N03-04",
+            "N03-05",
+            "N03-08"
+          ],
+          "acceptance": [
+            "light theme",
+            "font scale",
+            "RTL"
+          ],
+          "evidence": [
+            "ShomaraDesignSystemCatalog.kt: deterministic light-theme fixtures for all nine component families with LTR math inside RTL",
+            "ShomaraCatalogMatrixTest: 360/390/412dp x 1.0f/2.0f font-scale matrix coverage verified on JVM (4 tests; module total 56/56)",
+            "honest split: rendered screenshots at real widths are a Paparazzi/device gate and stay NATIVE_PENDING (plugin not available offline; dependency decision is the owner's) - recorded in docs/design/NATIVE_COMPONENT_READINESS_N03.md"
+          ]
+        },
+        {
+          "id": "N03-07",
+          "title": "مالک Design System gate",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-06"
+          ],
+          "acceptance": [
+            "HG-02 تصویب",
+            "هیچ raw token در feature sample"
+          ],
+          "evidence": [
+            "scripts/verify-design-system-native.mjs: zero raw tokens (hex/dp/sp/FontWeight) outside generated ShomaraTokens.kt across :core:designsystem and :app + banned child-safety terms = PASS (18 Kotlin files); placeholder FoundationScreen tokenized as the first consumer",
+            "all machine gates green: module test/lint 56/56, android:gate PASS, full static suite 88/88 incl. this new verifier",
+            "HG-02 APPROVED by owner instruction 2026-10-31; Paparazzi/device screenshot evidence remains tracked NATIVE_PENDING in docs/design/NATIVE_COMPONENT_READINESS_N03.md"
+          ]
+        },
+        {
+          "id": "N03-08",
+          "title": "Primitiveهای آموزشی content-aware",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-02"
+          ],
+          "acceptance": [
+            "48dp عمومی و 72dp manipulatives",
+            "audio replay/missing state",
+            "math direction مستقل از RTL",
+            "timing/toleranceها configurable"
+          ],
+          "evidence": [
+            "canonical band tokens: v2.component.manipulativeMin=72/manipulativeMax=80 added to tokens.json and regenerated through the N03-01 codegen (drift gate PASS); AGENTS §6 band is now token data, no magic values",
+            "ShomaraManipulative.kt: ShomaraNumberTile (band-enforced via requireBand), ShomaraCountersGrid (48dp beads with Persian TalkBack labels), ShomaraEquationSlot (CompositionLocal-forced LTR math independent of interface direction), ShomaraManipulativeSession reducer with full tap-to-select/tap-to-place alternative AND equivalent drag flow (locked tiles ignore both), warm retry states, non-color Persian labels",
+            "ShomaraManipulativeTolerance: selectionTimeoutMs/retryClearDelayMs/dragThresholdDp with token-derived defaults and caller overrides",
+            "audio replay/missing state covered by N03-05 ShomaraAudioControl (isContentLocked=false contract)",
+            "gradle :core:designsystem:test :core:designsystem:lint = BUILD SUCCESSFUL (52/52 JVM tests incl. 10 new)"
+          ]
+        }
       ]
     },
     {
@@ -149,16 +907,162 @@
       "status": "DONE",
       "branch": "native/n04-auth-onboarding",
       "goal": "مهاجرت launch، OTP، پروفایل و تعیین پایه با stateهای کامل.",
-      "allowedPaths": ["apps/android/feature/onboarding/**", "apps/android/core/network/**", "apps/android/core/datastore/**", "apps/android/app/**", "apps/android/settings.gradle.kts", "apps/android/gradle/libs.versions.toml", "apps/android/core/model/**", "docs/architecture/ANDROID_MODULE_GRAPH.md", "scripts/verify-android-foundation.mjs", "scripts/verify-design-system-native.mjs", "docs/product/**", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew :feature:onboarding:test", "./gradlew connectedCheck", "./gradlew lint", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/feature/onboarding/**",
+        "apps/android/core/network/**",
+        "apps/android/core/datastore/**",
+        "apps/android/app/**",
+        "apps/android/settings.gradle.kts",
+        "apps/android/gradle/libs.versions.toml",
+        "apps/android/core/model/**",
+        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "scripts/verify-android-foundation.mjs",
+        "scripts/verify-design-system-native.mjs",
+        "docs/product/**",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "./gradlew :feature:onboarding:test",
+        "./gradlew connectedCheck",
+        "./gradlew lint",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N04-01", "title": "قرارداد state و route onboarding", "status": "DONE", "dependsOn": ["N03-07"], "acceptance": ["new/restoring/recover/error", "بدون guest production"], "evidence": [":core:network, :core:datastore, :feature:onboarding wired as real Gradle modules (AGP 9.4.0, compose for feature, JDK 17, compileSdk 37/minSdk 24); catalog gains datastore-preferences 1.1.1, okhttp/mockwebserver 4.12.0, coroutines 1.8.1", "OnboardingContract.kt: ShomaraAuthMode (New/Restoring/Recover/Error), OnboardingStep + OnboardingRoutes canonical order, AuthSessionState sealed machine, ShomaraOnboardingFlow reducer (no backwards steps, restoring re-enters via welcome, restore entry fails closed on Authenticated), GuestEntryAllowed=false contract constant", "verify-android-foundation now requires 8 modules incl. the three new ones + N04 app->feature:onboarding policy (still forbids :data: deps); design guard now scans feature/onboarding too", "gradle :feature:onboarding:test :core:network:test :core:datastore:test :feature:onboarding:lint = BUILD SUCCESSFUL (7/7 contract tests)", "close-out addendum: ShomaraLaunchState (UI-001) and ShomaraFlowUiState added to :core:model/:feature:onboarding with fail-closed launch mapping; module graph documented in docs/architecture/ANDROID_MODULE_GRAPH.md"] },
-        { "id": "N04-02", "title": "Welcome و phone input", "status": "DONE", "dependsOn": ["N04-01"], "acceptance": ["Persian validation", "keyboard/back behavior"], "evidence": ["ShomaraPhoneLogic: Persian/Arabic digit normalization, 0098/+98/98/0 prefix handling, separators, canonical 09XXXXXXXXX (11 digits), actionable Persian error only when invalid", "ShomaraBackLogic: deterministic back target per step (welcome has no route behind; complete exits)", "ShomaraWelcomeScreen/ShomaraPhoneScreen composables built from design-system primitives only (numericLtr field for phone, CTA gated on validity)", "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (13/13 tests incl. 6 new)"] },
-        { "id": "N04-03", "title": "OTP request/verify", "status": "DONE", "dependsOn": ["N04-02"], "acceptance": ["rate-limit/offline/timeout", "secure token storage"], "evidence": ["ShomaraOtpApi: real OkHttp client with runtime-injected endpoints (no URL committed, L10), flat-JSON codec, every negative path mapped (429+Retry-After, 400, 5xx, timeout, connection-refused offline, unconfigured endpoints fail closed with zero network calls)", "ShomaraOtpThrottle: local resend cooldown with server Retry-After respect, bounded 429 escalation, reset", "PreferencesTokenStore: real DataStore-backed store (JVM file-backed test), blank tokens rejected, clear removes the key entirely, toString redacts", "ShomaraAuthSession: token persisted ONLY on verified response; restore fail-closed (missing/rejected clears immediately; offline keeps token for later retry); signOut always clears", "gradle three-module test+lint = BUILD SUCCESSFUL (network 11, datastore 6, feature 22 = 39 tests, 0 failures)", "close-out addendum: OTP paste support (fillFromCode LTR with cap) and Expired field state with warm Persian label"] },
-        { "id": "N04-04", "title": "Profile و grade placement", "status": "DONE", "dependsOn": ["N04-03"], "acceptance": ["save retry", "incomplete state"], "evidence": ["ShomaraProfileDraft: name validation (length/digits/trim), canonical G1-only grade list enforced at construction, incomplete drafts can never submit (canSave/canEnterPlacement false)", "ShomaraProfileSaveState: warm bounded retry reducer (state kept verbatim, escalating warm Persian messages, deterministic TalkBack announcement), success freezes the form", "ShomaraPlacementState: server-authoritative decision rendering, user skip mutually exclusive with server decision by construction, pending banner while the server decides", "ShomaraProfileScreen/ShomaraPlacementScreen built from design-system primitives (feedback banners, gated save button with loading)", "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (28/28 tests incl. 6 new)", "close-out addendum: avatar selection from canonical catalog (sun/leaf/cloud/moon), G1-G6 catalog with warmly-locked future grades, real DataStore draft persistence for incomplete-profile resume across process death"] },
-        { "id": "N04-05", "title": "Session restore و auth expiry", "status": "DONE", "dependsOn": ["N04-03"], "acceptance": ["fail closed", "clear local secret"], "evidence": ["ShomaraSessionExpiry: TTL mirrors the fail-closed restore window; missing timestamp counts as expired; boundary inclusive", "AuthSession.ensureUnexpired: an expired session is torn down (signOut) before anything child-facing uses it - test-enforced teardown with store clear", "restore fail-closed already covered in N04-03 evidence (missing/rejected clears immediately; offline keeps token; authenticated state can never enter the restore path)", "ShomaraAuthGate: pure surface decision (ChildShell / OnboardingRestoring / OnboardingNew) covering all four combinations, expired-authenticated re-enters through welcome", "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (32/32 tests incl. 4 new)"] },
-        { "id": "N04-06", "title": "Onboarding screenshot/a11y tests", "status": "DONE", "dependsOn": ["N04-04", "N04-05"], "acceptance": ["360/390/412", "TalkBack traversal"], "evidence": ["ShomaraOnboardingA11y: traversal contract per step in declaration order (leading heading, trailing action, warm labels) - JVM-verified; OTP digits announced in strict LTR Persian order (رقم ۱..۴)", "fixtures render at 360/390/412dp via the design-system catalog pattern with 1.0f/2.0f font scales (light theme, RTL + LTR math); rendered screenshots remain NATIVE_PENDING (Paparazzi/device) per the N03 readiness protocol", "gradle :feature:onboarding:test = BUILD SUCCESSFUL (40/40)", "close-out addendum: journey readiness recorded in docs/product/ONBOARDING_JOURNEY_READINESS_N04.md"] },
-        { "id": "N04-07", "title": "Onboarding journey gate", "status": "DONE", "dependsOn": ["N04-06"], "acceptance": ["real navigation", "network negative paths"], "evidence": ["real navigation: NavHost starts at ONBOARDING with deep link; ShomaraOnboardingHost mirrors each logical step to a real navigation route; authenticated completion navigates to FOUNDATION (popUpTo inclusive); AppContainer gains context-scoped DataStore + runtime-injected endpoints (null until backend, fail-closed)", "journey tests: happy path welcome->phone->otp(400 then 200)->profile->placement with real HTTP, incomplete-profile gate blocks save, throttled request keeps flow on phone with warm banner and zero network calls, offline verify keeps prior state and stores nothing, back clears OTP and honors the no-route-behind welcome", "network negative paths tested against MockWebServer (429/400/5xx/timeout/offline) in :core:network and through the journey in :feature:onboarding", "connectedCheck (emulator/device) not executed: no AVD on this machine - recorded honestly; instrumented/device evidence is the next phase entry with the emulator decision", "gradle :app:testDebugUnitTest :app:lintDebug :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL"] }
+        {
+          "id": "N04-01",
+          "title": "قرارداد state و route onboarding",
+          "status": "DONE",
+          "dependsOn": [
+            "N03-07"
+          ],
+          "acceptance": [
+            "new/restoring/recover/error",
+            "بدون guest production"
+          ],
+          "evidence": [
+            ":core:network, :core:datastore, :feature:onboarding wired as real Gradle modules (AGP 9.4.0, compose for feature, JDK 17, compileSdk 37/minSdk 24); catalog gains datastore-preferences 1.1.1, okhttp/mockwebserver 4.12.0, coroutines 1.8.1",
+            "OnboardingContract.kt: ShomaraAuthMode (New/Restoring/Recover/Error), OnboardingStep + OnboardingRoutes canonical order, AuthSessionState sealed machine, ShomaraOnboardingFlow reducer (no backwards steps, restoring re-enters via welcome, restore entry fails closed on Authenticated), GuestEntryAllowed=false contract constant",
+            "verify-android-foundation now requires 8 modules incl. the three new ones + N04 app->feature:onboarding policy (still forbids :data: deps); design guard now scans feature/onboarding too",
+            "gradle :feature:onboarding:test :core:network:test :core:datastore:test :feature:onboarding:lint = BUILD SUCCESSFUL (7/7 contract tests)",
+            "close-out addendum: ShomaraLaunchState (UI-001) and ShomaraFlowUiState added to :core:model/:feature:onboarding with fail-closed launch mapping; module graph documented in docs/architecture/ANDROID_MODULE_GRAPH.md"
+          ]
+        },
+        {
+          "id": "N04-02",
+          "title": "Welcome و phone input",
+          "status": "DONE",
+          "dependsOn": [
+            "N04-01"
+          ],
+          "acceptance": [
+            "Persian validation",
+            "keyboard/back behavior"
+          ],
+          "evidence": [
+            "ShomaraPhoneLogic: Persian/Arabic digit normalization, 0098/+98/98/0 prefix handling, separators, canonical 09XXXXXXXXX (11 digits), actionable Persian error only when invalid",
+            "ShomaraBackLogic: deterministic back target per step (welcome has no route behind; complete exits)",
+            "ShomaraWelcomeScreen/ShomaraPhoneScreen composables built from design-system primitives only (numericLtr field for phone, CTA gated on validity)",
+            "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (13/13 tests incl. 6 new)"
+          ]
+        },
+        {
+          "id": "N04-03",
+          "title": "OTP request/verify",
+          "status": "DONE",
+          "dependsOn": [
+            "N04-02"
+          ],
+          "acceptance": [
+            "rate-limit/offline/timeout",
+            "secure token storage"
+          ],
+          "evidence": [
+            "ShomaraOtpApi: real OkHttp client with runtime-injected endpoints (no URL committed, L10), flat-JSON codec, every negative path mapped (429+Retry-After, 400, 5xx, timeout, connection-refused offline, unconfigured endpoints fail closed with zero network calls)",
+            "ShomaraOtpThrottle: local resend cooldown with server Retry-After respect, bounded 429 escalation, reset",
+            "PreferencesTokenStore: real DataStore-backed store (JVM file-backed test), blank tokens rejected, clear removes the key entirely, toString redacts",
+            "ShomaraAuthSession: token persisted ONLY on verified response; restore fail-closed (missing/rejected clears immediately; offline keeps token for later retry); signOut always clears",
+            "gradle three-module test+lint = BUILD SUCCESSFUL (network 11, datastore 6, feature 22 = 39 tests, 0 failures)",
+            "close-out addendum: OTP paste support (fillFromCode LTR with cap) and Expired field state with warm Persian label"
+          ]
+        },
+        {
+          "id": "N04-04",
+          "title": "Profile و grade placement",
+          "status": "DONE",
+          "dependsOn": [
+            "N04-03"
+          ],
+          "acceptance": [
+            "save retry",
+            "incomplete state"
+          ],
+          "evidence": [
+            "ShomaraProfileDraft: name validation (length/digits/trim), canonical G1-only grade list enforced at construction, incomplete drafts can never submit (canSave/canEnterPlacement false)",
+            "ShomaraProfileSaveState: warm bounded retry reducer (state kept verbatim, escalating warm Persian messages, deterministic TalkBack announcement), success freezes the form",
+            "ShomaraPlacementState: server-authoritative decision rendering, user skip mutually exclusive with server decision by construction, pending banner while the server decides",
+            "ShomaraProfileScreen/ShomaraPlacementScreen built from design-system primitives (feedback banners, gated save button with loading)",
+            "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (28/28 tests incl. 6 new)",
+            "close-out addendum: avatar selection from canonical catalog (sun/leaf/cloud/moon), G1-G6 catalog with warmly-locked future grades, real DataStore draft persistence for incomplete-profile resume across process death"
+          ]
+        },
+        {
+          "id": "N04-05",
+          "title": "Session restore و auth expiry",
+          "status": "DONE",
+          "dependsOn": [
+            "N04-03"
+          ],
+          "acceptance": [
+            "fail closed",
+            "clear local secret"
+          ],
+          "evidence": [
+            "ShomaraSessionExpiry: TTL mirrors the fail-closed restore window; missing timestamp counts as expired; boundary inclusive",
+            "AuthSession.ensureUnexpired: an expired session is torn down (signOut) before anything child-facing uses it - test-enforced teardown with store clear",
+            "restore fail-closed already covered in N04-03 evidence (missing/rejected clears immediately; offline keeps token; authenticated state can never enter the restore path)",
+            "ShomaraAuthGate: pure surface decision (ChildShell / OnboardingRestoring / OnboardingNew) covering all four combinations, expired-authenticated re-enters through welcome",
+            "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (32/32 tests incl. 4 new)"
+          ]
+        },
+        {
+          "id": "N04-06",
+          "title": "Onboarding screenshot/a11y tests",
+          "status": "DONE",
+          "dependsOn": [
+            "N04-04",
+            "N04-05"
+          ],
+          "acceptance": [
+            "360/390/412",
+            "TalkBack traversal"
+          ],
+          "evidence": [
+            "ShomaraOnboardingA11y: traversal contract per step in declaration order (leading heading, trailing action, warm labels) - JVM-verified; OTP digits announced in strict LTR Persian order (رقم ۱..۴)",
+            "fixtures render at 360/390/412dp via the design-system catalog pattern with 1.0f/2.0f font scales (light theme, RTL + LTR math); rendered screenshots remain NATIVE_PENDING (Paparazzi/device) per the N03 readiness protocol",
+            "gradle :feature:onboarding:test = BUILD SUCCESSFUL (40/40)",
+            "close-out addendum: journey readiness recorded in docs/product/ONBOARDING_JOURNEY_READINESS_N04.md"
+          ]
+        },
+        {
+          "id": "N04-07",
+          "title": "Onboarding journey gate",
+          "status": "DONE",
+          "dependsOn": [
+            "N04-06"
+          ],
+          "acceptance": [
+            "real navigation",
+            "network negative paths"
+          ],
+          "evidence": [
+            "real navigation: NavHost starts at ONBOARDING with deep link; ShomaraOnboardingHost mirrors each logical step to a real navigation route; authenticated completion navigates to FOUNDATION (popUpTo inclusive); AppContainer gains context-scoped DataStore + runtime-injected endpoints (null until backend, fail-closed)",
+            "journey tests: happy path welcome->phone->otp(400 then 200)->profile->placement with real HTTP, incomplete-profile gate blocks save, throttled request keeps flow on phone with warm banner and zero network calls, offline verify keeps prior state and stores nothing, back clears OTP and honors the no-route-behind welcome",
+            "network negative paths tested against MockWebServer (429/400/5xx/timeout/offline) in :core:network and through the journey in :feature:onboarding",
+            "connectedCheck (emulator/device) not executed: no AVD on this machine - recorded honestly; instrumented/device evidence is the next phase entry with the emulator decision",
+            "gradle :app:testDebugUnitTest :app:lintDebug :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL"
+          ]
+        }
       ]
     },
     {
@@ -167,18 +1071,195 @@
       "status": "DONE",
       "branch": "native/n05-child-shell",
       "goal": "مهاجرت shell سه‌تب و مسیرهای غیر lesson با حفظ جهت‌یابی و state.",
-      "allowedPaths": ["apps/android/feature/path/**", "apps/android/feature/practice/**", "apps/android/feature/profile/**", "apps/android/feature/settings/**", "apps/android/feature/parent/**", "apps/android/app/**", "apps/android/settings.gradle.kts", "apps/android/core/model/**", "scripts/verify-android-foundation.mjs", "scripts/verify-design-system-native.mjs", "docs/product/**", "docs/architecture/ANDROID_MODULE_GRAPH.md", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew test", "./gradlew connectedCheck", "./gradlew lint", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/feature/path/**",
+        "apps/android/feature/practice/**",
+        "apps/android/feature/profile/**",
+        "apps/android/feature/settings/**",
+        "apps/android/feature/parent/**",
+        "apps/android/app/**",
+        "apps/android/settings.gradle.kts",
+        "apps/android/core/model/**",
+        "scripts/verify-android-foundation.mjs",
+        "scripts/verify-design-system-native.mjs",
+        "docs/product/**",
+        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "./gradlew test",
+        "./gradlew connectedCheck",
+        "./gradlew lint",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N05-01", "title": "Child shell و tab navigation", "status": "DONE", "dependsOn": ["N04-07"], "acceptance": ["مسیر/تمرین/من", "state per tab retained"], "evidence": [":app hosts the child shell (family 17): NavHost with the three canonical tabs, per-tab back-stack entries saved/restored (saveState+restoreState) so switching tabs never loses scroll or selection, re-select no-op, deterministic Back (non-default tab returns to Path; Path exits)", "deep links mathlearning://shell/{path|practice|me} registered per tab; shell route added as AppDestination.SHELL and authentication now lands on the shell", "ShomaraChildShellTest: canonical three-tab order enforced against the design-system contract, reselect no-op, Back map, route/deep-link round-trip", "five real feature modules wired into Gradle (:feature:path/practice/profile/settings/parent, AGP 9.4.0 + compose, compileSdk 37/minSdk 24); verify-android-foundation requires 13 modules", "gradle :app:testDebugUnitTest :app:compileDebugKotlin = BUILD SUCCESSFUL"] },
-        { "id": "N05-02", "title": "Path graph و chapter bands", "status": "DONE", "dependsOn": ["N05-01"], "acceptance": ["locked/current/completed", "TalkBack truth"], "evidence": ["ShomaraPathGraphLogic: node states (Fresh/Current/Completed/Perfect/Locked + offline freeze) mapped ONLY from caller/server progress; exactly one Current node by construction; perfect implies completed enforced at construction", "TalkBack truth: every state carries an explicit Persian label + contentDescription (title + state), locked nodes stay tappable (open explanation, never disabled dead-end); single featured surface = current node", "five chapter bands with structural labels (فصل ۱..۵) and restore-scroll fallback", "gradle :feature:path:test :feature:path:lint = BUILD SUCCESSFUL (9/9 tests)"] },
-        { "id": "N05-03", "title": "Unit/jump/station start", "status": "DONE", "dependsOn": ["N05-02"], "acceptance": ["locked/offline/error", "CTA واحد"], "evidence": ["ShomaraStationStartLogic: full 7-state matrix (Loading/Ready/Resume/Locked/Offline/Error/Starting) derived from path progress + call flags; exactly ONE primary CTA with a deterministic label per state (شروع/ادامه/متوجه شدم); locked taps open a warm explanation, never a dead end", "real metadata line from the canonical catalog (ایستگاه ۳ از ۲۵ — فصل ۱)", "ShomaraJumpSheet: jumps stay inside the station chapter (5 targets), locked targets not confirmable, offline/error block confirm, single confirm CTA, idempotent selection", "gradle :feature:path:test :feature:path:lint = BUILD SUCCESSFUL (16/16 tests incl. 7 new)"] },
-        { "id": "N05-04", "title": "Practice hub", "status": "DONE", "dependsOn": ["N05-01"], "acceptance": ["empty/recommended/history", "no punitive habit"], "evidence": ["ShomaraPracticeHubLogic: 7-state matrix (Loading/List/Empty/Locked/Offline/Error/History); recommended + history rendered VERBATIM from caller/server data - the hub never fabricates rows or missions (family 12 anti-pattern)", "empty state is a warm guide pointing at the path (test-enforced: no reward/star wording); locked rows carry a warm reason enforced at construction", "ShomaraPracticeHubScreen built from design-system primitives with TalkBack descriptions (locked rows announce their reason)", "gradle :feature:practice:test :feature:practice:lint = BUILD SUCCESSFUL (6/6 tests)"] },
-        { "id": "N05-05", "title": "Profile/avatar/settings", "status": "DONE", "dependsOn": ["N05-01"], "acceptance": ["dirty/saving/saved/error", "reduced motion"], "evidence": [":feature:profile ShomaraMeScreen (family 14): loading/ready/empty/offline/error/edit-return; facts rendered verbatim in Persian digits (۳ از ۲۵ ایستگاه); zero synthetic reward surfaces (field-level test-enforced)", ":feature:settings ShomaraSettingsScreen (family 15): canonical avatar grid (sun/leaf/cloud/moon) with owned/equipped states, real reduced-motion preference, save lifecycle Dirty/Saving/Saved/Error with toggle-fail revert + warm retry", "same-value edits are no-ops (no dirty churn); save from Clean rejected; unknown avatar rejected at construction", "gradle :feature:profile:test :feature:settings:test + lint = BUILD SUCCESSFUL (profile 4/4, settings 7/7)"] },
-        { "id": "N05-06", "title": "Parent surface boundary", "status": "DONE", "dependsOn": ["N05-01"], "acceptance": ["adult auth boundary", "child shell leak ندارد"], "evidence": ["ShomaraParentGate: fail-closed reducer - a missing verifier can never authenticate (warm config message); 3 consecutive failures trigger a cooldown lockout that rejects even the correct passcode; re-entrant verify while authenticated stays authenticated", "child-leak policy: ShomaraParentSurfaceContract allows ONLY progress-report/settings/sign-out - lesson/practice/station surfaces are structurally rejected (test-enforced); parent home renders summary numbers (Persian digits) and no rewards/leaderboard vocabulary", "child tab bar has no parent tab (canonical three-tab contract from N05-01); entry is only via the Me row -> re-auth gate screen", "gradle :feature:parent:test :feature:parent:lint = BUILD SUCCESSFUL (7/7 tests)"] },
-        { "id": "N05-07", "title": "Shell responsive/a11y/device tests", "status": "DONE", "dependsOn": ["N05-03", "N05-04", "N05-05", "N05-06", "N05-09"], "acceptance": ["360/390/412", "font scale و TalkBack"], "evidence": ["ShomaraShellMatrixTest: 360/390/412 x 1.0f/2.0f matrix over the seven shell surfaces (path/practice/me/settings/parent-gate/station-start/jump-sheet); chapter labels sized for the 360dp band; TalkBack labels via the canonical contracts (tab labels, OTP Persian LTR digits); single-CTA contract; parent gate structurally outside child tabs", "rendered screenshots/device TalkBack remain NATIVE_PENDING (N03/N04 readiness protocol)", "gradle :app:testDebugUnitTest = BUILD SUCCESSFUL (app total 12/12 incl. 5 new)"] },
-        { "id": "N05-08", "title": "Child shell journey gate", "status": "DONE", "dependsOn": ["N05-07"], "acceptance": ["cold/warm resume", "back/deep link"], "evidence": ["ShomaraShellJourneyTest: cold start opens the default Path tab (no snapshot), warm resume restores the exact saved tab and the SHELL destination round-trips through NavigationSnapshot, deep-link entry maps to the right tab and parent/foreign links are rejected, Back journey is deterministic (Me->Path->exit), tab switching never duplicates navigation", "authentication lands on SHELL - the launch migration is complete (foundation route remains for compatibility)", "gradle :app:testDebugUnitTest = BUILD SUCCESSFUL (app total 18/18 incl. 6 new)"] },
-        { "id": "N05-09", "title": "Station/chapter metadata و نام‌گذاری مسیر", "status": "DONE", "dependsOn": ["N05-02"], "acceptance": ["ST01–ST25 ID ثابت", "CONTENT-004 resolved", "نام‌های owner-approved و بدون claim حل‌نشده"], "evidence": ["ShomaraStationCatalog: all 25 fixed IDs ST01..ST25 in order from content-library/derived/stations-index.json; IDs never change (CONTENT-004 constraint)", "CONTENT-004 resolved honestly for the UI: station titles render as the content-library workingTitles flagged provisional=true and chapter bands use structural labels (فصل ۱..۵) - the UI asserts NO book-matching claim, so no unresolved claim ships; a final owner rename stays a non-blocking input that cannot change IDs", "metadata tests: 25 ordered IDs, 5x5 chapter bands, ST07 canonical title, provisional flags, unknown-id rejection", "gradle :feature:path:test :core:model:test = BUILD SUCCESSFUL (11 tests total)"] }
+        {
+          "id": "N05-01",
+          "title": "Child shell و tab navigation",
+          "status": "DONE",
+          "dependsOn": [
+            "N04-07"
+          ],
+          "acceptance": [
+            "مسیر/تمرین/من",
+            "state per tab retained"
+          ],
+          "evidence": [
+            ":app hosts the child shell (family 17): NavHost with the three canonical tabs, per-tab back-stack entries saved/restored (saveState+restoreState) so switching tabs never loses scroll or selection, re-select no-op, deterministic Back (non-default tab returns to Path; Path exits)",
+            "deep links mathlearning://shell/{path|practice|me} registered per tab; shell route added as AppDestination.SHELL and authentication now lands on the shell",
+            "ShomaraChildShellTest: canonical three-tab order enforced against the design-system contract, reselect no-op, Back map, route/deep-link round-trip",
+            "five real feature modules wired into Gradle (:feature:path/practice/profile/settings/parent, AGP 9.4.0 + compose, compileSdk 37/minSdk 24); verify-android-foundation requires 13 modules",
+            "gradle :app:testDebugUnitTest :app:compileDebugKotlin = BUILD SUCCESSFUL"
+          ]
+        },
+        {
+          "id": "N05-02",
+          "title": "Path graph و chapter bands",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-01"
+          ],
+          "acceptance": [
+            "locked/current/completed",
+            "TalkBack truth"
+          ],
+          "evidence": [
+            "ShomaraPathGraphLogic: node states (Fresh/Current/Completed/Perfect/Locked + offline freeze) mapped ONLY from caller/server progress; exactly one Current node by construction; perfect implies completed enforced at construction",
+            "TalkBack truth: every state carries an explicit Persian label + contentDescription (title + state), locked nodes stay tappable (open explanation, never disabled dead-end); single featured surface = current node",
+            "five chapter bands with structural labels (فصل ۱..۵) and restore-scroll fallback",
+            "gradle :feature:path:test :feature:path:lint = BUILD SUCCESSFUL (9/9 tests)"
+          ]
+        },
+        {
+          "id": "N05-03",
+          "title": "Unit/jump/station start",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-02"
+          ],
+          "acceptance": [
+            "locked/offline/error",
+            "CTA واحد"
+          ],
+          "evidence": [
+            "ShomaraStationStartLogic: full 7-state matrix (Loading/Ready/Resume/Locked/Offline/Error/Starting) derived from path progress + call flags; exactly ONE primary CTA with a deterministic label per state (شروع/ادامه/متوجه شدم); locked taps open a warm explanation, never a dead end",
+            "real metadata line from the canonical catalog (ایستگاه ۳ از ۲۵ — فصل ۱)",
+            "ShomaraJumpSheet: jumps stay inside the station chapter (5 targets), locked targets not confirmable, offline/error block confirm, single confirm CTA, idempotent selection",
+            "gradle :feature:path:test :feature:path:lint = BUILD SUCCESSFUL (16/16 tests incl. 7 new)"
+          ]
+        },
+        {
+          "id": "N05-04",
+          "title": "Practice hub",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-01"
+          ],
+          "acceptance": [
+            "empty/recommended/history",
+            "no punitive habit"
+          ],
+          "evidence": [
+            "ShomaraPracticeHubLogic: 7-state matrix (Loading/List/Empty/Locked/Offline/Error/History); recommended + history rendered VERBATIM from caller/server data - the hub never fabricates rows or missions (family 12 anti-pattern)",
+            "empty state is a warm guide pointing at the path (test-enforced: no reward/star wording); locked rows carry a warm reason enforced at construction",
+            "ShomaraPracticeHubScreen built from design-system primitives with TalkBack descriptions (locked rows announce their reason)",
+            "gradle :feature:practice:test :feature:practice:lint = BUILD SUCCESSFUL (6/6 tests)"
+          ]
+        },
+        {
+          "id": "N05-05",
+          "title": "Profile/avatar/settings",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-01"
+          ],
+          "acceptance": [
+            "dirty/saving/saved/error",
+            "reduced motion"
+          ],
+          "evidence": [
+            ":feature:profile ShomaraMeScreen (family 14): loading/ready/empty/offline/error/edit-return; facts rendered verbatim in Persian digits (۳ از ۲۵ ایستگاه); zero synthetic reward surfaces (field-level test-enforced)",
+            ":feature:settings ShomaraSettingsScreen (family 15): canonical avatar grid (sun/leaf/cloud/moon) with owned/equipped states, real reduced-motion preference, save lifecycle Dirty/Saving/Saved/Error with toggle-fail revert + warm retry",
+            "same-value edits are no-ops (no dirty churn); save from Clean rejected; unknown avatar rejected at construction",
+            "gradle :feature:profile:test :feature:settings:test + lint = BUILD SUCCESSFUL (profile 4/4, settings 7/7)"
+          ]
+        },
+        {
+          "id": "N05-06",
+          "title": "Parent surface boundary",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-01"
+          ],
+          "acceptance": [
+            "adult auth boundary",
+            "child shell leak ندارد"
+          ],
+          "evidence": [
+            "ShomaraParentGate: fail-closed reducer - a missing verifier can never authenticate (warm config message); 3 consecutive failures trigger a cooldown lockout that rejects even the correct passcode; re-entrant verify while authenticated stays authenticated",
+            "child-leak policy: ShomaraParentSurfaceContract allows ONLY progress-report/settings/sign-out - lesson/practice/station surfaces are structurally rejected (test-enforced); parent home renders summary numbers (Persian digits) and no rewards/leaderboard vocabulary",
+            "child tab bar has no parent tab (canonical three-tab contract from N05-01); entry is only via the Me row -> re-auth gate screen",
+            "gradle :feature:parent:test :feature:parent:lint = BUILD SUCCESSFUL (7/7 tests)"
+          ]
+        },
+        {
+          "id": "N05-07",
+          "title": "Shell responsive/a11y/device tests",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-03",
+            "N05-04",
+            "N05-05",
+            "N05-06",
+            "N05-09"
+          ],
+          "acceptance": [
+            "360/390/412",
+            "font scale و TalkBack"
+          ],
+          "evidence": [
+            "ShomaraShellMatrixTest: 360/390/412 x 1.0f/2.0f matrix over the seven shell surfaces (path/practice/me/settings/parent-gate/station-start/jump-sheet); chapter labels sized for the 360dp band; TalkBack labels via the canonical contracts (tab labels, OTP Persian LTR digits); single-CTA contract; parent gate structurally outside child tabs",
+            "rendered screenshots/device TalkBack remain NATIVE_PENDING (N03/N04 readiness protocol)",
+            "gradle :app:testDebugUnitTest = BUILD SUCCESSFUL (app total 12/12 incl. 5 new)"
+          ]
+        },
+        {
+          "id": "N05-08",
+          "title": "Child shell journey gate",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-07"
+          ],
+          "acceptance": [
+            "cold/warm resume",
+            "back/deep link"
+          ],
+          "evidence": [
+            "ShomaraShellJourneyTest: cold start opens the default Path tab (no snapshot), warm resume restores the exact saved tab and the SHELL destination round-trips through NavigationSnapshot, deep-link entry maps to the right tab and parent/foreign links are rejected, Back journey is deterministic (Me->Path->exit), tab switching never duplicates navigation",
+            "authentication lands on SHELL - the launch migration is complete (foundation route remains for compatibility)",
+            "gradle :app:testDebugUnitTest = BUILD SUCCESSFUL (app total 18/18 incl. 6 new)"
+          ]
+        },
+        {
+          "id": "N05-09",
+          "title": "Station/chapter metadata و نام‌گذاری مسیر",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-02"
+          ],
+          "acceptance": [
+            "ST01–ST25 ID ثابت",
+            "CONTENT-004 resolved",
+            "نام‌های owner-approved و بدون claim حل‌نشده"
+          ],
+          "evidence": [
+            "ShomaraStationCatalog: all 25 fixed IDs ST01..ST25 in order from content-library/derived/stations-index.json; IDs never change (CONTENT-004 constraint)",
+            "CONTENT-004 resolved honestly for the UI: station titles render as the content-library workingTitles flagged provisional=true and chapter bands use structural labels (فصل ۱..۵) - the UI asserts NO book-matching claim, so no unresolved claim ships; a final owner rename stays a non-blocking input that cannot change IDs",
+            "metadata tests: 25 ordered IDs, 5x5 chapter bands, ST07 canonical title, provisional flags, unknown-id rejection",
+            "gradle :feature:path:test :core:model:test = BUILD SUCCESSFUL (11 tests total)"
+          ]
+        }
       ]
     },
     {
@@ -187,20 +1268,240 @@
       "status": "DONE",
       "branch": "native/n06-learning-player",
       "goal": "مهاجرت player آموزشی بدون انتقال correctness/progression به کلاینت.",
-      "allowedPaths": ["apps/android/feature/lesson/**", "apps/android/core/model/**", "apps/android/core/network/**", "apps/android/core/datastore/**", "apps/android/app/**", "apps/android/settings.gradle.kts", "packages/contracts/**", "content-library/derived/**", "content-library/integration/**", "docs/architecture/ANDROID_MODULE_GRAPH.md", "docs/product/**", "scripts/verify-android-foundation.mjs", "scripts/verify-design-system-native.mjs", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew :feature:lesson:test", "./gradlew connectedCheck", "./gradlew lint", "npm run test:unit", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/feature/lesson/**",
+        "apps/android/core/model/**",
+        "apps/android/core/network/**",
+        "apps/android/core/datastore/**",
+        "apps/android/app/**",
+        "apps/android/settings.gradle.kts",
+        "packages/contracts/**",
+        "content-library/derived/**",
+        "content-library/integration/**",
+        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "docs/product/**",
+        "scripts/verify-android-foundation.mjs",
+        "scripts/verify-design-system-native.mjs",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "./gradlew :feature:lesson:test",
+        "./gradlew connectedCheck",
+        "./gradlew lint",
+        "npm run test:unit",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N06-01", "title": "تطبیق API/contract player و schema محتوای پژوهش", "status": "DONE", "dependsOn": ["N05-08"], "acceptance": ["answer key absent", "selected step server-owned", "P1–P5 روی state machine نگاشت شده", "CONTENT-008 guarded"], "evidence": ["packages/contracts/src/content-projection.ts: 3-tier models (AuthoringStation/PublishedStationPackage/ChildLessonProjection), 7-stage content + audio lifecycles, canonical Stage-6 prose mapping, P1..P5 macro stages, FORBIDDEN_PROJECTION_KEYS, deep-stripping projectors (publish/project) that throw on contamination", "13 Vitest tests: zero answer-key/evaluator/threshold/reviewer in published+child JSON; contamination attempts caught at construction; audio policy EXPECTED_NEVER_BLOCKING; server config owns jump counts/mastery/trace tolerance (CONTENT-002/014/001)"] },
-        { "id": "N06-02", "title": "Lesson chrome و lifecycle", "status": "DONE", "dependsOn": ["N06-01"], "acceptance": ["close confirm", "resume checkpoint"], "evidence": ["ShomaraLessonChromeLogic: deterministic server-driven progress fraction + Persian TalkBack announcement; fail-safe close-confirmation state machine (stray tap never exits; copy keeps progress)", "LessonCheckpointStore (PreferencesLessonCheckpointStore, real DataStore): keyed by (sessionId, stationId) holding (encounterId, macroStage, savedAt); cleared only on server completion", "gradle :feature:lesson:test = BUILD SUCCESSFUL (8/8 tests)"] },
-        { "id": "N06-03", "title": "Teach و guided practice", "status": "DONE", "dependsOn": ["N06-02"], "acceptance": ["instruction clarity", "audio fallback"], "evidence": ["P1 Teach: 7 states with zero grading pressure and audio-unavailable never blocking (test-enforced)", "P2/P3 Guided: idle/selected/submitting/correct/retry/recovery/offline/error; submit requires a selection (duplicate submit structurally blocked); correctness ONLY from server result; bounded scaffolding hints (allowed here, banned in P4/P5)", "gradle :feature:lesson:test = BUILD SUCCESSFUL (8/8 tests)"] },
-        { "id": "N06-04", "title": "Assessment و single submit", "status": "DONE", "dependsOn": ["N06-02"], "acceptance": ["duplicate tap blocked", "idempotency preserved"], "evidence": ["LessonGateway (OkHttp + MockWebServer): deterministic Idempotency-Key per (sessionId, encounterId, attemptIndex, interactionId); replay across choice changes reuses the SAME key; HTTP 200 replay maps to Duplicate; 201 maps to Accepted with server nextAction", "ShomaraAssessmentSession: P4/P5-only (construction rejects other stages), zero hints by construction, duplicate tap while Submitting structurally blocked (select ignored, submit throws), disconnect/resume replays the SAME attemptIndex/key", "minimal telemetry payload: IDs only; unconfigured endpoint fails closed with zero network calls; offline/timeout via shared taxonomy", "gradle :feature:lesson:test = BUILD SUCCESSFUL (23/23 tests incl. 15 new)"] },
-        { "id": "N06-05", "title": "Feedback/recovery/result", "status": "DONE", "dependsOn": ["N06-04"], "acceptance": ["warm wrong state", "server next action"], "evidence": ["ShomaraResultLogic: server nextAction (ADVANCE/RETRY/RECOVER_GUIDED/COMPLETE_PASS/COMPLETE_NEEDS_PRACTICE) maps verbatim to surfaces; unknown actions never guess (Unknown + warm checking message)", "warm copy test-enforced: wrong-answer/recovery/needs-practice headlines contain no shaming vocabulary; COMPLETE_NEEDS_PRACTICE frames practice positively", "guided session renders server outcome only (onServerResult) - client never decides correctness"] },
-        { "id": "N06-06", "title": "Challenge player", "status": "DONE", "dependsOn": ["N06-05"], "acceptance": ["challenge جدا از mastery", "timer semantics"], "evidence": ["ShomaraChallengeSession: Unavailable/Intro/Round/Submitting/Retry/Result/Offline; affectsStationMastery is a constant false and NO unlock/complete API exists on the type (reflection test)", "non-punitive timer: expiry ends the round warmly (Result, 0ms), reducedMotion hides the timer entirely; round cap enforced", "gradle :feature:lesson:test = BUILD SUCCESSFUL (23/23)"] },
-        { "id": "N06-07", "title": "Player state/a11y tests", "status": "DONE", "dependsOn": ["N06-03", "N06-05", "N06-06"], "acceptance": ["loading/submitting/error/retry", "TalkBack و large text"], "evidence": ["player matrix: 360/390/412 x 1.0f/2.0f over loading/submitting/error/retry states; Persian progress announcements (گام ۲ از ۵) logic-verified at any scale", "rendered screenshots/device TalkBack stay NATIVE_PENDING (readiness protocol)", "gradle :feature:lesson:test = BUILD SUCCESSFUL (38/38 tests incl. 6 new)"] },
-        { "id": "N06-08", "title": "ST07 draft end-to-end station gate", "status": "DONE", "dependsOn": ["N06-07", "N06-09", "N06-10", "N06-11"], "acceptance": ["teach تا result", "offline interruption و resume", "CONTENT-001/002/003/014/015/017 resolved", "nonproduction flag ثابت"], "evidence": ["St07JourneyGateTest: full P1->P5 journey with real HTTP (5 x 201 ADVANCE), mid-lesson server interruption with checkpoint save, retry WITHOUT advancing the attempt index, resume EXACTLY at the checkpoint (FIFO idempotency-key assertions: P1, retry=same-key, P2-replay)", "nonProductionDraft=true / STAGED_PILOT immutable constants; productionRejected() returns true for every non-ENABLED lifecycle", "8 CONTENT dispositions recorded in content-library/derived/source-audit.json (originals untouched) + docs/product/LEARNING_PLAYER_READINESS_N06.md", ":app wired: LESSON destination with deep link mathlearning://lesson/{stationId}; shell path tap navigates into :feature:lesson and returns to the shell on completion/confirmed exit; gateway+checkpoints flow through AppContainer", "gradle :app:compileDebugKotlin :app:testDebugUnitTest :feature:lesson:test = BUILD SUCCESSFUL (56 tests, 0 failures)"] },
-        { "id": "N06-09", "title": "Typed authoring staging schema و validator", "status": "DONE", "dependsOn": ["N06-01"], "acceptance": ["source provenance", "promotion state", "server evaluator جدا", "P4/P5 hint policy validated"], "evidence": ["typed staging schema + validators in contracts: review-role validator (4 distinct roles mandatory), prerequisite DAG validator (unknown refs/self-edges/cycles), P4/P5 hint-ban validator (strict) with P1..P3 scaffolding allowed", "publish rejects non-APPROVED/ENABLED lifecycle and incomplete review roles"] },
-        { "id": "N06-10", "title": "Adapterهای پایلوت T01/T05/T13/T15", "status": "DONE", "dependsOn": ["N06-03", "N06-04", "N06-09"], "acceptance": ["tap alternative برای drag", "taught-numeral guard", "72dp manipulative", "server submission only"], "evidence": ["T01 Count: 72-80dp band enforced, tap-to-count counts each object once, taught-numeral guard rejects display AND selection beyond the ceiling (CONTENT-001 adjacent)", "T05 Compare/Pattern: drag path and tap-select+tap-place path converge on the IDENTICAL occupied state (sameOutcomeAs test); tap-place without selection is a safe no-op", "T13 Trace: canonical top-to-bottom stroke order for ۱ (CONTENT-001), server-owned traceToleranceDp=28, out-of-order checkpoints ignored, tolerance breach demands the guided tap-checkpoint fallback which reaches the IDENTICAL completion", "T15 Story: audio EXPECTED_NEVER_BLOCKING with visible fallback text, per-step minimal telemetry (T15_STEP_n + choiceId, MacroStage.P5_TRANSFER) - server-only submission", "gradle :feature:lesson:test = BUILD SUCCESSFUL (32/32 tests incl. 9 new)"] },
-        { "id": "N06-11", "title": "Authoring/published/client projection boundary", "status": "DONE", "dependsOn": ["N06-01", "N06-09"], "acceptance": ["سه مدل typed و lifecycle mapping", "advance/interaction prose به behavior ID typed نگاشت شده", "snapshot test حذف answer/evaluator/threshold", "prerequisite graph و review-role validator", "telemetry بدون answer key و با data minimization"], "evidence": [":core:model ContentProjection.kt Kotlin mirror + 8 JUnit guard tests (lifecycles, review roles, DAG, deep projection scan with P4/P5 hint-ban, minimal telemetry payload with blank-id refusal)", "behaviorIdFor maps prose advance/interaction to typed IDs (P2_GUIDED_DRAG etc.)", "AttemptTelemetry carries only session/encounter/interaction/choice IDs"] }
+        {
+          "id": "N06-01",
+          "title": "تطبیق API/contract player و schema محتوای پژوهش",
+          "status": "DONE",
+          "dependsOn": [
+            "N05-08"
+          ],
+          "acceptance": [
+            "answer key absent",
+            "selected step server-owned",
+            "P1–P5 روی state machine نگاشت شده",
+            "CONTENT-008 guarded"
+          ],
+          "evidence": [
+            "packages/contracts/src/content-projection.ts: 3-tier models (AuthoringStation/PublishedStationPackage/ChildLessonProjection), 7-stage content + audio lifecycles, canonical Stage-6 prose mapping, P1..P5 macro stages, FORBIDDEN_PROJECTION_KEYS, deep-stripping projectors (publish/project) that throw on contamination",
+            "13 Vitest tests: zero answer-key/evaluator/threshold/reviewer in published+child JSON; contamination attempts caught at construction; audio policy EXPECTED_NEVER_BLOCKING; server config owns jump counts/mastery/trace tolerance (CONTENT-002/014/001)"
+          ]
+        },
+        {
+          "id": "N06-02",
+          "title": "Lesson chrome و lifecycle",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-01"
+          ],
+          "acceptance": [
+            "close confirm",
+            "resume checkpoint"
+          ],
+          "evidence": [
+            "ShomaraLessonChromeLogic: deterministic server-driven progress fraction + Persian TalkBack announcement; fail-safe close-confirmation state machine (stray tap never exits; copy keeps progress)",
+            "LessonCheckpointStore (PreferencesLessonCheckpointStore, real DataStore): keyed by (sessionId, stationId) holding (encounterId, macroStage, savedAt); cleared only on server completion",
+            "gradle :feature:lesson:test = BUILD SUCCESSFUL (8/8 tests)"
+          ]
+        },
+        {
+          "id": "N06-03",
+          "title": "Teach و guided practice",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-02"
+          ],
+          "acceptance": [
+            "instruction clarity",
+            "audio fallback"
+          ],
+          "evidence": [
+            "P1 Teach: 7 states with zero grading pressure and audio-unavailable never blocking (test-enforced)",
+            "P2/P3 Guided: idle/selected/submitting/correct/retry/recovery/offline/error; submit requires a selection (duplicate submit structurally blocked); correctness ONLY from server result; bounded scaffolding hints (allowed here, banned in P4/P5)",
+            "gradle :feature:lesson:test = BUILD SUCCESSFUL (8/8 tests)"
+          ]
+        },
+        {
+          "id": "N06-04",
+          "title": "Assessment و single submit",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-02"
+          ],
+          "acceptance": [
+            "duplicate tap blocked",
+            "idempotency preserved"
+          ],
+          "evidence": [
+            "LessonGateway (OkHttp + MockWebServer): deterministic Idempotency-Key per (sessionId, encounterId, attemptIndex, interactionId); replay across choice changes reuses the SAME key; HTTP 200 replay maps to Duplicate; 201 maps to Accepted with server nextAction",
+            "ShomaraAssessmentSession: P4/P5-only (construction rejects other stages), zero hints by construction, duplicate tap while Submitting structurally blocked (select ignored, submit throws), disconnect/resume replays the SAME attemptIndex/key",
+            "minimal telemetry payload: IDs only; unconfigured endpoint fails closed with zero network calls; offline/timeout via shared taxonomy",
+            "gradle :feature:lesson:test = BUILD SUCCESSFUL (23/23 tests incl. 15 new)"
+          ]
+        },
+        {
+          "id": "N06-05",
+          "title": "Feedback/recovery/result",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-04"
+          ],
+          "acceptance": [
+            "warm wrong state",
+            "server next action"
+          ],
+          "evidence": [
+            "ShomaraResultLogic: server nextAction (ADVANCE/RETRY/RECOVER_GUIDED/COMPLETE_PASS/COMPLETE_NEEDS_PRACTICE) maps verbatim to surfaces; unknown actions never guess (Unknown + warm checking message)",
+            "warm copy test-enforced: wrong-answer/recovery/needs-practice headlines contain no shaming vocabulary; COMPLETE_NEEDS_PRACTICE frames practice positively",
+            "guided session renders server outcome only (onServerResult) - client never decides correctness"
+          ]
+        },
+        {
+          "id": "N06-06",
+          "title": "Challenge player",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-05"
+          ],
+          "acceptance": [
+            "challenge جدا از mastery",
+            "timer semantics"
+          ],
+          "evidence": [
+            "ShomaraChallengeSession: Unavailable/Intro/Round/Submitting/Retry/Result/Offline; affectsStationMastery is a constant false and NO unlock/complete API exists on the type (reflection test)",
+            "non-punitive timer: expiry ends the round warmly (Result, 0ms), reducedMotion hides the timer entirely; round cap enforced",
+            "gradle :feature:lesson:test = BUILD SUCCESSFUL (23/23)"
+          ]
+        },
+        {
+          "id": "N06-07",
+          "title": "Player state/a11y tests",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-03",
+            "N06-05",
+            "N06-06"
+          ],
+          "acceptance": [
+            "loading/submitting/error/retry",
+            "TalkBack و large text"
+          ],
+          "evidence": [
+            "player matrix: 360/390/412 x 1.0f/2.0f over loading/submitting/error/retry states; Persian progress announcements (گام ۲ از ۵) logic-verified at any scale",
+            "rendered screenshots/device TalkBack stay NATIVE_PENDING (readiness protocol)",
+            "gradle :feature:lesson:test = BUILD SUCCESSFUL (38/38 tests incl. 6 new)"
+          ]
+        },
+        {
+          "id": "N06-08",
+          "title": "ST07 draft end-to-end station gate",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-07",
+            "N06-09",
+            "N06-10",
+            "N06-11"
+          ],
+          "acceptance": [
+            "teach تا result",
+            "offline interruption و resume",
+            "CONTENT-001/002/003/014/015/017 resolved",
+            "nonproduction flag ثابت"
+          ],
+          "evidence": [
+            "St07JourneyGateTest: full P1->P5 journey with real HTTP (5 x 201 ADVANCE), mid-lesson server interruption with checkpoint save, retry WITHOUT advancing the attempt index, resume EXACTLY at the checkpoint (FIFO idempotency-key assertions: P1, retry=same-key, P2-replay)",
+            "nonProductionDraft=true / STAGED_PILOT immutable constants; productionRejected() returns true for every non-ENABLED lifecycle",
+            "8 CONTENT dispositions recorded in content-library/derived/source-audit.json (originals untouched) + docs/product/LEARNING_PLAYER_READINESS_N06.md",
+            ":app wired: LESSON destination with deep link mathlearning://lesson/{stationId}; shell path tap navigates into :feature:lesson and returns to the shell on completion/confirmed exit; gateway+checkpoints flow through AppContainer",
+            "gradle :app:compileDebugKotlin :app:testDebugUnitTest :feature:lesson:test = BUILD SUCCESSFUL (56 tests, 0 failures)"
+          ]
+        },
+        {
+          "id": "N06-09",
+          "title": "Typed authoring staging schema و validator",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-01"
+          ],
+          "acceptance": [
+            "source provenance",
+            "promotion state",
+            "server evaluator جدا",
+            "P4/P5 hint policy validated"
+          ],
+          "evidence": [
+            "typed staging schema + validators in contracts: review-role validator (4 distinct roles mandatory), prerequisite DAG validator (unknown refs/self-edges/cycles), P4/P5 hint-ban validator (strict) with P1..P3 scaffolding allowed",
+            "publish rejects non-APPROVED/ENABLED lifecycle and incomplete review roles"
+          ]
+        },
+        {
+          "id": "N06-10",
+          "title": "Adapterهای پایلوت T01/T05/T13/T15",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-03",
+            "N06-04",
+            "N06-09"
+          ],
+          "acceptance": [
+            "tap alternative برای drag",
+            "taught-numeral guard",
+            "72dp manipulative",
+            "server submission only"
+          ],
+          "evidence": [
+            "T01 Count: 72-80dp band enforced, tap-to-count counts each object once, taught-numeral guard rejects display AND selection beyond the ceiling (CONTENT-001 adjacent)",
+            "T05 Compare/Pattern: drag path and tap-select+tap-place path converge on the IDENTICAL occupied state (sameOutcomeAs test); tap-place without selection is a safe no-op",
+            "T13 Trace: canonical top-to-bottom stroke order for ۱ (CONTENT-001), server-owned traceToleranceDp=28, out-of-order checkpoints ignored, tolerance breach demands the guided tap-checkpoint fallback which reaches the IDENTICAL completion",
+            "T15 Story: audio EXPECTED_NEVER_BLOCKING with visible fallback text, per-step minimal telemetry (T15_STEP_n + choiceId, MacroStage.P5_TRANSFER) - server-only submission",
+            "gradle :feature:lesson:test = BUILD SUCCESSFUL (32/32 tests incl. 9 new)"
+          ]
+        },
+        {
+          "id": "N06-11",
+          "title": "Authoring/published/client projection boundary",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-01",
+            "N06-09"
+          ],
+          "acceptance": [
+            "سه مدل typed و lifecycle mapping",
+            "advance/interaction prose به behavior ID typed نگاشت شده",
+            "snapshot test حذف answer/evaluator/threshold",
+            "prerequisite graph و review-role validator",
+            "telemetry بدون answer key و با data minimization"
+          ],
+          "evidence": [
+            ":core:model ContentProjection.kt Kotlin mirror + 8 JUnit guard tests (lifecycles, review roles, DAG, deep projection scan with P4/P5 hint-ban, minimal telemetry payload with blank-id refusal)",
+            "behaviorIdFor maps prose advance/interaction to typed IDs (P2_GUIDED_DRAG etc.)",
+            "AttemptTelemetry carries only session/encounter/interaction/choice IDs"
+          ]
+        }
       ]
     },
     {
@@ -209,18 +1510,206 @@
       "status": "DONE",
       "branch": "native/n07-offline-content",
       "goal": "دادهٔ محلی، sync و asset pipeline قابل مدیریت از CMS با checksum و حقوق محتوا.",
-      "allowedPaths": ["apps/android/core/database/**", "apps/android/core/datastore/**", "apps/android/core/model/**", "apps/android/core/network/**", "apps/android/sync/**", "apps/android/feature/lesson/**", "apps/android/app/**", "apps/android/settings.gradle.kts", "packages/contracts/**", "packages/content-delivery/**", "packages/offline-sync/**", "content-library/derived/**", "content-library/integration/**", "docs/architecture/ANDROID_MODULE_GRAPH.md", "docs/content/**", "docs/product/**", "scripts/verify-android-foundation.mjs", "scripts/verify-design-system-native.mjs", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew test", "./gradlew connectedCheck", "./gradlew lint", "npm run test:unit", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/core/database/**",
+        "apps/android/core/datastore/**",
+        "apps/android/core/model/**",
+        "apps/android/core/network/**",
+        "apps/android/sync/**",
+        "apps/android/feature/lesson/**",
+        "apps/android/app/**",
+        "apps/android/settings.gradle.kts",
+        "packages/contracts/**",
+        "packages/content-delivery/**",
+        "packages/offline-sync/**",
+        "content-library/derived/**",
+        "content-library/integration/**",
+        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "docs/content/**",
+        "docs/product/**",
+        "scripts/verify-android-foundation.mjs",
+        "scripts/verify-design-system-native.mjs",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "./gradlew test",
+        "./gradlew connectedCheck",
+        "./gradlew lint",
+        "npm run test:unit",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N07-01", "title": "Room/DataStore schema و migration policy", "status": "DONE", "dependsOn": ["N06-08"], "acceptance": ["local read source", "migration tests"], "evidence": [":core:database LocalLearningDatabase: 4 tables (StationPackage keyed stationId+version+sha256 with single-active, ProgressProjection server-verified offline-first read, OutboxSyncOperation dedup on idempotencyKey, AudioAsset with publishState/voiceProfileId)", "migration policy: forward v1→v2 preserves all rows, same-version no-op, downgrade/unknown-future/corrupt(v0) all fail closed", "fail-closed persistence: forbidden answer-key/evaluator/threshold fields rejected BEFORE persistence (case-insensitive, incl. embedded content blobs) - CONTENT-008", "gradle :core:database:test = BUILD SUCCESSFUL (6/6 tests)"] },
-        { "id": "N07-02", "title": "Offline repository و sync queue", "status": "DONE", "dependsOn": ["N07-01"], "acceptance": ["idempotent retry", "conflict policy"], "evidence": ["OutboxSyncEngine: FIFO drain, idempotency key PRESERVED across retries, exponential backoff + jitter (750ms base, 300s cap), stop-on-first-retriable, 4xx quarantine immediately, max-attempts quarantine", "Server-Wins: accepted sync reconciles the local progress projection to the server response verbatim - local optimistic status never overrides server truth (test-enforced)", "gradle :sync:test = BUILD SUCCESSFUL (6/6 tests)"] },
-        { "id": "N07-03", "title": "Versioned content manifest", "status": "DONE", "dependsOn": ["N07-01"], "acceptance": ["checksum/schema version", "atomic activation"], "evidence": ["VersionedContentManifest (schemaVersion/packageVersion/STxx/contentSha256-64hex/audioAssetRefs/provenance) enforced at construction", "ManifestActivationEngine: checksum verify + schema gate BEFORE any write; SHA-256 mismatch and unsupported schemaVersion abort with the previous active version untouched; contaminated payload rejected pre-persistence", "gradle :sync:test = BUILD SUCCESSFUL (12/12 tests incl. 6 new)"] },
-        { "id": "N07-04", "title": "Audio asset cache و playback state", "status": "DONE", "dependsOn": ["N07-03"], "acceptance": ["download/ready/failed/fallback", "no hardcoded URL"], "evidence": ["ShomaraAudioCacheManager + ShomaraAudioPlaybackState: DownloadQueued/Downloading/ReadyCached/Playing/Paused/FailedWithTextFallback; SHA-256 verification GATES entry to ReadyCached; corrupt binary quarantined (no local ref persisted); missing binary -> text fallback", "no hardcoded URLs: the descriptor comes from the verified manifest record; storage module has zero http(s) literals", "gradle :feature:lesson:test = BUILD SUCCESSFUL (42/42 tests incl. 4 new)"] },
-        { "id": "N07-05", "title": "CMS publishing contract", "status": "DONE", "dependsOn": ["N07-03"], "acceptance": ["rights/moderation/delivery gates", "HG-03 تصویب"], "evidence": ["cms-audio.ts: RBAC 5-role transition table (LISTENED requires PERSIAN_PRONUNCIATION_REVIEWER; RIGHTS_CLEARED requires RIGHTS_MODERATOR; APPROVED requires CURRICULUM_REVIEWER), actor/role/time/reason audit trail on every transition, LISTEN_REVIEW_REQUIRED guard on the RIGHTS_CLEARED gate", "reversible publish with package SHA-256 + admin-only audited rollback", "HG-03 APPROVED by owner directive 2026-11-01 (recorded in harness/roadmap.json humanGates)", "9 Vitest tests"] },
-        { "id": "N07-06", "title": "Offline/audio failure tests", "status": "DONE", "dependsOn": ["N07-02", "N07-04"], "acceptance": ["process death", "corrupt checksum", "network loss"], "evidence": ["OfflineJourneyTest: full critical journey (cached manifest -> offline queue -> process death -> restart/restore -> idempotent drain with the SAME key -> Server-Wins reconcile to COMPLETED)", "corrupt SHA-256 for manifests AND audio binaries: quarantine + last-known-good/text fallback without crashing", "gradle :sync:test = BUILD SUCCESSFUL (16/16 tests incl. 4 new)"] },
-        { "id": "N07-07", "title": "Offline content gate", "status": "DONE", "dependsOn": ["N07-05", "N07-06", "N07-08", "N07-09"], "acceptance": ["critical journey offline", "sync recovery evidence"], "evidence": [":core:database and :sync wired into :app via AppContainer (localDatabase + outboxSyncEngine; transport retriable until backend lands - I2)", "module graph updated to the N07 16-module graph", "readiness recorded honestly in docs/content/OFFLINE_CMS_AUDIO_READINESS_N07.md (JVM-verified vs NATIVE_PENDING device/connectedCheck/real-backend)", "offline journey gate = sync journey test evidence above"] },
-        { "id": "N07-08", "title": "Draft import برای ۲۳۲ ردیف metadata صوت", "status": "DONE", "dependsOn": ["N07-03", "N07-05"], "acceptance": ["179+53 row idempotent", "همه draft", "فایل مفقود lesson را قفل نمی‌کند", "هیچ auto-approval یا TTS claim"], "evidence": ["TS importer: 179+53=232 unique rows idempotent, every row locked scriptStatus=DRAFT, provider voice only as non-authoritative hint (CONTENT-006/013)", "Kotlin mirror DraftAudioImporter + persistence into LocalAudioAssetEntity (UNPUBLISHED_NO_BINARY, no localFileRef, no sha256 - zero binary claims)", "missing binary always degrades to the Persian text fallback and never blocks (CONTENT-017)", "Vitest 9 + JUnit 5 tests; originals untouched"] },
-        { "id": "N07-09", "title": "Audio asset lifecycle و CMS editorial governance", "status": "DONE", "dependsOn": ["N07-05", "N07-08"], "acceptance": ["script metadata از binary asset version جدا", "voiceProfile مستقل از provider hint", "RBAC و actor/time audit", "impact/orphan/missing reports", "reversible publish/rollback و package checksum"], "evidence": ["strict model separation: AudioScriptMetadata (draft text) vs AudioAssetVersion (binary version with rightsStatus/moderationStatus/publishState)", "impact/orphan/missing-binary reports detect script-change invalidation, unreferenced audio ids, and steps without a PUBLISHED binary", "reversible publish + admin-only rollback with deterministic package SHA-256", "CONTENT-006/010/013 recorded in content-library/derived/source-audit.json"] }
+        {
+          "id": "N07-01",
+          "title": "Room/DataStore schema و migration policy",
+          "status": "DONE",
+          "dependsOn": [
+            "N06-08"
+          ],
+          "acceptance": [
+            "local read source",
+            "migration tests"
+          ],
+          "evidence": [
+            ":core:database LocalLearningDatabase: 4 tables (StationPackage keyed stationId+version+sha256 with single-active, ProgressProjection server-verified offline-first read, OutboxSyncOperation dedup on idempotencyKey, AudioAsset with publishState/voiceProfileId)",
+            "migration policy: forward v1→v2 preserves all rows, same-version no-op, downgrade/unknown-future/corrupt(v0) all fail closed",
+            "fail-closed persistence: forbidden answer-key/evaluator/threshold fields rejected BEFORE persistence (case-insensitive, incl. embedded content blobs) - CONTENT-008",
+            "gradle :core:database:test = BUILD SUCCESSFUL (6/6 tests)"
+          ]
+        },
+        {
+          "id": "N07-02",
+          "title": "Offline repository و sync queue",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-01"
+          ],
+          "acceptance": [
+            "idempotent retry",
+            "conflict policy"
+          ],
+          "evidence": [
+            "OutboxSyncEngine: FIFO drain, idempotency key PRESERVED across retries, exponential backoff + jitter (750ms base, 300s cap), stop-on-first-retriable, 4xx quarantine immediately, max-attempts quarantine",
+            "Server-Wins: accepted sync reconciles the local progress projection to the server response verbatim - local optimistic status never overrides server truth (test-enforced)",
+            "gradle :sync:test = BUILD SUCCESSFUL (6/6 tests)"
+          ]
+        },
+        {
+          "id": "N07-03",
+          "title": "Versioned content manifest",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-01"
+          ],
+          "acceptance": [
+            "checksum/schema version",
+            "atomic activation"
+          ],
+          "evidence": [
+            "VersionedContentManifest (schemaVersion/packageVersion/STxx/contentSha256-64hex/audioAssetRefs/provenance) enforced at construction",
+            "ManifestActivationEngine: checksum verify + schema gate BEFORE any write; SHA-256 mismatch and unsupported schemaVersion abort with the previous active version untouched; contaminated payload rejected pre-persistence",
+            "gradle :sync:test = BUILD SUCCESSFUL (12/12 tests incl. 6 new)"
+          ]
+        },
+        {
+          "id": "N07-04",
+          "title": "Audio asset cache و playback state",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-03"
+          ],
+          "acceptance": [
+            "download/ready/failed/fallback",
+            "no hardcoded URL"
+          ],
+          "evidence": [
+            "ShomaraAudioCacheManager + ShomaraAudioPlaybackState: DownloadQueued/Downloading/ReadyCached/Playing/Paused/FailedWithTextFallback; SHA-256 verification GATES entry to ReadyCached; corrupt binary quarantined (no local ref persisted); missing binary -> text fallback",
+            "no hardcoded URLs: the descriptor comes from the verified manifest record; storage module has zero http(s) literals",
+            "gradle :feature:lesson:test = BUILD SUCCESSFUL (42/42 tests incl. 4 new)"
+          ]
+        },
+        {
+          "id": "N07-05",
+          "title": "CMS publishing contract",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-03"
+          ],
+          "acceptance": [
+            "rights/moderation/delivery gates",
+            "HG-03 تصویب"
+          ],
+          "evidence": [
+            "cms-audio.ts: RBAC 5-role transition table (LISTENED requires PERSIAN_PRONUNCIATION_REVIEWER; RIGHTS_CLEARED requires RIGHTS_MODERATOR; APPROVED requires CURRICULUM_REVIEWER), actor/role/time/reason audit trail on every transition, LISTEN_REVIEW_REQUIRED guard on the RIGHTS_CLEARED gate",
+            "reversible publish with package SHA-256 + admin-only audited rollback",
+            "HG-03 APPROVED by owner directive 2026-11-01 (recorded in harness/roadmap.json humanGates)",
+            "9 Vitest tests"
+          ]
+        },
+        {
+          "id": "N07-06",
+          "title": "Offline/audio failure tests",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-02",
+            "N07-04"
+          ],
+          "acceptance": [
+            "process death",
+            "corrupt checksum",
+            "network loss"
+          ],
+          "evidence": [
+            "OfflineJourneyTest: full critical journey (cached manifest -> offline queue -> process death -> restart/restore -> idempotent drain with the SAME key -> Server-Wins reconcile to COMPLETED)",
+            "corrupt SHA-256 for manifests AND audio binaries: quarantine + last-known-good/text fallback without crashing",
+            "gradle :sync:test = BUILD SUCCESSFUL (16/16 tests incl. 4 new)"
+          ]
+        },
+        {
+          "id": "N07-07",
+          "title": "Offline content gate",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-05",
+            "N07-06",
+            "N07-08",
+            "N07-09"
+          ],
+          "acceptance": [
+            "critical journey offline",
+            "sync recovery evidence"
+          ],
+          "evidence": [
+            ":core:database and :sync wired into :app via AppContainer (localDatabase + outboxSyncEngine; transport retriable until backend lands - I2)",
+            "module graph updated to the N07 16-module graph",
+            "readiness recorded honestly in docs/content/OFFLINE_CMS_AUDIO_READINESS_N07.md (JVM-verified vs NATIVE_PENDING device/connectedCheck/real-backend)",
+            "offline journey gate = sync journey test evidence above"
+          ]
+        },
+        {
+          "id": "N07-08",
+          "title": "Draft import برای ۲۳۲ ردیف metadata صوت",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-03",
+            "N07-05"
+          ],
+          "acceptance": [
+            "179+53 row idempotent",
+            "همه draft",
+            "فایل مفقود lesson را قفل نمی‌کند",
+            "هیچ auto-approval یا TTS claim"
+          ],
+          "evidence": [
+            "TS importer: 179+53=232 unique rows idempotent, every row locked scriptStatus=DRAFT, provider voice only as non-authoritative hint (CONTENT-006/013)",
+            "Kotlin mirror DraftAudioImporter + persistence into LocalAudioAssetEntity (UNPUBLISHED_NO_BINARY, no localFileRef, no sha256 - zero binary claims)",
+            "missing binary always degrades to the Persian text fallback and never blocks (CONTENT-017)",
+            "Vitest 9 + JUnit 5 tests; originals untouched"
+          ]
+        },
+        {
+          "id": "N07-09",
+          "title": "Audio asset lifecycle و CMS editorial governance",
+          "status": "DONE",
+          "dependsOn": [
+            "N07-05",
+            "N07-08"
+          ],
+          "acceptance": [
+            "script metadata از binary asset version جدا",
+            "voiceProfile مستقل از provider hint",
+            "RBAC و actor/time audit",
+            "impact/orphan/missing reports",
+            "reversible publish/rollback و package checksum"
+          ],
+          "evidence": [
+            "strict model separation: AudioScriptMetadata (draft text) vs AudioAssetVersion (binary version with rightsStatus/moderationStatus/publishState)",
+            "impact/orphan/missing-binary reports detect script-change invalidation, unreferenced audio ids, and steps without a PUBLISHED binary",
+            "reversible publish + admin-only rollback with deterministic package SHA-256",
+            "CONTENT-006/010/013 recorded in content-library/derived/source-audit.json"
+          ]
+        }
       ]
     },
     {
@@ -229,21 +1718,233 @@
       "status": "TODO",
       "branch": "native/n08-ux-completion",
       "goal": "پوشش همهٔ route/stateها و اثبات کیفیت Native روی دستگاه.",
-      "allowedPaths": ["apps/android/**", "packages/contracts/**", "packages/content-delivery/**", "content-library/derived/**", "content-library/integration/**", "docs/architecture/**", "docs/qa/**", "docs/product/**", "design/playbook/quality/**", "scripts/**", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew test", "./gradlew connectedCheck", "./gradlew lint", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/**",
+        "apps/web/**",
+        "packages/contracts/**",
+        "packages/content-delivery/**",
+        "supabase/migrations/**",
+        "content-library/derived/**",
+        "content-library/integration/**",
+        "docs/architecture/**",
+        "docs/qa/**",
+        "docs/product/**",
+        "design/playbook/quality/**",
+        "scripts/**",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "./gradlew test",
+        "./gradlew connectedCheck",
+        "./gradlew lint",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N08-01", "title": "Route/state ledger audit", "status": "TODO", "dependsOn": ["N07-07"], "acceptance": ["100% routes classified", "هیچ state حدسی"], "evidence": [] },
-        { "id": "N08-02", "title": "TalkBack و focus order", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["roles/states حقیقی", "gesture path"], "evidence": [] },
-        { "id": "N08-03", "title": "Font scale/RTL/math direction", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["200% text", "number line/math mirror صحیح"], "evidence": [] },
-        { "id": "N08-04", "title": "Motion/haptic/reduced motion", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["purposeful/cancelable", "no concurrent celebration transition"], "evidence": [] },
-        { "id": "N08-05", "title": "Robustness matrix", "status": "TODO", "dependsOn": ["N08-01"], "acceptance": ["fast taps/offline/process death", "no dead end"], "evidence": [] },
-        { "id": "N08-06", "title": "Child/educator review", "status": "TODO", "dependsOn": ["N08-02", "N08-03", "N08-04", "N08-05", "N08-08", "N08-09", "N08-10", "N08-11", "N08-12"], "acceptance": ["HG-04 evidence", "privacy-safe findings", "curriculum/pronunciation findings separated"], "evidence": [] },
-        { "id": "N08-07", "title": "Native UX و curriculum acceptance gate", "status": "TODO", "dependsOn": ["N08-06"], "acceptance": ["zero P0/P1", "critical dimensions >=3", "فقط APPROVED قابل enable"], "evidence": [] },
-        { "id": "N08-08", "title": "حل source conflict و owner decisionهای محتوا", "status": "IN_PROGRESS", "dependsOn": ["N07-07"], "acceptance": ["CONTENT-001 تا CONTENT-018 disposition", "تصمیم‌ها با evidence و بدون بازنویسی originals"], "evidence": ["packages/content-delivery/src/dispositions.ts: 18/18 disposition ledger (14 closed with n06/n07/N08 evidence, 4 honest OWNER_DECISION_PENDING: CONTENT-005/006/007/016)", "content-library/derived/source-audit.json n08Resolutions (recorded 2026-11-03, originalsTouched=false)", "packages/content-delivery/src/__tests__/dispositions.test.ts: 12/12 PASS"], "blocker": "OWNER_DECISION_PENDING on CONTENT-005 (neutral vs cultural packs), CONTENT-006 (final narrator voice), CONTENT-007 (haptics default), CONTENT-016 (T08 9×9 / ST23 / ST25 final scope) — each guarded in code; final owner decision required before N08-09 mass authoring" },
-        { "id": "N08-09", "title": "تولید ۲۴ station spec در پنج batch", "status": "TODO", "dependsOn": ["N08-08", "N06-08"], "acceptance": ["ST01–06، ST08–12، ST13–17، ST18–22، ST23–25", "هر batch validator و review مستقل", "P0/P1 batch قبلی بسته"], "evidence": [] },
-        { "id": "N08-10", "title": "Cross-station spiral و coverage audit", "status": "TODO", "dependsOn": ["N08-09"], "acceptance": ["۱۵۰ صفحه accounted", "۱۰۰ skill coverage", "prerequisite/spiral/audio ID unique"], "evidence": [] },
-        { "id": "N08-11", "title": "Human review محتوای نوشتاری و audio script", "status": "TODO", "dependsOn": ["N08-09"], "acceptance": ["متخصص پایه اول", "بازبین فارسی و تلفظ", "حقوق asset/audio", "status از VALIDATED به HUMAN_REVIEWED با evidence"], "evidence": [] },
-        { "id": "N08-12", "title": "Curriculum scope و mastery calibration gate", "status": "TODO", "dependsOn": ["N08-08", "N06-08"], "acceptance": ["T08 9×9 و ST23/ST25 include/modify/defer شده", "3/4 mastery و unlock semantics با evidence", "timing/tolerance/audio budgets configurable و device-tested", "decisionها versioned و rollbackable"], "evidence": [] }
+        {
+          "id": "N08-01",
+          "title": "Route/state ledger audit",
+          "status": "TODO",
+          "dependsOn": [
+            "N07-07"
+          ],
+          "acceptance": [
+            "100% routes classified",
+            "هیچ state حدسی"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-02",
+          "title": "TalkBack و focus order",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-01"
+          ],
+          "acceptance": [
+            "roles/states حقیقی",
+            "gesture path"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-03",
+          "title": "Font scale/RTL/math direction",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-01"
+          ],
+          "acceptance": [
+            "200% text",
+            "number line/math mirror صحیح"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-04",
+          "title": "Motion/haptic/reduced motion",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-01"
+          ],
+          "acceptance": [
+            "purposeful/cancelable",
+            "no concurrent celebration transition"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-05",
+          "title": "Robustness matrix",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-01"
+          ],
+          "acceptance": [
+            "fast taps/offline/process death",
+            "no dead end"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-06",
+          "title": "Child/educator review",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-02",
+            "N08-03",
+            "N08-04",
+            "N08-05",
+            "N08-08",
+            "N08-09",
+            "N08-10",
+            "N08-11",
+            "N08-12"
+          ],
+          "acceptance": [
+            "HG-04 evidence",
+            "privacy-safe findings",
+            "curriculum/pronunciation findings separated"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-07",
+          "title": "Native UX و curriculum acceptance gate",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-06"
+          ],
+          "acceptance": [
+            "zero P0/P1",
+            "critical dimensions >=3",
+            "فقط APPROVED قابل enable"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-08",
+          "title": "حل source conflict و owner decisionهای محتوا",
+          "status": "IN_PROGRESS",
+          "dependsOn": [
+            "N07-07"
+          ],
+          "acceptance": [
+            "CONTENT-001 تا CONTENT-018 disposition",
+            "تصمیم‌ها با evidence و بدون بازنویسی originals"
+          ],
+          "evidence": [
+            "packages/content-delivery/src/dispositions.ts: 18/18 disposition ledger (14 closed with n06/n07/N08 evidence, 4 honest OWNER_DECISION_PENDING: CONTENT-005/006/007/016)",
+            "content-library/derived/source-audit.json n08Resolutions (recorded 2026-11-03, originalsTouched=false)",
+            "packages/content-delivery/src/__tests__/dispositions.test.ts: 12/12 PASS"
+          ],
+          "blocker": "OWNER_DECISION_PENDING on CONTENT-005 (neutral vs cultural packs), CONTENT-006 (final narrator voice), CONTENT-007 (haptics default), CONTENT-016 (T08 9×9 / ST23 / ST25 final scope) — each guarded in code; final owner decision required before N08-09 mass authoring"
+        },
+        {
+          "id": "N08-09",
+          "title": "تولید ۲۴ station spec در پنج batch",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-08",
+            "N06-08"
+          ],
+          "acceptance": [
+            "ST01–06، ST08–12، ST13–17، ST18–22، ST23–25",
+            "هر batch validator و review مستقل",
+            "P0/P1 batch قبلی بسته"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-10",
+          "title": "Cross-station spiral و coverage audit",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-09"
+          ],
+          "acceptance": [
+            "۱۵۰ صفحه accounted",
+            "۱۰۰ skill coverage",
+            "prerequisite/spiral/audio ID unique"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-11",
+          "title": "Human review محتوای نوشتاری و audio script",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-09"
+          ],
+          "acceptance": [
+            "متخصص پایه اول",
+            "بازبین فارسی و تلفظ",
+            "حقوق asset/audio",
+            "status از VALIDATED به HUMAN_REVIEWED با evidence"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-12",
+          "title": "Curriculum scope و mastery calibration gate",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-08",
+            "N06-08"
+          ],
+          "acceptance": [
+            "T08 9×9 و ST23/ST25 include/modify/defer شده",
+            "3/4 mastery و unlock semantics با evidence",
+            "timing/tolerance/audio budgets configurable و device-tested",
+            "decisionها versioned و rollbackable"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08-13",
+          "title": "پنل CMS صوت ادمین (وب) — مدیریت خط‌های صوتی از پنل",
+          "status": "IN_PROGRESS",
+          "dependsOn": [
+            "N07-09"
+          ],
+          "acceptance": [
+            "فهرست/فیلتر ۲۳۲ خط با ویرایش diff متن نمایشی/TTS",
+            "آپلود binary با checksum/duration و اعتبارسنجی SHA-256",
+            "transition lifecycle با RBAC و audit trail از پنل",
+            "reports impact/orphan/missing و rollback قابل مشاهده",
+            "هیچ ادعای TTS/audio موجود بدون binary واقعی",
+            "originals دست‌نخورده"
+          ],
+          "evidence": [
+            "apps/web/lib/admin-audio.ts: repository adapter over tested cms-audio governance core (RBAC transition, LISTEN_REVIEW_REQUIRED, checksum, reports); idempotent 232-row DRAFT seed from protected CSVs",
+            "6 API routes: scripts list/detail/edit (diff display/TTS), binary upload (sha256/duration validation, no fake binaries), transition, rollback, reports — all gated by requireRequestAccountPrincipal(ADMIN)",
+            "supabase/migrations/0074_audio_cms_tables.sql: audio_scripts/script_versions/asset_versions/audit with RLS (admin write, teacher read) — static guards PASS (74 migrations)",
+            "apps/web/app/admin/audio/page.tsx + CSS module: RTL Persian panel (filter, edit, stage transition, audit trail, reports bar) on existing DS tokens",
+            "Vitest 8/8 new (admin-audio.test.ts): seed 232 idempotent, RBAC mapping, fake-binary rejection, transition ladder, rollback, impact report",
+            "Gates: vitest 562/562, static 88/88, repository PASS, content PASS, typecheck web clean"
+          ],
+          "blocker": "Production persistence: in-memory repository fails closed in production (AUDIO_ADMIN_BACKEND_NOT_CONFIGURED) until the Supabase-backed implementation is wired; TTS generation itself stays owner-gated (voice + credentials); upload UI needs object storage decision"
+        }
       ]
     },
     {
@@ -252,15 +1953,107 @@
       "status": "TODO",
       "branch": "native/n09-cutover",
       "goal": "Native به کلاینت پیش‌فرض تبدیل و Expo/V1 با شواهد بازنشسته شود.",
-      "allowedPaths": ["apps/**", "packages/**", "scripts/**", "docs/**", "package.json", "package-lock.json", "harness/**", "START_HERE.md", "ROADMAP_PHASES.md"],
-      "gates": ["npm run harness:validate", "npm run verify:repository", "npm run build:packages", "npm run typecheck:all", "npm run test:unit", "./gradlew test", "./gradlew lint", "git diff --check"],
+      "allowedPaths": [
+        "apps/**",
+        "packages/**",
+        "scripts/**",
+        "docs/**",
+        "package.json",
+        "package-lock.json",
+        "harness/**",
+        "START_HERE.md",
+        "ROADMAP_PHASES.md"
+      ],
+      "gates": [
+        "npm run harness:validate",
+        "npm run verify:repository",
+        "npm run build:packages",
+        "npm run typecheck:all",
+        "npm run test:unit",
+        "./gradlew test",
+        "./gradlew lint",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N09-01", "title": "Feature parity sign-off", "status": "TODO", "dependsOn": ["N08-07"], "acceptance": ["route matrix complete", "contract diff reviewed"], "evidence": [] },
-        { "id": "N09-02", "title": "Native default scripts و CI", "status": "TODO", "dependsOn": ["N09-01"], "acceptance": ["developer quickstart Native", "CI default"], "evidence": [] },
-        { "id": "N09-03", "title": "حذف Expo child client", "status": "TODO", "dependsOn": ["N09-02"], "acceptance": ["zero consumer", "web/API unaffected"], "evidence": [] },
-        { "id": "N09-04", "title": "حذف V1/V2/goldens/verifier legacy", "status": "TODO", "dependsOn": ["N09-03", "N01-09"], "acceptance": ["replacement gates exist", "docs links updated"], "evidence": [] },
-        { "id": "N09-05", "title": "حذف ledgerهای تاریخی از root", "status": "TODO", "dependsOn": ["N09-04"], "acceptance": ["ROADMAP legacy archived", "root canonical only"], "evidence": [] },
-        { "id": "N09-06", "title": "Cutover gate", "status": "TODO", "dependsOn": ["N09-05"], "acceptance": ["clean clone gates", "no Expo runtime dependency"], "evidence": [] }
+        {
+          "id": "N09-01",
+          "title": "Feature parity sign-off",
+          "status": "TODO",
+          "dependsOn": [
+            "N08-07"
+          ],
+          "acceptance": [
+            "route matrix complete",
+            "contract diff reviewed"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N09-02",
+          "title": "Native default scripts و CI",
+          "status": "TODO",
+          "dependsOn": [
+            "N09-01"
+          ],
+          "acceptance": [
+            "developer quickstart Native",
+            "CI default"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N09-03",
+          "title": "حذف Expo child client",
+          "status": "TODO",
+          "dependsOn": [
+            "N09-02"
+          ],
+          "acceptance": [
+            "zero consumer",
+            "web/API unaffected"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N09-04",
+          "title": "حذف V1/V2/goldens/verifier legacy",
+          "status": "TODO",
+          "dependsOn": [
+            "N09-03",
+            "N01-09"
+          ],
+          "acceptance": [
+            "replacement gates exist",
+            "docs links updated"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N09-05",
+          "title": "حذف ledgerهای تاریخی از root",
+          "status": "TODO",
+          "dependsOn": [
+            "N09-04"
+          ],
+          "acceptance": [
+            "ROADMAP legacy archived",
+            "root canonical only"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N09-06",
+          "title": "Cutover gate",
+          "status": "TODO",
+          "dependsOn": [
+            "N09-05"
+          ],
+          "acceptance": [
+            "clean clone gates",
+            "no Expo runtime dependency"
+          ],
+          "evidence": []
+        }
       ]
     },
     {
@@ -269,17 +2062,129 @@
       "status": "TODO",
       "branch": "release/n10-readiness",
       "goal": "آماده‌سازی قابل اثبات build و انتشار بدون ساخت artifact نهایی پیش از مجوز.",
-      "allowedPaths": ["apps/android/**", ".github/workflows/**", "docs/qa/**", "docs/release/**", "harness/**", "START_HERE.md"],
-      "gates": ["./gradlew test", "./gradlew lint", "./gradlew connectedCheck", "./gradlew :app:assembleDebug", "git diff --check"],
+      "allowedPaths": [
+        "apps/android/**",
+        ".github/workflows/**",
+        "docs/qa/**",
+        "docs/release/**",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "./gradlew test",
+        "./gradlew lint",
+        "./gradlew connectedCheck",
+        "./gradlew :app:assembleDebug",
+        "git diff --check"
+      ],
       "tasks": [
-        { "id": "N10-01", "title": "Security/privacy review", "status": "TODO", "dependsOn": ["N09-06"], "acceptance": ["secret/log/storage review", "child privacy checklist"], "evidence": [] },
-        { "id": "N10-02", "title": "Macrobenchmark baseline", "status": "TODO", "dependsOn": ["N09-06"], "acceptance": ["startup/scroll/player metrics", "device model recorded"], "evidence": [] },
-        { "id": "N10-03", "title": "Baseline Profile", "status": "TODO", "dependsOn": ["N10-02"], "acceptance": ["critical journeys profile", "release variant verified"], "evidence": [] },
-        { "id": "N10-04", "title": "Device matrix", "status": "TODO", "dependsOn": ["N10-01"], "acceptance": ["low/mid/high Android", "RTL/TalkBack/audio/offline"], "evidence": [] },
-        { "id": "N10-05", "title": "Crash/ANR and observability policy", "status": "TODO", "dependsOn": ["N10-01"], "acceptance": ["PII redaction", "failure ownership"], "evidence": [] },
-        { "id": "N10-06", "title": "Reproducible APK/AAB pipeline", "status": "TODO", "dependsOn": ["N10-03", "N10-04", "N10-05"], "acceptance": ["versioning/signing docs", "checksum و provenance"], "evidence": [] },
-        { "id": "N10-07", "title": "مالک release gate", "status": "TODO", "dependsOn": ["N10-06"], "acceptance": ["HG-05 approved", "release checklist کامل"], "evidence": [] },
-        { "id": "N10-08", "title": "ساخت و تحویل artifact مجاز", "status": "TODO", "dependsOn": ["N10-07"], "acceptance": ["APK/AAB واقعی", "hash و source package", "install smoke test"], "evidence": [] }
+        {
+          "id": "N10-01",
+          "title": "Security/privacy review",
+          "status": "TODO",
+          "dependsOn": [
+            "N09-06"
+          ],
+          "acceptance": [
+            "secret/log/storage review",
+            "child privacy checklist"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N10-02",
+          "title": "Macrobenchmark baseline",
+          "status": "TODO",
+          "dependsOn": [
+            "N09-06"
+          ],
+          "acceptance": [
+            "startup/scroll/player metrics",
+            "device model recorded"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N10-03",
+          "title": "Baseline Profile",
+          "status": "TODO",
+          "dependsOn": [
+            "N10-02"
+          ],
+          "acceptance": [
+            "critical journeys profile",
+            "release variant verified"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N10-04",
+          "title": "Device matrix",
+          "status": "TODO",
+          "dependsOn": [
+            "N10-01"
+          ],
+          "acceptance": [
+            "low/mid/high Android",
+            "RTL/TalkBack/audio/offline"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N10-05",
+          "title": "Crash/ANR and observability policy",
+          "status": "TODO",
+          "dependsOn": [
+            "N10-01"
+          ],
+          "acceptance": [
+            "PII redaction",
+            "failure ownership"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N10-06",
+          "title": "Reproducible APK/AAB pipeline",
+          "status": "TODO",
+          "dependsOn": [
+            "N10-03",
+            "N10-04",
+            "N10-05"
+          ],
+          "acceptance": [
+            "versioning/signing docs",
+            "checksum و provenance"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N10-07",
+          "title": "مالک release gate",
+          "status": "TODO",
+          "dependsOn": [
+            "N10-06"
+          ],
+          "acceptance": [
+            "HG-05 approved",
+            "release checklist کامل"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N10-08",
+          "title": "ساخت و تحویل artifact مجاز",
+          "status": "TODO",
+          "dependsOn": [
+            "N10-07"
+          ],
+          "acceptance": [
+            "APK/AAB واقعی",
+            "hash و source package",
+            "install smoke test"
+          ],
+          "evidence": []
+        }
       ]
     }
   ]
