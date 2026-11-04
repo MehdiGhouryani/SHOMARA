@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -83,15 +86,24 @@ fun ShomaraSettingsScreen(
     onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
-        Text(text = ShomaraSettingsStrings.AvatarSection, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+    // Stage 4, family 15, parent/settings dial 2/2/5: calm and textual.
+    // Inset stays 16dp, not 24dp, by arithmetic: the avatar grid is
+    // 4 x 72dp tiles + 3 x 8dp gaps = 312dp, which would exactly fill a
+    // 360dp screen at 24dp insets with no slack. 16dp is the adaptive
+    // reduction, still a v2 token, and it is recorded here, not hidden.
+    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+        Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        Text(text = ShomaraSettingsStrings.AvatarSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
             for (option in ShomaraAvatarCatalog.Options) {
                 val equipped = option.id == state.avatarId
                 AvatarTile(option = option, equipped = equipped, onEquip = onAvatarSelect)
             }
         }
+        // Selected state is stated in plain text, never carried by
+        // colour or border width alone.
+        Text(text = "آواتار انتخاب‌شده: " + ShomaraAvatarCatalog.option(state.avatarId).label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+        Text(text = "تنظیمات", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         ToggleRow(
             label = ShomaraSettingsStrings.ReducedMotionLabel,
             hint = ShomaraSettingsStrings.ReducedMotionHint,
@@ -129,7 +141,7 @@ private fun AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, 
             )
             .semantics {
                 role = Role.Button
-                contentDescription = option.label
+                contentDescription = if (equipped) option.label + " — انتخاب‌شده" else option.label
                 stateDescription = if (equipped) "انتخاب‌شده" else ""
             }
             .clickable(role = Role.Button) { onEquip(option.id) }
@@ -137,6 +149,10 @@ private fun AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        // Visible tick, not colour alone: the selected tile shows it.
+        if (equipped) {
+            Text(text = "✓", style = ShomaraTypography.Title, color = ShomaraTokens.ColorPrimaryDark)
+        }
         Text(text = option.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk)
     }
 }
@@ -146,6 +162,7 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(min = ShomaraTokens.ComponentTouchMin)
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .padding(ShomaraTokens.Space12),
