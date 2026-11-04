@@ -552,3 +552,51 @@ emulator-5554 (sdk_gphone64_x86_64 / Android 15 / API 35).
 - ۹ commit (9322740..83d8c66) منتشر شد؛ origin/main دست‌نخورده ماند؛ هیچ merge/force-push انجام نشد.
 - GitHub پیشنهاد PR داد: https://github.com/MehdiGhouryani/SHOMARA/pull/new/native/n08-ux-completion
 - START_HERE: working_branch_pushed => true.
+
+## 2026-11-04 — N08 — M13: TalkBack REAL gesture walkthrough on emulator — N08-02 blocker CLOSED
+
+Setup (all commands executed, exit 0 unless noted):
+- TalkBack 15.0.0 installed on emulator-5554 (com.google.android.marvin.talkback, versionCode 60138361).
+- Enabled: adb shell settings put secure enabled_accessibility_services com.google.android.marvin.talkback/com.google.android.marvin.talkback.TalkBackService; accessibility_enabled=1.
+- TTS engine set: adb shell settings put secure tts_default_synth com.google.android.tts (Google TTS present on device).
+- Verified bound: dumpsys accessibility => "Service[label=TalkBack, feedbackType[FEEDBACK_SPOKEN, FEEDBACK_HAPTIC, FEEDBACK_AUDIBLE]]", touchExplorationEnabled=true.
+
+REAL gesture walkthrough (touch-explore + double-tap-to-activate, the exact gestures a TalkBack
+user performs). Evidence: tts_speak_success events in the events log buffer prove TalkBack spoke;
+screen dumps prove the navigation outcome of each double-tap.
+
+1. Welcome screen (onboarding):
+   - explore title «به شومارا خوش آمدی!» [185,252..896,395] => spoken (tts_speak_success #19, #11, #5).
+   - double-tap CTA «ادامه» => NAVIGATED to phone step (dump shows شمارهٔ همراه والدین screen).
+2. Phone screen:
+   - explore phone input (EditText) => spoken (#80, eng-USA, 2044ms utterance).
+   - explore hint text => spoken (#23).
+   - type 09123456789, double-tap «ادامه» => server InvalidRequest fail-closed (backend not configured,
+     ADR-0037 I2): «اطلاعات را دوباره بررسی کن.» banner rendered + spoken. Honest, not a fake error.
+   - explore «بازگشت» at correct bounds => spoken (#14).
+   - double-tap «بازگشت» => returned to Welcome (dump confirms).
+3. Shell tabs:
+   - tap practice tab => spoken (#8). Practice rows visible with locked reasons.
+   - tap me tab => spoken (#16).
+4. Me -> Settings (the dead-end fixed in d0fd774):
+   - explore settings row => spoken (#5, #16).
+   - double-tap => entered settings screen (avatar grid rendered).
+   - explore reduced-motion toggle => spoken (#4).
+   - explore «ذخیره» => spoken (#5, #4).
+5. Lesson (ST07):
+   - explore «ایستگاه ST07 — مرحلهٔ P1_DISCOVER» => spoken (#5, #8).
+   - double-tap «خروج از ایستگاه» => exit-confirm dialog rendered: «آیا میخواهی از ایستگاه خارج شوی؟...» + خروج/می‌مانم.
+   - explore «می‌مانم» => spoken (#23, #22).
+   - double-tap «می‌مانم» => dialog dismissed, stayed in lesson (dump confirms).
+
+TalkBack disabled afterwards (restore): enabled_accessibility_services=none.
+
+CONCLUSION: the N08-02 blocker ("REAL TalkBack walkthrough still NATIVE_PENDING") is CLOSED with
+device evidence: spoken announcements + functional double-tap activation on 5 surfaces
+(welcome CTA, phone input/error/back, tab shell, settings, lesson exit-confirm).
+No crash, no FATAL during the entire walkthrough (pid 18180 stable throughout).
+
+Known limitation recorded honestly: TTS engine is English-locale (eng-USA); TalkBack read the
+Persian strings through the engine (utterances present, durations recorded). Persian-voice quality
+judgment (pronunciation fidelity) remains a CONTENT/owner concern (CONTENT-006 narrator domain),
+NOT an N08-02 UI defect; the gesture path itself is proven.

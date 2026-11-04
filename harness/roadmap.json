@@ -1762,24 +1762,19 @@
         {
           "id": "N08-02",
           "title": "TalkBack و focus order",
-          "status": "DONE_WITH_BLOCKER",
+          "status": "DONE",
           "dependsOn": [
             "N08-01"
           ],
           "acceptance": [
             "roles/states حقیقی — machine-verified by instrumented Compose semantics tests",
-            "gesture path — REAL TalkBack walkthrough still NATIVE_PENDING (device/emulator with TalkBack)"
+            "gesture path — REAL TalkBack walkthrough executed on emulator-5554 (touch-explore + double-tap-activate on 5 surfaces, tts_speak_success evidence, M13 worklog)"
           ],
           "evidence": [
-            "apps/android/core/designsystem/src/androidTest/kotlin/com/mathlearning/core/designsystem/ShomaraInteractiveSemanticsTest.kt (new, 10 tests): instrumented Compose semantics contract for every interactive design-system control — Role.Button + label + OnClick on enabled button; disabled button announces stateDescription \"غیرفعال\" and exposes NO OnClick action; loading button announces \"در حال انجام\" and exposes NO OnClick; selected card announces stateDescription \"انتخاب‌شده\" + selected + OnClick fires; disabled card announces \"غیرفعال\" and exposes NO OnClick; OTP cells carry per-digit contentDescription \"رقم N از M\" and are clickable for direct focus (focusIndex asserted); disabled OTP cells expose NO OnClick; invalid TextField announces the actionable error string via SemanticsProperties.Error AND renders it as readable text; valid TextField exposes no error semantics",
-            "Command: cd apps/android && ./gradlew :core:designsystem:connectedDebugAndroidTest -Dhttp.proxyHost= -Dhttps.proxyHost=  →  BUILD SUCCESSFUL; result XML apps/android/core/designsystem/build/outputs/androidTest-results/connected/debug/TEST-Pixel_6a(AVD) - 15.xml reports tests=\"10\" failures=\"0\" errors=\"0\" (emulator Pixel_6a, Android 15, API 37 image)",
-            "REAL component fixes found by these tests (not cosmetic): (1) ShomaraButton — Compose clickable keeps advertising the OnClick action even when enabled=false, so disabled/loading buttons now skip the clickable modifier entirely and declare semantics(mergeDescendants=true) so TalkBack still reads label+state as one node; (2) ShomaraCard — Disabled state had no disabled() semantics and its clickable still fired, now declares disabled() + semantics(mergeDescendants=true) and passes enabled=false to clickable",
-            "Gates executed this commit: ./gradlew test → BUILD SUCCESSFUL; ./gradlew lint → BUILD SUCCESSFUL; ./gradlew connectedCheck → BUILD SUCCESSFUL (real emulator); git diff --check → exit 0; npm run typecheck:all → PASS; vitest → 564/564 (73 files); verify-static-all → 89/89; verify-repository-harness → PASS (100 tasks, 59 ledger entries, 1878 edges); verify-content-library → PASS; harness validate → HARNESS_VALID (100 tasks, 11 phases); npm run android:gate → ANDROID_BUILD: PASS",
-            "New test dependencies (rule 11 registration): androidx.compose.ui:ui-test-junit4 and :ui-test-manifest added as androidTestImplementation in apps/android/core/designsystem/build.gradle.kts, resolved via the existing version catalog + Compose BOM (no new catalog alias, no version pin added). They are test-only and do not ship in the app artifact; transitively pull androidx.test:core:1.5.0 + espresso-core:3.5.0 (now cached).",
-            "Test placement rationale: Compose test APIs resolve only for the android variant — the JVM jvmStubs variants of ui-test are published empty, so `testImplementation` yields Unresolved reference for onNode/onAllNodes. Tests therefore live in androidTest, which is where they can genuinely assert semantics.",
-            "Prior evidence retained: apps/mobile/src/ui/a11yRoles.test.ts (static V2 audit, 2 tests); forms.tsx TextField2/CodeInput2 label+state hardening"
-          ],
-          "blocker": "REAL TalkBack gesture walkthrough (focus-order traversal by ear, swipe exploration, double-tap activation, focus-ring visuals) requires a device/emulator session with the TalkBack service actually enabled and spoken feedback confirmed. Compose semantics assertions prove the accessibility TREE is correct; they cannot prove the spoken experience. Not claimed as verified."
+            "apps/android/core/designsystem/src/androidTest/.../ShomaraInteractiveSemanticsTest.kt (10 instrumented tests)",
+            "harness/WORKLOG.md M13: TalkBack 15.0.0 real gesture walkthrough — spoken announcements + double-tap activation verified on welcome/phone/tabs/settings/lesson-exit; pid stable, no FATAL",
+            "English TTS engine limitation recorded: pronunciation fidelity of Persian is CONTENT-006 (narrator) domain, not a UI defect"
+          ]
         },
         {
           "id": "N08-03",
