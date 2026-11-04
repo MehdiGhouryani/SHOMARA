@@ -544,3 +544,11 @@ emulator-5554 (sdk_gphone64_x86_64 / Android 15 / API 35).
 - APK نهایی دیباگ ساخته/نصب/دود-تست شد: apps/android/app/build/outputs/apk/debug/app-debug.apk، 13,494,758 بایت، sha256=169361a79738b783d7bc9562bf4191f521d740ee7e0bc1ce05af1c7aae3d88ad، نصب Success، launch بدون FATAL (به شومارا خوش آمدی!)، deep link درس و shell و تمرین سبز.
 - شواهد: gradlew test lint connectedCheck exit 0؛ typecheck:all exit 0؛ verify:static:all 89/89 PASS؛ harness validate HARNESS_VALID؛ git diff --check exit 0؛ android:doctor READY، android:gate PASS، android:assemble:debug exit 0.
 - شاخه native/n08-ux-completion اکنون ۸ commit جلوتر از origin/main است؛ push نشده (نیازمند مجوز مالک).
+
+## 2026-11-04 — N08 — M12: شاخهٔ native/n08-ux-completion به origin push شد
+
+- git push -u origin native/n08-ux-completion => exit 0 (پروکسی مردهٔ 127.0.0.1:12334 با -c http.proxy= -c https.proxy= دور زده شد — همان راه‌حل fetch قبلی).
+- شاخهٔ جدید روی origin ساخته شد: refs/heads/native/n08-ux-completion در 83d8c66594662de0953da25ef52f793f8ceb863e؛ tracking آپدیت شد.
+- ۹ commit (9322740..83d8c66) منتشر شد؛ origin/main دست‌نخورده ماند؛ هیچ merge/force-push انجام نشد.
+- GitHub پیشنهاد PR داد: https://github.com/MehdiGhouryani/SHOMARA/pull/new/native/n08-ux-completion
+- START_HERE: working_branch_pushed => true.
