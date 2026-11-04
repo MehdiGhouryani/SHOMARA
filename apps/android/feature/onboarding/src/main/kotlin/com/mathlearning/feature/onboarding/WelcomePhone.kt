@@ -3,15 +3,23 @@ package com.mathlearning.feature.onboarding
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
+import com.mathlearning.core.designsystem.ShomaraCard
+import com.mathlearning.core.designsystem.ShomaraCharacter
+import com.mathlearning.core.designsystem.ShomaraCharacterImage
+import com.mathlearning.core.designsystem.ShomaraCharacterSlot
 import com.mathlearning.core.designsystem.ShomaraTextField
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
@@ -25,6 +33,9 @@ object ShomaraOnboardingStrings {
     const val PhoneInvalid: String = "شمارهٔ همراه را با ۰۹ و ۱۱ رقم وارد کن."
     const val Continue: String = "ادامه"
     const val Back: String = "بازگشت"
+
+    /** N08-15 DEBUG simulation affordance; the label names itself so it is never read as real SMS. */
+    const val SimulationSkip: String = "عبور آزمایشی (حالت توسعه)"
 }
 
 /**
@@ -81,18 +92,49 @@ fun ShomaraWelcomeScreen(
     title: String = ShomaraOnboardingStrings.WelcomeTitle,
     body: String = ShomaraOnboardingStrings.WelcomeBody,
 ) {
+    // Duolingo-inspired interaction pattern (principles ONLY, per design/INSPIRATION_GUARDRAILS):
+    // a breathing content zone and ONE primary CTA anchored at the bottom — always reachable
+    // without scrolling, never floating mid-screen.
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(ShomaraTokens.Space24),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(ShomaraTokens.Space40))
-        Text(text = title, style = ShomaraTypography.Display, color = ShomaraTokens.ColorInk)
-        Text(text = body, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
-        Spacer(modifier = Modifier.height(ShomaraTokens.Space16))
-        ShomaraButton(text = ShomaraOnboardingStrings.Continue, onClick = onStart, variant = ShomaraButtonVariant.Primary)
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+        ) {
+            Spacer(modifier = Modifier.height(ShomaraTokens.Space32))
+            ShomaraCharacterImage(
+                character = ShomaraCharacter.Main,
+                poseId = 1,
+                slot = ShomaraCharacterSlot.Hero,
+                decorative = true,
+            )
+            Text(
+                text = title,
+                style = ShomaraTypography.Display,
+                color = ShomaraTokens.ColorInk,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = body,
+                style = ShomaraTypography.Body,
+                color = ShomaraTokens.ColorInk2,
+                textAlign = TextAlign.Center,
+            )
+        }
+        ShomaraButton(
+            text = ShomaraOnboardingStrings.Continue,
+            onClick = onStart,
+            variant = ShomaraButtonVariant.Primary,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -104,24 +146,40 @@ fun ShomaraPhoneScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     title: String = ShomaraOnboardingStrings.PhoneLabel,
+    /** DEBUG simulation only (N08-15); null in release, so the button never renders there. */
+    simulatedSkip: (() -> Unit)? = null,
 ) {
     val error = ShomaraPhoneLogic.validationError(phone)
     val canContinue = ShomaraPhoneLogic.isValid(phone)
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(ShomaraTokens.Space24),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
-        Text(text = ShomaraOnboardingStrings.WelcomeBody, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
-        ShomaraTextField(
-            value = phone,
-            onValueChange = onPhoneChange,
-            label = title,
-            hint = ShomaraOnboardingStrings.PhoneHint,
-            errorText = error,
-            numericLtr = true,
-        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+        ) {
+            // Section header above the card; the field keeps its own persistent label inside.
+            Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+            ShomaraCard {
+                Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
+                    Text(text = ShomaraOnboardingStrings.WelcomeBody, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
+                    ShomaraTextField(
+                        value = phone,
+                        onValueChange = onPhoneChange,
+                        label = title,
+                        hint = ShomaraOnboardingStrings.PhoneHint,
+                        errorText = error,
+                        numericLtr = true,
+                    )
+                }
+            }
+        }
         ShomaraButton(
             text = ShomaraOnboardingStrings.Continue,
             onClick = {
@@ -130,11 +188,22 @@ fun ShomaraPhoneScreen(
             },
             enabled = canContinue,
             variant = ShomaraButtonVariant.Primary,
+            modifier = Modifier.fillMaxWidth(),
         )
         ShomaraButton(
             text = ShomaraOnboardingStrings.Back,
             onClick = onBack,
             variant = ShomaraButtonVariant.Ghost,
+            modifier = Modifier.fillMaxWidth(),
         )
+        // DEBUG simulation only; never rendered in release builds (simulatedAuth stays false).
+        if (simulatedSkip != null) {
+            ShomaraButton(
+                text = ShomaraOnboardingStrings.SimulationSkip,
+                onClick = simulatedSkip,
+                variant = ShomaraButtonVariant.Ghost,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }
