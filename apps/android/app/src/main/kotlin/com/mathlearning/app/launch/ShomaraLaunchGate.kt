@@ -1,42 +1,18 @@
 package com.mathlearning.app.launch
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import kotlinx.coroutines.delay
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mathlearning.core.designsystem.ShomaraButton
-import com.mathlearning.core.designsystem.ShomaraButtonVariant
+import androidx.compose.ui.Modifier
 import com.mathlearning.core.designsystem.ShomaraCharacter
-import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
-import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
-import com.mathlearning.core.designsystem.ShomaraFeedbackKind
+import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraSplashScreen
-import com.mathlearning.core.designsystem.ShomaraTokens
-import com.mathlearning.core.designsystem.ShomaraTypography
+import com.mathlearning.core.designsystem.ShomaraStateSurface
 import com.mathlearning.core.model.ShomaraLaunchState
 import com.mathlearning.core.model.ShomaraLaunchSurface
+import kotlinx.coroutines.delay
 
 /**
  * The launch gate (N08-15): the ONLY place `ShomaraLaunchState` becomes a surface.
@@ -105,11 +81,14 @@ fun ShomaraLaunchGate(
 private const val NewUserHandoffMs: Long = 600
 
 /**
- * Warm recovery surface for `Offline` / `Error`.
- *
- * Two honest actions, never a dead end: retry (real re-resolution) and "start over" (discard the
- * unusable credential and enter the welcome gate). The wording never blames the child and never
- * exposes internal detail — it says what happened and what happens next (MASTER §1).
+ * Warm recovery surface for `Offline` / `Error` (Stage 1, family 16).
+ * Now rendered through the shared ShomaraStateSurface: one title, one
+ * body, one warm hint, one primary retry, one ghost escape. Copy and
+ * behaviour are unchanged; only the duplicated layout is removed.
+ * Two honest actions, never a dead end: retry (real re-resolution) and
+ * "start over" (discard the unusable credential and enter the welcome
+ * gate). The wording never blames the child and never exposes internal
+ * detail.
  */
 @Composable
 fun ShomaraLaunchRecoveryScreen(
@@ -120,61 +99,21 @@ fun ShomaraLaunchRecoveryScreen(
     modifier: Modifier = Modifier,
 ) {
     val copy = ShomaraLaunchRecoveryCopy.forState(state)
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(ShomaraTokens.ColorCanvas)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = ShomaraTokens.Space24, vertical = ShomaraTokens.Space24),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        ShomaraCharacterImage(
-            character = ShomaraCharacter.Main,
-            poseId = 1,
-            slot = ShomaraCharacterSlot.Lesson,
-            decorative = true,
-        )
-        Spacer(modifier = Modifier.height(ShomaraTokens.Space16))
-        Text(
-            text = copy.title,
-            style = ShomaraTypography.Title,
-            color = ShomaraTokens.ColorInk,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.semantics { heading() },
-        )
-        Spacer(modifier = Modifier.height(ShomaraTokens.Space8))
-        Text(
-            text = copy.body,
-            style = ShomaraTypography.Body,
-            color = ShomaraTokens.ColorInk2,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(ShomaraTokens.Space16))
-        ShomaraFeedbackBanner(
-            kind = ShomaraFeedbackKind.Recovery,
-            text = copy.hint,
-            modifier = Modifier.widthIn(max = ShomaraTokens.ComponentSplashHeroMaxWidth),
-        )
-        Spacer(modifier = Modifier.height(ShomaraTokens.Space24))
-        ShomaraButton(
-            text = copy.retryLabel,
-            onClick = onRetry,
-            enabled = !retrying,
-            loading = retrying,
-            variant = ShomaraButtonVariant.Primary,
-            modifier = Modifier.widthIn(max = ShomaraTokens.ComponentSplashHeroMaxWidth),
-        )
-        Spacer(modifier = Modifier.height(ShomaraTokens.Space8))
-        ShomaraButton(
-            text = ShomaraLaunchRecoveryCopy.StartOverLabel,
-            onClick = onStartOver,
-            variant = ShomaraButtonVariant.Ghost,
-            modifier = Modifier.widthIn(max = ShomaraTokens.ComponentSplashHeroMaxWidth),
-        )
-    }
+    ShomaraStateSurface(
+        state = if (state == ShomaraLaunchState.Offline) ShomaraEntryState.Offline else ShomaraEntryState.Error,
+        title = copy.title,
+        body = copy.body,
+        hint = copy.hint,
+        character = ShomaraCharacter.Main,
+        poseId = 1,
+        characterSlot = ShomaraCharacterSlot.Lesson,
+        retryLabel = copy.retryLabel,
+        onRetry = onRetry,
+        retrying = retrying,
+        secondaryLabel = ShomaraLaunchRecoveryCopy.StartOverLabel,
+        onSecondary = onStartOver,
+        modifier = modifier,
+    )
 }
 
 /** Recovery copy per launch failure, kept pure so it is unit-testable. */
