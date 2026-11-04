@@ -60,6 +60,7 @@ fun ShomaraStateSurface(
     character: ShomaraCharacter? = null,
     poseId: Int = 1,
     characterSlot: ShomaraCharacterSlot = ShomaraCharacterSlot.Lesson,
+    hint: String? = null,
     retryLabel: String? = null,
     onRetry: (() -> Unit)? = null,
     retrying: Boolean = false,
@@ -98,6 +99,9 @@ fun ShomaraStateSurface(
             color = ShomaraTokens.ColorInk2,
             textAlign = TextAlign.Center,
         )
+        if (hint != null) {
+            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = hint)
+        }
         if (ShomaraEntryStateLogic.isLoading(state)) {
             ShomaraPagePlaceholder()
         }
