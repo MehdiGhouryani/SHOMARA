@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -205,6 +207,7 @@ fun ShomaraOnboardingHost(
 ) {
     val holder = rememberOnboardingStateHolder(session, draftStore)
     val scope = rememberCoroutineScope()
+    val clipboard = LocalClipboardManager.current
     androidx.compose.runtime.LaunchedEffect(holder.flow.step) {
         onStepRoute(holder.flow.stepRoute())
     }
@@ -215,6 +218,7 @@ fun ShomaraOnboardingHost(
             .background(ShomaraTokens.ColorCanvas)
             .statusBarsPadding()
             .navigationBarsPadding()
+            .imePadding()
             .padding(ShomaraTokens.Space16),
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
@@ -303,6 +307,28 @@ fun ShomaraOnboardingHost(
                     variant = ShomaraButtonVariant.Primary,
                     modifier = Modifier.fillMaxWidth(),
                 )
+                // Stage 1 (family 03): resend reuses the real server request,
+                // so the server throttle banner (remaining seconds) IS the
+                // cooldown — no client-invented cooldown duration, and the
+                // code is never logged. Paste reuses ShomaraOtpState
+                // .fillFromCode, which keeps digits in LTR cell order.
+                ShomaraButton(
+                    text = ShomaraOtpStepStrings.Resend,
+                    onClick = { scope.launch { holder.requestOtp() } },
+                    enabled = !holder.otpBusy,
+                    variant = ShomaraButtonVariant.Ghost,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                ShomaraButton(
+                    text = ShomaraOtpStepStrings.Paste,
+                    onClick = {
+                        val pasted = clipboard.getText()?.text.orEmpty()
+                        if (pasted.isNotEmpty()) holder.otp = holder.otp.fillFromCode(pasted)
+                    },
+                    enabled = !holder.otpBusy,
+                    variant = ShomaraButtonVariant.Ghost,
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 ShomaraButton(
                     text = ShomaraOtpStepStrings.Back,
                     onClick = { holder.back() },
@@ -348,6 +374,8 @@ private object ShomaraOtpStepStrings {
     const val SentToPrefix: String = "کد تأیید برای"
     const val SentToSuffix: String = "ارسال شد"
     const val Confirm: String = "تأیید کد"
+    const val Resend: String = "ارسال دوباره کد"
+    const val Paste: String = "چسباندن کد از حافظه"
     const val Back: String = "بازگشت"
     const val FillSimulationCode: String = "پر کردن کد آزمایشی و ادامه"
     const val SimulationSkip: String = "عبور آزمایشی (حالت توسعه)"
