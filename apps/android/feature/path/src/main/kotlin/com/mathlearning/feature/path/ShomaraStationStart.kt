@@ -6,7 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -19,6 +22,9 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import com.mathlearning.core.designsystem.ShomaraButton
+import com.mathlearning.core.designsystem.ShomaraCharacter
+import com.mathlearning.core.designsystem.ShomaraCharacterImage
+import com.mathlearning.core.designsystem.ShomaraCharacterSlot
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
@@ -120,8 +126,33 @@ fun ShomaraStationStartSheet(
             .padding(ShomaraTokens.Space16),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
-        Text(text = meta.workingTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
-        Text(text = ShomaraStationStartLogic.metadataLine(meta), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+        // Family 07: character in a frame, static and small, from the shipped
+        // drawables only (Main pose 1). The concise lesson goal is the
+        // catalog working title itself; no goal description is invented here,
+        // and stations that are not authored are never faked as available.
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(ShomaraTokens.ComponentNodeSize)
+                    .background(ShomaraTokens.ColorSurfaceAlt, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                    .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd)),
+                contentAlignment = Alignment.Center,
+            ) {
+                ShomaraCharacterImage(
+                    character = ShomaraCharacter.Main,
+                    poseId = 1,
+                    slot = ShomaraCharacterSlot.Inline,
+                    decorative = true,
+                )
+            }
+            Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+                Text(text = meta.workingTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                Text(text = ShomaraStationStartLogic.metadataLine(meta), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+            }
+        }
         when (state) {
             ShomaraStationStartState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ بعداً ادامه می‌دهیم.")
             ShomaraStationStartState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: "مشکلی پیش آمد.")
@@ -140,7 +171,11 @@ fun ShomaraStationStartSheet(
                 variant = if (state == ShomaraStationStartState.Locked) ShomaraButtonVariant.Ghost else ShomaraButtonVariant.Primary,
             )
         }
-        ShomaraButton(text = "بستن", onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
+        // Exactly one dismissing action when locked: the "متوجه شدم" CTA
+        // above already dismisses, so a second "بستن" button would duplicate it.
+        if (state != ShomaraStationStartState.Locked) {
+            ShomaraButton(text = "بستن", onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
+        }
     }
 }
 
@@ -171,6 +206,7 @@ fun ShomaraJumpSheet(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .heightIn(min = ShomaraTokens.ComponentTouchMin)
                     .background(if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
                     .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusSm))
                     .semantics {
@@ -184,7 +220,10 @@ fun ShomaraJumpSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = if (selected) "●" else "", style = ShomaraTypography.Body, color = content)
-                Text(text = target.meta.workingTitle, style = ShomaraTypography.Body, color = content)
+                Column {
+                    Text(text = target.meta.workingTitle, style = ShomaraTypography.Body, color = content)
+                    Text(text = ShomaraPathGraphLogic.stateLabelFor(target.nodeState), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+                }
             }
         }
         ShomaraButton(
