@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import com.mathlearning.core.designsystem.ShomaraCharacter
+import com.mathlearning.core.designsystem.ShomaraCharacterImage
+import com.mathlearning.core.designsystem.ShomaraCharacterSlot
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
@@ -94,8 +99,53 @@ fun ShomaraPathScreen(
     onStationTap: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Family 06 header: one calm progress layer only (no %, no score, no second
+    // progress layer in the child's view). The fraction is rendered from the
+    // server-provided completed set only; this screen never computes mastery.
+    // RTL: the first element of a Row is on the right, and the progress fill
+    // aligns to the layout start (right in RTL). Digit strings and operation
+    // order are never mirrored.
+    val totalStations = ShomaraStationCatalog.Stations.size
+    val completedCount = progress.completedStationIds.size
+    val remainingStations = (totalStations - completedCount).coerceAtLeast(0)
+    val progressFraction = if (totalStations > 0) completedCount.toFloat() / totalStations.toFloat() else 0f
     Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Text(text = "مسیر یادگیری", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Static cameo only, from the 4 shipped drawables (Main pose 1).
+            // It is decoration; the hero of this screen is the current node.
+            ShomaraCharacterImage(
+                character = ShomaraCharacter.Main,
+                poseId = 1,
+                slot = ShomaraCharacterSlot.Inline,
+                decorative = true,
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+                Text(text = "مسیر یادگیری", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                Text(
+                    text = if (remainingStations == 0) "مسیر کامل شد" else "ایستگاه‌های باقی‌مانده: ${ShomaraDigits.toFa(remainingStations)}",
+                    style = ShomaraTypography.Caption,
+                    color = ShomaraTokens.ColorMuted,
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = ShomaraTokens.Space8)
+                .background(ShomaraTokens.ColorSurfaceAlt, RoundedCornerShape(ShomaraTokens.RadiusSm))
+                .semantics { contentDescription = if (remainingStations == 0) "مسیر کامل شد" else "ایستگاه‌های باقی‌مانده: ${ShomaraDigits.toFa(remainingStations)}" },
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(progressFraction)
+                    .heightIn(min = ShomaraTokens.Space8)
+                    .background(ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusSm)),
+            )
+        }
         if (progress.offline) {
             ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ مسیر آفلاین دیده می‌شود.")
         }
@@ -109,6 +159,7 @@ fun ShomaraPathScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .heightIn(min = ShomaraTokens.ComponentTouchMin)
                         .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .border(
                             if (depth == ShomaraClayDepth.Featured) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
@@ -125,13 +176,27 @@ fun ShomaraPathScreen(
                     horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val mark = ShomaraPathGraphLogic.stateMarkFor(state)
-                    if (mark.isNotEmpty()) {
-                        Text(text = mark, style = ShomaraTypography.Title, color = content)
+                    // Triple encoding, never colour alone: node circle (shape +
+                    // colour), visible state label below, and the TalkBack label
+                    // on the row. Only the Current node uses Featured depth.
+                    Box(
+                        modifier = Modifier
+                            .size(ShomaraTokens.ComponentTouchMin)
+                            .background(container, CircleShape)
+                            .border(ShomaraTokens.ClaySoftBorderWidth, border, CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        val mark = ShomaraPathGraphLogic.stateMarkFor(state)
+                        Text(
+                            text = if (mark.isNotEmpty()) mark else ShomaraDigits.toFa(meta.ordinal),
+                            style = ShomaraTypography.Body,
+                            color = content,
+                        )
                     }
                     Column {
                         Text(text = meta.workingTitle, style = ShomaraTypography.Body, color = content)
                         Text(text = "ایستگاه ${ShomaraDigits.toFa(meta.ordinal)}", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+                        Text(text = ShomaraPathGraphLogic.stateLabelFor(state), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
                     }
                 }
             }
