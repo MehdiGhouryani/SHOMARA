@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
+import com.mathlearning.core.designsystem.ShomaraPagePlaceholder
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
@@ -68,8 +73,10 @@ fun ShomaraPracticeHubScreen(
     onItemTap: (String) -> Unit = {},
 ) {
     val state = ShomaraPracticeHubLogic.stateFor(items, loading, offline, errorText)
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Text(text = "تمرین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+    // Stage 4, family 12: generous breathing room, one clear hierarchy.
+    // Preferred inset is 24dp; rows stay full-width so nothing is squeezed.
+    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+        Text(text = "تمرین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         when (state) {
             ShomaraPracticeHubState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ تمرین‌های ذخیره‌شده بعداً به‌روز می‌شوند.")
             ShomaraPracticeHubState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: "مشکلی پیش آمد.")
@@ -77,7 +84,12 @@ fun ShomaraPracticeHubScreen(
             ShomaraPracticeHubState.Empty -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraPracticeHubLogic.emptyGuide())
             else -> {}
         }
+        if (state == ShomaraPracticeHubState.Loading) {
+            // Static page shape, not a spinner: reduced-motion safe by construction.
+            ShomaraPagePlaceholder()
+        }
         if (state == ShomaraPracticeHubState.List || state == ShomaraPracticeHubState.History) {
+            Text(text = "تمرین‌های قابل انجام", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             for (item in ShomaraPracticeHubLogic.recommendedFor(items)) {
                 PracticeRow(item = item, locked = false, onItemTap = onItemTap)
             }
@@ -86,7 +98,7 @@ fun ShomaraPracticeHubScreen(
             }
         }
         if (recent.isNotEmpty()) {
-            Text(text = "تمرین‌های اخیر", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+            Text(text = "تمرین‌های اخیر", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             for (item in ShomaraPracticeHubLogic.historyFor(recent)) {
                 PracticeRow(item = item, locked = false, onItemTap = onItemTap, historical = true)
             }
@@ -102,6 +114,7 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(min = ShomaraTokens.ComponentTouchMin)
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics {
