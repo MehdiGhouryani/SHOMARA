@@ -17,10 +17,12 @@ import com.mathlearning.core.datastore.PreferencesTokenStore
 import com.mathlearning.core.datastore.ShomaraProfileDraftStore
 import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.network.LessonGateway
-import com.mathlearning.sync.OutboxSyncEngine
 import com.mathlearning.core.network.ShomaraOtpApi
 import com.mathlearning.core.network.ShomaraOtpEndpoints
+import com.mathlearning.core.network.ShomaraOtpProvider
 import com.mathlearning.feature.onboarding.ShomaraAuthSession
+import com.mathlearning.feature.onboarding.ShomaraRealOtpProvider
+import com.mathlearning.sync.OutboxSyncEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.io.File
@@ -36,6 +38,15 @@ interface AppContainer {
 
     /** Persisted child preferences (N08-04): avatar + reduced motion, real DataStore. */
     val settingsStore: ShomaraSettingsStore
+
+    /**
+     * N08-15: true only in a DEBUG build. The launch gate uses it to label the simulated OTP flow
+     * on screen; release builds always report false, so the label can never appear in production.
+     */
+    val simulatedAuthEnabled: Boolean
+
+    /** True when a real OTP backend is configured for this build (ADR-0037 I2). */
+    fun isBackendConfigured(): Boolean
 }
 
 /**
@@ -51,7 +62,16 @@ object ShomaraRuntimeConfig {
     var lessonSubmitUrl: String? = null
 }
 
-class DefaultAppContainer(context: Context) : AppContainer {
+class DefaultAppContainer(
+    context: Context,
+    /**
+     * Injected by the build type: `true` only for debug. Kept as a constructor parameter (not a
+     * `BuildConfig` read inside the container) so the release path is provably the default.
+     */
+    private val debugBuild: Boolean = false,
+    /** DEBUG-only provider factory; null in release, so no simulated code path can be reached. */
+    private val debugOtpProvider: ((ShomaraOtpApi) -> ShomaraOtpProvider)? = null,
+) : AppContainer {
     override val logger: AppLogger = SafeAppLogger(AndroidLogSink)
 
     private val dataStore = PreferenceDataStoreFactory.create(
@@ -59,9 +79,29 @@ class DefaultAppContainer(context: Context) : AppContainer {
         produceFile = { File(context.filesDir, "shomara_auth.preferences_pb") },
     )
 
+    private val realOtpApi: ShomaraOtpApi = ShomaraOtpApi(
+        client = ShomaraOtpApi.defaultClient(),
+        endpoints = { ShomaraRuntimeConfig.otpEndpoints },
+    )
+
+    /**
+     * N08-15: the provider is the ONLY difference between the debug and release auth paths. The
+     * session orchestrator, the token store, the throttle and every fail-closed rule are identical.
+     */
+    private val otpProvider: ShomaraOtpProvider =
+        if (debugBuild) debugOtpProvider?.invoke(realOtpApi) ?: ShomaraRealOtpProvider(realOtpApi)
+        else ShomaraRealOtpProvider(realOtpApi)
+
+    override val simulatedAuthEnabled: Boolean = debugBuild && otpProvider.isSimulated
+
+    override fun isBackendConfigured(): Boolean = ShomaraRuntimeConfig.otpEndpoints != null
+
     override val authSession: ShomaraAuthSession = ShomaraAuthSession(
-        api = ShomaraOtpApi(client = ShomaraOtpApi.defaultClient(), endpoints = { ShomaraRuntimeConfig.otpEndpoints }),
+        api = otpProvider,
         store = PreferencesTokenStore(dataStore),
+        // A simulated credential is accepted only when this build is debug AND the provider is the
+        // simulated one. Release builds pass false and therefore reject it (fail closed).
+        allowSimulated = debugBuild && otpProvider.isSimulated,
     )
 
     override val profileDraftStore: ShomaraProfileDraftStore = PreferencesProfileDraftStore(dataStore)

@@ -73,6 +73,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     testImplementation(libs.junit4)
+    // N08-15: the launch controller is a coroutine state producer, so its unit tests need a test
+    // dispatcher (TestScope/advanceUntilIdle). Test-only dependency; no runtime impact.
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)

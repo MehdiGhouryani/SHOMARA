@@ -2,6 +2,7 @@ package com.mathlearning.feature.onboarding
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +19,7 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraOtpInput
 import com.mathlearning.core.designsystem.ShomaraOtpState
 import com.mathlearning.core.designsystem.ShomaraTokens
+import com.mathlearning.core.designsystem.ShomaraTypography
 import kotlinx.coroutines.launch
 
 /**
@@ -63,12 +65,14 @@ class ShomaraOnboardingStateHolder(
     suspend fun requestOtp() {
         val canonical = ShomaraPhoneLogic.canonical(phone)
         if (canonical == null) {
-            banner = ShomaraOnboardingStrings.PhoneInvalid
+            // N08-15: a phone-format problem is the user's input and is reported as such — it is
+            // never mixed with a backend/configuration problem (the two classes stay distinct).
+            banner = ShomaraAuthErrorMessages.forPhoneInput()
             return
         }
         val active = session
         if (active == null) {
-            banner = "سرویس ورود هنوز پیکربندی نشده است."
+            banner = ShomaraAuthErrorMessages.BackendNotConfigured
             return
         }
         otpBusy = true
@@ -77,12 +81,26 @@ class ShomaraOnboardingStateHolder(
             when (val outcome = active.requestOtp(canonical)) {
                 is RequestOutcome.Sent -> flow = flow.advanceTo(OnboardingStep.OtpVerify)
                 is RequestOutcome.Throttled -> banner = "کمی صبر کن؛ ${com.mathlearning.core.designsystem.ShomaraDigits.toFa((outcome.remainingMs / 1000).toInt())} ثانیه تا تلاش بعد."
-                is RequestOutcome.Failed -> banner = outcome.failure.userMessage()
+                is RequestOutcome.Failed -> banner = messageFor(outcome.failure)
             }
         } finally {
             otpBusy = false
         }
     }
+
+    /**
+     * N08-15: the backend-configuration failure is surfaced with its own message. The real API
+     * reports it as `InvalidRequest` with a "not configured" detail, which would otherwise be
+     * rendered as "check your information" — misleading, because no input can fix it.
+     */
+    private fun messageFor(failure: com.mathlearning.core.network.ShomaraNetworkFailure): String =
+        if (failure.error == com.mathlearning.core.network.ShomaraNetworkError.InvalidRequest &&
+            failure.detail.contains("not configured", ignoreCase = true)
+        ) {
+            ShomaraAuthErrorMessages.BackendNotConfigured
+        } else {
+            failure.userMessage()
+        }
 
     suspend fun verifyOtp() {
         val canonical = ShomaraPhoneLogic.canonical(phone) ?: return
@@ -95,7 +113,7 @@ class ShomaraOnboardingStateHolder(
                 is VerifyOutcome.Verified -> flow = flow.advanceTo(OnboardingStep.ProfileSetup)
                 is VerifyOutcome.Failed -> {
                     otp = otp.markInvalid()
-                    banner = outcome.failure.userMessage()
+                    banner = messageFor(outcome.failure)
                 }
             }
         } finally {
@@ -142,6 +160,10 @@ fun rememberOnboardingStateHolder(
 /**
  * Real navigation host (N04-07): renders the current onboarding step from the flow state and
  * reports completion upward; the app maps each step to a real navigation route.
+ *
+ * N08-15: [simulatedAuth] is true only in a DEBUG build. When it is true the journey says so on
+ * screen (a development banner plus the fixed development code), so the flow can never be mistaken
+ * for a real SMS verification. The flag is data, not a build check inside the composable.
  */
 @Composable
 fun ShomaraOnboardingHost(
@@ -150,6 +172,7 @@ fun ShomaraOnboardingHost(
     onAuthenticated: () -> Unit,
     modifier: Modifier = Modifier,
     draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
+    simulatedAuth: Boolean = false,
 ) {
     val holder = rememberOnboardingStateHolder(session, draftStore)
     val scope = rememberCoroutineScope()
@@ -161,6 +184,12 @@ fun ShomaraOnboardingHost(
         modifier = modifier.fillMaxSize().padding(ShomaraTokens.Space16),
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
+        if (simulatedAuth) {
+            ShomaraFeedbackBanner(
+                kind = ShomaraFeedbackKind.Recovery,
+                text = ShomaraSimulatedAuth.DevelopmentModeBanner,
+            )
+        }
         holder.banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Retry, text = it) }
         when (holder.flow.step) {
             OnboardingStep.Welcome -> ShomaraWelcomeScreen(onStart = holder::continueFromWelcome)
@@ -171,6 +200,13 @@ fun ShomaraOnboardingHost(
                 onBack = { holder.back() },
             )
             OnboardingStep.OtpVerify -> {
+                if (simulatedAuth) {
+                    Text(
+                        text = ShomaraSimulatedAuth.DevelopmentCodeHint,
+                        style = ShomaraTypography.Body,
+                        color = ShomaraTokens.ColorInk2,
+                    )
+                }
                 ShomaraOtpInput(state = holder.otp, onStateChange = { holder.otp = it })
                 ShomaraButton(
                     text = "تأیید کد",

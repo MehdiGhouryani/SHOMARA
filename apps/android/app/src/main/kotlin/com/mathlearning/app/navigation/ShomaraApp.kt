@@ -1,35 +1,84 @@
 package com.mathlearning.app.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import com.mathlearning.app.di.AppContainer
+import com.mathlearning.app.launch.ShomaraLaunchController
+import com.mathlearning.app.launch.ShomaraLaunchGate
+import com.mathlearning.app.launch.ShomaraLaunchRouting
 import com.mathlearning.app.shell.ShomaraChildShell
 import com.mathlearning.app.ui.FoundationScreen
+import com.mathlearning.core.datastore.LessonCheckpointStore
+import com.mathlearning.core.datastore.ShomaraProfileDraftStore
+import com.mathlearning.core.datastore.ShomaraSettingsStore
+import com.mathlearning.core.model.ShomaraLaunchState
+import com.mathlearning.core.network.LessonGateway
+import com.mathlearning.feature.onboarding.ShomaraAuthSession
 import com.mathlearning.feature.onboarding.ShomaraOnboardingHost
+import kotlinx.coroutines.launch
 
 /**
- * Launch migration (N04-07): the app starts at the onboarding flow; the shell is the post-auth
- * destination.
+ * Root navigation (N04-07 launch migration, extended in N08-15).
+ *
+ * The start destination is now [AppDestination.LAUNCH] — the launch gate — instead of
+ * `onboarding`. That single change is what makes `ShomaraLaunchState` real: the gate performs the
+ * secure session restoration, shows the branded splash while `Resolving`, shows a warm recovery
+ * surface for `Offline`/`Error`, and only then routes to:
+ *  - the authenticated child shell (`RestoringSession` = a VERIFIED session),
+ *  - or the onboarding journey (`NewUser` / `RecoverIncompleteProfile`).
  *
  * The theme is intentionally NOT provided here — the activity supplies it so the persisted
- * reduced-motion preference (N08-04) reaches every surface. See [ShomaraApp]'s callers.
+ * reduced-motion preference (N08-04) reaches every surface.
  */
 @Composable
 fun ShomaraApp(
-    authSession: com.mathlearning.feature.onboarding.ShomaraAuthSession,
-    profileDraftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore,
-    lessonGateway: com.mathlearning.core.network.LessonGateway,
-    lessonCheckpoints: com.mathlearning.core.datastore.LessonCheckpointStore,
-    settingsStore: com.mathlearning.core.datastore.ShomaraSettingsStore,
+    authSession: ShomaraAuthSession,
+    profileDraftStore: ShomaraProfileDraftStore,
+    lessonGateway: LessonGateway,
+    lessonCheckpoints: LessonCheckpointStore,
+    settingsStore: ShomaraSettingsStore,
+    simulatedAuth: Boolean = false,
+    backendConfigured: Boolean = false,
 ) {
     val navController = rememberNavController()
+    val scope = rememberCoroutineScope()
+    val launchController = remember(authSession, profileDraftStore) {
+        ShomaraLaunchController(
+            session = authSession,
+            draftStore = profileDraftStore,
+            backendConfigured = { backendConfigured },
+            scope = scope,
+        )
+    }
+
     NavHost(
         navController = navController,
-        startDestination = AppDestination.ONBOARDING.route,
+        startDestination = AppDestination.LAUNCH.route,
     ) {
+        composable(
+            route = AppDestination.LAUNCH.route,
+            deepLinks = listOf(navDeepLink { uriPattern = AppDestination.LAUNCH.deepLink }),
+        ) {
+            ShomaraLaunchGate(
+                controller = launchController,
+                onResolved = { state ->
+                    if (ShomaraLaunchRouting.entersChildShell(state)) {
+                        navController.navigate(AppDestination.SHELL.route) {
+                            popUpTo(AppDestination.LAUNCH.route) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(AppDestination.ONBOARDING.route) {
+                            popUpTo(AppDestination.LAUNCH.route) { inclusive = true }
+                        }
+                    }
+                },
+            )
+        }
         composable(
             route = AppDestination.ONBOARDING.route,
             deepLinks = listOf(navDeepLink { uriPattern = AppDestination.ONBOARDING.deepLink }),
@@ -37,6 +86,7 @@ fun ShomaraApp(
             ShomaraOnboardingHost(
                 session = authSession,
                 draftStore = profileDraftStore,
+                simulatedAuth = simulatedAuth,
                 onStepRoute = { stepRoute ->
                     // P0 FIX: this used to call navController.navigate(stepRoute) for every
                     // onboarding step ("onboarding/welcome", "onboarding/phone", …). Those are NOT
@@ -79,7 +129,17 @@ fun ShomaraApp(
             deepLinks = listOf(navDeepLink { uriPattern = AppDestination.SHELL.deepLink }),
         ) {
             ShomaraChildShell(
-                onSignOut = { /* session sign-out joins the parent surface flow in N06 */ },
+                onSignOut = {
+                    // A sign-out clears the verified credential, then re-enters the launch gate so
+                    // the next surface is resolved (never a stale child shell).
+                    scope.launch {
+                        authSession.signOut()
+                        launchController.restart()
+                        navController.navigate(AppDestination.LAUNCH.route) {
+                            popUpTo(AppDestination.SHELL.route) { inclusive = true }
+                        }
+                    }
+                },
                 onStartStation = { stationId -> navController.navigate("lesson/$stationId") },
                 lessonGateway = lessonGateway,
                 lessonCheckpoints = lessonCheckpoints,

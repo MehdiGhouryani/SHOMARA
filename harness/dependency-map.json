@@ -7,8 +7,8 @@
     "scripts"
   ],
   "counts": {
-    "sourceFiles": 548,
-    "importEdges": 1878,
+    "sourceFiles": 549,
+    "importEdges": 1880,
     "v1ImportConsumers": 119,
     "v2ImportConsumers": 84,
     "workspaceImportEdges": 111,
@@ -209,6 +209,7 @@
     ],
     "design-handoff-2026-10": [
       "START_HERE.md",
+      "apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraCharacter.kt",
       "apps/mobile/src/path/__fixtures__/design-trail.json",
       "apps/mobile/src/ui/v1/README.md",
       "apps/mobile/src/ui/v1/icons.ts",

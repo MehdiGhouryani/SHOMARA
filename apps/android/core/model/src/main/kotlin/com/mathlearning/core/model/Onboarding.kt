@@ -1,9 +1,17 @@
 package com.mathlearning.core.model
 
 /**
- * Launch/bootstrap contract (UI-001, N04-01): every app start resolves through exactly one of
- * these states before any child-facing surface may render. There is no guest state by design —
- * an unauthenticated start is `NewUser`, never a bypass.
+ * UI-001 Launch / bootstrap contract (N04-01, wired for real in N08-15).
+ *
+ * Every app start resolves through exactly one of these states before any child-facing surface may
+ * render. There is no guest state by design — an unauthenticated start is `NewUser`, never a bypass.
+ *
+ * Who produces them (N08-15, real production wiring):
+ *  - `:app` → `ShomaraLaunchController` publishes `Resolving` while it reads the stored session and
+ *    verifies it against the server, then [ShomaraLaunchResolver] maps the observation onto a state.
+ *  - `RestoringSession` therefore means "a **verified** session exists on this device" — that is the
+ *    authenticated destination. `NewUser`/`RecoverIncompleteProfile` enter onboarding.
+ *  - `Offline`/`Error` never render a child surface; they render a warm recovery screen with retry.
  */
 enum class ShomaraLaunchState {
     Resolving,

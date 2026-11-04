@@ -18,6 +18,7 @@ package com.mathlearning.app.navigation
 object AppNavigationRoutes {
     /** Every route registered in the NavHost, in declaration order. */
     val Registered: List<String> = listOf(
+        AppDestination.LAUNCH.route,
         AppDestination.ONBOARDING.route,
         AppDestination.LESSON.route,
         AppDestination.SHELL.route,

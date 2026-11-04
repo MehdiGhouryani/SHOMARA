@@ -24,11 +24,14 @@
               deliver the others and every in-app deep link was dead. One filter with several <data>
               entries covers every path on the mathlearning scheme; the foundation host is kept so
               existing links keep resolving.
+              N08-15: the root launch gate (`launch`) joins the same filter, so every route the
+              NavHost registers is reachable at the OS level.
             -->
             <intent-filter android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="mathlearning" android:host="launch" />
                 <data android:scheme="mathlearning" android:host="foundation" />
                 <data android:scheme="mathlearning" android:host="onboarding" />
                 <data android:scheme="mathlearning" android:host="shell" />

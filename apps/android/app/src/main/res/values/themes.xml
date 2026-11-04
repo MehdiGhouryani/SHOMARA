@@ -1,6 +1,14 @@
 <resources>
+    <!--
+      Launch theme (N08-15). `windowBackground` is what Android paints for the cold-start window on
+      every API level, so it is set to the splash artwork's cream: the very first frame the user sees
+      is already the branded palette, never a white flash. The branded Compose splash (rendered while
+      the launch state is `Resolving`) continues on the same colour.
+    -->
     <style name="Theme.Shomara" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/shomara_splash_cream</item>
+        <item name="android:colorBackground">@color/shomara_splash_cream</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowActionModeOverlay">true</item>
     </style>

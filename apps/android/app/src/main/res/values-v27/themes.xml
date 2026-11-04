@@ -1,6 +1,12 @@
 <resources>
+    <!--
+      API 27+ keeps the same launch-window colour as the base theme (N08-15) and adds the light
+      navigation bar so the gesture bar reads on the cream splash.
+    -->
     <style name="Theme.Shomara" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/shomara_splash_cream</item>
+        <item name="android:colorBackground">@color/shomara_splash_cream</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowActionModeOverlay">true</item>

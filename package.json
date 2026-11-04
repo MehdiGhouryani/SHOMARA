@@ -91,6 +91,7 @@
     "harness:resume": "node tools/harness.mjs resume",
     "verify:repository": "node scripts/verify-repository-harness.mjs",
     "verify:android-foundation": "node scripts/verify-android-foundation.mjs",
+    "verify:demo-auth-isolation": "node scripts/verify-demo-auth-isolation.mjs",
     "android:preflight": "node scripts/verify-android-environment.mjs",
     "android:doctor": "node scripts/android-build.mjs doctor",
     "android:gate": "node scripts/android-build.mjs gate",

@@ -600,3 +600,48 @@ Known limitation recorded honestly: TTS engine is English-locale (eng-USA); Talk
 Persian strings through the engine (utterances present, durations recorded). Persian-voice quality
 judgment (pronunciation fidelity) remains a CONTENT/owner concern (CONTENT-006 narrator domain),
 NOT an N08-02 UI defect; the gesture path itself is proven.
+
+## 2026-11-04 — N08-15 checkpoint 1 (Splash + launch state + DEBUG OTP) — IN PROGRESS
+
+- branch: `native/n08-ux-completion` (never main; AGENTS §3.1)
+- scope of this checkpoint: ONLY (1) splash/loading with the owner-supplied artwork, (2) real
+  `ShomaraLaunchState` production + launch gate, (3) DEBUG-only simulated OTP. No other page was
+  redesigned.
+- output:
+  - `core:designsystem`: `ShomaraSplashScreen`/`ShomaraSplashSpec`/`ShomaraSplashDrawables`,
+    `ShomaraCharacter`/`ShomaraCharacterDrawables`; byte-identical artwork
+    `drawable-nodpi/shomara_splash_artwork.png` (sha256 00e771ad…fbc2, 1,490,549 B) + four lossless
+    WebP character poses shipped as drawables; new token `v2.color.splashCream` +
+    `v2.component.characterHero|characterCompactWidth|characterRegularWidth|splashHeroMaxWidth|
+    splashProgressMaxWidth` (codegen regenerated, additive only).
+  - `:core:model`: `LaunchResolution.kt` — `ShomaraSessionObservation`, `ShomaraUnverifiedReason`,
+    `ShomaraLaunchSurface`, `ShomaraLaunchResolver`.
+  - `:core:datastore`: `RestoreOutcome.BackendUnavailable` (a missing OTP endpoint is neither
+    "offline" nor "rejected").
+  - `:core:network`: `ShomaraOtpProvider` transport contract; `ShomaraOtpApi` implements it.
+  - `:app`: `launch/ShomaraLaunchController` + `launch/ShomaraLaunchGate` (splash, recovery,
+    routing); `AppDestination.LAUNCH` as the real start destination; variant-specific
+    `AuthProviderWiring` (src/debug mounts the simulated provider, src/release declares
+    `IsDebugBuild=false` + null factory); `MainActivity` root paints `ColorCanvas`; splash theme
+    (`windowBackground`/`windowSplashScreen*` cream) for API 24/27/31.
+  - `:feature:onboarding`: `ShomaraSimulatedAuth` contract + `ShomaraAuthSession(provider,
+    allowSimulated)`; `src/debug/ShomaraDebugOtpProvider` (fixed code 1234, token
+    `sim-dev-session.*`, ZERO network calls); dev-mode banner + code hint on the OTP step;
+    backend-config error rendered separately from phone-format error.
+  - `docs/adr/ADR-0038-splash-launch-state-and-debug-otp.md`; `scripts/verify-demo-auth-isolation.mjs`
+    (+ npm script).
+- tests added (all PASS): `LaunchResolutionTest` 8, `ShomaraLaunchControllerTest` 12,
+  `ShomaraDebugOtpProviderTest` 9 (MockWebServer asserts 0 requests in simulation).
+- gates: `npm run android:gate` PASS; `npm run verify:static:all` PASS 90/90;
+  `node scripts/verify-repository-harness.mjs` PASS (dependency map regenerated, +1 file/+2 edges);
+  `:app:compileReleaseKotlin` PASS (compiler-level proof that release has no simulated provider);
+  debug APK built via `npm run android:assemble:debug` and installed on emulator-5554.
+- device evidence (real, measured): launch reaches the welcome gate; `uiautomator dump` shows
+  «حالت توسعه: کد پیامک واقعی ارسال نمی‌شود.» on screen, i.e. the DEBUG label is genuinely rendered.
+- NOT yet verified (recorded honestly, no status flip):
+  - a device screenshot proving the branded splash is visible (emulator capture cadence did not
+    catch the splash window; the only kept baseline shot is `before-01-launch.png` showing the
+    pre-change jump straight to welcome);
+  - instrumented Compose assertion for the splash semantics;
+  - `SCREEN_LEDGER.csv` / `NATIVE_IMPLEMENTATION_BACKLOG.csv` / `START_HERE.md` updates.
+- task status: N08-15 stays IN_PROGRESS. No harness task status was flipped.

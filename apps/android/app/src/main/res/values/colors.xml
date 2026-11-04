@@ -1,3 +1,9 @@
 <resources>
+    <!--
+      N08-15: the warm cream the owner-supplied splash artwork uses as its own background. The
+      launch window paints it before Kotlin runs, so the OS splash and the branded Compose splash
+      hand over without a colour flash. Sampled from drawable-nodpi/shomara_splash_artwork.png.
+    -->
+    <color name="shomara_splash_cream">#FDF4E5</color>
     <color name="ic_launcher_background">#FFF8EF</color>
 </resources>

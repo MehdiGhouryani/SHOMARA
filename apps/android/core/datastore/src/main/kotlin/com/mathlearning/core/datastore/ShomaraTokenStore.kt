@@ -36,4 +36,27 @@ object ShomaraTokenPolicy {
     fun mustClearOnExit(reason: RestoreOutcome): Boolean = true
 }
 
-enum class RestoreOutcome { Verified, TokenMissing, TokenExpired, ServerRejected, NetworkUnavailable }
+enum class RestoreOutcome {
+    /** The credential was verified (locally for the DEBUG simulation, server-side otherwise). */
+    Verified,
+
+    /** No usable credential was stored: a first run, or a completed sign-out. */
+    TokenMissing,
+
+    /** A credential was stored but is outside the TTL window; it has been cleared. */
+    TokenExpired,
+
+    /** The server explicitly refused the credential; it has been cleared. Must NOT be retried. */
+    ServerRejected,
+
+    /** The device could not reach the server (offline/timeout). The credential is KEPT. */
+    NetworkUnavailable,
+
+    /**
+     * No OTP backend is configured for this build (N08-15, ADR-0037 I2), so the stored credential
+     * cannot be verified either way. The credential is KEPT and the launch surfaces a configuration
+     * error — this is neither "offline" (the network may be fine) nor "rejected" (the server never
+     * spoke), and claiming either would mislead the user.
+     */
+    BackendUnavailable,
+}

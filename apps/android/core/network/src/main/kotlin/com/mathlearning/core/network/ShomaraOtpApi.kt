@@ -81,6 +81,22 @@ sealed class ShomaraOtpResult {
     data class Failure(val failure: ShomaraNetworkFailure) : ShomaraOtpResult()
 }
 
+/**
+ * The OTP transport contract (N08-15).
+ *
+ * Production is [ShomaraOtpApi] (real HTTP, fail-closed when no endpoint is configured). A DEBUG
+ * build may substitute a simulated provider; because both implement this interface, the session
+ * orchestrator has exactly one code path and the simulation cannot bypass any of its rules.
+ */
+interface ShomaraOtpProvider {
+    /** True only for the DEBUG-only simulated provider; production is always false. */
+    val isSimulated: Boolean
+
+    fun requestOtp(phone: String): ShomaraOtpResult
+
+    fun verifyOtp(phone: String, code: String): ShomaraOtpResult
+}
+
 data class ShomaraOtpEndpoints(
     val start: String,
     val verify: String,
@@ -93,13 +109,15 @@ data class ShomaraOtpEndpoints(
 class ShomaraOtpApi(
     private val client: OkHttpClient,
     private val endpoints: () -> ShomaraOtpEndpoints?,
-) {
+) : ShomaraOtpProvider {
+    override val isSimulated: Boolean = false
+
     private val jsonMedia = "application/json; charset=utf-8".toMediaType()
 
     /** Requests an OTP for the canonical phone; returns the server Retry-After when throttled. */
-    fun requestOtp(phone: String): ShomaraOtpResult = post(endpoints()?.start, "{\"phone\":\"${ShomaraJson.escape(phone)}\"}")
+    override fun requestOtp(phone: String): ShomaraOtpResult = post(endpoints()?.start, "{\"phone\":\"${ShomaraJson.escape(phone)}\"}")
 
-    fun verifyOtp(phone: String, code: String): ShomaraOtpResult =
+    override fun verifyOtp(phone: String, code: String): ShomaraOtpResult =
         post(endpoints()?.verify, "{\"phone\":\"${ShomaraJson.escape(phone)}\",\"code\":\"${ShomaraJson.escape(code)}\"}")
 
     private fun post(url: String?, bodyJson: String): ShomaraOtpResult {

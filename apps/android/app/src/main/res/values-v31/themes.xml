@@ -1,0 +1,25 @@
+<resources>
+    <!--
+      Android 12+ system splash (N08-15, `android:windowSplashScreen*`).
+
+      The platform ALWAYS draws its own splash on API 31+ before the app can render anything, so it
+      is configured instead of fought:
+        - background = the splash artwork's cream, identical to the Compose splash behind it;
+        - icon       = the existing SHOMARA launcher mark, on the same cream, so the OS splash reads
+                       as part of the brand and not as a stock app-icon screen;
+        - icon background = cream, removing the default coloured circle.
+      The system splash is dismissed by the platform as soon as the first Compose frame is drawn (no
+      hold is requested), and the branded Compose splash takes over on the same colour.
+    -->
+    <style name="Theme.Shomara" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/shomara_splash_cream</item>
+        <item name="android:colorBackground">@color/shomara_splash_cream</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowSplashScreenBackground">@color/shomara_splash_cream</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/shomara_splash_cream</item>
+    </style>
+</resources>

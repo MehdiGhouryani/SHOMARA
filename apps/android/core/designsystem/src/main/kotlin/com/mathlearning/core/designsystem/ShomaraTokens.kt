@@ -39,6 +39,7 @@ object ShomaraTokens {
   val ColorDanger = Color(0xFFB3402F)
   val ColorDangerSoft = Color(0xFFFBE7E2)
   val ColorAmberEdge = Color(0xFFD89513)
+  val ColorSplashCream = Color(0xFFFDF4E5)
   val TypeDisplayFontSize = 32.sp
   val TypeDisplayLineHeight = 40.sp
   val TypeDisplayWeight = FontWeight(800)
@@ -88,6 +89,11 @@ object ShomaraTokens {
   val ComponentProgressH = 14.dp
   val ComponentRowH = 72.dp
   val ComponentTopBarH = 56.dp
+  val ComponentCharacterHero = 180.dp
+  val ComponentCharacterCompactWidth = 360.dp
+  val ComponentCharacterRegularWidth = 400.dp
+  val ComponentSplashHeroMaxWidth = 320.dp
+  val ComponentSplashProgressMaxWidth = 220.dp
   val ClayLevelFlat = 0
   val ClayLevelHint = 1
   val ClayLevelSoft = 2

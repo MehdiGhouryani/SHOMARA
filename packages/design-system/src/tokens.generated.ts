@@ -33,7 +33,8 @@ export const V2_TOKENS =
       "white": "#FFFFFF",
       "danger": "#B3402F",
       "dangerSoft": "#FBE7E2",
-      "amberEdge": "#D89513"
+      "amberEdge": "#D89513",
+      "splashCream": "#FDF4E5"
     },
     "type": {
       "display": {
@@ -108,7 +109,12 @@ export const V2_TOKENS =
       "trayBead": 48,
       "progressH": 14,
       "rowH": 72,
-      "topBarH": 56
+      "topBarH": 56,
+      "characterHero": 180,
+      "characterCompactWidth": 360,
+      "characterRegularWidth": 400,
+      "splashHeroMaxWidth": 320,
+      "splashProgressMaxWidth": 220
     },
     "clay": {
       "note": "Semantic clay depth (design token extension, merged 2026-10-28). Numbers only — every color resolves through v2.color at the component (soft fill=surface, border=line; featured fill=amberSoft, border=amber; highlight=white).",
