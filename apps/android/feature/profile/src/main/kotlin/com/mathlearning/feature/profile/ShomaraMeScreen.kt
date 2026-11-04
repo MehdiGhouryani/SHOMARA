@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -15,8 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import com.mathlearning.core.designsystem.ShomaraCharacter
+import com.mathlearning.core.designsystem.ShomaraCharacterImage
+import com.mathlearning.core.designsystem.ShomaraCharacterSlot
+import com.mathlearning.core.designsystem.ShomaraPagePlaceholder
 import com.mathlearning.core.model.ShomaraAvatarOption
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
@@ -64,8 +70,10 @@ fun ShomaraMeScreen(
     loading: Boolean = false,
 ) {
     val state = ShomaraMeLogic.stateFor(offline, errorText, loading, facts != null)
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Text(text = "من", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+    // Stage 4, family 14: preferred 24dp inset, generous spacing, one calm
+    // featured header card only. No second progress layer, no badge/star/streak.
+    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+        Text(text = "من", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         when (state) {
             ShomaraMeState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ پیشرفت ذخیره‌شده دیده می‌شود.")
             ShomaraMeState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: "مشکلی پیش آمد.")
@@ -82,13 +90,27 @@ fun ShomaraMeScreen(
                     horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    // One real character WebP, small and static, decorative only.
+                    // It is a guide, NOT the avatar: the avatar system stays the
+                    // abstract preset below, and the two systems are not merged.
+                    // Pose 1 only, from the 4 shipped drawables; no pose invented.
+                    ShomaraCharacterImage(character = ShomaraCharacter.Main, poseId = 1, slot = ShomaraCharacterSlot.Inline, decorative = true)
                     Column {
                         Text(text = f.childName, style = ShomaraTypography.Title, color = ShomaraTokens.ColorPrimaryDark)
                         Text(text = f.progressLine(), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+                        // The avatar preset was carried in facts but never rendered.
+                        // Rendered here as its label only. NOTE: the shell host
+                        // currently passes the default preset (sun) for every
+                        // child; wiring the persisted choice into Me is an open
+                        // item in STAGE4_IMPLEMENTATION_NOTE.md, not claimed here.
+                        Text(text = "آواتار من: " + f.avatar.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
                     }
                 }
                 }
             ShomaraMeState.EditReturn -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "تغییرات ذخیره شد.")
+        }
+        if (state == ShomaraMeState.Loading) {
+            ShomaraPagePlaceholder()
         }
         // N08 §4 dead end fixed: this row used to live INSIDE the Ready branch, so a child
         // whose profile is not complete yet had no way to reach avatar/settings at all — the
@@ -103,6 +125,7 @@ private fun MeRow(label: String, description: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(min = ShomaraTokens.ComponentTouchMin)
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics {
