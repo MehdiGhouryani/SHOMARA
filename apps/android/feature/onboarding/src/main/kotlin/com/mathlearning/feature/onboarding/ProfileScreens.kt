@@ -72,10 +72,13 @@ fun ShomaraProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
+            // Family 04 (Stage 1): the guide is the smallest slot (72dp) so it
+            // never overwhelms the form. It is a guide, not an avatar option:
+            // avatar options stay the abstract preset catalog (default sun).
             ShomaraCharacterImage(
                 character = ShomaraCharacter.Main,
                 poseId = 1,
-                slot = ShomaraCharacterSlot.Lesson,
+                slot = ShomaraCharacterSlot.Inline,
                 decorative = true,
             )
             Text(
@@ -193,12 +196,7 @@ fun ShomaraPlacementScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
-            ShomaraCharacterImage(
-                character = ShomaraCharacter.Number,
-                poseId = 1,
-                slot = ShomaraCharacterSlot.Hero,
-                decorative = true,
-            )
+            // Family 05 (Stage 1): no character here by contract.
             Text(text = ShomaraProfileStrings.PlacementTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
             ShomaraCard {
                 Column(
