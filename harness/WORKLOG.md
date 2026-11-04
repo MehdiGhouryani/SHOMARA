@@ -532,3 +532,15 @@ emulator-5554 (sdk_gphone64_x86_64 / Android 15 / API 35).
 **وضعیت roadmap:** `node tools/harness.mjs next` → **«No executable task remains.»**
 بقیهٔ N08 (۰۶..۱۲) به N08-08 وابسته‌اند که سه تصمیم محتوایی مالک را باز دارد
 (CONTENT-005/006/007/016). این بن‌بست صادقانه ثبت شد، نه با ساختن task قلابی.
+
+## 2026-11-04 — N08 — M11: ممیزی UI/UX Pro Max خانواده‌های صفحه + تکمیل سطوح ناقص + APK نهایی
+
+- ممیزی کامل ۱۷ خانوادهٔ صفحه (design/MASTER, INSPIRATION_GUARDRAILS, PAGE_UIUX_BLUEPRINT, ROUTE_REGISTRY, NATIVE_IMPLEMENTATION_BACKLOG)؛ رکورد تصمیم در docs/qa/N08_UIUX_AUDIT_DECISION_RECORD.md.
+- کشف اصلی: NATIVE_IMPLEMENTATION_BACKLOG.csv برای همهٔ ۲۰ ردیف blocked_by=N02-07 می‌گفت در حالی که N02-07 از 2026-10-31 DONE است؛ N02-07 از blocked_by حذف شد، status هیچ ردیفی عوض نشد (۲۰/۲۰ همچنان NATIVE_PENDING تا evidence خودشان).
+- P0-P3 طبقه‌بندی شد: ۸ عدد P0 و ۷ عدد P1 (همه در M8/M9/M10 رفع شده بودند)، ۸ عدد P2 عمداً رفع‌نشده با دلیل، ۴ عدد P3 آرایشی.
+- تمرین‌ها (خانوادهٔ 12): تب تمرین به جای emptyList() همیشگی، حالا از کاتالوگ واقعی ۲۵ ایستگاهی + پیشرفت واقعی مشتق می‌شود؛ روی دستگاه دیده شد (۲۵ ایستگاه با دلیل گرم قفل).
+- تز تنظیمات (خانوادهٔ 15): سه عیب واقعی روی دستگاه پیدا و رفع شد — 1) تنظیمات برای کودکِ بدون پروفایل غیرقابل‌دسترس بود (ردیف داخل شاخهٔ Ready)، 2) کرش «save started from an invalid state» با تپ روی آواتار، 3) بازنویسی آواتار ذخیره‌شده با مقدار پیش‌فرض هنگام seed از Defaults؛ شاهد: فایل DataStore روی دستگاه shomara_settings_avatar=moon ماند بعد از تغییر حرکت کمتر و force-stop.
+- دروازهٔ والدین همچنان fail-closed با ShomaraParentGate(verifier = null) — تصمیم مالک، عیب UI نیست.
+- APK نهایی دیباگ ساخته/نصب/دود-تست شد: apps/android/app/build/outputs/apk/debug/app-debug.apk، 13,494,758 بایت، sha256=169361a79738b783d7bc9562bf4191f521d740ee7e0bc1ce05af1c7aae3d88ad، نصب Success، launch بدون FATAL (به شومارا خوش آمدی!)، deep link درس و shell و تمرین سبز.
+- شواهد: gradlew test lint connectedCheck exit 0؛ typecheck:all exit 0؛ verify:static:all 89/89 PASS؛ harness validate HARNESS_VALID؛ git diff --check exit 0؛ android:doctor READY، android:gate PASS، android:assemble:debug exit 0.
+- شاخه native/n08-ux-completion اکنون ۸ commit جلوتر از origin/main است؛ push نشده (نیازمند مجوز مالک).
