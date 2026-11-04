@@ -157,3 +157,104 @@ headings, selected avatar announced as selected, locked practice
 reason read, parent gate never announces a bypass); reduced-motion
 and process-recreation checks; and a 360dp check that the settings
 avatar grid (4 x 72dp) does not overflow at 200% font.
+
+## Owner emphasis, recorded for Stage 4 and for every later stage
+
+On 2026-11-05 the owner stressed, as a standing instruction for this
+stage and for all later stages, that the UI must be reviewed,
+rewritten, and improved across ALL stages and ALL pages, because the
+current UI is severely weak and has no appeal for children at all.
+That emphasis is recorded here and applies beyond Stage 4; it does
+not change any guardrail, it raises the bar inside the guardrails.
+
+What the higher standard means, in concrete terms, for every page
+(families 01-17), and what was already applied to Stage 4 families
+12 / 14 / 15 in this batch:
+
+- Clear hierarchy first: one focal object, one primary CTA per
+  decision state, section headings that TalkBack can traverse, and
+  generous empty space — before any decoration is added. Stage 4
+  applied this as: section headings in practice and settings,
+  one featured header card only in Me, and 24dp preferred insets
+  (16dp in settings only by the documented 312dp-grid arithmetic).
+- Warm token colours, never a new palette: canvas `#FFF8EF`,
+  primary `#0C7A54`, PrimarySoft header, Surface / SurfaceAlt rows,
+  all from v2 tokens. Warmth comes from the canonical palette and
+  from generous spacing, not from saturation, busy backgrounds, or
+  low-contrast shadows.
+- Large tactile targets: 48dp minimum everywhere, 72dp avatar tiles
+  in settings, 72dp Inline character slot in Me. In learning
+  families the manipulative band stays 72-80dp. A child page is
+  never made "attractive" by shrinking targets to fit more
+  decoration.
+- Calm character cameos ONLY where the page contract allows them:
+  small, static, decorative, pose 1 from the 4 shipped drawables.
+  Stage 4 applied this in Me only. Practice (12) has no character
+  by contract, settings avatars stay the abstract preset system,
+  and the guardian surface has no character at all. A cameo that
+  is not allowed by the contract is not added for the sake of
+  "appeal", and no new pose is invented.
+- Semantic Clay depth only: soft borders for rows/cards, one
+  featured surface per decision viewport, never depth on text,
+  never depth as the only carrier of meaning, no pervasive blur.
+  The "delete and see" test from INSPIRATION_GUARDRAILS still
+  applies: any decoration whose removal makes the task clearer
+  does not come back.
+
+What child appeal must NEVER come from, in any stage:
+
+- Lives / hearts, punitive streaks, stars-as-currency, coins /
+  gems, shops, loot boxes, leaderboards / leagues, child-facing
+  badges, quests, expiring timers, daily-goal rings for the child,
+  guilt-framed reminders, or a flashy assessment. Assessment stays
+  the quietest family (dial 2/2/3) in every stage, including Stage 5.
+- Reskinned versions of any of the above: a "flower", a "gem-like
+  leaf", or a "friendly chest" that functions as currency, a
+  streak, or a randomised reward is still rejected.
+- Fake progress: a second progress layer, a percentage, a score,
+  a badge, or a streak count shown to the child, even if the
+  underlying data is real.
+
+How Stage 4 was re-checked against this higher standard:
+
+- Practice: appeal comes from warm PrimarySoft-free calm rows,
+  clear section headings, large 48dp rows, a scrollable list, and
+  a warm locked reason — not from a character (forbidden here),
+  not from a badge, and not from a placeholder grid.
+- Me: appeal comes from the single warm header card, the small
+  static guide, the child's name, and real progress in words —
+  not from a dashboard, a score, or a streak.
+- Settings / guardian: appeal comes from clarity — a visible
+  selected tick stated in text, calm textual sections, and an
+  honest lockout rule — not from decoration on an adult surface.
+- Images: appeal is not faked with an image in this batch. Every
+  image need is in IMAGE_REGISTRY.md as PENDING_OWNER, and no
+  generated image was shipped to runtime.
+
+## What continues in Stage 5 (global hardening)
+
+The full review of ALL pages (families 01-17) continues in Stage 5
+(global hardening), under this same higher standard. Stage 5 is
+not a new feature stage; it is the pass that re-reads every
+family against the checklist above and fixes what Stages 1-4 left
+uneven:
+
+- 01-05, 17, 16 (Stage 1): re-check hierarchy, insets, and state
+  surfaces after the later stages land, so entry/shell/states do
+  not drift from the practice/profile/settings language.
+- 06-07 (Stage 2): re-check the path header, node circles, and
+  station-start frame against the Stage 4 section-heading and
+  touch-target language.
+- 08-11, intro 13 (Stage 3): re-check stage chrome, the quiet
+  assessment chrome, the result surface, and the challenge intro
+  — with assessment staying the quietest family throughout.
+- 12, 14, 15 (this stage): re-check practice, Me, settings, and
+  the guardian gate together with the shell, including the open
+  Me-avatar wiring item above and the 360dp / 200%-font avatar
+  grid check.
+- Cross-cutting: one token audit (no magic values anywhere),
+  one TalkBack traversal audit, one reduced-motion audit, one
+  RTL / maths-direction audit, and one "no reward economy"
+  audit across all 17 families, before any row moves to
+  TESTED_NATIVE. That audit is recorded in the Stage 5 note, not
+  claimed here.
