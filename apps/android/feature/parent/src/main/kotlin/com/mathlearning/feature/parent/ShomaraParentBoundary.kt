@@ -22,6 +22,8 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTextField
 import com.mathlearning.core.designsystem.ShomaraTokens
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import com.mathlearning.core.designsystem.ShomaraTypography
 
 /**
@@ -113,8 +115,11 @@ fun ShomaraParentGateScreen(
     nowMs: () -> Long = { 0L },
 ) {
     var passcode by remember { mutableStateOf("") }
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Text(text = "بخش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+    // Stage 4, family 15 guardian: calm, textual, preferred 24dp inset.
+    // The gate logic is untouched: fail-closed, verifier == null can
+    // never authenticate, and no bypass is added here.
+    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+        Text(text = "بخش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "این بخش برای بزرگ‌ترهاست؛ لطفاً گذرواژه را وارد کن.")
         when (val state = gate.state) {
             is ShomaraParentGateState.Failed -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = state.message)
@@ -138,6 +143,8 @@ fun ShomaraParentGateScreen(
             },
             variant = ShomaraButtonVariant.Primary,
         )
+        // Honest lockout rule, stated before any failure happens.
+        Text(text = "پس از چند تلاش ناموفق، ورود موقتاً قفل می‌شود.", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
     }
 }
 
@@ -148,8 +155,8 @@ fun ShomaraParentHome(
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Text(text = "گزارش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+        Text(text = "گزارش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         Row(
             modifier = Modifier.fillMaxWidth().background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg)).padding(ShomaraTokens.Space12),
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
