@@ -41,6 +41,17 @@ import kotlinx.coroutines.launch
  *  - submissions are single-flight, so a fast double tap cannot send two answers;
  *  - the stage walk no longer clamps at the final stage (which repeated it forever);
  *  - a stale interruption banner is cleared once a later attempt succeeds.
+ *
+ * Stage 3 display-only (families 08-11): Persian stage labels via
+ * ShomaraLessonStageChrome (the raw Latin enum name was shown before),
+ * a small static Number guide only in P1 discovery, no character in
+ * guided practice or assessment (assessment stays the quietest family),
+ * and a restrained result surface for server Complete results instead
+ * of a silent exit to the shell. No adapter, journey, or submit logic
+ * changed; no hint button was invented, because no server hint content
+ * exists to render, and no template content was invented, because the
+ * server options for every stage are still empty (see
+ * ShomaraLessonOptions) — the honest unavailable banner stays.
  */
 @Composable
 fun ShomaraLessonHost(
@@ -58,6 +69,7 @@ fun ShomaraLessonHost(
     var banner by remember { mutableStateOf<String?>(null) }
     var gate by remember { mutableStateOf(ShomaraSubmitGateState()) }
     var awaitingServerStage by remember { mutableStateOf(false) }
+    var resultSurface by remember { mutableStateOf<ShomaraResultSurface?>(null) }
 
     val journey = remember(stationId) {
         gateway?.let { ShomaraLessonJourney(sessionId, stationId, it, checkpointStore ?: NoCheckpoints) }
@@ -79,12 +91,7 @@ fun ShomaraLessonHost(
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
         ShomaraProgressBar(state = ShomaraProgressState())
-        Text(
-            text = "ایستگاه $stationId — مرحلهٔ ${macroStage.name}",
-            style = ShomaraTypography.Title,
-            color = ShomaraTokens.ColorInk,
-            textAlign = TextAlign.Start,
-        )
+        ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
         banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
         if (resumed == true) {
             ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "از همون‌جا ادامه می‌دهیم.")
@@ -107,7 +114,7 @@ fun ShomaraLessonHost(
                     variant = ShomaraButtonVariant.Ghost,
                 )
             }
-        } else {
+        } else if (resultSurface == null) {
             ShomaraButton(
                 text = "خروج از ایستگاه",
                 onClick = { closeState = ShomaraCloseConfirmLogic.request(closeState) },
@@ -115,7 +122,12 @@ fun ShomaraLessonHost(
             )
         }
         val activeJourney = journey
-        if (activeJourney == null) {
+        if (resultSurface != null) {
+            ShomaraLessonResultSurface(
+                surface = resultSurface!!,
+                onExitToShell = onExitToShell,
+            )
+        } else if (activeJourney == null) {
             // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
             ShomaraFeedbackBanner(
                 kind = ShomaraFeedbackKind.Recovery,
@@ -158,7 +170,11 @@ fun ShomaraLessonHost(
                                         if (surface == ShomaraResultSurface.CompletePass ||
                                             surface == ShomaraResultSurface.CompleteNeedsPractice
                                         ) {
-                                            onExitToShell()
+                                            // Family 11: show the restrained result surface
+                                            // (one static character, server headline, one CTA)
+                                            // instead of exiting silently. The CTA and the
+                                            // existing close-confirm path both return to shell.
+                                            resultSurface = surface
                                         } else {
                                             val next = ShomaraLessonStageWalk.next(macroStage)
                                             if (next == null) {
