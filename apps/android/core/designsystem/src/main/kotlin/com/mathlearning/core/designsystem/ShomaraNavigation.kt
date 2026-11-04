@@ -54,11 +54,14 @@ data class ShomaraTab(
 object ShomaraTabLogic {
     fun canSelect(tab: ShomaraTab): Boolean = !tab.locked
 
-    /** Locked tabs announce themselves as locked, never silently disabled. */
+    /** Locked tabs announce themselves as locked, never silently disabled.
+     * Stage 1 (family 17): an unselected tab now also announces itself
+     * ("انتخاب نشده") instead of having no state at all, so TalkBack
+     * traversal always reports the tab state. */
     fun stateLabelFor(tab: ShomaraTab, isSelected: Boolean): String = when {
         tab.locked -> "قفل: ${tab.lockReason}"
         isSelected -> "فعال"
-        else -> ""
+        else -> "انتخاب نشده"
     }
 
     /** Duplicate navigation guard: re-tapping the selected tab keeps the selection unchanged. */
