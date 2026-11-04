@@ -110,10 +110,13 @@ fun ShomaraWelcomeScreen(
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
             Spacer(modifier = Modifier.height(ShomaraTokens.Space32))
+            // Family 01 (Stage 1): a small, static character — Lesson slot (84dp),
+            // not the 180dp Hero. The hero of this screen is the welcome
+            // message and the single CTA, not the artwork.
             ShomaraCharacterImage(
                 character = ShomaraCharacter.Main,
                 poseId = 1,
-                slot = ShomaraCharacterSlot.Hero,
+                slot = ShomaraCharacterSlot.Lesson,
                 decorative = true,
             )
             Text(
