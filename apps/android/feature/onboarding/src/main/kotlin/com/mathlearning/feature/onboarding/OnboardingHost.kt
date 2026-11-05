@@ -84,11 +84,13 @@ object ShomaraOnboardingRestore {
 
     /** Unknown or malformed saves fall back to an empty phone at the welcome gate. */
     fun decode(saved: List<String>): Pair<String, OnboardingStep> {
-        val phone = saved.getOrNull(0).orEmpty()
+        // Fail-closed: a missing or unknown step means the whole restore is
+        // discarded — a saved phone must never survive into a step it does not
+        // belong to (the phone alone is not a valid restore).
         val step = saved.getOrNull(1)?.let { name ->
             runCatching { OnboardingStep.valueOf(name) }.getOrNull()
-        } ?: OnboardingStep.Welcome
-        return phone to clampStep(step)
+        } ?: return "" to OnboardingStep.Welcome
+        return saved.getOrNull(0).orEmpty() to clampStep(step)
     }
 }
 

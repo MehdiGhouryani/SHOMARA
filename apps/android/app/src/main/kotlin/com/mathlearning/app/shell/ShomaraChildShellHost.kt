@@ -299,22 +299,23 @@ fun ShomaraChildShell(
                 ShomaraBottomSheet(
                     title = null,
                     onDismiss = { selectedStationId = null },
-                ) {
-                    ShomaraStationStartSheet(
-                        stationId = sheetStationId,
-                        progress = pathProgress,
-                        onStart = {
-                            selectedStationId = null
-                            onStartStation(sheetStationId)
-                        },
-                        // R-08: the replay CTA enters the same lesson with the replay flag.
-                        onReplay = {
-                            selectedStationId = null
-                            onReplayStation(sheetStationId)
-                        },
-                        onDismiss = { selectedStationId = null },
-                    )
-                }
+                    content = {
+                        ShomaraStationStartSheet(
+                            stationId = sheetStationId,
+                            progress = pathProgress,
+                            onStart = {
+                                selectedStationId = null
+                                onStartStation(sheetStationId)
+                            },
+                            // R-08: the replay CTA enters the same lesson with the replay flag.
+                            onReplay = {
+                                selectedStationId = null
+                                onReplayStation(sheetStationId)
+                            },
+                            onDismiss = { selectedStationId = null },
+                        )
+                    },
+                )
             }
         }
     }

@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.lazy.stickyHeader
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -115,7 +114,7 @@ object ShomaraPathGraphLogic {
 
     /** Horizontal sine offset for the node with global index [globalIndex] (0-based). */
     fun sineOffsetDp(globalIndex: Int, isRtl: Boolean): Dp {
-        val wave = PathSineAmplitude * sin(globalIndex * PathSineFrequency + PathSinePhase)
+        val wave = PathSineAmplitude * sin(globalIndex * PathSineFrequency + PathSinePhase).toFloat()
         // RTL mirrors the wave so the path begins top-right and winds left.
         return if (isRtl) -wave else wave
     }
@@ -204,14 +203,20 @@ object ShomaraPathGraphLogic {
     /**
      * Segmented-ring fraction for the Current node (Duolingo screenshot evidence,
      * 2026-11-05: the ring around the current node is broken into short arcs).
-     * The ring shows the CURRENT CHAPTER's completion from the caller-provided
-     * completed set — the same data Phase A already has. There is no per-station
-     * lesson progress yet (Phase 1), so the ring never shows a lesson fraction
-     * and never invents one; 0 renders as track-only, never as an invisible ring.
+     * The ring shows the completion of the chapter of the LAST COMPLETED station —
+     * the chapter the child just finished — so the Current node at the start of a
+     * new chapter still shows the finished chapter's ring. With no completed
+     * station yet (unknown ids never count), the node's own chapter applies.
+     * There is no per-station lesson progress yet (Phase 1), so the ring never
+     * shows a lesson fraction and never invents one; 0 renders as track-only,
+     * never as an invisible ring.
      */
     fun ringFractionFor(meta: StationNodeMeta, progress: ShomaraPathProgress): Float {
         val total = ShomaraStationCatalog.STATIONS_PER_CHAPTER
-        return if (total > 0) completedInChapter(meta.chapter, progress).toFloat() / total.toFloat() else 0f
+        if (total <= 0) return 0f
+        val lastCompleted = ShomaraStationCatalog.Stations.lastOrNull { it.id in progress.completedStationIds }
+        val chapter = lastCompleted?.chapter ?: meta.chapter
+        return completedInChapter(chapter, progress).toFloat() / total.toFloat()
     }
 
     /**
@@ -395,7 +400,6 @@ fun ShomaraPathScreen(
                             .height(ShomaraTokens.ComponentProgressH)
                             .background(ShomaraTokens.ColorSurfaceAlt, RoundedCornerShape(ShomaraTokens.RadiusSm))
                             .semantics {
-                                role = Role.ProgressBar
                                 progressBarRangeInfo = ProgressBarRangeInfo(progressFraction, 0f..1f)
                                 contentDescription = remainingText
                             },
