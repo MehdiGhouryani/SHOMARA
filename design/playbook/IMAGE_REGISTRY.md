@@ -23,24 +23,36 @@ Common rules for every prompt below (negative rules, binding):
   (Main / Number / Dana / Fandogh / Roka) in its approved geometry.
   A generated character that is off-model is rejected, not shipped.
 
-## P1 — Welcome hero background (from the zero-to-hundred plan)
+## P1 — Welcome hero artwork (from the zero-to-hundred plan; OWNER-DELIVERED as 12 files)
 
 - Page / family: 01 Welcome / Launch
-- Size / format: WebP (or PNG) 1440x1800, landscape-safe calm scene
-- Status: PENDING_OWNER
-- Prompt (EN): "A calm, warm, hand-drawn-style garden illustration for a
+- Size / format: 12 transparent RGBA PNGs (owner-delivered 2026-11-05), composed in code in `ShomaraWelcomeScreen` (`ShomaraLaunchLayout`); the hero is a composition, not one 1440x1800 background. The original single-image prompt below is superseded by the delivered artwork and is kept for reference only.
+- Status: OWNER_DELIVERED — 12 files in `apps/android/core/designsystem/src/main/res/drawable-nodpi/` as `shomara_launch_*.png`, copied locally by the harness (binaries cannot be pushed by snapshot). Page 01-launch implements the composition on branch `page-01-launch` (staged; gates + device screenshot still outstanding).
+- Files (zip name → drawable name, native size, sha256):
+  - mascot_bow_character.png → shomara_launch_mascot_bow_character.png, 743x698, 8f2d03452fff9f730bcf4ff38f7ac60967d9ab5906ce6701236c2f202f9175b6
+  - number_1.png → shomara_launch_number_1.png, 236x304, bb661138e5ff7acf4acb7231514a28d90b9026487ea0d3c906c5b76403b8a780
+  - number_2.png → shomara_launch_number_2.png, 241x300, 4df69533c1b8f98882109fb2eea3d53852a1c5b9dac11341f896dca791a13229
+  - plus_sign.png → shomara_launch_plus_sign.png, 243x243, 7d23e82599a88da76832c36c6b01a9f15c34a0b5017e33bed25723ceec4ff6c6
+  - division_sign.png → shomara_launch_division_sign.png, 220x255, 23a2bb800d0025e0b0acbf2e909575a5b2d4d91b755dfd9ef588a0e9728cb9de
+  - small_yellow_star.png → shomara_launch_small_yellow_star.png, 172x161, 68dca175ceab4ad5344d9be8572a8df8334e430187819b83f8e97c6b0d56f3a8
+  - large_yellow_star.png → shomara_launch_large_yellow_star.png, 233x225, 4f75a986ac2c75770d65bdb0cfdeecee94c0b802c514e566307fde96ea4b3f07
+  - top_yellow_spark.png → shomara_launch_top_yellow_spark.png, 161x169, 7854fe246e24eed2afcd834132c5598a75473dbcfeffb10820236f8bea9c681c
+  - bottom_yellow_spark.png → shomara_launch_bottom_yellow_spark.png, 196x200, 8becb525c6e1ae53cfaca478f900f7c651fdc5512003550b688b3786420f13bc
+  - white_cloud.png → shomara_launch_white_cloud.png, 253x186, 667a9bedcbba714169beea160ae8f53fc649c71c20454acd6d4ef32a59765d74
+  - left_green_plant.png → shomara_launch_left_green_plant.png, 443x265, 7527194994e6afb62520b373c2f0305c3498f4bfce75448725c3daca21f20a85
+  - right_green_plant.png → shomara_launch_right_green_plant.png, 461x261, c31be50d8e2591010820b03ca4c90e477e816781178eeb22f357289791e76cf6
+- Note: The purple mascot is owner-supplied artwork for this page only — NOT the approved cast (no ShomaraCharacter pose), never reused as a guide or avatar elsewhere. The yellow four-point shapes are decorative elements of the owner-supplied hero artwork — not a reward, not counted, not earned; no reward system is introduced. This is a separate image from the splash artwork. The splash file stays untouched.
+- Prompt (EN, original — superseded by the delivered artwork): "A calm, warm, hand-drawn-style garden illustration for a
   Persian children's maths app: soft cream background (#FFF8EF), a
   gentle green garden path curving through low bushes and round
   friendly trees, a few large soft counting stones and leaves in the
   foreground, generous empty sky and empty lower third for UI text,
   no text, no numbers, no characters, no reward symbols, soft
   daylight, flat warm colours, no busy detail, no dark shadows."
-- Prompt (FA, short): «تصویر آرام باغ برای صفحه خوش‌آمد: پس‌زمینه
+- Prompt (FA, short, original — superseded): «تصویر آرام باغ برای صفحه خوش‌آمد: پس‌زمینه
   کرم گرم، مسیر سبز ملایم، درختان گرد و سنگ‌های شمارش بزرگ و نرم،
   آسمان خالی و یک‌سوم پایینی خالی برای متن، بدون هیچ متنی، بدون
   عدد، بدون شخصیت، بدون نماد پاداش.»
-- Note: This is a separate image from the splash artwork. The splash
-  file stays untouched.
 
 ## P2 — Path ribbon strip (from the zero-to-hundred plan)
 
@@ -167,8 +179,9 @@ Common rules for every prompt below (negative rules, binding):
 
 Candidates for high-quality generation, because they are
 character-free scenes with simple shapes and the negative rules
-above are easy to check visually: P1, P2, P3, P5, P7, P8 (with the
-per-template manipulative check in the P8 row).
+above are easy to check visually: P2, P3, P5, P7, P8 (with the
+per-template manipulative check in the P8 row). P1 is no longer a
+candidate — owner-delivered 2026-11-05 (see the P1 row).
 NOT candidates (owner must deliver from approved artwork):
 P4 (celebration — a generated character would be off-model, and a
 generated celebration easily drifts into reward motifs) and P6

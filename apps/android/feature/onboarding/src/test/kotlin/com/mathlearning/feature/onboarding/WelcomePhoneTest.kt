@@ -1,10 +1,12 @@
 package com.mathlearning.feature.onboarding
 
+import com.mathlearning.core.designsystem.ShomaraLaunchDrawables
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.math.abs
 
 /** N04-02 Persian phone validation and back-behavior tests. */
 class WelcomePhoneTest {
@@ -81,6 +83,7 @@ class WelcomePhoneTest {
     fun `welcome and phone copy is warm and free of banned terms`() {
         val copy = listOf(
             ShomaraOnboardingStrings.WelcomeTitle,
+            ShomaraOnboardingStrings.WelcomeSubtitle,
             ShomaraOnboardingStrings.WelcomeBody,
             ShomaraOnboardingStrings.PhoneInvalid,
         )
@@ -88,5 +91,66 @@ class WelcomePhoneTest {
             assertFalse(text.contains("ستاره"))
             assertFalse(text.contains("تنبیه"))
         }
+    }
+
+    @Test
+    fun `welcome subtitle is the owner-supplied text`() {
+        assertEquals(
+            "برای یادگیری ریاضی، آماده یک ماجراجویی هیجان‌انگیز!",
+            ShomaraOnboardingStrings.WelcomeSubtitle,
+        )
+    }
+
+    @Test
+    fun `launch hero fills just over half the screen`() {
+        assertEquals(0.54f, ShomaraLaunchLayout.HeroHeightFraction, 0.001f)
+    }
+
+    @Test
+    fun `launch hero assets stay inside the hero zone`() {
+        for (asset in ShomaraLaunchLayout.heroAssets()) {
+            assertTrue("${asset.name} starts inside the hero", asset.xFraction >= 0f)
+            assertTrue(
+                "${asset.name} ends inside the hero",
+                asset.xFraction + asset.widthFraction <= 1.001f,
+            )
+            assertTrue("${asset.name} starts below the hero top", asset.yFraction >= 0f)
+            assertTrue(
+                "${asset.name} ends inside the hero",
+                ShomaraLaunchLayout.bottomFraction(asset) <= 1.02f,
+            )
+        }
+    }
+
+    @Test
+    fun `launch mascot is centred in the hero`() {
+        val center = ShomaraLaunchLayout.mascotCenterXFraction()
+        assertTrue("mascot centre $center is near the hero centre", abs(center - 0.5f) < 0.02f)
+    }
+
+    @Test
+    fun `launch cta spans most of the width`() {
+        assertEquals(0.807f, ShomaraLaunchLayout.CtaWidthFraction, 0.001f)
+        val margin = (1f - ShomaraLaunchLayout.CtaWidthFraction) / 2f
+        assertTrue("side margin $margin is near the sample 0.095", abs(margin - 0.095f) < 0.01f)
+    }
+
+    @Test
+    fun `launch cta arrow points right as in the sample`() {
+        val arrow = ShomaraLaunchLayout.arrowPoints()
+        assertTrue("arrow tip is to the right of its tail", arrow.tipX > arrow.tailX)
+    }
+
+    @Test
+    fun `launch swoosh curves downward in the middle`() {
+        val swoosh = ShomaraLaunchLayout.swooshPoints()
+        assertTrue(swoosh.controlY > swoosh.startY)
+        assertTrue(swoosh.controlY > swoosh.endY)
+    }
+
+    @Test
+    fun `launch drawables cover all twelve owner files`() {
+        assertEquals(12, ShomaraLaunchDrawables.All.size)
+        assertEquals(12, ShomaraLaunchDrawables.All.toSet().size)
     }
 }
