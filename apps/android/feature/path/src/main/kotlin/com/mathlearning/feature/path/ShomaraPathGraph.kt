@@ -1,5 +1,6 @@
 package com.mathlearning.feature.path
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -34,7 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
@@ -48,6 +54,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
@@ -185,6 +192,31 @@ object ShomaraPathGraphLogic {
     fun progressFraction(progress: ShomaraPathProgress): Float {
         val total = ShomaraStationCatalog.STATION_COUNT
         return if (total > 0) knownCompletedCount(progress).toFloat() / total.toFloat() else 0f
+    }
+
+    /**
+     * Segmented-ring fraction for the Current node (Duolingo screenshot evidence,
+     * 2026-11-05: the ring around the current node is broken into short arcs).
+     * The ring shows the CURRENT CHAPTER's completion from the caller-provided
+     * completed set — the same data Phase A already has. There is no per-station
+     * lesson progress yet (Phase 1), so the ring never shows a lesson fraction
+     * and never invents one; 0 renders as track-only, never as an invisible ring.
+     */
+    fun ringFractionFor(meta: StationNodeMeta, progress: ShomaraPathProgress): Float {
+        val total = ShomaraStationCatalog.STATIONS_PER_CHAPTER
+        return if (total > 0) completedInChapter(meta.chapter, progress).toFloat() / total.toFloat() else 0f
+    }
+
+    /**
+     * Unit-banner title (Duolingo screenshot evidence, 2026-11-05): the banner's
+     * big line is the chapter's station span, derived from the catalog — no
+     * concept name is invented (CONTENT-004: chapter names stay with the owner).
+     */
+    fun chapterSpanLabel(chapter: Int): String {
+        val stations = ShomaraStationCatalog.stationsInChapter(chapter)
+        val first = stations.first().ordinal
+        val last = stations.last().ordinal
+        return "ایستگاه‌های ${ShomaraDigits.toFa(first)} تا ${ShomaraDigits.toFa(last)}"
     }
 
     /**
@@ -382,11 +414,13 @@ fun ShomaraPathScreen(
                 }
                 for (meta in ShomaraStationCatalog.stationsInChapter(chapter)) {
                     item(key = meta.id) {
+                        val nodeState = ShomaraPathGraphLogic.stateFor(meta, progress)
                         ShomaraPathNodeItem(
                             meta = meta,
-                            state = ShomaraPathGraphLogic.stateFor(meta, progress),
+                            state = nodeState,
                             isRtl = isRtl,
                             onStationTap = onStationTap,
+                            ringFraction = if (nodeState == ShomaraPathNodeState.Current) ShomaraPathGraphLogic.ringFractionFor(meta, progress) else null,
                         )
                     }
                 }
@@ -419,7 +453,12 @@ fun ShomaraPathScreen(
     }
 }
 
-/** Sticky chapter band: token tint + accent edge + per-chapter count, announced as a heading. */
+/** Unit banner (Duolingo screenshot evidence, 2026-11-05): one rounded card in the
+ * chapter's token tint — small chapter label, big station-span title, per-chapter
+ * count. The guidebook cell from the screenshots is intentionally absent: the
+ * guidebook has no content yet (Phase B), and a button with no destination would
+ * be a dead affordance. The chapter's accent edge stays as its colour identity
+ * until the P2 ribbon arrives. */
 @Composable
 private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
     val (bandBackground, bandAccent) = ShomaraPathGraphLogic.chapterBandColors(chapter)
@@ -428,8 +467,8 @@ private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(bandBackground, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .padding(ShomaraTokens.Space12),
+            .background(bandBackground, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .padding(ShomaraTokens.Space16),
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -442,7 +481,12 @@ private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
         Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4)) {
             Text(
                 text = ShomaraChapterCatalog.labelFor(chapter),
-                style = ShomaraTypography.Body,
+                style = ShomaraTypography.Caption,
+                color = ShomaraTokens.ColorInk2,
+            )
+            Text(
+                text = ShomaraPathGraphLogic.chapterSpanLabel(chapter),
+                style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
                 modifier = Modifier.semantics { heading() },
             )
@@ -469,10 +513,10 @@ private fun ShomaraPathNodeItem(
     state: ShomaraPathNodeState,
     isRtl: Boolean,
     onStationTap: (String) -> Unit,
+    ringFraction: Float? = null,
 ) {
     val nodeSize = if (state == ShomaraPathNodeState.Current) ShomaraTokens.ComponentNodeCurrent else ShomaraTokens.ComponentNodeSize
     val (container, border, content) = ShomaraPathGraphLogic.colorsFor(state)
-    val depth = if (state == ShomaraPathNodeState.Current) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     var focused by remember { mutableStateOf(false) }
@@ -504,24 +548,22 @@ private fun ShomaraPathNodeItem(
             .onFocusChanged { focused = it.isFocused }
             .padding(ShomaraTokens.Space8),
     ) {
-        Box(
-            modifier = Modifier
-                .then(if (state == ShomaraPathNodeState.Current) Modifier.shadow(ShomaraTokens.ClayFeaturedElevation, CircleShape) else Modifier)
-                .size(nodeSize)
-                .background(container, CircleShape)
-                .border(
-                    if (depth == ShomaraClayDepth.Featured) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
-                    border,
-                    CircleShape,
-                ),
-            contentAlignment = Alignment.Center,
-        ) {
-            val mark = ShomaraPathGraphLogic.stateMarkFor(state)
-            Text(
-                text = if (mark.isNotEmpty()) mark else ShomaraDigits.toFa(meta.ordinal),
-                style = ShomaraTypography.Body,
-                color = content,
-            )
+        if (ringFraction != null) {
+            // Screenshot evidence (2026-11-05): the Current node wears a segmented
+            // progress ring around it. The fraction is the chapter completion from
+            // the same caller-provided set (ringFractionFor) — never an invented
+            // lesson value — and the ring is static, so it needs no reduced-motion
+            // gate. The ring adds no TalkBack layer: the chapter band already
+            // announces the same count in words.
+            Box(
+                modifier = Modifier.size(nodeSize + ShomaraTokens.Space12),
+                contentAlignment = Alignment.Center,
+            ) {
+                ShomaraCurrentNodeRing(fraction = ringFraction, modifier = Modifier.fillMaxSize())
+                ShomaraPathNodeCircle(meta = meta, state = state, nodeSize = nodeSize, container = container, border = border, content = content)
+            }
+        } else {
+            ShomaraPathNodeCircle(meta = meta, state = state, nodeSize = nodeSize, container = container, border = border, content = content)
         }
         Text(
             text = meta.workingTitle,
@@ -541,5 +583,83 @@ private fun ShomaraPathNodeItem(
             color = ShomaraTokens.ColorMuted,
             textAlign = TextAlign.Center,
         )
+    }
+}
+
+/** The node circle itself (72 dp, 84 dp for the one Current node). Only the Current
+ * node uses Featured depth (border + Clay shadow); every other node stays flat. */
+@Composable
+private fun ShomaraPathNodeCircle(
+    meta: StationNodeMeta,
+    state: ShomaraPathNodeState,
+    nodeSize: Dp,
+    container: Color,
+    border: Color,
+    content: Color,
+) {
+    val depth = if (state == ShomaraPathNodeState.Current) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft
+    Box(
+        modifier = Modifier
+            .then(if (state == ShomaraPathNodeState.Current) Modifier.shadow(ShomaraTokens.ClayFeaturedElevation, CircleShape) else Modifier)
+            .size(nodeSize)
+            .background(container, CircleShape)
+            .border(
+                if (depth == ShomaraClayDepth.Featured) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
+                border,
+                CircleShape,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        val mark = ShomaraPathGraphLogic.stateMarkFor(state)
+        Text(
+            text = if (mark.isNotEmpty()) mark else ShomaraDigits.toFa(meta.ordinal),
+            style = ShomaraTypography.Body,
+            color = content,
+        )
+    }
+}
+
+/**
+ * Segmented progress ring around the Current node (Duolingo screenshot evidence,
+ * 2026-11-05: the ring is broken into short arcs — green segments on a grey
+ * track — not a continuous circle). Static by construction: no animation, no
+ * pulse, so it is safe under reduced motion without a special case. At
+ * fraction 0 only the track is visible, never an invisible ring.
+ */
+@Composable
+private fun ShomaraCurrentNodeRing(fraction: Float, modifier: Modifier = Modifier) {
+    val trackColor = ShomaraTokens.ColorLine2
+    val fillColor = ShomaraTokens.ColorPrimary
+    val stroke = ShomaraTokens.Space4
+    Canvas(modifier = modifier) {
+        val strokePx = stroke.toPx()
+        val diameter = size.minDimension
+        val arcSize = Size(diameter - strokePx, diameter - strokePx)
+        val topLeft = Offset(strokePx / 2f, strokePx / 2f)
+        drawArc(
+            color = trackColor,
+            startAngle = -90f,
+            sweepAngle = 360f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = Stroke(width = strokePx),
+        )
+        if (fraction > 0f) {
+            val segment = 14.dp.toPx()
+            val gap = 8.dp.toPx()
+            drawArc(
+                color = fillColor,
+                startAngle = -90f,
+                sweepAngle = 360f * fraction.coerceIn(0f, 1f),
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(
+                    width = strokePx,
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(segment, gap), 0f),
+                ),
+            )
+        }
     }
 }

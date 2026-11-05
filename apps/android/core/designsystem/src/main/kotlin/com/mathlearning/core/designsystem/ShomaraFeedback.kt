@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 
@@ -80,6 +81,22 @@ fun ShomaraFeedbackBanner(
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Checklist component 4 ("درست" row, partial): the correct panel carries a
+        // ✓ icon next to its short sentence — status is never colour alone. The
+        // icon is decorative for TalkBack (cleared semantics): the banner's
+        // stateDescription ("درست") already announces the kind once, so the glyph
+        // must not be read a second time. The wrong-kind icon stays open: the copy
+        // plan says ×, content-library bans red/× — neither is chosen here, so no
+        // × is rendered and the component-4 item is NOT ticked (showing the correct
+        // answer still needs O1).
+        if (kind == ShomaraFeedbackKind.Correct) {
+            Text(
+                text = "✓",
+                style = ShomaraTypography.Title,
+                color = content,
+                modifier = Modifier.clearAndSetSemantics {},
+            )
+        }
         Text(text = text, style = ShomaraTypography.Body, color = content)
     }
 }

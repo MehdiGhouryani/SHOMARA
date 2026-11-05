@@ -192,4 +192,27 @@ class ShomaraPathGraphTest {
         assertEquals(25, ShomaraPathGraphLogic.restoredFirstVisibleIndex(5))
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(9))
     }
+
+    // ---- Screenshot evidence 2026-11-05: segmented Current ring + unit banner ----
+
+    @Test
+    fun `current node ring fraction is the chapter completion from the same progress set`() {
+        // Fixture progress: ST01-ST03 completed in chapter 1, ST04 current.
+        assertEquals(0.6f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), progress), 0.001f)
+        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST01"), ShomaraPathProgress()), 0.001f)
+        val chapterDone = ShomaraPathProgress(
+            completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05"),
+            currentStationId = "ST06",
+        )
+        assertEquals(1f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST06"), chapterDone), 0.001f)
+        // Unknown ids never inflate the ring: the ring is a chapter fraction, never a lesson value.
+        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), ShomaraPathProgress(completedStationIds = setOf("ST99"))), 0.001f)
+    }
+
+    @Test
+    fun `unit banner title is the chapter station span, never an invented concept name`() {
+        assertEquals("ایستگاه‌های ۱ تا ۵", ShomaraPathGraphLogic.chapterSpanLabel(1))
+        assertEquals("ایستگاه‌های ۶ تا ۱۰", ShomaraPathGraphLogic.chapterSpanLabel(2))
+        assertEquals("ایستگاه‌های ۲۱ تا ۲۵", ShomaraPathGraphLogic.chapterSpanLabel(5))
+    }
 }

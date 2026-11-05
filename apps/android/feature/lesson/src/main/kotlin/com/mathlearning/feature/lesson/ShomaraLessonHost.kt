@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -86,66 +90,80 @@ fun ShomaraLessonHost(
         closeState = ShomaraLessonBackLogic.onBack(closeState)
     }
 
+    // N08-05: the answer id must come from a real rendered option. It used to be a
+    // hardcoded "opt-1" placeholder, which submitted an answer the child never chose.
+    // Checklist component 2 (sticky primary CTA): the submit action lives in a
+    // pinned bottom slot — full-width, fixed — while the lesson content above it
+    // scrolls. The CTA never scrolls away, never collides with gesture navigation
+    // (navigationBarsPadding) and grows with 200% font instead of clipping
+    // (ShomaraButton min-height). The hoisted choiceId is the same pure lookup
+    // the inline branch used before; no option, label or submit rule changed.
+    val activeJourney = journey
+    val choiceId = if (activeJourney != null && resultSurface == null && !awaitingServerStage) {
+        ShomaraLessonOptions.firstOptionId(macroStage)
+    } else {
+        null
+    }
+
     // Stage 5: screen inset unified with Stage 4 language (24dp / 16dp).
     Column(
-        modifier = modifier.fillMaxSize().padding(ShomaraTokens.Space24),
+        modifier = modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(ShomaraTokens.Space24),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
-        ShomaraProgressBar(state = ShomaraProgressState())
-        ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
-        banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
-        if (resumed == true) {
-            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "از همون‌جا ادامه می‌دهیم.")
-        }
-        val closeRequested = closeState == ShomaraCloseConfirmState.AwaitingConfirmation
-        if (closeRequested) {
-            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraCloseConfirmLogic.ExitQuestion)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
-            ) {
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+        ) {
+            ShomaraProgressBar(state = ShomaraProgressState())
+            ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
+            banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
+            if (resumed == true) {
+                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "از همون‌جا ادامه می‌دهیم.")
+            }
+            val closeRequested = closeState == ShomaraCloseConfirmState.AwaitingConfirmation
+            if (closeRequested) {
+                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraCloseConfirmLogic.ExitQuestion)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+                ) {
+                    ShomaraButton(
+                        text = ShomaraCloseConfirmLogic.ConfirmLabel,
+                        onClick = { closeState = ShomaraCloseConfirmLogic.confirmExit(closeState) },
+                        variant = ShomaraButtonVariant.Primary,
+                    )
+                    ShomaraButton(
+                        text = ShomaraCloseConfirmLogic.StayLabel,
+                        onClick = { closeState = ShomaraCloseConfirmLogic.stay(closeState) },
+                        variant = ShomaraButtonVariant.Ghost,
+                    )
+                }
+            } else if (resultSurface == null) {
                 ShomaraButton(
-                    text = ShomaraCloseConfirmLogic.ConfirmLabel,
-                    onClick = { closeState = ShomaraCloseConfirmLogic.confirmExit(closeState) },
-                    variant = ShomaraButtonVariant.Primary,
-                )
-                ShomaraButton(
-                    text = ShomaraCloseConfirmLogic.StayLabel,
-                    onClick = { closeState = ShomaraCloseConfirmLogic.stay(closeState) },
+                    text = "خروج از ایستگاه",
+                    onClick = { closeState = ShomaraCloseConfirmLogic.request(closeState) },
                     variant = ShomaraButtonVariant.Ghost,
                 )
             }
-        } else if (resultSurface == null) {
-            ShomaraButton(
-                text = "خروج از ایستگاه",
-                onClick = { closeState = ShomaraCloseConfirmLogic.request(closeState) },
-                variant = ShomaraButtonVariant.Ghost,
-            )
-        }
-        val activeJourney = journey
-        if (resultSurface != null) {
-            ShomaraLessonResultSurface(
-                surface = resultSurface!!,
-                onExitToShell = onExitToShell,
-            )
-        } else if (activeJourney == null) {
-            // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
-            ShomaraFeedbackBanner(
-                kind = ShomaraFeedbackKind.Recovery,
-                text = "سرور آموزش هنوز وصل نیست؛ درس به‌زودی فعال می‌شود.",
-            )
-        } else if (awaitingServerStage) {
-            // The child finished every macro stage the client can walk. Mastery and the next
-            // station belong to the server, so this is an honest wait, not a fabricated completion.
-            ShomaraFeedbackBanner(
-                kind = ShomaraFeedbackKind.Recovery,
-                text = "منتظر تأیید سرور هستیم؛ همین‌جا می‌مانیم.",
-            )
-        } else {
-            // N08-05: the answer id must come from a real rendered option. It used to be a
-            // hardcoded "opt-1" placeholder, which submitted an answer the child never chose.
-            val choiceId = ShomaraLessonOptions.firstOptionId(macroStage)
-            if (choiceId == null) {
+            if (resultSurface != null) {
+                ShomaraLessonResultSurface(
+                    surface = resultSurface!!,
+                    onExitToShell = onExitToShell,
+                )
+            } else if (activeJourney == null) {
+                // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
+                ShomaraFeedbackBanner(
+                    kind = ShomaraFeedbackKind.Recovery,
+                    text = "سرور آموزش هنوز وصل نیست؛ درس به‌زودی فعال می‌شود.",
+                )
+            } else if (awaitingServerStage) {
+                // The child finished every macro stage the client can walk. Mastery and the next
+                // station belong to the server, so this is an honest wait, not a fabricated completion.
+                ShomaraFeedbackBanner(
+                    kind = ShomaraFeedbackKind.Recovery,
+                    text = "منتظر تأیید سرور هستیم؛ همین‌جا می‌مانیم.",
+                )
+            } else if (choiceId == null) {
                 // No option to render means there is nothing honest to submit. Showing an inert
                 // button would be a dead end, and inventing an id would be a fake success, so the
                 // surface states the real dependency instead. The exit path above still works, so
@@ -154,52 +172,57 @@ fun ShomaraLessonHost(
                     kind = ShomaraFeedbackKind.Recovery,
                     text = ShomaraLessonOptions.UnavailableMessage,
                 )
-            } else {
-                ShomaraButton(
-                    text = "ثبت پاسخ",
-                    onClick = {
-                        // The gate is checked again inside the coroutine because a fast double tap
-                        // can queue two lambdas before recomposition disables the button.
-                        if (ShomaraLessonSubmitGate.canSubmit(gate, choiceId)) {
-                            gate = ShomaraLessonSubmitGate.begin(gate, choiceId)
-                            scope.launch {
-                                when (val step = activeJourney.submitCurrent(choiceId = choiceId)) {
-                                    is JourneyStep.Submitted -> {
-                                        gate = ShomaraLessonSubmitGate.succeed(gate)
-                                        banner = ShomaraLessonBannerPolicy.afterSuccess(banner)
-                                        val surface = ShomaraResultLogic.surfaceFor(step.nextAction)
-                                        if (surface == ShomaraResultSurface.CompletePass ||
-                                            surface == ShomaraResultSurface.CompleteNeedsPractice
-                                        ) {
-                                            // Family 11: show the restrained result surface
-                                            // (one static character, server headline, one CTA)
-                                            // instead of exiting silently. The CTA and the
-                                            // existing close-confirm path both return to shell.
-                                            resultSurface = surface
+            }
+        }
+        // Pinned bottom slot: the one primary CTA, only when a real option exists to
+        // submit. Every other state leaves the slot empty — no inert button, no fake
+        // action — and the result surface keeps its own single CTA above.
+        if (resultSurface == null && activeJourney != null && !awaitingServerStage && choiceId != null) {
+            ShomaraButton(
+                text = "ثبت پاسخ",
+                onClick = {
+                    // The gate is checked again inside the coroutine because a fast double tap
+                    // can queue two lambdas before recomposition disables the button.
+                    if (ShomaraLessonSubmitGate.canSubmit(gate, choiceId)) {
+                        gate = ShomaraLessonSubmitGate.begin(gate, choiceId)
+                        scope.launch {
+                            when (val step = activeJourney.submitCurrent(choiceId = choiceId)) {
+                                is JourneyStep.Submitted -> {
+                                    gate = ShomaraLessonSubmitGate.succeed(gate)
+                                    banner = ShomaraLessonBannerPolicy.afterSuccess(banner)
+                                    val surface = ShomaraResultLogic.surfaceFor(step.nextAction)
+                                    if (surface == ShomaraResultSurface.CompletePass ||
+                                        surface == ShomaraResultSurface.CompleteNeedsPractice
+                                    ) {
+                                        // Family 11: show the restrained result surface
+                                        // (one static character, server headline, one CTA)
+                                        // instead of exiting silently. The CTA and the
+                                        // existing close-confirm path both return to shell.
+                                        resultSurface = surface
+                                    } else {
+                                        val next = ShomaraLessonStageWalk.next(macroStage)
+                                        if (next == null) {
+                                            awaitingServerStage = true
                                         } else {
-                                            val next = ShomaraLessonStageWalk.next(macroStage)
-                                            if (next == null) {
-                                                awaitingServerStage = true
-                                            } else {
-                                                macroStage = next
-                                                activeJourney.enterStage(next)
-                                            }
+                                            macroStage = next
+                                            activeJourney.enterStage(next)
                                         }
                                     }
-                                    is JourneyStep.Interrupted -> {
-                                        gate = ShomaraLessonSubmitGate.fail(gate)
-                                        banner = ShomaraLessonBannerPolicy.afterFailure(step.failure.userMessage())
-                                    }
-                                    else -> gate = ShomaraLessonSubmitGate.fail(gate)
                                 }
+                                is JourneyStep.Interrupted -> {
+                                    gate = ShomaraLessonSubmitGate.fail(gate)
+                                    banner = ShomaraLessonBannerPolicy.afterFailure(step.failure.userMessage())
+                                }
+                                else -> gate = ShomaraLessonSubmitGate.fail(gate)
                             }
                         }
-                    },
-                    variant = ShomaraButtonVariant.Primary,
-                    enabled = !gate.inFlight,
-                    loading = gate.inFlight,
-                )
-            }
+                    }
+                },
+                variant = ShomaraButtonVariant.Primary,
+                enabled = !gate.inFlight,
+                loading = gate.inFlight,
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
     }
 }

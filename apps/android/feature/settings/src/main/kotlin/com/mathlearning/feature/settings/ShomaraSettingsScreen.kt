@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -91,7 +93,9 @@ fun ShomaraSettingsScreen(
     // 4 x 72dp tiles + 3 x 8dp gaps = 312dp, which would exactly fill a
     // 360dp screen at 24dp insets with no slack. 16dp is the adaptive
     // reduction, still a v2 token, and it is recorded here, not hidden.
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+    // Checklist (family 15 acceptance, 200% font): the column scrolls, so the
+    // avatar grid + toggles + save button can never clip on a small screen.
+    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         Text(text = ShomaraSettingsStrings.AvatarSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         // Stage 5, 200%-font fix: the row fills the width and each tile
