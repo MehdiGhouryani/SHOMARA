@@ -2,6 +2,8 @@ package com.mathlearning.feature.onboarding
 
 import com.mathlearning.core.datastore.ShomaraTokenStore
 import com.mathlearning.core.designsystem.ShomaraOtpState
+import com.mathlearning.core.designsystem.ShomaraProgressLogic
+import com.mathlearning.core.designsystem.ShomaraProgressState
 import com.mathlearning.core.network.ShomaraNetworkError
 import com.mathlearning.core.network.ShomaraNetworkFailure
 import com.mathlearning.core.network.ShomaraOtpApi
@@ -200,6 +202,24 @@ class OnboardingJourneyTest {
         assertEquals(ShomaraNetworkFailure(ShomaraNetworkError.Offline, "test").userMessage(), holder.banner)
         assertEquals(OnboardingStep.PhoneInput, holder.flow.step)
         assertNull(store.value)
+    }
+
+    // F-06: the GradePlacement step is not «complete» — the host assigns it the fraction
+    // 0.875f (OnboardingHost stepProgressFraction), and the canonical progress bar must
+    // announce that fraction in words as «سه‌چهارم راه», never «کامل شد». The step mapping
+    // itself is a private function of the host, so this test locks the announcement the
+    // bar renders for exactly that fraction (and the 1.0 boundary that alone says complete).
+    @Test
+    fun `grade placement progress announces three quarters - never complete`() {
+        assertEquals(
+            "سه‌چهارم راه",
+            ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.875f)),
+        )
+        assertFalse(
+            ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.875f))
+                .contains("کامل شد"),
+        )
+        assertEquals("کامل شد", ShomaraProgressLogic.progressWords(1f))
     }
 
     @Test

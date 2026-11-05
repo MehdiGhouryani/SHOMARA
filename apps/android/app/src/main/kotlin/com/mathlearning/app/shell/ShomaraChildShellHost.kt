@@ -86,12 +86,19 @@ fun ShomaraChildShell(
     // default tab; on the default tab the system handles it (exit). The handler is only
     // enabled on tab routes: on the settings/parent destinations Back must pop the
     // NavHost stack instead, and swallowing it here would trap the child there.
+    // F-25 (sheet): when the station-start sheet is open, Back closes the sheet FIRST —
+    // a Back that jumped tabs while the sheet was open would leave the sheet orphaned
+    // on the new tab. Only with no sheet open does Back fall through to the tab target.
     val backStackEntry by navController.currentBackStackEntryAsState()
     val onTabRoute = backStackEntry?.destination?.route in ShomaraShellTab.entries.map { it.route }
     val backTarget = if (onTabRoute) ShomaraShellLogic.backTarget(currentTab) else null
-    shomaraBackHandler(enabled = backTarget != null) {
-        val target = ShomaraShellLogic.backTarget(currentTab)
-        if (target != null) goToTab(target)
+    shomaraBackHandler(enabled = selectedStationId != null || backTarget != null) {
+        if (selectedStationId != null) {
+            selectedStationId = null
+        } else {
+            val target = ShomaraShellLogic.backTarget(currentTab)
+            if (target != null) goToTab(target)
+        }
     }
 
     Scaffold(

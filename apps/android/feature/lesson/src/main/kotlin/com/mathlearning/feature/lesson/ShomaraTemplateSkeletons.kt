@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
@@ -43,8 +42,9 @@ import com.mathlearning.core.model.MacroStage
  * The «بررسی» check button is disabled while no selection exists — a selection can only come
  * from real options (Phase 1). Once a selection exists, its action enters the evaluator-wait
  * state (the host wires [onCheck] to the existing «منتظر تأیید سرور» banner via the B3
- * machine's CHECK state). No option is ever marked correct here: `correct` lives only in
- * the evaluator (O1).
+ * machine's CHECK state). Today no selection can exist, so the check stays disabled and
+ * [onCheck] cannot fire yet — it is the Phase 1 hook, not a live path. No option is ever
+ * marked correct here: `correct` lives only in the evaluator (O1).
  */
 @Composable
 fun ShomaraTemplateSkeletonForStage(
@@ -186,8 +186,10 @@ private fun ShomaraT05GameSkeleton(modifier: Modifier = Modifier) {
 }
 
 /**
- * T13 (P5, hideNumeral): dotted reference path + start dot + direction arrow + baseline,
- * drawn with Compose primitives — never an image, never a glyph. The writing area is at
+ * T13 (P5, hideNumeral): dotted reference path + baseline, drawn with Compose primitives —
+ * never an image, never a glyph. No start dot, no direction arrow: CONTENT-001 (stroke
+ * direction and start point for ۱) is unresolved — stage5 §7 and the pilot §9 disagree —
+ * so the skeleton draws the path shape only and claims no direction. The writing area is at
  * least 240dp tall (stage5 §7), expressed from tokens (Space40 × 6), never a raw literal.
  *
  * B8 data side lives in [T13TraceAdapter.recordRawTouch]: raw touch points are recorded
@@ -209,7 +211,9 @@ private fun ShomaraT13Skeleton(modifier: Modifier = Modifier) {
             val centerX = size.width / 2f
             val topY = ShomaraTokens.Space24.toPx()
             val bottomY = size.height - ShomaraTokens.Space24.toPx()
-            // Dotted reference path, top → bottom (CONTENT-001 stroke direction for ۱).
+            // Dotted reference path, no direction: CONTENT-001 (stroke direction and start
+            // point for ۱) is unresolved, so the skeleton draws the path shape only — no
+            // start dot, no direction arrow — and claims no direction.
             drawLine(
                 color = ShomaraTokens.ColorLine2,
                 start = Offset(centerX, topY),
@@ -217,26 +221,11 @@ private fun ShomaraT13Skeleton(modifier: Modifier = Modifier) {
                 strokeWidth = strokePx,
                 pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashPx, gapPx), 0f),
             )
-            // Start dot (primary green) at the top of the path.
-            drawCircle(
-                color = ShomaraTokens.ColorPrimary,
-                radius = ShomaraTokens.Space8.toPx(),
-                center = Offset(centerX, topY),
-            )
-            // Direction arrow (small filled triangle) at the bottom of the path.
-            val arrowHalf = ShomaraTokens.Space8.toPx()
-            val arrowPath = Path().apply {
-                moveTo(centerX, bottomY + arrowHalf)
-                lineTo(centerX - arrowHalf, bottomY - arrowHalf)
-                lineTo(centerX + arrowHalf, bottomY - arrowHalf)
-                close()
-            }
-            drawPath(arrowPath, ShomaraTokens.ColorPrimary)
             // Baseline under the path.
             drawLine(
                 color = ShomaraTokens.ColorLine2,
-                start = Offset(ShomaraTokens.Space16.toPx(), bottomY + arrowHalf * 2),
-                end = Offset(size.width - ShomaraTokens.Space16.toPx(), bottomY + arrowHalf * 2),
+                start = Offset(ShomaraTokens.Space16.toPx(), bottomY + ShomaraTokens.Space8.toPx()),
+                end = Offset(size.width - ShomaraTokens.Space16.toPx(), bottomY + ShomaraTokens.Space8.toPx()),
                 strokeWidth = strokePx,
             )
         }

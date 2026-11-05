@@ -75,6 +75,10 @@ class ShomaraParentGate(
             state = ShomaraParentGateState.Idle
         }
         if (state is ShomaraParentGateState.Verifying) return state
+        // F-03c (logic layer): a blank submission is not an attempt at all — it burns
+        // nothing and changes no state. The button is also disabled while blank, but a
+        // programmatic verify("") must never cost one of the three attempts either.
+        if (passcode.isBlank()) return state
         if (verifier == null) {
             // Fail-closed: no credential checker wired → entry impossible.
             failures += 1
@@ -162,8 +166,9 @@ fun ShomaraParentGateScreen(
                 }
             },
             variant = ShomaraButtonVariant.Primary,
-            // F-03c: an empty submission used to burn one of the three attempts (and, with
-            // a null verifier, lock the gate). The button is disabled until something is typed.
+            // F-03c (UI layer): an empty submission used to burn one of the three attempts
+            // (and, with a null verifier, lock the gate). The button is disabled until
+            // something is typed; verify() itself also early-returns on blank (logic layer).
             enabled = passcode.isNotBlank(),
             // Batch 2: the primary entry action is full-width like every
             // other primary CTA in the app.

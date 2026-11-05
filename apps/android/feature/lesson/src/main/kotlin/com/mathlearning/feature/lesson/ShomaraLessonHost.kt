@@ -184,7 +184,9 @@ fun ShomaraLessonHost(
                 // bare banner. The existing UnavailableMessage stays as the skeleton's
                 // status line; the exit path above still works, so the child is never
                 // trapped. The skeleton's check action enters the evaluator-wait state
-                // (the existing «منتظر تأیید سرور» banner) once a real selection exists.
+                // (the existing «منتظر تأیید سرور» banner) once a real selection exists —
+                // today the skeleton's check is disabled, so this lambda cannot fire yet;
+                // it is the Phase 1 hook, not a live path.
                 ShomaraTemplateSkeletonForStage(
                     macroStage = macroStage,
                     onCheck = { awaitingServerStage = true },

@@ -161,7 +161,9 @@ private fun RowScope.AvatarTile(option: com.mathlearning.core.model.ShomaraAvata
                 border,
                 RoundedCornerShape(ShomaraTokens.RadiusMd),
             )
-            .semantics {
+            // الف-۰۲: one TalkBack stop per tile — the visible ✓ and the label merge into
+            // this tile's node («خورشیدی — انتخاب‌شده، دکمه») instead of three stops.
+            .semantics(mergeDescendants = true) {
                 role = Role.Button
                 contentDescription = if (equipped) option.label + " — انتخاب‌شده" else option.label
                 stateDescription = if (equipped) "انتخاب‌شده" else ""

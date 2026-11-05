@@ -22,8 +22,12 @@ import com.mathlearning.core.designsystem.ShomaraTypography
  *
  * There is deliberately no correctness field here: feedback (if any) comes only after the
  * single attempt ends, from the evaluator — never mid-test, never from this shell.
+ *
+ * (Renamed from `ShomaraJumpTest`: a production data class must not be named `...Test`.
+ * The file name stays `ShomaraJumpTest.kt` — snapshot push cannot delete/rename files —
+ * and will be aligned when a delete-capable method exists.)
  */
-data class ShomaraJumpTest(
+data class ShomaraJumpAssessment(
     /** Configurable question count (not a hardcoded 1 or 5). */
     val questionCount: Int,
     val answeredCount: Int = 0,
@@ -40,7 +44,7 @@ data class ShomaraJumpTest(
         get() = if (finished) 0 else 1
 
     /** Answers one question. The test ends with the single attempt; no feedback is produced. */
-    fun answer(): ShomaraJumpTest {
+    fun answer(): ShomaraJumpAssessment {
         require(!finished) { "jump test already finished — one attempt only" }
         val answered = answeredCount + 1
         return copy(answeredCount = answered, finished = answered == questionCount)
@@ -59,8 +63,8 @@ data class ShomaraJumpTest(
  * point of the test.
  */
 @Composable
-fun ShomaraJumpTestShell(
-    test: ShomaraJumpTest,
+fun ShomaraJumpAssessmentShell(
+    test: ShomaraJumpAssessment,
     modifier: Modifier = Modifier,
 ) {
     Column(

@@ -90,4 +90,26 @@ class ShomaraStationStartTest {
         val again = ShomaraJumpSheetLogic.select(state, "ST02")
         assertEquals(state, again)
     }
+
+    // F-17 (logic layer): a locked jump target can never be confirmed — even when it is the
+    // recorded selection, canConfirm stays false — and the explanation the sheet shows for
+    // a locked tap is exactly lockedExplanation(). Note the honest split: the tap
+    // interception itself (a locked tap never calls onSelect) lives in the ShomaraJumpSheet
+    // composable's clickable, not in ShomaraJumpSheetLogic.select — select() records a
+    // locked target and leaves the gate to canConfirm — so no JVM test can assert that a
+    // locked tap leaves selectedId null; that branch needs a Compose test of the sheet.
+    @Test
+    fun `locked jump target can never confirm and explains itself with the locked text`() {
+        val targets = ShomaraJumpSheetLogic.targetsFor("ST03", progress)
+        val locked = targets.first { it.meta.id == "ST05" }
+        assertEquals(ShomaraPathNodeState.Locked, locked.nodeState)
+        val state = ShomaraJumpSheetLogic.select(ShomaraJumpSheetState(targets = targets), "ST05")
+        assertFalse(state.canConfirm)
+        // The sheet's locked banner is this exact text — the child learns why, in words.
+        val explanation = ShomaraStationStartLogic.lockedExplanation()
+        assertTrue(explanation.contains("باز نشده"))
+        assertFalse(explanation.contains("تنبیه"))
+        // And a locked target never becomes confirmable by re-selecting it either.
+        assertFalse(ShomaraJumpSheetLogic.select(state, "ST05").canConfirm)
+    }
 }

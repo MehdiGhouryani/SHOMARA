@@ -78,4 +78,37 @@ class ShomaraParentBoundaryTest {
             assertFalse(ShomaraParentSurfaceContract.AllowedSections.any { it.contains(banned) })
         }
     }
+
+    // F-03c (logic layer): a blank submission is not an attempt at all — verify("") must
+    // never burn one of the three attempts and must not change the gate state.
+    @Test
+    fun `blank passcode never burns an attempt`() {
+        val gate = ShomaraParentGate(verifier = { it == "1234" })
+        assertEquals(ShomaraParentGateState.Idle, gate.verify("", nowMs = 0))
+        assertEquals(0, gate.failures)
+        assertEquals(ShomaraParentGateState.Idle, gate.state)
+        // A blank submission after a real failure changes nothing either.
+        gate.verify("9999", nowMs = 1)
+        assertEquals(1, gate.failures)
+        gate.verify("", nowMs = 2)
+        assertEquals(1, gate.failures)
+        assertTrue(gate.state is ShomaraParentGateState.Failed)
+    }
+
+    // F-03b: the lockout is a real 60-second cooldown on the caller's clock, not a permanent
+    // lock — with a real nowMs the gate unlocks once the cooldown has passed.
+    @Test
+    fun `lockout expires with real time`() {
+        val gate = ShomaraParentGate(verifier = { it == "1234" })
+        gate.verify("9999", nowMs = 1_000_000)
+        gate.verify("9999", nowMs = 1_000_000)
+        val third = gate.verify("9999", nowMs = 1_000_000)
+        assertTrue(third is ShomaraParentGateState.LockedOut)
+        assertEquals(1_060_000L, (third as ShomaraParentGateState.LockedOut).untilMs)
+        // Still locked one millisecond before the cooldown ends.
+        assertTrue(gate.verify("1234", nowMs = 1_059_999) is ShomaraParentGateState.LockedOut)
+        // One millisecond after it, the correct passcode authenticates again.
+        assertTrue(gate.verify("1234", nowMs = 1_060_001) is ShomaraParentGateState.Authenticated)
+        assertEquals(0, gate.failures)
+    }
 }

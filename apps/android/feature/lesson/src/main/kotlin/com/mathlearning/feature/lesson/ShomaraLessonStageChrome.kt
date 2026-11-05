@@ -57,7 +57,9 @@ fun ShomaraLessonStageHeader(
     Row(
         // F-24: the header row is at least one node tall, so the guide image (72dp) never
         // forces the row to clip the title at large font scales — the row grows with content.
-        modifier = modifier.fillMaxWidth().heightIn(min = ShomaraTokens.ComponentNodeSize),
+        // الف-۰۲: one TalkBack stop for the header — the decorative guide image is already
+        // skipped (decorative = true), and the heading merges into this row's node.
+        modifier = modifier.fillMaxWidth().heightIn(min = ShomaraTokens.ComponentNodeSize).semantics(mergeDescendants = true) {},
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -103,6 +105,10 @@ fun ShomaraLessonResultSurface(
     onExitToShell: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // الف-۰۲: this Column is deliberately NOT merged — it holds a real Button, and
+    // merging would swallow the button's action into the text. The character is
+    // decorative (skipped) and the headline/body are plain text, so TalkBack reads
+    // headline, body, then the button — three meaningful stops, not noise.
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,

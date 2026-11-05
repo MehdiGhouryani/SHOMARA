@@ -5,18 +5,18 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** B11 — jump-test shell: configurable count, one attempt, no mid-test feedback. */
-class ShomaraJumpTestTest {
+/** B11 — jump-assessment shell: configurable count, one attempt, no mid-test feedback. */
+class ShomaraJumpAssessmentTest {
 
     @Test
     fun `question count is a parameter - neither hardcoded 1 nor 5`() {
-        assertEquals(3, ShomaraJumpTest(questionCount = 3).questionCount)
-        assertEquals(7, ShomaraJumpTest(questionCount = 7).questionCount)
+        assertEquals(3, ShomaraJumpAssessment(questionCount = 3).questionCount)
+        assertEquals(7, ShomaraJumpAssessment(questionCount = 7).questionCount)
     }
 
     @Test
     fun `one attempt covers the whole test`() {
-        val test = ShomaraJumpTest(questionCount = 3)
+        val test = ShomaraJumpAssessment(questionCount = 3)
         assertEquals(1, test.attemptsLeft)
         assertFalse(test.finished)
         val done = test.answer().answer().answer()
@@ -26,7 +26,7 @@ class ShomaraJumpTestTest {
 
     @Test
     fun `a second attempt after finishing is refused`() {
-        val done = ShomaraJumpTest(questionCount = 1).answer()
+        val done = ShomaraJumpAssessment(questionCount = 1).answer()
         org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
             done.answer()
         }
@@ -34,15 +34,15 @@ class ShomaraJumpTestTest {
 
     @Test
     fun `progress line counts in Persian from counts only`() {
-        assertEquals("سؤال ۱ از ۳", ShomaraJumpTest(questionCount = 3).progressLine())
-        assertEquals("سؤال ۲ از ۳", ShomaraJumpTest(questionCount = 3).answer().progressLine())
-        assertEquals("سؤال ۳ از ۳", ShomaraJumpTest(questionCount = 3).answer().answer().answer().progressLine())
+        assertEquals("سؤال ۱ از ۳", ShomaraJumpAssessment(questionCount = 3).progressLine())
+        assertEquals("سؤال ۲ از ۳", ShomaraJumpAssessment(questionCount = 3).answer().progressLine())
+        assertEquals("سؤال ۳ از ۳", ShomaraJumpAssessment(questionCount = 3).answer().answer().answer().progressLine())
     }
 
     @Test
     fun `zero questions is refused`() {
         org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
-            ShomaraJumpTest(questionCount = 0)
+            ShomaraJumpAssessment(questionCount = 0)
         }
     }
 }

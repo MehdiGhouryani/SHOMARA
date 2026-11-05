@@ -54,4 +54,15 @@ class ShomaraAssessmentDrawTest {
             ShomaraAssessmentDraw.draw(pool, seenLastAttempt = emptySet(), count = 0)
         }
     }
+
+    @Test
+    fun `a pool with fewer families than the count is refused - never a silent short draw`() {
+        val shortPool = mapOf(
+            "F1" to listOf("F1/a"),
+            "F2" to listOf("F2/a"),
+        )
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
+            ShomaraAssessmentDraw.draw(shortPool, seenLastAttempt = emptySet(), count = 4)
+        }
+    }
 }

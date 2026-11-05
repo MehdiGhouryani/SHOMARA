@@ -32,7 +32,7 @@ data class ShomaraLocalCalibration(
     val audioBudgets: List<Int> = listOf(30, 12, 3),
     /** Jump question counts, mirrored from [ServerLearningConfig.DEFAULT] (CONTENT-002/014):
      * station-jump 1 and chapter-jump 5 are BOTH draft and in conflict (C9) — neither is the
-     * approved number, and [ShomaraJumpTest] takes the count as a parameter instead. */
+     * approved number, and [ShomaraJumpAssessment] takes the count as a parameter instead. */
     val stationJumpQuestionCount: Int = 1,
     val chapterJumpQuestionCount: Int = 5,
 ) {
