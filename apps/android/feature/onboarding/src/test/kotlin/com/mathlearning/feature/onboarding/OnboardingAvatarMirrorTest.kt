@@ -110,6 +110,9 @@ class OnboardingAvatarMirrorTest {
         )
         holder.profileDraft = ShomaraProfileDraft(name = "آریا", avatarId = "moon")
         holder.saveState = holder.saveState.copy(draft = holder.profileDraft)
+        // saveProfile is only ever invoked from the profile step; put the flow there
+        // first so "does not advance" means "stays on ProfileSetup".
+        holder.flow = holder.flow.advanceTo(OnboardingStep.ProfileSetup)
 
         holder.saveProfile(onComplete = {})
 
