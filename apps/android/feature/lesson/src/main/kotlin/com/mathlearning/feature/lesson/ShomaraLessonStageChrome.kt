@@ -80,7 +80,7 @@ fun ShomaraLessonStageHeader(
  * Family 11 result surface, shown only after an authoritative server
  * result (CompletePass / CompleteNeedsPractice). Restrained: one static
  * character, the server-owned headline from [ShomaraResultLogic], no
- * score, no star, no celebration sound, no second progress layer, and
+ * score, no reward motif, no celebration sound, no second progress layer, and
  * one primary CTA that returns to the path. It is skippable by that CTA
  * and by the host's existing close-confirm path.
  */

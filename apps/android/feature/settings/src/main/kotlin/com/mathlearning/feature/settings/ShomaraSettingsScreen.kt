@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -131,7 +132,7 @@ fun ShomaraSettingsScreen(
 }
 
 @Composable
-private fun AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, equipped: Boolean, onEquip: (String) -> Unit) {
+private fun RowScope.AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, equipped: Boolean, onEquip: (String) -> Unit) {
     val container = if (equipped) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface
     val border = if (equipped) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine
     Column(

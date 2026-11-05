@@ -89,7 +89,7 @@ fun ShomaraMeScreen(
 ) {
     val state = ShomaraMeLogic.stateFor(offline, errorText, loading, facts != null)
     // Stage 4, family 14: preferred 24dp inset, generous spacing, one calm
-    // featured header card only. No second progress layer, no badge/star/streak.
+    // featured header card only. No second progress layer, no reward-economy motif.
     Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Text(text = "من", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         when (state) {
