@@ -10,13 +10,14 @@ class ShomaraPracticeSetTest {
 
     @Test
     fun `spiral takes at least one item from each thread first`() {
-        val set = ShomaraPracticeSet.build(
+        // R-16: build is an instance method — the set's own size is the build size, and
+        // poolRef names the pool the caller passes in.
+        val set = ShomaraPracticeSet(size = 6, poolRef = StationId.parse("ST07")).build(
             threadPools = mapOf(
                 "ST01" to listOf("ST01/a", "ST01/b"),
                 "ST02" to listOf("ST02/a"),
                 "ST03" to listOf("ST03/a", "ST03/b", "ST03/c"),
             ),
-            size = 6,
         )
         assertEquals(6, set.size)
         // Spiral pass first: one from each thread, in thread order.
@@ -27,11 +28,23 @@ class ShomaraPracticeSetTest {
 
     @Test
     fun `a short pool gives a short honest set - never padding`() {
-        val set = ShomaraPracticeSet.build(
+        val set = ShomaraPracticeSet(size = 6, poolRef = StationId.parse("ST07")).build(
             threadPools = mapOf("ST01" to listOf("ST01/a")),
-            size = 6,
         )
         assertEquals(listOf("ST01/a"), set)
+    }
+
+    @Test
+    fun `build uses the instance size - not a caller-supplied one (R-16)`() {
+        val small = ShomaraPracticeSet(size = 2, poolRef = StationId.parse("ST07")).build(
+            threadPools = mapOf(
+                "ST01" to listOf("ST01/a", "ST01/b"),
+                "ST02" to listOf("ST02/a", "ST02/b"),
+                "ST03" to listOf("ST03/a"),
+            ),
+        )
+        assertEquals(listOf("ST01/a", "ST02/a"), small)
+        assertEquals(StationId.parse("ST07"), ShomaraPracticeSet(size = 2, poolRef = StationId.parse("ST07")).poolRef)
     }
 
     @Test

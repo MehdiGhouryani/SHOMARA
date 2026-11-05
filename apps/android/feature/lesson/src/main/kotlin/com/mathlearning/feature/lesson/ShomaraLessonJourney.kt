@@ -85,6 +85,18 @@ class ShomaraLessonJourney(
         return JourneyStep.Resumed(stage)
     }
 
+    /**
+     * R-08 — replay: a completed station starts over from P1. The leftover checkpoint is
+     * cleared first, so a later resume() finds nothing to resume from and the host never
+     * shows the «continue from where you were» banner for a replay. The attempt index
+     * restarts at 1 and the position returns to its initial P1 value.
+     */
+    suspend fun restart() {
+        checkpoints.clear(sessionId, stationId)
+        attemptIndex = 1
+        position = ShomaraLessonPosition(sessionId, stationId, "pending", MacroStage.P1_DISCOVER, null, null)
+    }
+
     val jumpQuestionCount: Int
         get() = if (stationId == config.stationJumpQuestionCount.let { stationId } && stationId.isNotEmpty()) {
             config.stationJumpQuestionCount

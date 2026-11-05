@@ -62,6 +62,13 @@ fun ShomaraChildShell(
     // store. A fabricated/in-memory default would reintroduce the misleading "saved" state.
     settingsStore: ShomaraSettingsStore,
     onStartStation: (String) -> Unit = {},
+    // R-08: a completed station's CTA replays it (fresh run from P1), it does not resume it.
+    onReplayStation: (String) -> Unit = {},
+    // R-05: a station id the shell must open the start sheet for (a lesson deep link hands
+    // the shell the station instead of entering the lesson directly). Null is the normal
+    // case — the sheet only opens from a node tap.
+    initialStationId: String? = null,
+    onInitialStationConsumed: () -> Unit = {},
 ) {
     val navController = rememberNavController()
     var currentTab by rememberSaveable { mutableStateOf(ShomaraShellTab.Default) }
@@ -69,7 +76,16 @@ fun ShomaraChildShell(
     // opens the sheet for that station; only the sheet's «شروع/ادامه» CTA navigates to the
     // lesson. Before, the tap navigated straight to `lesson/$id` — the lock was bypassed
     // and the sheet had no caller at all.
-    var selectedStationId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedStationId by rememberSaveable { mutableStateOf(initialStationId) }
+    // R-05: a deep-linked station arrives after the first composition (the app sets the
+    // pending id, then navigates here). The sheet opens for it exactly once; the pending
+    // id is consumed so dismissing the sheet does not reopen it.
+    LaunchedEffect(initialStationId) {
+        if (initialStationId != null) {
+            selectedStationId = initialStationId
+            onInitialStationConsumed()
+        }
+    }
 
     fun goToTab(tab: ShomaraShellTab) {
         if (tab != currentTab) {
@@ -276,7 +292,8 @@ fun ShomaraChildShell(
             }
             // F-01: the station-start sheet — the one door into a lesson. The sheet owns its
             // own heading, so the bottom sheet renders with a null title (no doubled heading).
-            // A locked station's CTA dismisses; only Ready/Resume navigate to the lesson.
+            // A locked station's CTA dismisses; only Ready/Resume navigate to the lesson, and
+            // Replay navigates with the replay flag (R-08).
             val sheetStationId = selectedStationId
             if (sheetStationId != null) {
                 ShomaraBottomSheet(
@@ -289,6 +306,11 @@ fun ShomaraChildShell(
                         onStart = {
                             selectedStationId = null
                             onStartStation(sheetStationId)
+                        },
+                        // R-08: the replay CTA enters the same lesson with the replay flag.
+                        onReplay = {
+                            selectedStationId = null
+                            onReplayStation(sheetStationId)
                         },
                         onDismiss = { selectedStationId = null },
                     )

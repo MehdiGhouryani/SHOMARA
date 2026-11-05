@@ -79,6 +79,14 @@ object ShomaraSettingsStrings {
     const val Title: String = "آواتار و تنظیمات"
     const val AvatarSection: String = "آواتار من"
     const val ReducedMotionLabel: String = "حرکت کمتر"
+    // R-11 (F-36): this hint OVERCLAIMS — it says all animations stop, but the reduced-motion
+    // flag only gates the spinners (button/audio/text-field), the indeterminate progress bar
+    // and the splash. The one motion it does NOT gate is the ModalBottomSheet enter/exit
+    // slide (platform animation inside Material3, in ShomaraBottomSheet) — so the station
+    // sheet still slides in with reduced motion on. Rewording this user-facing string needs
+    // the owner's approval (it is UI text, and no new user-facing text is invented here),
+    // so the string stays verbatim and the overclaim is recorded here and in the
+    // application note instead of being silently kept as fact.
     const val ReducedMotionHint: String = "انیمیشن‌ها متوقف می‌شوند."
     const val Save: String = "ذخیره"
     const val SavedMessage: String = "ذخیره شد."
@@ -196,7 +204,10 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onChecked)
-            .semantics {
+            // R-03 (F-15): one TalkBack stop per row — the label and hint texts merge
+            // into the row's node, like MeRow/PracticeRow, instead of separate stops
+            // that read the label twice.
+            .semantics(mergeDescendants = true) {
                 contentDescription = label
                 stateDescription = if (checked) "روشن" else "خاموش"
             }

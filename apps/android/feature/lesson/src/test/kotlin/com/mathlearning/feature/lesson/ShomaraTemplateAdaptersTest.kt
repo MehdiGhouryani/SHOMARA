@@ -69,15 +69,24 @@ class ShomaraTemplateAdaptersTest {
 
     // ---- T13 ----
 
+    // R-20: the stroke order is a PROVISIONAL reference, not canonical — CONTENT-001 is
+    // still open (pilot: top-to-bottom; stage5: bottom-to-top for ۱ is accepted). The test
+    // locks that the reference contains all three checkpoints and that completion is
+    // order-independent (all points visited, in any order) — it must NOT pin top-to-bottom
+    // as the decided direction. The tolerance is a draft config value (CONTENT-011): the
+    // test locks that the adapter reads its config, never the literal number.
     @Test
-    fun `t13 canonical stroke is strictly top-to-bottom (CONTENT-001)`() {
+    fun `t13 reference stroke order is provisional - completion needs every point, not the order (CONTENT-001)`() {
         val adapter = T13TraceAdapter(config = config)
-        assertEquals(listOf(T13Point.Top, T13Point.Middle, T13Point.Bottom), adapter.canonicalStrokeOrder)
-        assertEquals(28, adapter.traceToleranceDp)
-        // Out-of-order checkpoints are ignored; tolerance breaches demand the fallback.
+        assertEquals(setOf(T13Point.Top, T13Point.Middle, T13Point.Bottom), adapter.referenceStrokeOrder.toSet())
+        // The next-point hint follows the provisional reference order — that guidance is
+        // the reference, not a verdict on the real direction.
+        assertEquals(T13Point.Top, adapter.referenceStrokeOrder.first())
+        // Out-of-order checkpoints are ignored; a drag beyond the configured tolerance
+        // demands the fallback. The breach value is derived from the config, not a literal.
         val skipped = adapter.trace(T13Point.Bottom, dragDp = 10)
         assertTrue(skipped.visitedCheckpoints.isEmpty())
-        assertThrows(IllegalArgumentException::class.java) { adapter.trace(T13Point.Top, dragDp = 99) }
+        assertThrows(IllegalArgumentException::class.java) { adapter.trace(T13Point.Top, dragDp = config.traceToleranceDp + 1) }
     }
 
     @Test
@@ -136,8 +145,11 @@ class ShomaraTemplateAdaptersTest {
     }
 
     @Test
-    fun `config trace tolerance is server-owned not hardcoded`() {
-        assertEquals(28, ServerLearningConfig.DEFAULT.traceToleranceDp)
-        assertEquals(28, T13TraceAdapter().traceToleranceDp)
+    fun `config trace tolerance is server-owned not hardcoded - the adapter reads its config (R-20)`() {
+        // No literal tolerance is pinned here: 28dp is a draft value (CONTENT-001/011), not
+        // an approved one. What is pinned is that the adapter reads whatever its config says.
+        assertEquals(config.traceToleranceDp, T13TraceAdapter().traceToleranceDp)
+        val wider = ServerLearningConfig.DEFAULT.copy(traceToleranceDp = 40)
+        assertEquals(40, T13TraceAdapter(config = wider).traceToleranceDp)
     }
 }

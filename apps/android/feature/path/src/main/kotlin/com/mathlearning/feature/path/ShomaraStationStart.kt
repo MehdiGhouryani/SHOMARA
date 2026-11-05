@@ -36,6 +36,8 @@ import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
+import com.mathlearning.core.designsystem.ShomaraClay
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
@@ -45,8 +47,8 @@ import com.mathlearning.core.model.ShomaraChapterCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.core.model.StationNodeMeta
 
-/** Station-start state matrix (family 07): loading/ready/resume/locked/offline/error/starting. */
-enum class ShomaraStationStartState { Loading, Ready, Resume, Locked, Offline, Error, Starting }
+/** Station-start state matrix (family 07): loading/ready/resume/replay/locked/offline/error/starting. */
+enum class ShomaraStationStartState { Loading, Ready, Resume, Replay, Locked, Offline, Error, Starting }
 
 object ShomaraStationStartLogic {
     fun stateFor(
@@ -61,7 +63,11 @@ object ShomaraStationStartLogic {
         loading -> ShomaraStationStartState.Loading
         starting -> ShomaraStationStartState.Starting
         ShomaraPathGraphLogic.stateFor(meta, progress) == ShomaraPathNodeState.Locked -> ShomaraStationStartState.Locked
-        ShomaraPathGraphLogic.stateFor(meta, progress) == ShomaraPathNodeState.Completed -> ShomaraStationStartState.Resume
+        // R-08: a completed station re-enters as Replay, not Resume — the node promises
+        // «برای تمرین دوباره ضربه بزن», so the sheet must offer a fresh run from P1,
+        // not a resume from the leftover checkpoint. Resume stays in the matrix for a
+        // future checkpoint-aware in-progress entry; stateFor never produces it today.
+        ShomaraPathGraphLogic.stateFor(meta, progress) == ShomaraPathNodeState.Completed -> ShomaraStationStartState.Replay
         else -> ShomaraStationStartState.Ready
     }
 
@@ -69,12 +75,14 @@ object ShomaraStationStartLogic {
     fun ctaLabel(state: ShomaraStationStartState): String? = when (state) {
         ShomaraStationStartState.Ready -> "شروع"
         ShomaraStationStartState.Resume -> "ادامه"
+        // R-08: the replay label reuses the node's own words («تمرین دوباره») — no new text.
+        ShomaraStationStartState.Replay -> "تمرین دوباره"
         ShomaraStationStartState.Locked -> "متوجه شدم"
         else -> null
     }
 
     fun ctaEnabled(state: ShomaraStationStartState): Boolean =
-        state == ShomaraStationStartState.Ready || state == ShomaraStationStartState.Resume || state == ShomaraStationStartState.Locked
+        state == ShomaraStationStartState.Ready || state == ShomaraStationStartState.Resume || state == ShomaraStationStartState.Replay || state == ShomaraStationStartState.Locked
 
     fun metadataLine(meta: StationNodeMeta): String =
         "ایستگاه ${ShomaraDigits.toFa(meta.ordinal)} از ${ShomaraDigits.toFa(ShomaraStationCatalog.STATION_COUNT)} — ${meta.chapterLabel}"
@@ -125,6 +133,10 @@ fun ShomaraStationStartSheet(
     loading: Boolean = false,
     starting: Boolean = false,
     errorText: String? = null,
+    // R-08: a completed station's CTA is a replay, not a resume — the host enters with
+    // the replay flag and clears the checkpoint, so the run starts fresh from P1.
+    // Defaults to onStart so existing callers keep working; the shell passes its own.
+    onReplay: () -> Unit = onStart,
 ) {
     val meta = ShomaraStationCatalog.station(stationId)
     val state = ShomaraStationStartLogic.stateFor(meta, progress, loading, starting, errorText)
@@ -133,8 +145,9 @@ fun ShomaraStationStartSheet(
             .fillMaxWidth()
             // Batch 2: the sheet is a raised card (Soft depth), and it
             // scrolls — at 200% font the character row + banner + CTA can
-            // otherwise overflow a short sheet window.
-            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            // otherwise overflow a short sheet window. The elevation comes
+            // from the clay spec, never the raw token (R-02).
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .verticalScroll(rememberScrollState())
@@ -180,7 +193,14 @@ fun ShomaraStationStartSheet(
         if (cta != null) {
             ShomaraButton(
                 text = cta,
-                onClick = { if (state == ShomaraStationStartState.Locked) onDismiss() else onStart() },
+                // R-08: Locked dismisses, Replay replays, everything else starts.
+                onClick = {
+                    when (state) {
+                        ShomaraStationStartState.Locked -> onDismiss()
+                        ShomaraStationStartState.Replay -> onReplay()
+                        else -> onStart()
+                    }
+                },
                 enabled = ShomaraStationStartLogic.ctaEnabled(state),
                 loading = state == ShomaraStationStartState.Starting,
                 variant = if (state == ShomaraStationStartState.Locked) ShomaraButtonVariant.Ghost else ShomaraButtonVariant.Primary,
@@ -207,7 +227,8 @@ fun ShomaraJumpSheet(
         modifier = modifier
             .fillMaxWidth()
             // Batch 2: same raised-card depth and scroll as the station sheet.
-            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            // The elevation comes from the clay spec, never the raw token (R-02).
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .verticalScroll(rememberScrollState())
@@ -232,7 +253,9 @@ fun ShomaraJumpSheet(
                     .heightIn(min = ShomaraTokens.ComponentTouchMin)
                     .background(if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
                     .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusSm))
-                    .semantics {
+                    // R-21: one TalkBack stop per row — the title and state texts merge
+                    // into the row's node («عنوان — وضعیت») instead of three stops.
+                    .semantics(mergeDescendants = true) {
                         role = Role.Button
                         contentDescription = label
                         // Stage 5 TalkBack: every jump target announces its

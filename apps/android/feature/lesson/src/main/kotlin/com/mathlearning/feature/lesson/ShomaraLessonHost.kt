@@ -63,6 +63,9 @@ fun ShomaraLessonHost(
     onExitToShell: () -> Unit,
     modifier: Modifier = Modifier,
     sessionId: String = "local-session",
+    // R-08: a replay entry starts the station over from P1 — the host clears the leftover
+    // checkpoint instead of resuming it, so «تمرین دوباره» is a fresh run, not a resume.
+    replay: Boolean = false,
 ) {
     val scope = rememberCoroutineScope()
     var closeState by remember { mutableStateOf<ShomaraCloseConfirmState>(ShomaraCloseConfirmState.NotRequested) }
@@ -80,13 +83,20 @@ fun ShomaraLessonHost(
     // F-04: resume() returns the recovered step — the host used to throw it away and
     // restart at P1 while still showing «از همون‌جا ادامه می‌دهیم». The recovered macro
     // stage now actually becomes the current stage.
+    // R-08: a replay entry never resumes — the checkpoint is cleared first and the run
+    // starts at P1 with no resume banner.
     LaunchedEffect(Unit) {
-        val resumedStep = journey?.resume()
-        if (resumedStep != null) {
-            resumed = true
-            macroStage = resumedStep.macroStage
-        } else {
+        if (replay) {
+            journey?.restart()
             resumed = false
+        } else {
+            val resumedStep = journey?.resume()
+            if (resumedStep != null) {
+                resumed = true
+                macroStage = resumedStep.macroStage
+            } else {
+                resumed = false
+            }
         }
     }
     LaunchedEffect(closeState) {
@@ -165,20 +175,7 @@ fun ShomaraLessonHost(
                     surface = resultSurface!!,
                     onExitToShell = onExitToShell,
                 )
-            } else if (activeJourney == null) {
-                // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
-                ShomaraFeedbackBanner(
-                    kind = ShomaraFeedbackKind.Recovery,
-                    text = "سرور آموزش هنوز وصل نیست؛ درس به‌زودی فعال می‌شود.",
-                )
-            } else if (awaitingServerStage) {
-                // The child finished every macro stage the client can walk. Mastery and the next
-                // station belong to the server, so this is an honest wait, not a fabricated completion.
-                ShomaraFeedbackBanner(
-                    kind = ShomaraFeedbackKind.Recovery,
-                    text = "منتظر تأیید سرور هستیم؛ همین‌جا می‌مانیم.",
-                )
-            } else if (choiceId == null) {
+            } else if (activeJourney != null && !awaitingServerStage && choiceId == null) {
                 // B2: no option to render means the honest surface is the current stage's
                 // template skeleton — the shape of the task with honest empty data — not a
                 // bare banner. The existing UnavailableMessage stays as the skeleton's
@@ -187,6 +184,9 @@ fun ShomaraLessonHost(
                 // (the existing «منتظر تأیید سرور» banner) once a real selection exists —
                 // today the skeleton's check is disabled, so this lambda cannot fire yet;
                 // it is the Phase 1 hook, not a live path.
+                // R-04: the gateway-missing and awaiting-server banners used to live here
+                // in the scrolling column; they now live in the fixed slot below, so the
+                // skeleton renders only for a live journey that is not awaiting the server.
                 ShomaraTemplateSkeletonForStage(
                     macroStage = macroStage,
                     onCheck = { awaitingServerStage = true },
@@ -197,6 +197,22 @@ fun ShomaraLessonHost(
         // always sees the feedback, even scrolled to the bottom, and the banner never
         // scrolls away with the content. The close-confirm question, the result surface
         // and the exit button stay in the scrolling column above.
+        // R-04: the gateway-missing and awaiting-server banners join this fixed slot —
+        // they used to scroll away with the content (E-04 was incomplete for them).
+        if (activeJourney == null) {
+            // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
+            ShomaraFeedbackBanner(
+                kind = ShomaraFeedbackKind.Recovery,
+                text = "سرور آموزش هنوز وصل نیست؛ درس به‌زودی فعال می‌شود.",
+            )
+        } else if (awaitingServerStage) {
+            // The child finished every macro stage the client can walk. Mastery and the next
+            // station belong to the server, so this is an honest wait, not a fabricated completion.
+            ShomaraFeedbackBanner(
+                kind = ShomaraFeedbackKind.Recovery,
+                text = "منتظر تأیید سرور هستیم؛ همین‌جا می‌مانیم.",
+            )
+        }
         banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
         if (resumed == true) {
             ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "از همون‌جا ادامه می‌دهیم.")

@@ -16,12 +16,14 @@ class ShomaraStationStartTest {
     )
 
     @Test
-    fun `station start state matrix covers all seven states`() {
+    fun `station start state matrix covers all eight states`() {
         val st03 = ShomaraStationCatalog.station("ST03")
         val st01 = ShomaraStationCatalog.station("ST01")
         val st07 = ShomaraStationCatalog.station("ST07")
         assertEquals(ShomaraStationStartState.Ready, ShomaraStationStartLogic.stateFor(st03, progress))
-        assertEquals(ShomaraStationStartState.Resume, ShomaraStationStartLogic.stateFor(st01, progress))
+        // R-08: a completed station re-enters as Replay, not Resume — the node promises
+        // «تمرین دوباره», so the sheet offers a fresh run from P1.
+        assertEquals(ShomaraStationStartState.Replay, ShomaraStationStartLogic.stateFor(st01, progress))
         assertEquals(ShomaraStationStartState.Locked, ShomaraStationStartLogic.stateFor(st07, progress))
         assertEquals(ShomaraStationStartState.Loading, ShomaraStationStartLogic.stateFor(st03, progress, loading = true))
         assertEquals(ShomaraStationStartState.Starting, ShomaraStationStartLogic.stateFor(st03, progress, starting = true))
@@ -33,12 +35,15 @@ class ShomaraStationStartTest {
     fun `cta is single and deterministic per state`() {
         assertEquals("شروع", ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Ready))
         assertEquals("ادامه", ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Resume))
+        // R-08: the replay label reuses the node's own words — no new text.
+        assertEquals("تمرین دوباره", ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Replay))
         assertEquals("متوجه شدم", ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Locked))
         assertNull(ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Loading))
         assertNull(ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Starting))
         assertNull(ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Offline))
         assertNull(ShomaraStationStartLogic.ctaLabel(ShomaraStationStartState.Error))
         assertTrue(ShomaraStationStartLogic.ctaEnabled(ShomaraStationStartState.Ready))
+        assertTrue(ShomaraStationStartLogic.ctaEnabled(ShomaraStationStartState.Replay))
         assertFalse(ShomaraStationStartLogic.ctaEnabled(ShomaraStationStartState.Offline))
     }
 

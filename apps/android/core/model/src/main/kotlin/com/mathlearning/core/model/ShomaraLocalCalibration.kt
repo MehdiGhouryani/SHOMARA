@@ -35,6 +35,13 @@ data class ShomaraLocalCalibration(
      * approved number, and [ShomaraJumpAssessment] takes the count as a parameter instead. */
     val stationJumpQuestionCount: Int = 1,
     val chapterJumpQuestionCount: Int = 5,
+    /** Maximum simultaneous sound effects (stage5 §6.3). Initial value only — NOT approved
+     * (CONTENT-011). Read by the audio manager's maxSimultaneousEffects getter; the manager
+     * used to hardcode this number while claiming it was configurable (R-07). */
+    val maxSimultaneousEffects: Int = 3,
+    /** Narrator ducking in dB while the narrator speaks (stage5 §6.3). Initial value only —
+     * NOT approved (CONTENT-011). Read by the audio manager's narratorDuckingDb getter. */
+    val narratorDuckingDb: Int = 12,
 ) {
     init {
         require(version >= 1) { "calibration version must be positive" }
@@ -44,6 +51,8 @@ data class ShomaraLocalCalibration(
         require(assessmentPassThreshold in 0..assessmentPoolSize) { "pass threshold outside the pool" }
         require(audioBudgets.size == 3) { "exactly three audio budgets are quoted" }
         require(stationJumpQuestionCount > 0 && chapterJumpQuestionCount > 0) { "jump counts must be positive" }
+        require(maxSimultaneousEffects > 0) { "at most one simultaneous effect is required" }
+        require(narratorDuckingDb >= 0) { "narrator ducking must not be negative" }
     }
 
     companion object {

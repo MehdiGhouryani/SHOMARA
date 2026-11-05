@@ -36,11 +36,11 @@ data class ShomaraAudioManager(
 
     /** Maximum simultaneous sound effects (stage5 §6.3, configurable, not approved). */
     val maxSimultaneousEffects: Int
-        get() = MAX_SIMULTANEOUS_EFFECTS
+        get() = calibration.maxSimultaneousEffects
 
     /** Narrator ducking in dB while the narrator speaks (stage5 §6.3, configurable). */
     val narratorDuckingDb: Int
-        get() = NARRATOR_DUCKING_DB
+        get() = calibration.narratorDuckingDb
 
     /** The requested file does not exist: stay unavailable, continue silently, record the event. */
     fun markMissing(): ShomaraAudioManager =
@@ -84,6 +84,11 @@ data class ShomaraAudioManager(
     }
 
     companion object {
+        /**
+         * Initial values for the two calibration fields (stage5 §6.3, CONTENT-011 — NOT
+         * approved). They are the defaults [ShomaraLocalCalibration] ships with; the
+         * getters above read the calibration, never these constants directly (R-07).
+         */
         const val MAX_SIMULTANEOUS_EFFECTS: Int = 3
         const val NARRATOR_DUCKING_DB: Int = 12
     }

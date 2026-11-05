@@ -11,8 +11,10 @@ package com.mathlearning.feature.lesson
  * A pool with fewer families than `count` is a caller error, not a shorter draw: the pool
  * is refused loudly instead of silently returning fewer items than the caller asked for.
  *
- * The draw is deterministic (first fresh item per family, in pool order): shuffling is the
- * evaluator's job when it owns the draw, not this pure function's.
+ * The draw is deterministic (first fresh item per family, in SORTED family order): the
+ * family order never depends on how the caller built the map — `take(count)` used to run
+ * over raw map iteration order, which is only defined for ordered maps (R-17). Shuffling
+ * is the evaluator's job when it owns the draw, not this pure function's.
  */
 object ShomaraAssessmentDraw {
     sealed class DrawResult {
@@ -29,7 +31,10 @@ object ShomaraAssessmentDraw {
         require(count > 0) { "draw count must be positive" }
         require(pool.size >= count) { "draw needs at least $count families, pool has ${pool.size}" }
         val drawn = mutableListOf<String>()
-        for ((family, items) in pool.entries.take(count)) {
+        // R-17: families are sorted before the draw, so the result is identical for any
+        // map with the same entries — a HashMap and a LinkedHashMap draw the same items.
+        // With more families than `count`, the first `count` in sorted order are drawn.
+        for ((family, items) in pool.entries.sortedBy { it.key }.take(count)) {
             val fresh = items.firstOrNull { it !in seenLastAttempt }
                 ?: return DrawResult.MissingFreshItem(family)
             drawn += fresh

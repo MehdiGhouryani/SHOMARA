@@ -49,13 +49,22 @@ class ShomaraStationSheetTest {
 
     private val st07Title: String = ShomaraStationCatalog.station("ST07").workingTitle
 
-    private fun setShell(progress: ShomaraPathProgress, started: MutableList<String>) {
+    private fun setShell(
+        progress: ShomaraPathProgress,
+        started: MutableList<String>,
+        replayed: MutableList<String> = mutableListOf(),
+        initialStationId: String? = null,
+        consumed: MutableList<String> = mutableListOf(),
+    ) {
         composeRule.setContent {
             ShomaraChildShell(
                 onSignOut = {},
                 pathProgress = progress,
                 settingsStore = FakeSettingsStore(),
                 onStartStation = { started += it },
+                onReplayStation = { replayed += it },
+                initialStationId = initialStationId,
+                onInitialStationConsumed = { consumed += initialStationId.orEmpty() },
             )
         }
     }
@@ -107,5 +116,59 @@ class ShomaraStationSheetTest {
         composeRule.waitForIdle()
         composeRule.runOnIdle { assertTrue(started.isEmpty()) }
         composeRule.onNodeWithText(ShomaraStationStartLogic.lockedExplanation()).assertDoesNotExist()
+    }
+
+    // ---- R-05: the shell opens the sheet for a deep-linked station ----
+
+    @Test
+    fun initialStationIdOpensTheStartSheetWithoutATap() {
+        val started = mutableListOf<String>()
+        val consumed = mutableListOf<String>()
+        val readyProgress = ShomaraPathProgress(
+            completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
+            currentStationId = "ST07",
+        )
+        setShell(readyProgress, started, initialStationId = "ST07", consumed = consumed)
+
+        // The sheet opened on its own — the deep link routes through the sheet, and the
+        // station id was consumed exactly once.
+        composeRule.onNodeWithText("شروع").assertIsDisplayed()
+        composeRule.runOnIdle {
+            assertTrue(started.isEmpty())
+            assertEquals(listOf("ST07"), consumed)
+        }
+        // The CTA still navigates the same way a tapped sheet does.
+        composeRule.onNodeWithText("شروع").performClick()
+        composeRule.runOnIdle { assertEquals(listOf("ST07"), started) }
+    }
+
+    // ---- R-08: a completed station replays, it does not resume ----
+
+    @Test
+    fun completedNodeTapOpensTheReplaySheetAndItsCtaReplaysNotStarts() {
+        val started = mutableListOf<String>()
+        val replayed = mutableListOf<String>()
+        val progress = ShomaraPathProgress(
+            completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
+            currentStationId = "ST07",
+        )
+        setShell(progress, started, replayed = replayed)
+
+        val st01Title: String = ShomaraStationCatalog.station("ST01").workingTitle
+        composeRule.onNodeWithContentDescription(st01Title).performScrollTo().performClick()
+        composeRule.waitForIdle()
+
+        // The completed station's sheet offers «تمرین دوباره» — the node's own words —
+        // and the tap alone navigated nowhere.
+        composeRule.onNodeWithText("تمرین دوباره").assertIsDisplayed()
+        composeRule.runOnIdle { assertTrue(started.isEmpty()) }
+
+        // The replay CTA calls onReplayStation, never onStartStation: the host must restart
+        // the lesson from P1 (clearing the checkpoint) instead of resuming it.
+        composeRule.onNodeWithText("تمرین دوباره").performClick()
+        composeRule.runOnIdle {
+            assertEquals(listOf("ST01"), replayed)
+            assertTrue(started.isEmpty())
+        }
     }
 }

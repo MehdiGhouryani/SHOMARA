@@ -92,7 +92,7 @@
 
 | ردیف | چه ساخته شد |
 |---|---|
-| B1 | تست‌های snapshot مرز projection (`ShomaraProjectionSnapshotTest`): فهرست دقیق violationها شامل `$.evaluatorConfig`، `$.pass_threshold`، `$.interaction.hints`، و `hint-in-P4/P5` برای P4 (و نبودنش برای P2)؛ مراحل ماکرو دقیقاً P1 تا P5. |
+| B1 | تست‌های snapshot مرز projection (`ShomaraProjectionSnapshotTest`): فهرست دقیق violationها شامل `$.evaluatorConfig`، `$.pass_threshold`، `$.interaction.hints`، و `hint-in-P4/P5` برای P4 (و نبودنش برای P2)؛ مراحل ماکرو دقیقاً P1 تا P5. **R-22 (بستهٔ جاروب نهایی، D-04):** هر چهار آداپتور حالا `toProjection()` واقعی دارند (T01: template/objectCount/taughtNumerals/tappedObjectOrdinals/state — بدون chosenNumeral؛ T05: template/slotIds/draggableIds/state — بدون occupied؛ T13: template/numeral/visitedCheckpoints/state — بدون referenceStrokeOrder و بدون tolerance؛ T15: template/steps/currentStep/state — بدون choiceId) و هر چهار snapshot دقیق + عبور از guard با سخت‌گیرانه‌ترین اسکن (مراحل HINT_BANNED) تست شده‌اند. |
 | B2 | اسکلت رندر چهار قالب (`ShomaraTemplateSkeletons`): P1 → T01، P2 → T15، P3 → T05 با ساختار B4 (راند ۱)، P4 → T15، P5 → T13 (‏`hideNumeral`‏)؛ خط وضعیت = `UnavailableMessage` موجود؛ slot هینت فقط P2/P3 و نامرئی وقتی محتوا نیست؛ دکمهٔ «بررسی» غیرفعال تا selection واقعی (فاز ۱)؛ `onCheck` هاست → حالت AwaitingEvaluator. هاست درس به‌جای بنر unavailable، اسکلت مرحلهٔ جاری را رندر می‌کند. |
 | B3 | ماشین حالت آیتم درس (الف-۰۶، بالا). |
 | B4 | ساختار ۶ راند بازی «تزیین کیک» (`ShomaraGameRoundStructure`): جای‌های خالی ۲/۳/۲/۳/۴/—، سینی ۳/۲/۲/۲/۳/—، همه `mode: continue` جز r06؛ راند ۶ `FindUnit` با ۰/۰ (پایلوت می‌گوید r06 «نه continue» — مقدار جایگزین ساختاری است، نه مصوب)؛ `roundLabel()` «راند N از ۶». |

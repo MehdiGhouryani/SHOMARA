@@ -42,6 +42,77 @@ import com.mathlearning.core.designsystem.ShomaraTypography
 import kotlinx.coroutines.launch
 
 /**
+ * R-13 — the banner carries its kind with its text. The kind used to be re-derived from the
+ * text by string equality with BackendNotConfigured, so a canonical-text change would have
+ * silently flipped an Error banner into a Retry banner. The error class decides the kind
+ * at the site that creates the banner; nothing re-derives it from the text afterwards.
+ * (F-19: a backend-configuration failure is an Error — retrying cannot fix an unconfigured
+ * service, and a Retry banner would invite the user to try again forever.)
+ */
+data class ShomaraBanner(
+    val kind: ShomaraFeedbackKind,
+    val text: String,
+) {
+    companion object {
+        fun error(text: String): ShomaraBanner = ShomaraBanner(ShomaraFeedbackKind.Error, text)
+        fun retry(text: String): ShomaraBanner = ShomaraBanner(ShomaraFeedbackKind.Retry, text)
+        fun recovery(text: String): ShomaraBanner = ShomaraBanner(ShomaraFeedbackKind.Recovery, text)
+    }
+}
+
+/**
+ * R-09 — process-death restore clamp (pure, JVM-tested). Only the phone and the step are
+ * saved — the OTP code is never saved. A restored step must be one the user can actually
+ * continue from: OtpVerify clamps to PhoneInput (the code cannot be recovered), and
+ * ProfileSetup/GradePlacement clamp to PhoneInput too — they are re-entered through the
+ * existing draft-resume path (restoreDraft advances to ProfileSetup when a resumable draft
+ * exists), never by restoring the step directly (restoring GradePlacement would also make
+ * restoreDraft step backwards and throw). Complete clamps to Welcome.
+ */
+object ShomaraOnboardingRestore {
+    fun clampStep(step: OnboardingStep): OnboardingStep = when (step) {
+        OnboardingStep.Welcome -> OnboardingStep.Welcome
+        OnboardingStep.PhoneInput -> OnboardingStep.PhoneInput
+        OnboardingStep.OtpVerify,
+        OnboardingStep.ProfileSetup,
+        OnboardingStep.GradePlacement -> OnboardingStep.PhoneInput
+        OnboardingStep.Complete -> OnboardingStep.Welcome
+    }
+
+    /** Save format: [phone, step-name] — a plain string list the saved-state registry stores. */
+    fun encode(phone: String, step: OnboardingStep): List<String> = listOf(phone, step.name)
+
+    /** Unknown or malformed saves fall back to an empty phone at the welcome gate. */
+    fun decode(saved: List<String>): Pair<String, OnboardingStep> {
+        val phone = saved.getOrNull(0).orEmpty()
+        val step = saved.getOrNull(1)?.let { name ->
+            runCatching { OnboardingStep.valueOf(name) }.getOrNull()
+        } ?: OnboardingStep.Welcome
+        return phone to clampStep(step)
+    }
+}
+
+/**
+ * R-10 (option a) — the bar counts COMPLETED steps, never the step being entered. Entering
+ * PhoneInput announces nothing completed (0); OtpVerify means the phone step is done (0.25);
+ * ProfileSetup means phone + OTP are done (0.5); GradePlacement means phone + OTP + profile
+ * are done (0.75). The old fractions announced a quarter/half/three-quarters the moment a
+ * step was ENTERED, before anything in it was done — and the 0.875 for placement (F-06) is
+ * superseded by this completed-count rule. Welcome and Complete show no bar. Pure, JVM-tested.
+ * (Option b — a positional «مرحلهٔ N از M» announcement — needs new canonical text and stays
+ * an owner decision.)
+ */
+object ShomaraOnboardingProgress {
+    fun fractionFor(step: OnboardingStep): Float? = when (step) {
+        OnboardingStep.PhoneInput -> 0f
+        OnboardingStep.OtpVerify -> 0.25f
+        OnboardingStep.ProfileSetup -> 0.5f
+        OnboardingStep.GradePlacement -> 0.75f
+        OnboardingStep.Welcome, OnboardingStep.Complete -> null
+    }
+}
+
+/**
  * Holder for the whole onboarding journey (N04-07): one plain state holder drives the real
  * navigation host. Network calls go through [ShomaraAuthSession]; every negative path lands in
  * a warm banner and never advances the flow.
@@ -54,7 +125,7 @@ class ShomaraOnboardingStateHolder(
     var phone by mutableStateOf("")
     var otp by mutableStateOf(ShomaraOtpState.empty(OTP_LENGTH))
     var otpBusy by mutableStateOf(false)
-    var banner by mutableStateOf<String?>(null)
+    var banner by mutableStateOf<ShomaraBanner?>(null)
     var profileDraft by mutableStateOf(ShomaraProfileDraft())
     var saveState by mutableStateOf(ShomaraProfileSaveState(profileDraft))
     var placement by mutableStateOf(ShomaraPlacementState())
@@ -84,12 +155,12 @@ class ShomaraOnboardingStateHolder(
         if (canonical == null) {
             // N08-15: a phone-format problem is the user's input and is reported as such — it is
             // never mixed with a backend/configuration problem (the two classes stay distinct).
-            banner = ShomaraAuthErrorMessages.forPhoneInput()
+            banner = ShomaraBanner.retry(ShomaraAuthErrorMessages.forPhoneInput())
             return
         }
         val active = session
         if (active == null) {
-            banner = ShomaraAuthErrorMessages.BackendNotConfigured
+            banner = ShomaraBanner.error(ShomaraAuthErrorMessages.BackendNotConfigured)
             return
         }
         otpBusy = true
@@ -97,8 +168,8 @@ class ShomaraOnboardingStateHolder(
         try {
             when (val outcome = active.requestOtp(canonical)) {
                 is RequestOutcome.Sent -> flow = flow.advanceTo(OnboardingStep.OtpVerify)
-                is RequestOutcome.Throttled -> banner = "کمی صبر کن؛ ${com.mathlearning.core.designsystem.ShomaraDigits.toFa((outcome.remainingMs / 1000).toInt())} ثانیه تا تلاش بعد."
-                is RequestOutcome.Failed -> banner = messageFor(outcome.failure)
+                is RequestOutcome.Throttled -> banner = ShomaraBanner.retry("کمی صبر کن؛ ${com.mathlearning.core.designsystem.ShomaraDigits.toFa((outcome.remainingMs / 1000).toInt())} ثانیه تا تلاش بعد.")
+                is RequestOutcome.Failed -> banner = bannerFor(outcome.failure)
             }
         } finally {
             otpBusy = false
@@ -109,14 +180,16 @@ class ShomaraOnboardingStateHolder(
      * N08-15: the backend-configuration failure is surfaced with its own message. The real API
      * reports it as `InvalidRequest` with a "not configured" detail, which would otherwise be
      * rendered as "check your information" — misleading, because no input can fix it.
+     * R-13: the banner KIND is decided here, with the message — never re-derived from the
+     * text by string equality afterwards.
      */
-    private fun messageFor(failure: com.mathlearning.core.network.ShomaraNetworkFailure): String =
+    private fun bannerFor(failure: com.mathlearning.core.network.ShomaraNetworkFailure): ShomaraBanner =
         if (failure.error == com.mathlearning.core.network.ShomaraNetworkError.InvalidRequest &&
             failure.detail.contains("not configured", ignoreCase = true)
         ) {
-            ShomaraAuthErrorMessages.BackendNotConfigured
+            ShomaraBanner.error(ShomaraAuthErrorMessages.BackendNotConfigured)
         } else {
-            failure.userMessage()
+            ShomaraBanner.retry(failure.userMessage())
         }
 
     suspend fun verifyOtp() {
@@ -130,7 +203,7 @@ class ShomaraOnboardingStateHolder(
                 is VerifyOutcome.Verified -> flow = flow.advanceTo(OnboardingStep.ProfileSetup)
                 is VerifyOutcome.Failed -> {
                     otp = otp.markInvalid()
-                    banner = messageFor(outcome.failure)
+                    banner = bannerFor(outcome.failure)
                 }
             }
         } finally {
@@ -152,11 +225,25 @@ class ShomaraOnboardingStateHolder(
         return true
     }
 
-    fun saveProfile(onComplete: () -> Unit) {
+    /**
+     * #100 — the profile save is honest: the success state is set ONLY after the draft write
+     * completes. The write is awaited inside this function (it used to be a separate call the
+     * host made first, while this function marked success and advanced in the same breath —
+     * so the «ذخیره شد» banner could never be seen). On a write failure the user stays on
+     * the profile step with the failure banner and can retry — the flow never advances on
+     * a failed save. (A null draft store means no persistence is configured — tests and
+     * store-less hosts — so there is no write to wait for; production always passes a store.)
+     */
+    suspend fun saveProfile(onComplete: () -> Unit) {
         if (!saveState.canSubmit) return
-        // Local draft persistence + server profile write arrive with N06/N07 server contracts;
-        // the local gate is complete-draft-only and the placement step follows immediately.
-        saveState = saveState.startSave().onSaveSuccess()
+        saveState = saveState.startSave()
+        try {
+            persistDraft()
+        } catch (throwable: Throwable) {
+            saveState = saveState.onSaveFailure()
+            return
+        }
+        saveState = saveState.onSaveSuccess()
         flow = flow.advanceTo(OnboardingStep.GradePlacement)
         onComplete()
     }
@@ -194,11 +281,19 @@ fun rememberOnboardingStateHolder(
     // remember, and the Saver persists only the phone (never the OTP code: a code must
     // never be restored across death). The session/store are constructor inputs, not
     // saved values, so restore rebuilds the holder around the same live inputs.
+    // R-09: the Saver now persists the step too (phone + step), and restore clamps it
+    // through ShomaraOnboardingRestore — OtpVerify falls back to PhoneInput, and
+    // ProfileSetup/GradePlacement are re-entered through the draft-resume path, never
+    // restored directly. The OTP is still never saved.
     saver = Saver(
-        save = { holder -> holder.phone },
-        restore = { savedPhone ->
+        save = { holder -> ShomaraOnboardingRestore.encode(holder.phone, holder.flow.step) },
+        restore = { saved ->
+            val (savedPhone, savedStep) = ShomaraOnboardingRestore.decode(saved)
             ShomaraOnboardingStateHolder(session = session, draftStore = draftStore)
-                .also { it.phone = savedPhone }
+                .also {
+                    it.phone = savedPhone
+                    it.flow = it.flow.advanceTo(savedStep)
+                }
         },
     ),
 ) { ShomaraOnboardingStateHolder(session = session, draftStore = draftStore) }
@@ -243,13 +338,13 @@ fun ShomaraOnboardingHost(
                 text = ShomaraSimulatedAuth.DevelopmentModeBanner,
             )
         }
-        // F-19: the banner kind matches the error class — a backend-configuration failure is
-        // an Error, not a Retry: retrying cannot fix an unconfigured service, and a Retry
-        // banner invites the user to try again forever.
-        holder.banner?.let { ShomaraFeedbackBanner(kind = bannerKindFor(it), text = it) }
+        // R-13: the banner carries its kind with its text — the kind is decided where the
+        // banner is created (see ShomaraBanner), never re-derived from the text here.
+        holder.banner?.let { ShomaraFeedbackBanner(kind = it.kind, text = it.text) }
         // Duolingo principle (progress as a first-class surface; INSPIRATION_GUARDRAILS adopt
         // list): a calm canonical bar shows onboarding position. Welcome is the gate — no bar.
-        stepProgressFraction(holder.flow.step)?.let { fraction ->
+        // R-10 (option a): the fraction counts COMPLETED steps (0 on entering PhoneInput).
+        ShomaraOnboardingProgress.fractionFor(holder.flow.step)?.let { fraction ->
             ShomaraProgressBar(state = ShomaraProgressState(fraction = fraction))
         }
         when (holder.flow.step) {
@@ -365,36 +460,33 @@ fun ShomaraOnboardingHost(
                     holder.saveState = holder.saveState.copy(draft = it)
                 },
                 saveState = holder.saveState,
+                // #100: the write is awaited inside saveProfile — success is only marked
+                // after it completes, and the flow advances only on success.
                 onSave = {
                     scope.launch {
-                        holder.persistDraft()
                         holder.saveProfile(onComplete = {})
                     }
                 },
             )
             OnboardingStep.GradePlacement -> ShomaraPlacementScreen(
                 state = holder.placement,
-                onSkip = { holder.skipPlacement(); onAuthenticated() },
+                // #88: the skip is a product/DEBUG affordance, gated behind the same flag as
+                // simulatedAuth (true only in a DEBUG build). In release the placement
+                // screen renders no skip button at all — no dead affordance, no bypass.
+                onSkip = if (simulatedAuth) {
+                    { holder.skipPlacement(); onAuthenticated() }
+                } else {
+                    null
+                },
+                // #100: the save confirmation is carried to the step the user lands on —
+                // the profile step itself advances immediately on success, so this is
+                // where the «ذخیره شد» banner is actually seen (and TalkBack hears it once).
+                savedAnnouncement = holder.saveState.announcement().takeIf { holder.saveState.saved },
             )
             OnboardingStep.Complete -> onAuthenticated()
         }
     }
 }
-
-/** Stable onboarding progress for the canonical bar (Welcome/Complete show none). */
-private fun stepProgressFraction(step: OnboardingStep): Float? = when (step) {
-    OnboardingStep.PhoneInput -> 0.25f
-    OnboardingStep.OtpVerify -> 0.5f
-    OnboardingStep.ProfileSetup -> 0.75f
-    // F-06: placement is not «complete» — the bar at 1.0 announced completion before the
-    // child had finished. 0.875 leaves the last eighth for the actual completion.
-    OnboardingStep.GradePlacement -> 0.875f
-    OnboardingStep.Welcome, OnboardingStep.Complete -> null
-}
-
-/** F-19: the banner kind follows the error class (see the call site). */
-private fun bannerKindFor(text: String): ShomaraFeedbackKind =
-    if (text == ShomaraAuthErrorMessages.BackendNotConfigured) ShomaraFeedbackKind.Error else ShomaraFeedbackKind.Retry
 
 /** Copy for the redesigned OTP step (seed strings; canonical-source overrides arrive with CMS). */
 private object ShomaraOtpStepStrings {

@@ -297,3 +297,394 @@
 - اسکرین‌شات‌های ۳۶۰/۳۹۰/۴۱۲dp + فونت ۲۰۰٪: شیت شروع/قفل، جداکنندهٔ مرز فصل، hairline تب‌بار و دکمهٔ Ghost، پنل بازخورد چسبیده، گیت والدین (بنر خطا/قفل)، هدر درس با مرحلهٔ بازیابی‌شده.
 - TalkBack با ژست واقعی: ضربه روی گره → شیت باز می‌شود (قفل «قفل» خوانده می‌شود، نه «غیرفعال»)؛ بنر خطا/قفل گیت پس از تلاش غلط و رها شدن قفل پس از ۶۰ ثانیه؛ resume درس از مرحلهٔ ذخیره‌شده؛ توقف‌های تکیِ mergeDescendants (هدر درس، AvatarTile)؛ Back شیت را اول می‌بندد؛ ردیف پرش انتخاب‌شده یک بار «انتخاب شد».
 - نتیجهٔ re-run مربوط به `android:gate` پس از `c19460b` هنوز گزارش نشده است؛ gateهای فاز ۰/A و بسته‌های `0354cf64`/`5595ca69`/`9f3cc15` هم هنوز بازند.
+
+---
+
+## بستهٔ جاروب نهایی — ۲۰۲۶-۱۱-۰۵ (بدون build/harness/gate، بدون PASS، بدون push)
+
+مبنا: `checklist-audit.md` (۶۰۸ خط) + `diff-review.md` (۲۷۶ خط) + پچ خانوادهٔ ۱۴ + `rg-investigation.md`. همهٔ کار در worktree تازه روی `6be92df` انجام شد؛ هیچ ledger تغییر نکرد؛ هیچ ردیفی به TESTED_NATIVE نرفت؛ هیچ verifier/توکن/آستانه‌ای تضعیف نشد؛ هیچ متن کاربرپسند تازه‌ای وارد کد نشد؛ هیچ فایلی حذف/تغییرنام نشد.
+
+### چه اجرا شد — R-01 تا R-22 + #88/#100
+
+| یافته | اجرا (فایل:خط در HEAD این بسته) | تست |
+|---|---|---|
+| **R-01** — اسپینر TextField زیر reduced motion | `ShomaraTextField.kt:106,138` — پارامتر `reducedMotion` (پیش‌فرض `LocalShomaraReducedMotion.current`)؛ شاخهٔ Loading وقتی reduced motion روشن است نقطهٔ استاتیک (Space16، ColorMuted، CircleShape) رندر می‌کند، وگرنه spinner | `ShomaraReducedMotionTest.kt` — دو تست تازه (spinner با motion مجاز هست؛ زیر reduced motion نیست) |
+| **R-02** — توکن خام Clay در ۹ جا | `ShomaraAudio.kt:131`، `ShomaraNavigation.kt:101,176`، `ShomaraPathGraph.kt:470,505,639`، `ShomaraStationStart.kt:137,210` — همه به `ShomaraClay.specFor(...).elevation` رفتند؛ تعریف‌ها در `ShomaraTokens.kt:107,114` ماندند؛ grep پس از تغییر صفر مورد خام نشان می‌دهد | — (تغییر مکانیکی توکن؛ تست بصری در gate دستگاهی) |
+| **R-03** — mergeDescendants در ToggleRow | `ShomaraSettingsScreen.kt:174` — ToggleRow حالا `semantics(mergeDescendants = true)` دارد | — |
+| **R-04** — بنرهای «منتظر تأیید سرور» به slot ثابت | `ShomaraLessonHost.kt` — بنرهای gateway-missing و awaiting-server از ستون اسکرول به slot ثابت بالای CTA چسبیده رفتند؛ شاخهٔ skeleton حالا با `activeJourney != null && !awaitingServerStage && choiceId == null` محافظت می‌شود؛ کامنت E-04 به‌روز شد | — |
+| **R-05** — deep link درس از shell با باز شدن sheet (گزینهٔ ب) | `ShomaraApp.kt:37,142` — `ShomaraLessonEntryRouting.rendersLessonDirectly(enteredViaSheet)`؛ deep link مستقیم هرگز درس را رندر نمی‌کند: id پارک می‌شود و shell با `initialStationId` شیت شروع را باز می‌کند؛ `ShomaraChildShellHost.kt:70,79,83` — پارامترهای `initialStationId`/`onInitialStationConsumed`/`onReplayStation`؛ deep link عمداً fixشده حذف نشد | `ShomaraLessonEntryRoutingTest.kt` (JVM، تازه) + `ShomaraStationSheetTest.kt` — تست «initialStationId شیت را بدون ضربه باز می‌کند» |
+| **R-06** — tapGuard روی تب‌ها و بازگشت top bar | `ShomaraNavigation.kt:128,187` — ضربهٔ تب و Back تاپ‌بار از `tapGuard.beginLatched()` می‌گذرند؛ تاییدهای dialog عمداً روی `begin()` ماندند؛ KDoc `ShomaraButton.kt` به‌روز شد | — |
+| **R-07** — کالیبراسیون: دو فیلد صریح + سیم‌کشی getterها | `ShomaraLocalCalibration.kt:41,54` — `maxSimultaneousEffects = 3` و `narratorDuckingDb = 12` (مقادیر اولیه، NOT approved، CONTENT-011) + `require`ها؛ `ShomaraAudioManager.kt:38` — getterها از `calibration` می‌خوانند؛ constهای companion به‌عنوان پیش‌فرض مستند ماندند | `ShomaraAudioManagerTest.kt` (سیم‌کشی با calibration سفارشی) + `ShomaraLocalCalibrationTest.kt` (پیش‌فرض‌های تازه) |
+| **R-08** — حالت ورودی Replay با CTA «تمرین دوباره» | `ShomaraStationStart.kt:51,66,70,79` — حالت تازهٔ `Replay`؛ Completed → Replay (نه Resume)؛ `ctaLabel(Replay) = "تمرین دوباره"` (عین واژگان خود UI از `ShomaraPathGraph.kt:148`، نه متن تازه)؛ `Resume` در enum/matrix ماند ولی از `stateFor` دسترس‌پذیر نیست (رزرو برای ورودیِ در-پیشرفتِ آینده با checkpoint)؛ پارامتر `onReplay` در شیت؛ `ShomaraLessonJourney.kt:94` — `restart()` (پاک‌کردن checkpoint، `attemptIndex = 1`، بازگشت به P1)؛ `ShomaraLessonHost.kt:68,89` — flag `replay` (replay → `restart()`، بدون بنر resume)؛ `ShomaraApp.kt` — `onReplayStation` با `lessonReplay = true` | `ShomaraStationStartTest.kt` (ماتریس ۸ حالته + CTA) + `St07JourneyGateTest.kt` (تست `restart()`) + `ShomaraStationSheetTest.kt` (CTA بازپخش `onReplayStation` را صدا می‌زند، نه `onStartStation`) |
+| **R-09** — Saver آنبوردینگ به phone+step با clamping؛ OTP هرگز ذخیره نشود | `OnboardingHost.kt:72` — `ShomaraOnboardingRestore` (`clampStep`: Welcome→Welcome، PhoneInput→PhoneInput، OtpVerify/ProfileSetup/GradePlacement→PhoneInput، Complete→Welcome؛ `encode = [phone, step.name]`؛ `decode` با fallback)؛ Saver حالا phone+step را ذخیره می‌کند (`OnboardingHost.kt:288`) | `ShomaraOnboardingRestoreTest.kt` (JVM، تازه: clamp + round-trip + fallback) |
+| **R-10** — فقط گزینهٔ (الف) (بدون متن تازه) | `OnboardingHost.kt:105` — `ShomaraOnboardingProgress.fractionFor` (PhoneInput ‏۰، OtpVerify ‏۰٫۲۵، ProfileSetup ‏۰٫۵، GradePlacement ‏۰٫۷۵، Welcome/Complete ‏null) جای `stepProgressFraction` قدیمی (۰٫۲۵/۰٫۵/۰٫۷۵/۰٫۸۷۵) را گرفت؛ کسر فقط قدم‌های **تکمیل‌شده** را می‌شمرد؛ گزینهٔ (ب) («مرحلهٔ N از M») اجرا نشد — متن تازه می‌خواهد (O-09) | `OnboardingJourneyTest.kt` (F-06 حالا ۰٫۷۵ را تست می‌کند + تست «ورود به قدم چیزی را کامل اعلام نمی‌کند») + `ShomaraOnboardingRestoreTest.kt` |
+| **R-11** — اصلاح ادعای «انیمیشن‌ها متوقف می‌شوند» | `ShomaraSettingsScreen.kt` — کامنت بالای `ReducedMotionHint` واقعیت را ثبت می‌کند: flag فقط spinnerها/نوار نامعین/splash را gate می‌کند؛ تنها حرکتِ gateنشده اسلاید ورود/خروج `ModalBottomSheet` است. **رشتهٔ UI عوض نشد** — بازنویسی متن کاربرپسند است و تصویب مالک می‌خواهد (ثبت به‌عنوان تصمیم مالک، پایین) | — |
+| **R-13** — bannerKindFor بر اساس کلاس خطا نه برابری رشته‌ای | `OnboardingHost.kt:52,186,343` — `ShomaraBanner` تازه (kind+text، کارخانه‌های `error`/`retry`/`recovery`)؛ `holder.banner` حالا `ShomaraBanner?` است؛ `bannerFor()` جای `messageFor()` را گرفت (kind در محل ساخت تصمیم گرفته می‌شود، نه از متن باز-استنتاج)؛ `bannerKindFor` حذف شد | `OnboardingContractTest.kt` (kind ‏Error در برابر Retry + متن، هر دو قفل شده‌اند) |
+| **R-16** — poolRef در build استفاده شود | `ShomaraPracticeSet.kt:36` — `build` حالا متد نمونه است و از `this.size` استفاده می‌کند؛ `poolRef` استخری را نام می‌برد که فراخواننده باید پاس بدهد (تا O2 هیچ رجیستری نیست)؛ `build` استاتیک companion حذف شد | `ShomaraPracticeSetTest.kt` (همهٔ تست‌ها به نمونه رفتند + تست «build از size نمونه استفاده می‌کند») |
+| **R-17** — قطعیت draw مستقل از ترتیب iteration مپ | `ShomaraAssessmentDraw.kt:37` — خانواده‌ها پیش از `take(count)` با `sortedBy { it.key }` مرتب می‌شوند؛ KDoc به‌روز شد | `ShomaraAssessmentDrawTest.kt` (تست تازهٔ «ترتیب درج مپ نتیجه را عوض نمی‌کند») |
+| **R-19** — پوستهٔ Composable پرش B11 | **تصحیح diff-review:** پوسته وجود دارد — `ShomaraJumpAssessmentShell` در `ShomaraJumpTest.kt` هست (در `6be92df` خودش اضافه شده بود) و `progressLine()` + `ShomaraPagePlaceholder` را رندر می‌کند؛ بدون بازخورد/راهنما/پاداش. هیچ تغییری در کد لازم نبود؛ caller همچنان مسدود است (CONTENT-002). ادعای «no composable» در diff-review کهنه/غلط بود و اینجا ثبت می‌شود | `ShomaraJumpAssessmentShellTest.kt` (androidTest تازه در :app — خط پیشرفت هست؛ هیچ متن بازخورد/راهنما/پاداش نیست؛ خط با answeredCount جلو می‌رود) |
+| **R-20** — `canonicalStrokeOrder` → `referenceStrokeOrder` موقتی | `ShomaraTemplateAdapters.kt:179` — نام عوض شد + KDoc صریح: ترتیب مرجع موقتی است (CONTENT-001 باز است؛ stage5 می‌گوید bottom-to-top برای ۱ پذیرفته)، فقط راهنمای نقطهٔ بعدی است؛ تکمیل مستقل از ترتیب است (`containsAll`)؛ جهت واقعی تصمیم مالک می‌ماند؛ تلرانس ۲۸dp مقدار پیش‌نویس config است (CONTENT-011)، نه تاییدشده | `ShomaraTemplateAdaptersTest.kt` — تست بازنویسی شد: برابری مجموعه (همهٔ نقاط دیده شوند) نه ترتیب canonical؛ نقض تلرانس با `config.traceToleranceDp + 1` (نه عدد لفظی ۲۸)؛ config با copy ‏۴۰ ثابت می‌کند مقدار config-driven است |
+| **R-21** — mergeDescendants در ردیف‌های jump sheet | `ShomaraStationStart.kt` — ردیف‌های شیت پرش حالا `semantics(mergeDescendants = true)` دارند | — |
+| **R-22** — snapshot آداپتورها با projection واقعی | `ShomaraTemplateAdapters.kt:85,136,219,262` — هر چهار آداپتور `toProjection()` دارند: T01 ‏(template/objectCount/taughtNumerals/tappedObjectOrdinals/state — **بدون** chosenNumeral)، T05 ‏(template/slotIds/draggableIds/state — **بدون** occupied)، T13 ‏(template/numeral/visitedCheckpoints/state — **بدون** referenceStrokeOrder و بدون tolerance)، T15 ‏(template/steps/currentStep/state — **بدون** choiceId) | `ShomaraProjectionSnapshotTest.kt` — ۴ تست snapshot تازه: نقشهٔ دقیق هر آداپتور + عبور از `ShomaraProjectionGuards.projectionViolations` با سخت‌گیرانه‌ترین اسکن (مراحل HINT_BANNED)؛ ردیف B1 در `DEEP_REVIEW_BATCH_NOTE_FA.md` (D-04) به‌روز شد |
+| **#88** — دکمهٔ «فعلاً رد می‌کنم» پشت پرچم | `ProfileScreens.kt:183` — `ShomaraPlacementScreen.onSkip` حالا nullable است؛ دکمه فقط وقتی callback غیرnull است رندر می‌شود (نه disabled)؛ `OnboardingHost.kt` — هاست فقط وقتی `simulatedAuth` است callback می‌دهد (الگوی پرچم محصول/DEBUG) | `ShomaraOnboardingGatesTest.kt` (androidTest تازه: با null نیست؛ با callback هست و صدا می‌زند) |
+| **#100** — بنر مرئی «ذخیره شد» در پروفایل | `OnboardingHost.kt:232` — `saveProfile` حالا `suspend` است: `startSave`، await ‏`persistDraft()`، در شکست `onSaveFailure()` + ماندن روی پروفایل، در موفقیت `onSaveSuccess()` + جلو رفتن (store ‏null یعنی چیزی برای صبر کردن نیست؛ production همیشه store می‌دهد)؛ `ProfileScreens.kt:162,209` — بنر Correct با `saveState.announcement()` («ذخیره شد» — رشتهٔ موجود) در پایین صفحهٔ پروفایل + بنر انتقالی در بالای placement با `savedAnnouncement` (چون پروفایل بلافاصله پس از save موفق جلو می‌رود، بنر در placement دیده می‌شود) | `OnboardingJourneyTest.kt` (saved فقط پس از write؛ شکست هرگز جلو نمی‌رود و saved نمی‌شود) + `ShomaraOnboardingGatesTest.kt` (بنر در هر دو صفحه) |
+
+### چک‌لیست — ۱۰۷ آیتم تیک خورد (۳۲۱ آیتم: ۲۳ → ۱۳۰ تیک‌خورده، ۱۹۱ باز)
+
+شماره‌ها در شماره‌گذاری **تازه** (پس از تقسیم خانوادهٔ ۱۴) هستند؛ ستون «# قدیم» شمارهٔ گزارش حسابرسی است (قدیم #≥۲۰۶ → تازه +۱). هر تیک در خط خودِ چک‌لیست هم با همین اثبات ثبت شده است. تیک یعنی «کد اجرا شد»، نه «روی دستگاه دیده شد» — معیار قبولیِ دستگاهی همچنان باز است.
+
+| # تازه | # قدیم | اثبات (از جدول ج گزارش حسابرسی) |
+|---|---|---|
+| 17 | 17 | ساختار تب‌ها: `ShomaraChildShellHost.kt` — تب Path (مسیر) و تب Me (پروفایل) جدا با NavHost؛ فاز A ‏`07a6807` |
+| 20 | 20 | نبود در کد: «Duolingo» فقط در ۱۶ کامنت/KDoc آمده، هیچ رشتهٔ UIای نیست (grep روی `apps/android`) |
+| 21 | 21 | نبود در کد (همان grep)؛ هیچ HUD شمارنده‌ای در UI کودک نیست |
+| 22 | 22 | نبود در کد؛ قفل فقط با state گره نشان داده می‌شود |
+| 23 | 23 | نبود در کد (grep با مرز کلمه: فقط `super.onCreate` و کامنت «badge-free» — هیچ UIای) |
+| 24 | 24 | نبود در کد؛ تنها «streak» در کل ریپو یک کامنت است (`ShomaraMeScreen.kt:45` — «no synthetic badges or streaks») |
+| 25 | 25 | نبود در کد؛ تب لیگ ساخته نشده است |
+| 26 | 26 | نبود در کد؛ هیچ شمارندهٔ ارزی در UI نیست |
+| 27 | 27 | نبود در کد |
+| 28 | 28 | نبود در کد |
+| 29 | 29 | نبود در کد |
+| 30 | 30 | نبود در کد؛ قرارداد «badge-free» در `ShomaraNavigation.kt:147` |
+| 31 | 31 | نبود در کد؛ هیچ حلقهٔ روزانه‌ای نیست |
+| 32 | 32 | نبود در کد: صفر تطابق برای «ترک کردی»/«از دست دادی» (grep) |
+| 33 | 33 | نبود در کد: صفر `confetti`/`countdown`/`auto-advance`؛ صفر `infiniteTransition`/pulse در کد production (فقط هشدار در `ShomaraMotion.kt`) |
+| 34 | 34 | تک‌لایه برقرار است: درس نواری ندارد (F-05 حذف شد)، مسیر یک نوار دارد، «من» یک نوار دارد؛ هیچ حلقهٔ روزانه/رتبه/امتیازی نیست |
+| 35 | 35 | نبود در کد: صفر `XP`/`experiencePoints` در کد production |
+| 36 | 36 | نبود در کد production؛ تایمر فقط در منطق round چالش است (`ShomaraAssessmentResultChallenge.kt:108-111`) و تحت reduced motion پنهان می‌شود |
+| 37 | 37 | نبود در کد؛ حالت Perfect فقط ✓ دارد، بدون تاج/ستاره (`ShomaraPathGraph.kt:154`) |
+| 38 | 38 | نبودِ این نقص‌ها در کد (هیچ بازخورد/آیتمی نیست تا خشک باشد)؛ **قید:** جایگزینِ مثبت (تحمل سخاوتمندانه) مسدود است (CONTENT-001/012 — جدول ب #167) |
+| 56 | 56 | ‏`3626542` (الف-۰۱): ‏`ShomaraButton.kt:87,185` کف `ComponentTouchMin`؛ کنترل صدا `defaultMinSize`؛ ردیف تمرین و ردیف تاگل `heightIn(min = ComponentTouchMin)`؛ سلول OTP ‏۴۸dp+ |
+| 75 | 75 | ‏`WelcomePhone.kt:118-121` — ‏`ShomaraCharacterImage(Main, poseId = 1, slot = Lesson, decorative = true)`؛ اسلات Lesson = ‏۸۴dp (`ShomaraTokens.kt:84` + ‏`ShomaraCharacter.kt:81`)؛ چیدمان وسط‌چین با ADR-0040 (تیک‌خورده #73) |
+| 76 | 76 | ‏`ShomaraLaunchGate.kt:20-27` — ‏`Resolving` → splash برند (بدون صفحهٔ کودک، بدون تأخیر مصنوعی)؛ `NewUser` فقط ۶۰۰ms نگه داشته می‌شود (`NewUserHandoffMs`) و session تاییدشده هرگز معطل نمی‌شود |
+| 78 | 78 | نبود در کد (همان grep ستون ۲)؛ هدر خوش‌آمد فقط شخصیت + تیتر + یک خط توضیح است |
+| 80 | 80 | نبود در کد: هیچ asset ‏P1 در runtime نیست (PENDING_OWNER)؛ ‏`shomara_splash_artwork.png` دست‌نخورده است |
+| 85 | 85 | ‏`3626542` (F-06): ‏`OnboardingHost.kt:252,385-391` — ‏`stepProgressFraction` با کسرهای محدود؛ `GradePlacement -> 0.875f` تا «کامل شد» فقط پس از `Complete` گفته شود |
+| 88 | 88 | اجرا در این بسته (R-#88): دکمهٔ «فعلاً رد می‌کنم» فقط وقتی `onSkip` غیرnull است رندر می‌شود؛ هاست فقط وقتی `simulatedAuth` است callback می‌دهد. |
+| 89 | 89 | ‏`WelcomePhone.kt:111,174` — محتوای `verticalScroll` + ستون `weight(1f)` + ‏CTA بیرون از اسکرول (پین‌شده)؛ `OnboardingHost.kt:236` — ‏`.imePadding()` روی هاست؛ `ProfileScreens.kt:158` — «save CTA and its error banner never scroll away» |
+| 90 | 90 | هیچ شخصیتِ ثابت/پایداری در گام‌های onboarding نیست؛ تنها تصویر، cameo استاتیکِ کوچک Main ‏Inline ‏۷۲dp در صفحهٔ پروفایل است (`ProfileScreens.kt:78`) و OTP/phone هیچ کاراکتری ندارند. **قید:** نگاشت چک‌لیست می‌گوید شخصیت «در ۰۲ نیست» — cameo پروفایل از تصمیم Stage 1 است، نه از نگاشت |
+| 91 | 91 | ‏`OnboardingHost.kt:57-59,69-78,149-151` — ‏holder با flow/save/banner؛ ‏`if (target == OnboardingStep.Welcome) banner = null` («Re-entering the welcome gate starts clean»)؛ resume از draft به `ProfileSetup` می‌رود |
+| 97 | 97 | نبود در کد: در کل `feature/onboarding` فقط دو `ShomaraCharacterImage` هست — خوش‌آمد (۰۱) و پروفایل (۰۴)؛ صفحه‌های phone/OTP هیچ کاراکتری ندارند |
+| 100 | 100 | اجرا در این بسته (R-#100): بنر مرئی «ذخیره شد» — `saveProfile` فقط پس از تکمیل write موفق می‌شود؛ بنر در صفحهٔ پروفایل + بنر انتقالی در placement. |
+| 102 | 102 | ‏`ProfileScreens.kt:158-166` — bottom zone پین‌شده (CTA + بنر خطا)؛ `OnboardingHost.kt:236` — ‏`.imePadding()` |
+| 103 | 103 | ‏`ProfileScreens.kt:99-104` — ‏`errorText = ShomaraProfileDraft.nameValidationError(draft.name)` در سطح فیلد؛ `ShomaraProfileSaveState` در `ProfilePlacement.kt:21-56` — ‏inFlight/saved/failureMessage/resumed |
+| 104 | 104 | ‏`ProfileScreens.kt:146` — ‏`onClick = { lockedGradeMessage = ShomaraGradeCatalog.lockedReason(grade.id) }`؛ badge ‏«به‌زودی» (`:42,150`) |
+| 108 | 108 | ‏`ProfileScreens.kt:146,150` — کارت قفل با badge «به‌زودی» + دلیل قفل روی tap؛ G2–G6 فقط قفل‌اند |
+| 110 | 110 | نبود در کد: صفر تطابق `NumberHero` در کل `apps/android` (grep) |
+| 116 | 116 | فاز A ‏`07a6807`: ‏`ShomaraPathGraph.kt:105-111` — ‏`x = width / 2 + amplitude * sin(...)` با `PathSineAmplitude = ComponentNodeSize − Space8` (= ‏۷۲ − ۸ = ۶۴dp)؛ جهت RTL از `ShomaraTheme` (`LocalLayoutDirection` فارسی) |
+| 117 | 117 | فاز A ‏`07a6807`: ‏`ShomaraPathGraph.kt:356` ‏`LazyColumn` + ‏`:420` ‏`stickyHeader`؛ restore با اسکرول به anchor (گرهٔ جاری) هنگام باز شدن (`:338-342,477`). **قید:** ‏`listState` ‏`rememberLazyListState` است (نه saveable) — «restore» یعنی باز شدن روی Current، نه بازیابیِ دقیقِ موقعیت پس از مرگ پروسه |
+| 120 | 120 | فاز A ‏`07a6807`: ‏`ShomaraPathGraph.kt:342,477` — ‏`scrollToItem(anchorIndex)`؛ ‏`:462-477` — دکمهٔ شناور `BottomEnd` (در RTL چپ) با `showBackToAnchor` |
+| 123 | 123 | ‏`ShomaraPathGraph.kt:394,406` — ‏`height(ComponentProgressH)` (= ‏۱۴dp، ‏`ShomaraTokens.kt:89`) با `ProgressBarRangeInfo`؛ متن باقی‌مانده در `:332-336` |
+| 124 | 124 | فاز A ‏`07a6807`: ‏`ShomaraPathGraph.kt:78,124-138` — ‏enum دارای Fresh و `stateFor` شاخهٔ Fresh دارد (`freshStationId`)؛ برچسب «آمادهٔ شروع» (`:144`) |
+| 127 | 127 | ‏`ShomaraPathGraph.kt:78,136,149,154,161` — شاخهٔ Perfect در `stateFor` + برچسب «کامل و بی‌نقص» + ✓ + ‏`Triple(PrimarySoft, PrimaryDark, PrimaryDark)`. **قید:** ‏`perfectStationIds` هیچ فراخوانندهٔ زنده‌ای ندارد (F-39 — برچسب «بی‌نقص» تصمیم طراحی می‌خواهد، جدول ب #167) |
+| 128 | 128 | نبود در کد (همان grep ستون ۲)؛ مسیر فقط هدر + بنر فصل + گره‌هاست |
+| 129 | 129 | ‏`ShomaraPathGraph.kt:369-374` — ‏`ShomaraCharacterImage(Main, poseId = 1, slot = Inline, decorative = true)` با کامنت «Static cameo only… the hero of this screen is the current node» |
+| 130 | 130 | ‏`ShomaraPathGraph.kt:559-585` — ‏focus با حلقهٔ ink خنثی (`onFocusChanged` + کامنت «never be mistaken for open»)؛ pressed با `pressScale`؛ ‏`:563,575` — ‏`mergeDescendants` روی گره |
+| 135 | 135 | ‏`ShomaraDialog.kt:142-146` — ‏`ShomaraBottomSheet` با `ModalBottomSheet` + ‏`containerColor = Surface` + گوشه‌های `RadiusLg`؛ ‏`ShomaraStationStart.kt:159-168` — ‏`ShomaraCharacterImage(Main, poseId = 1, slot = Inline)` + ‏`metadataLine` («ایستگاه N از ۲۵ — فصل X»، ‏`:79-80`) + یک CTA |
+| 136 | 136 | ‏`ShomaraStationStart.kt:70-72,189` — ‏`ctaLabelFor`: ‏Ready → «شروع»، ‏Resume → «ادامه»، ‏Locked → «متوجه شدم»؛ variant ‏Ghost وقتی Locked است وگرنه Primary؛ کامنت «Exactly one dismissing action when locked» |
+| 138 | 138 | ‏`ShomaraStationStart.kt:49` — ‏`enum class ShomaraStationStartState { Loading, Ready, Resume, Locked, Offline, Error, Starting }`؛ رندر هر حالت با بنر خودش (`:172-176`) |
+| 140 | 140 | ‏`ShomaraStationStart.kt:159-162` — ‏Inline استاتیک در قاب؛ شیت اسکرول‌شونده است و hero تمام‌صفحه ندارد |
+| 141 | 141 | شیت فقط عنوانِ کاتالوگ (`workingTitle`، provisional — نه اختراع‌شده) + ‏metadata را نشان می‌دهد؛ هیچ state موفقیت/جشنی ندارد |
+| 148 | 148 | ‏`ShomaraLessonStageChrome.kt:47-48,66-70` — ‏`showsGuideCharacter(stage) = (stage == P1_DISCOVER)`؛ Number ‏pose 1 ‏Inline استاتیک و تزئینی |
+| 159 | 159 | همان `showsGuideCharacter` — در P2/P3 هیچ کاراکتری رندر نمی‌شود؛ هینت/سرنخی هم نیست تا راهنما کنارش بیاید |
+| 165 | 165 | ‏`showsGuideCharacter` فقط P1 است؛ هیچ hint و هیچ جشنی در P4 نیست (نبودِ confetti/pulse در کد) |
+| 168 | 168 | ‏`ShomaraAssessmentResultChallenge.kt:10` — ‏`enum class ShomaraAssessmentState { Idle, Selected, Submitting, Result, Disconnect, Resume, Expired }`. **قید:** فقط مدلِ حالت است؛ رندر/wiring آن فاز ۱/B است (جدول ب #163) |
+| 176 | 176 | ‏`ShomaraLessonStageChrome.kt` — ‏`ShomaraLessonResultSurface`: یک CTA اصلی «بازگشت به مسیر» + رد شدن با CTA و با مسیر تایید خروج؛ «قابل رد شدن با یک ضربه» در KDoc سطح نتیجه |
+| 178 | 178 | نبود در کد: صفر confetti/pulse/`infiniteTransition` در production؛ سطح نتیجه یک کاراکتر استاتیک است، بدون انیمیشن جشن |
+| 179 | 179 | ‏`ShomaraLessonStageChrome.kt:98` — KDoc سطح نتیجه: «no score, no reward motif, no celebration sound, no second progress layer»؛ هیچ‌یک در کد نیست |
+| 186 | 186 | ‏`ShomaraPracticeCatalog.kt:62-65` — ‏`recentFor` فقط `completedStationIds` را فیلتر می‌کند و با ترتیب catalog برمی‌گرداند؛ کامنت صریح: «no per-station timestamp… instead of a fabricated recent ordering» |
+| 187 | 187 | ‏`ShomaraPracticeCatalog.kt:38-51,68-75` — ‏reachable = ‏completed یا current؛ بقیه `locked = true` با `lockedReasonFor = «با ادامهٔ مسیر باز می‌شود»`؛ ‏`isEmpty = items.none { !it.locked }` |
+| 188 | 188 | ‏`ShomaraPracticeHub.kt:35` — ‏enum با ۶ حالت (بدون History)؛ ‏`:95` — «there is no History state» (F-25، ‏`3626542` — ‏History عمداً در List ادغام شد، چون تاریخچه فقط ردیف‌های List است) |
+| 189 | 189 | نبود در کد: صفر `ShomaraCharacterImage` در `ShomaraPracticeHub.kt` (grep) |
+| 192 | 192 | ‏`ShomaraChallengeIntro.kt:70` — «تعداد دورها: N» با ارقام فارسی + CTA چسبیدهٔ «شروع چالش» (بستهٔ ۲)؛ بدون کاراکتر/امتیاز/تایمر. **قید:** کامپوننت هیچ فراخوانندهٔ زنده‌ای ندارد (F-18 — dormant) |
+| 194 | 194 | ‏`ShomaraAssessmentResultChallenge.kt:108-109` — ‏`timerVisible = (state == Round && !reducedMotion)`؛ ‏`ShomaraChallengeIntro.kt:31-32` — «no timer here — the round timer belongs to the Round state only». **قید:** round هیچ UIای ندارد، پس تایمر هیچ‌جا رندر نمی‌شود |
+| 195 | 195 | ‏`ShomaraAssessmentResultChallenge.kt:133-134` — ‏`val affectsStationMastery: Boolean get() = false` |
+| 196 | 196 | اینترو هیچ‌یک را ندارد (خواندن `ShomaraChallengeIntro.kt` + نبودِ reward/casino در کد) |
+| 202 | 202 | ‏`ShomaraMeScreen.kt:165-166,171-187` — فقط دو ردیف با action متناسب («آواتار و تنظیمات» → تنظیمات، «بخش والدین» → گیت)؛ هیچ CTA مصنوعی نیست |
+| 203 | 203 | نبود در کد (همان grep ستون ۲)؛ ‏`ShomaraMeScreen.kt:45` — «Real facts only… (no synthetic badges or streaks)» |
+| 207 | 206 | ‏`ShomaraMeScreen.kt:43,154` — ‏enum با ۵ حالت (بدون EditReturn)؛ ‏`:154` — «there is no EditReturn state» (F-25، ‏`3626542` — بازگشت از تنظیمات با result سیم‌کشی نشده، پس state حذف شد) |
+| 209 | 208 | ردیف «آواتار و تنظیمات» در «من» (`ShomaraMeScreen.kt:165`)؛ ‏`ShomaraSettingsScreen.kt:192` — ردیف تاگل `heightIn(min = ComponentTouchMin)`؛ grid آواتار (اصلاح ۲۰۰٪ در Stage 5 ‏`03a9812`)؛ نبودِ shop/subs/ads/Super در کد |
+| 210 | 209 | ‏`ShomaraSettingsScreen.kt:148-178` — ‏`AvatarTile` با `heightIn(min = ComponentNodeSize)` (= ‏۷۲dp) + ‏`mergeDescendants` + ‏contentDescription «… — انتخاب‌شده» + ‏✓ مرئی (تزئینی برای TalkBack) |
+| 214 | 213 | هیچ UI حذف/پاک‌کردنی در کد نیست (صفر `delete`/`حذف` در production) پس چیزی بدون confirm پاک نمی‌شود؛ ‏`ShomaraParentBoundary.kt:50-58,82-85` — ‏verifier ‏null هرگز authenticate نمی‌کند و تلاش می‌سوزاند (fail-closed) |
+| 216 | 215 | نبود در کد: صفر `ShomaraCharacterImage` در `ShomaraSettingsScreen.kt` و `ShomaraParentBoundary.kt` (grep) |
+| 219 | 218 | ‏`ShomaraStateSurface.kt:95-126` — تیتر (heading) + بدنه + بنر hint اختیاری + ‏placeholder استاتیک + دکمهٔ Primary retry (تمام‌عرض) + حداکثر یک Ghost ثانویه |
+| 220 | 219 | ‏`ShomaraStateSurface.kt:30,134` — ‏«Static page placeholder: the shape of a page, not a spinner. Fixed bars only, no animation» |
+| 222 | 221 | ‏`ShomaraStateSurface.kt` همان اصل را پیاده می‌کند (یک سطح، یک retry اصلی)؛ هیچ بنر آفلاینِ دولینگو کپی نشده است |
+| 224 | 223 | ‏`3626542` (F-26): ‏`OnboardingHost.kt:23,190` — ‏phone با `rememberSaveable`؛ ‏OTP به‌دلایل امنیتی مستثناست؛ retry ‏LaunchController واقعی است (بازبینی عمیق)؛ پیام‌های خطا فارسی و کاربرپسند‌اند. **قید:** ورودیِ درس هنوز وجود ندارد تا حفظ‌شدنش چک شود؛ اثربخشیِ تک‌تک retryها gate دستگاهی می‌خواهد |
+| 225 | 224 | ‏`ShomaraStateSurface.kt:34,61-63` — کاراکتر پارامتر اختیاری با پیش‌فرض null است؛ وقتی هست کوچک و استاتیک است و پیام را نمی‌پوشاند |
+| 228 | 227 | ‏`ShomaraChildShellHost.kt:108` — ‏`canonicalTabs()` سه تب می‌سازد؛ نبودِ leaderboard/quests/shop در کد |
+| 231 | 230 | ‏`ShomaraNavigation.kt:62-68` — ‏`stateLabelFor`: ‏locked → «قفل: {reason}»؛ ‏selected → «فعال»؛ وگرنه «انتخاب نشده» |
+| 232 | 231 | فاز A ‏`07a6807` — همان اثبات #120 (`ShomaraPathGraph.kt:462-477`) |
+| 233 | 232 | ‏`ShomaraChildShellHost.kt:78` — ‏`popUpTo { saveState = true }`؛ ‏`ShomaraNavigation.kt:71-75` — ‏`resolveSelection` (reselect)؛ پنج host با deep link ‏`mathlearning`؛ ‏Back یکپارچه (F-25، ‏`3626542` + بستن شیت با Back در ‏`6be92df`)؛ ‏`imePadding` در onboarding؛ شیت‌ها `ModalBottomSheet` |
+| 234 | 233 | نبود در کد: صفر `ShomaraCharacterImage` در `app/shell` و `ShomaraNavigation.kt` (grep) |
+| 236 | 235 | ‏`ShomaraPathGraph.kt:102,135` — ‏«Pure node-state mapping; exactly ONE Current node can exist at a time»؛ ‏Current فقط وقتی `meta.id == progress.currentStationId` |
+| 238 | 237 | همان پیاده‌سازیِ آیتم تیک‌خوردهٔ #58 — ‏`255578d0`: ‏`ShomaraCurrentNodeRing` + ‏`ringFractionFor` در `ShomaraPathGraph.kt` (قطعه‌های سبز روی track خاکستری، استاتیک)؛ این آیتم (کامپوننت ۱) همان حلقه است و تیک نخورده |
+| 239 | 238 | همان پیاده‌سازیِ آیتم تیک‌خوردهٔ #125 — ‏`3626542` (F-01): شیت شروع shell-owned شد؛ ضربه روی گرهٔ قفل شیت Locked را باز می‌کند؛ این آیتم (کامپوننت ۱) همان قرارداد است و تیک نخورده |
+| 240 | 239 | همان اثبات #130 (`ShomaraPathGraph.kt:559-585`) — حلقهٔ focus، ‏pressScale، ‏mergeDescendants |
+| 244 | 243 | ‏`0354cf64` + ‏`ShomaraButton.kt:87,155-185` — کف ۴۸dp؛ عمق از `ShomaraClay.specFor(depth)` (‏Soft پیش‌فرض، ‏Hint در press، ‏Flat در غیرفعال/loading و Ghost)؛ ارتفاعِ حداقلیِ ثابت مانع جابه‌جایی layout در loading است |
+| 245 | 244 | ‏`ShomaraTheme.kt:55-90` — ‏`ShomaraClay`: ‏Hint ‏= ‏Flat + elevation کوچک، ‏Soft بزرگ‌تر است؛ پس press (‏Soft → ‏Hint) لبه را جمع می‌کند؛ تغییر elevation جابه‌جایی layout نمی‌سازد؛ گره هم `pressScale` دارد (`ShomaraPathGraph.kt:559-561`) |
+| 246 | 245 | نبود در کد: صفر pulse/`infiniteTransition` در `ShomaraButton.kt` و کل production؛ حلقه استاتیک است (R4) |
+| 247 | 246 | ‏`ShomaraLessonHost.kt` — یک اسلات CTA؛ شیت شروع یک CTA؛ ‏Ghost «بازگشت» در phone ناوبری است، نه CTA تصمیم |
+| 250 | 249 | همان اثبات #123 (`ShomaraPathGraph.kt:332-336,394,406`) |
+| 251 | 250 | نبود در کد: صفر pulse/`infiniteTransition` در production؛ نوارها استاتیک‌اند |
+| 252 | 251 | برقرار است: درس نواری ندارد، مسیر یک نوار دارد، «من» یک نوار دارد؛ هیچ لایهٔ دومی (حلقهٔ روزانه/رتبه/امتیاز) نیست |
+| 254 | 253 | ‏`ShomaraFeedback.kt:35,99-114` — بنر Correct با ✓ + «آفرین! درست بود!»؛ پنل است، نه flood تمام‌صفحه؛ هیچ صدایی نیست. **قید:** در سطح کامپوننت است؛ بازخورد درون‌درسی نیست (جدول ب #257) |
+| 256 | 255 | ‏`3626542` (E-04، تیک‌خوردهٔ C-15/#300): بنر در اسلات ثابت بالای CTA نشست؛ ‏`ShomaraFeedback.kt:93` — ‏`liveRegion = Polite` (الف-۰۳)؛ آیکون + جمله در هر دو kind |
+| 262 | 261 | نبود در کد (همان grepها)؛ سطح نتیجه هیچ‌یک را ندارد |
+| 266 | 265 | نبودِ سمت تاریک در کد (صفر پیام گناه — جدول ج #32)؛ شخصیت شومارا فقط cameo استاتیک است، نه شخصیتِ ثابتِ واکنش‌گر |
+| 269 | 268 | ‏`MainActivity.kt:42` — ‏`ShomaraTheme(reducedMotion = settingsState.reducedMotion)`؛ ‏`ShomaraTheme.kt:230-234` — ‏`LocalShomaraReducedMotion` از ترکیبِ تنظیمِ ذخیره‌شده + مقیاس انیماتور سیستم؛ مصرف‌کننده‌ها: دکمه (`ShomaraButton.kt:153,225`)، کنترل صدا (`ShomaraAudio.kt:87,108`)، اسپلش (`ShomaraSplashScreen.kt:59`)؛ حلقه استاتیک است |
+| 270 | 269 | تایید با خواندن کد: ‏P1 فقط (`ShomaraLessonStageChrome.kt:47-48`)؛ نتیجه Main ‏Lesson (سطح نتیجه)؛ هدر مسیر Main ‏Inline (`ShomaraPathGraph.kt:369-374`)؛ صفر کاراکتر در phone/OTP، جای‌گذاری (۰۵)، تمرین (۱۲)، تنظیمات/والدین (۱۵)، شل/ناوبری (۱۷) و P2/P3/P4. **قید:** صفحهٔ پروفایل (۰۴) یک cameo کوچکِ Main ‏Inline دارد (`ProfileScreens.kt:78`) — ۰۴ در فهرست «بدون شخصیت» این آیتم نیست |
+| 274 | 273 | ‏`ShomaraPathGraph.kt` — ‏`ChapterBand` با `chapterBandColors` + «X از ۵ کامل شد» (بازبینی عمیق: بنر واحد تایید شد) |
+| 284 | 283 | همان اثبات #135 (`ShomaraDialog.kt:142-146` + ‏`ShomaraStationStart.kt:159-168`) |
+| 285 | 284 | نبود در کد: هیچ مودال جشن/دستاوردی نیست؛ شیت‌ها با Back بسته می‌شوند (‏`6be92df`: ‏Back اول شیت را می‌بندد) و CTA رد شدن دارند |
+| 286 | 285 | ‏`ShomaraBottomSheet` (`ModalBottomSheet`) فوکوس را مدیریت می‌کند؛ شیت شروع با Back/CTA رد می‌شود؛ شیت پرش فراخواننده ندارد (پس نمونهٔ زنده‌ای برای چک ندارد). **قید:** چون «معیار قبولی» است، تایید نهایی‌اش gate دستگاهی می‌خواهد |
+| 290 | 289 | ‏`ShomaraPathGraph.kt:420` — ‏`stickyHeader` + جداکنندهٔ درون‌جریان E-02 (`:436-456`، ‏`3626542`)؛ لغزشِ چسبان روی محتوا مکانیکِ ذاتیِ `stickyHeader` است. **قید:** تایید بصری‌اش اسکرین‌شات حین اسکرول می‌خواهد (E-06) |
+| 294 | 293 | نبود در کد: هیچ نقطهٔ اعلان قرمزی روی آیکون/تب نیست |
+| 295 | 294 | **ثبت، بدون کد:** ‏pill شومارا می‌ماند (`ShomaraNavigation.kt:114-115` — تب انتخاب‌شده عمق Soft دارد)؛ هیچ تغییری لازم نبود و انجام نشد |
+
+یادداشت #85 (تازه): اثبات جدول ج کسر قدیمی ۰٫۸۷۵ را نقل می‌کند؛ پس از R-10 کسرها بازپایه شدند (GradePlacement حالا ۰٫۷۵) — شرط آیتم (نوار محدود، هرگز «کامل شد» پیش از Complete) همچنان برقرار است؛ یادداشت بازپایه در خط چک‌لیست هم هست.
+
+### آیتم‌های مسدود — ۱۹۱ آیتم (اجرا نشدند؛ فقط ثبت)
+
+دلیل‌ها از جدول ب گزارش حسابرسی (کدهای دلیل: **O1** = مدل answer key انتخاب نشده؛ **O2** = فرمت بستهٔ محلی انتخاب نشده؛ **DRAFT** = متن کاننیکال تصویب‌نشده؛ **CONTENT-nnn** = تصمیم باز مالک/متخصص؛ **Gate** = نیازمند مشاهده روی دستگاه؛ **Asset** = دارایی PENDING_OWNER؛ **فاز ۱/B** = معماری/محتوای فاز بعد).
+
+| # | دلیل مسدودیت (جدول ب) |
+|---|---|
+| 1 | **فاز B** — guidebook محتوا ندارد؛ بقیه انجام شده (جدول ج: #116/#120/#123) |
+| 2 | **Asset (P8)** — آیکون نوع ایستگاه (دست‌ورزی T01–T15) ‏PENDING_OWNER؛ حالت‌ها انجام شده‌اند |
+| 3 | **فاز ۱/B** — اینترو هست ولی round و محتوای round نیست؛ جدایی از mastery انجام شده (#195) |
+| 4 | **فاز ۱/B + O1/O2** — قالب‌ها رندر ندارند (`ShomaraTemplateAdapters` هیچ فراخوانندهٔ رندری ندارد) |
+| 5 | **O1 + فاز ۱** — گزینه‌ها امروز `emptyList` برای هر ۵ مرحله‌اند (`ShomaraLessonHost.kt:270-274`)؛ برچسب «ثبت پاسخ» ثابت است |
+| 6 | **O1 + فاز ۱** — حلقهٔ پیشرفت وجود ندارد تا دستی باشد؛ نبود auto-advance/تایمر برقرار است (نبودِ آن‌ها در جدول ج: #36) |
+| 7 | **تصمیم (F-05(b))** — نوار indeterminate با F-05 حذف شد؛ نوار موقعیتِ مرحله («مرحلهٔ ۲ از ۵») تصمیم طراح می‌خواهد |
+| 8 | **O1** — «نمایش پاسخ درست» همان answer key است (K2)؛ تکرار اشتباه‌ها فاز B می‌خواهد |
+| 9 | **O1 + DRAFT** — نردبان h1–h3 به‌صورت منطق خالص هست (`ShomaraHintLadder`) ولی محتوای هینت و متن راهنما نیست |
+| 10 | **فاز B + O1 + DRAFT** — سطح نتیجه هست ولی بدون «چه چیزی تمرین شد» و بدون مرور اشتباه (K15) |
+| 11 | **فاز ۲ + فاز ۱** — زنجیره هنوز phone/OTP سروری است؛ کالیبراسیون محتوا ندارد؛ پروفایل محلی نیست |
+| 12 | **CONTENT-006 + فاز B** — چهره/pose تصویب‌نشده؛ هیچ ماشین حالتِ واکنش نیست؛ فقط cameo استاتیک هست |
+| 13 | **O1 + فاز ۱** — press-depth انجام شده (#243/#244) ولی «غیرفعال تا انتخاب» گزینهٔ واقعی می‌خواهد (امروز `choiceId` همیشه null است) |
+| 14 | **فاز ۱/B** — صوت نیست (`ShomaraAudioManager` به host وصل نیست) و سازوکار replay ساخته نشده است |
+| 15 | **O1** — خطای جواب در درس (قضاوت) نیست؛ جلوگیری با disabled و خطای سیستم انجام شده‌اند |
+| 16 | **فاز ۱/B** — گره مرور در مسیر نیست؛ Hub هست ولی بخش «اشتباه‌ها» دادهٔ واقعی ندارد |
+| 18 | **فاز ۱/B** — اسکلت‌های رندر (B2/B8) ساخته شده‌اند ولی به host وصل نیستند؛ primitiveها فقط در کاتالوگ زنده‌اند |
+| 19 | **فاز ۱/B** — بازه‌های ST01–ST25 محتوا ندارند؛ هیچ آیتمی برای مقیاس‌کردن نیست |
+| 39 | **O1** — هیچ گزینه‌ای (O1-1/O1-2/O1-3) انتخاب نشده است (ADR-0039)؛ فاز ۱ و فاز B را مسدود می‌کند |
+| 40 | **O2** — هیچ گزینه‌ای (O2-1/O2-2/O2-3) انتخاب نشده است (ADR-0039 §۴) |
+| 41 | **O3–O13** — موضوع/گزینه‌ها باید مستقیم از `docs/adr/ADR-0039-*.md` خوانده و تایید شوند؛ در چک‌لیست نقل نشده‌اند. طبق `DESIGN_READINESS_FA.md` فاز ۱ را مسدود نمی‌کنند |
+| 42 | **CONTENT-004** — ۸ عنوان ایستگاه + هر ۵ نام فصل باز/ناهمخوان؛ UI عنوان تازه اختراع نمی‌کند |
+| 43 | **CONTENT-005** — بستهٔ خنثی در برابر بستهٔ فرهنگیِ جدا؛ تصمیم مالک |
+| 44 | **CONTENT-006** — چهره تعیین‌نشده؛ pose عددی TBD؛ صدای راوی پیش‌نویس است |
+| 45 | **CONTENT-007** — منبع SFX و `MUS.path` باز است؛ فقط با مجوز تجاری و قابل خاموش شدن |
+| 46 | **CONTENT-014** — آستانه پیش‌نویس است؛ `ShomaraLocalCalibrationTest` آن را پین کرده ولی تصمیم نهایی نیست |
+| 47 | **CONTENT-016** — مربع ۹×۹، مقایسهٔ دورقمی، عدد ۱۰۰؛ تصمیم مالک/متخصص |
+| 48 | **CONTENT-001/002/003** — جهت کشیدن ۱ و tolerance ‏۲۸dp (متن مرحله ۵ برعکس است)؛ پرش ۱ در برابر ۵ سؤال؛ h1/h2/h3 در P4/P5 پایلوت (نقض زنده در `ST07.P5.i05`) |
+| 49 | **CONTENT-009 + Asset** — ۴۱ دارایی ST07 فقط توصیف‌اند؛ ۲۴ ایستگاه دیگر فهرست دارایی هم ندارند |
+| 50 | **DRAFT** — خوش‌آمد، onboarding، پروفایل، aim/metadata، prompt/hint، «چه چیزی تمرین شد»/«چرا؟»، empty راهنما، guardian/PIN، آفلاین/خطا، «گام بعدی»/شمارش فصل — همه نیازمند تصویب مالک‌اند |
+| 51 | **سندی** — ثانویه/تاییدنشده؛ spec نیست؛ فقط هم‌خوانی با توکن شومارا (۷۲/۸۴dp) |
+| 52 | **سندی** — همه ثانویه (LOW)؛ لبهٔ پایینی دکمه «۴pt در برابر ۷pt» متناقض است |
+| 53 | **سندی** — LOW/تاییدنشده؛ آنچه کپی می‌شود «کوتاه، تک‌نشست، با پایانِ دیده‌شده» است نه عدد دقیقه |
+| 54 | **سندی** — همه نمونه/ثانویه، نه قانون |
+| 55 | **سندی** — فهرست موارد تاییدنشده (اندازهٔ دقیق، focus، loading، reduced-motion، ادامهٔ درس نیمه‌کاره، Math Coach، «Explain My Answer» برای Math، خروج از درس، TalkBack کامل) |
+| 59 | **فاز B** — محتوای راهنما ندارد؛ دکمهٔ بی‌عمل ساخته نمی‌شود؛ سلول عمداً غایب است (`ShomaraPathGraph.kt:490`) |
+| 61 | **تصمیم + CONTENT-002 + فاز B** — پرش دولینگو برون‌فصلی است، قانون شومارا درون‌فصلی (N05-03)؛ `ShomaraJumpSheet` فراخواننده ندارد |
+| 62 | **CONTENT-004 + DRAFT** — نام سکشن و متن توصیف کاننیکال ندارد |
+| 64 | **تصمیم** — اقدام دومی در welcome تعریف نشده است (تازه/بازگشت با resolve شدن session مشخص می‌شود)؛ دکمهٔ بی‌عمل ساخته نمی‌شود |
+| 72 | **فاز ۱/۲ + تصمیم** — مدل هدف و محتوای واقعی ندارد؛ فقط ثبت شد، ساخته نشد؛ استفادهٔ آینده فقط با پیشرفت واقعی محلی و بدون کوئست/دوست/اقتصاد |
+| 74 | **فاز ۲** — مدل session محلی نیست؛ CTA امروز فقط «ادامه» است (`WelcomePhone.kt:34`) و به phone می‌رود |
+| 77 | **DRAFT + فاز ۲** — retry واقعی و Error صادقانه هست (`LaunchController`) ولی بازنویسی پیام آفلاین («به اینترنت وصل نیستیم» در `ShomaraLaunchGate.kt:132-133`) متن تصویب‌شده می‌خواهد |
+| 79 | **DRAFT** — هنوز کاننیکال نیست؛ هیچ جمله‌ای اختراع نمی‌شود |
+| 81 | **Gate** — Launch بدون flash؛ resolving درست؛ recovery با retry واقعی؛ اسکرین‌شات ۳۶۰/۳۹۰/۴۱۲dp + فونت ۲۰۰٪؛ TalkBack CTA — فقط روی دستگاه |
+| 82 | **فاز ۲ + فاز ۱** — زنجیره هنوز phone/OTP است؛ کالیبراسیون و اولین درسِ واقعی نیست؛ پروفایل محلی جای حساب سروری را نگرفته است |
+| 83 | **فاز ۲** — سن تقریبی گرفته نمی‌شود؛ phone/OTP هنوز هست؛ پروفایل محلی نیست |
+| 84 | **فاز ۱/B + DRAFT** — ساختار viewها هست ولی آیتم کالیبراسیون و متن هر view نیست |
+| 86 | **فاز ۱/B** — هیچ آیتم کالیبراسیونی در بستهٔ محلی نیست |
+| 87 | **فاز ۱** — اولین درسِ واقعی (ST01) محتوا ندارد؛ جشنِ پس از آن هم |
+| 92 | **DRAFT** — هنوز کاننیکال نیست |
+| 93 | **Gate** — یک مفهوم در هر view؛ progress محدود؛ resume/back/save صادقانه؛ IME + فونت ۲۰۰٪؛ TalkBack RTL — فقط روی دستگاه |
+| 94 | **فاز ۲** — حذف کامل زنجیرهٔ OTP/توکن/نشست سروری؛ هویت محلی جایگزین لازم است |
+| 95 | **فاز ۲** — پروفایل محلی نیست؛ phone/OTP هنوز زنجیرهٔ زنده است |
+| 96 | **فاز ۲** — هر سه فایل هنوز در ریپو هستند و مصرف‌کنندهٔ زنده دارند؛ حذفِ اکنون onboarding را می‌شکند (PHASE_D) |
+| 98 | **Gate (فاز ۲)** — پس از حذف: هیچ ارجاعی به OTP در launch/onboarding نماند؛ onboarding بدون OTP کامل کار کند |
+| 99 | **فاز ۲ + Asset (F-09)** — آواتار فقط متنی است («خورشیدی»/«برگ»/«ابری»/«ماه»)؛ `ShomaraAvatarCatalog` هیچ drawable ندارد |
+| 101 | **Asset (F-09)** — آواتار تصویری نیست؛ رندر تصویری artwork مالک می‌خواهد |
+| 105 | **DRAFT** — متن کاننیکال ندارند |
+| 106 | **Gate** — یک پرسش در هر view؛ save صادقانه؛ resume پس از process death؛ IME + فونت ۲۰۰٪؛ TalkBack خطا نزدیک فیلد — فقط روی دستگاه |
+| 107 | **O1/O2 + فاز ۱** — هیچ آیتم تعیین‌سطحی نیست |
+| 109 | **O1/O2 + فاز ۱** — assessmentای نیست تا آرام باشد؛ «بدون grade محلی» با نبودِ آن برقرار است |
+| 111 | **فاز ۱ + DRAFT** — صفحهٔ جای‌گذاری فقط Ghost «فعلاً رد می‌کنم» دارد؛ CTA «شروع تعیین‌سطح» و assessment نیست |
+| 112 | **فاز ۱** — حالت‌های assessment (loading/exit/resume/error) محتوای assessment می‌خواهند؛ توضیح قفل انجام شده (#104) |
+| 113 | **Gate** — ‏`lockedReason` هست ولی ارتفاع کارت‌های grade روی دستگاه اندازه‌گیری نشده است؛ اگر زیر ۴۸dp بود، اصلاحش یک خط `heightIn(min = ComponentTouchMin)` است (بدون محتوا/تصمیم) |
+| 114 | **O1/O2 + CONTENT-014** — محتوا از بستهٔ محلی می‌آید؛ آستانه پیش‌نویس است و هرگز به کودک نشان داده نمی‌شود |
+| 115 | **Gate** — ‏G2–G6 هرگز «موجود» نباشند؛ assessment بدون grade محلی؛ exit/resume صادقانه؛ اسکرین‌شات + فونت ۲۰۰٪ — فقط روی دستگاه |
+| 118 | **Asset (P8) + سندی** — آیکون دست‌ورزی نیست (عدد ترتیبی است)؛ توکن‌های `rowHeight = 132` / `currentRowHeight = 208` در کد نیستند (pitch واقعی ~۱۰۰dp است: گره ۷۲ + باکس ۱۲ + فاصلهٔ ۱۶) — عددهای چک‌لیست کهنه‌اند |
+| 119 | **تصمیم (F-21)** — حلقه هست ولی کسرش تکمیلِ **فصل** است نه پیشرفت درس؛ مالک باید بگوید با کپشن بماند یا تا فاز ۱ حذف شود |
+| 121 | **فاز B + CONTENT-004** — بند فصل هست؛ guidebook نیست؛ نام مفهوم تصویب‌نشده است |
+| 122 | **CONTENT-004 (DRAFT)** — هر چهار خط در کد هست (`ShomaraPathGraph.kt:332-336`) ولی «گام بعدی» و شمارش فصل متن کاننیکالِ تصویب‌شده ندارند (متن کاریِ کاتالوگ است) |
+| 131 | **فاز ۱/۲** — لبه انجام شده (R1) و نگاشت offline→Locked حذف شد (F-40، ‏`3626542`) ولی `nextStepStation` وقتی آفلاین است همچنان null است و شمارش کهنه علامت‌گذاری نمی‌شود |
+| 132 | **CONTENT-004** — ۸ عنوان + هر ۵ نام فصل باز/ناهمخوان |
+| 133 | **Gate** — ‏`verify:static:all` + ‏`android:gate`؛ اسکرین‌شات ۳۶۰/۳۹۰/۴۱۲dp + فونت ۲۰۰٪؛ اسکرول تا فصل ۵؛ TalkBack با gesture واقعی — فقط روی دستگاه |
+| 137 | **CONTENT-004** — عنوان‌های کاری موقت‌اند؛ UI هدف تازه اختراع نمی‌کند |
+| 139 | **فاز B + CONTENT-002** — ساختار شیت هست (ردیف ۴۸dp، توضیح قفل F-17، ✓ با Box ثابت) ولی هیچ فراخواننده‌ای ندارد و قانون پرش (۱ در برابر ۵ سؤال) باز است |
+| 142 | **Gate** — یک CTA؛ jump فقط داخل فصل؛ locked با دقیقاً یک action؛ اسکرین‌شات ۳۶۰dp؛ TalkBack «قفل» — فقط روی دستگاه |
+| 143 | **فاز ۱ + O2** — هیچ آیتم P1ای در runtime نیست؛ اسکلت رندر (B2) به host وصل نیست |
+| 144 | **فاز ۱/B** — قالب‌ها رندر ندارند؛ اندازه‌های manipulative فقط در کامپوننتِ dormant هست |
+| 145 | **O1 + فاز ۱** — CTA چسبیده هست ولی برچسب «ثبت پاسخ» ثابت است و گزینه‌ای نیست تا شرط معتبر شود |
+| 146 | **تصمیم (F-05(b))** — نوار با F-05 حذف شد (indeterminate دروغ بود)؛ دکمهٔ «خروج از ایستگاه» با تایید خروج هست ولی نوار موقعیتِ مرحله تصمیم می‌خواهد |
+| 147 | **فاز ۱/B + CONTENT-006/010/013 + O2** — ‏`ShomaraAudioManager` stateها را دارد ولی به host وصل نیست؛ صفر فایل باینری صوت (K5) |
+| 149 | **فاز ۱/B** — stateهای صوت به‌صورت منطق خالص‌اند؛ UI درس آن‌ها را رندر نمی‌کند |
+| 150 | **O2 + فاز ۱** — برچسب‌ها هستند؛ prompt/قدم‌ها در runtime نیستند |
+| 151 | **Gate** — یک درس کامل ST07 روی دستگاه (P1 تا P5) با و بدون صوت؛ reduced motion؛ TalkBack؛ اسکرین‌شات — فقط روی دستگاه |
+| 152 | **O1 + فاز ۱** — حلقه وجود ندارد (بدون گزینه/قضاوت)؛ نبود auto-advance/تایمر برقرار است |
+| 153 | **فاز ۱/B** — قالب‌ها رندر ندارند؛ اندازه‌ها فقط در کامپوننتِ dormant‌اند |
+| 154 | **O1 + فاز ۱** — CTA فقط وقتی `choiceId != null` رندر می‌شود و امروز همیشه null است؛ feedback درون‌درسی نیست |
+| 155 | **O1 + DRAFT** — نردبان h1–h3 منطق خالص است؛ محتوای هینت و متن راهنما نیست |
+| 156 | **O1 + CONTENT-003** — منطق نردبان هست (`ShomaraHintLadder`) ولی قضاوت/ثبتِ «کمک‌شده» ارزیاب می‌خواهد |
+| 157 | **فاز ۱/B** — ‏`sameOutcomeAs` در `ShomaraTemplateAdapters.kt:116` و `ShomaraLessonSubmitGate` به‌صورت منطق خالص‌اند ولی هیچ قالب کشیدنیِ رندرشده‌ای نیست تا روی آن اعمال شوند |
+| 158 | **فاز ۱/B** — ‏`ShomaraLessonItemStateMachine` ساخته و تست شده ولی به host وصل نشده است (الف-۰۶؛ ‏`6be92df` آن را وصل‌نکرده ثبت کرد) |
+| 160 | **O1 + فاز B** — اصل ثبت شده ولی پیاده‌سازی‌اش (سؤال راهنما + «چرا» + tolerance) محتوا و ارزیاب می‌خواهد |
+| 161 | **O2** — هیچ محتوای هینتی نیست؛ `ShomaraGuidedSession` فقط ماشین حالت خالی است |
+| 162 | **Gate** — حلقهٔ کامل با بازخورد؛ hint بدون افشای جواب؛ tap alternative برای drag؛ تست آداپتورها؛ TalkBack — فقط روی دستگاه |
+| 163 | **O1 + فاز ۱** — حلقه و آیتم‌های P4 نیستند |
+| 164 | **O1 + فاز ۱ + تصمیم (F-05(b))** — آیتم و نوار نیستند |
+| 166 | **O1** — نتیجهٔ معتبر (ارزیاب) نیست؛ ممنوعیت‌ها با نبودِ جشن/grade برقرارند |
+| 167 | **CONTENT-014 + CONTENT-001** — ‏`ShomaraLocalCalibration` (B13) به‌عنوان config نسخه‌دار هست ولی آستانه هنوز پیش‌نویس است و tolerance حل‌نشده است |
+| 169 | **O2** — تابع خالص کشش هست (`ShomaraAssessmentDraw`، ‏`3626542`) ولی استخر آیتم نیست |
+| 170 | **Gate** — ‏P4 کامل بدون hint/شخصیت/جشنِ پیش‌رس؛ threshold از config؛ تست disconnect/resume/expired؛ TalkBack؛ اسکرین‌شات — فقط روی دستگاه |
+| 171 | **O1** — ↺ انجام شده (R3) ولی «نمایش پاسخ درست» همان answer key است (K2) و برجسته‌کردن خطا قضاوت می‌خواهد |
+| 172 | **DRAFT + O1** — هیچ جملهٔ ملایمِ غلطی در کد نیست؛ لحن باید با متن کاننیکال تصویب شود و پنل درون‌درسی نیست |
+| 173 | **O1 + DRAFT + فاز B** — هیچ «چرا؟»ای نیست؛ «Explain My Answer» برای Math در دولینگو هم تایید نشده است |
+| 174 | **فاز B + O1 + DRAFT (K15)** — سطح نتیجه هست ولی بدون این دو بخش |
+| 175 | **O1 + فاز B** — بدون قضاوت، اشتباهی برای تکرار نیست |
+| 177 | **فاز ۱** — pose و سطح نتیجه هستند ولی نوار پیشرفتِ نتیجه (پیشرفت واقعی) نیست |
+| 180 | **O1 + فاز B** — ‏`ShomaraResultSurface` فقط نتیجهٔ سروری (CompletePass/CompleteNeedsPractice) را می‌شناسد؛ حالت‌های درون‌درسی نیستند |
+| 181 | **DRAFT + فاز B (K15)** — باید از بستهٔ محلی تألیف شوند؛ عنوان نتیجه امروز از سرور می‌آید |
+| 182 | **Gate** — بازخورد با نمایش پاسخ درست؛ خلاصهٔ قابل رد شدن؛ مرور اشتباه بدون شمارش/شرم؛ TalkBack؛ reduced-motion؛ اسکرین‌شات — فقط روی دستگاه |
+| 183 | **فاز ۱** — Hub هست ولی هیچ بخش «اشتباه‌ها»/«Mistakes»ای نیست؛ دادهٔ اشتباه‌ها نیست |
+| 184 | **فاز ۱** — ساختار ردیف هست (۴۸dp، تیتر بخش، ضربه → شیت) ولی ردیف واقعی (completed/current) در اپ زنده خالی است چون پیشرفت همیشه پیش‌فرضِ خالی است (F-02) |
+| 185 | **DRAFT** — جملهٔ راهنما در کد هست (`ShomaraPracticeHubLogic.emptyGuide()`) ولی متن کاننیکالِ تصویب‌شده نیست؛ P7 اختیاری است |
+| 190 | **Gate** — فقط ردیف‌های واقعی؛ empty صادقانه؛ locked با دلیل گرم؛ بدون دادهٔ ساختگی؛ TalkBack — فقط روی دستگاه |
+| 191 | **فاز ۱/B** — اینترو هست ولی هیچ Composable roundای نیست؛ فقط منطق state |
+| 193 | **فاز ۱/B** — round نیست؛ CTA «شروع چالش»/«ثبت پاسخ» فقط در اینترو/منطق است |
+| 197 | **فاز ۱/B** — ‏`ShomaraChallengeState` هر ۷ حالت را مدل کرده ولی round/submitting/retry/result هیچ UIای ندارند |
+| 198 | **O2 + فاز ۱** — هیچ قانون چالشِ تازه‌ای اختراع نشده ولی محتوایی هم نیست |
+| 199 | **Gate** — ‏round با سؤال focal + بازخورد؛ تایمر فقط در round و پنهان تحت reduced motion؛ جدایی از mastery (تست)؛ TalkBack؛ اسکرین‌شات — فقط روی دستگاه |
+| 200 | **فاز ۱/۲ (F-02)** — ساختار هست (نوار پیشرفت + خط متنی) ولی facts در اپ زنده null است چون `ShomaraApp` هرگز `childName` و `completedStations` را پاس نمی‌دهد (`ShomaraApp.kt:131` آن‌ها را ندارد) |
+| 201 | **فاز ۱/۲ (F-02)** — کارت Featured هست ولی facts واقعی نیست |
+| 204 | **Asset (F-09)** — آواتار فقط متن است («آواتار من: ماه»)؛ کارت هویت به‌جای آواتار تصویر Main را نشان می‌دهد و کودک ممکن است آن را آواتار خودش بخواند |
+| 205 | **فاز ۱/۲ (F-02)** — رفع آن منبع محلیِ پروفایل/پیشرفت می‌خواهد، نه wiring آواتار (wiring در Stage 5 اصلاح شد) |
+| 207 | **Gate** — ‏facts واقعی (نه default)؛ بدون badge/streak ساختگی؛ تست آواتار ماه؛ اسکرین‌شات + TalkBack؛ فونت ۲۰۰٪ — فقط روی دستگاه |
+| 210 | **تصمیم (طراحی سیستمی)** — dial آرام/متنی بودنِ تنظیمات قضاوتِ دستگاهی می‌خواهد؛ هیچ dialogای در تنظیمات نیست تا «محدود» بودنش چک شود |
+| 211 | **تصمیم (F-10)** — ذخیرهٔ خودکار در شل + دکمهٔ «ذخیره» تقریباً همیشه غیرفعال‌اند؛ حذف خودکار یا حذف دکمه تصمیم طراحی می‌خواهد |
+| 212 | **فاز ۲** — ‏Clean/Dirty/Saving/Saved/Error + ‏DataStore واقعی هستند ولی حالت‌های toggle-fail/restart/re-auth نیستند (verifier وصل نشده) |
+| 214 | **فاز ۲ + DRAFT** — قفل بعد از ۳ خطا هست (`maxFailures = 3`، ‏۶۰ ثانیه) ولی **هیچ `ParentCredentialsStore`ای در ریپو نیست** و هش رمز پیاده نشده است؛ متن‌ها تصویب‌نشده‌اند |
+| 216 | **Gate** — تست گیت (fail-closed تا verifier؛ قفل بعد از ۳ خطا)؛ تست ذخیرهٔ واقعی؛ تست ۲۰۰٪ grid آواتار؛ TalkBack سه‌طریقه — تست‌های JVM/androidTest هستند ولی gate دستگاهی باز است |
+| 217 | **O1** — خطای جواب در درس نیست (قضاوت)؛ جلوگیری با disabled و خطای سیستم انجام شده‌اند |
+| 220 | **DRAFT + فاز ۲** — ‏pending-sync در کد نیست (درست) ولی بنرهای آفلاین هنوز «اینترنت وصل نیست» می‌گویند (۶ نمونهٔ F-11 + ‏LaunchGate) و بازنویسی‌شان متن تصویب‌شده می‌خواهد |
+| 222 | **فاز ۱/۲** — ‏enum فقط Loading/Offline/Error/Empty است؛ permission و missing-asset مدل نشده‌اند (missing-asset به بستهٔ فاز ۱ و permission به جریان مجوز نیاز دارد)؛ pending-sync درست غایب است |
+| 225 | **DRAFT** — هنوز کاننیکال نیستند |
+| 226 | **Gate** — هر state با action واقعی؛ retry بی‌اثر نباشد؛ بنر آفلاین بازنویسی‌شده؛ ورودی حفظ شود؛ TalkBack عنوان + action — فقط روی دستگاه |
+| 228 | **Asset** — تب‌ها فقط متنی‌اند؛ ۳ آیکون تب در فهرست اجزا PENDING_OWNER هستند؛ pill انجام شده است |
+| 234 | **Gate** — سه tab ثابت؛ pill فعال؛ TalkBack states؛ deep-link/back/restoration؛ بدون tab چهارم پنهان؛ TalkBack با gesture واقعی + ‏Back واقعی — فقط روی دستگاه |
+| 236 | **سندی (عدد کهنه)** — amplitude ‏۶۴dp تایید شد (‏`ComponentNodeSize − Space8`) ولی توکن‌های `rowHeight = 132` / `currentRowHeight = 208` در کد نیستند |
+| 240 | **Gate** — جدول ۵ حالت روی دستگاه با TalkBack واقعی؛ اسکرین‌شات ۳۶۰/۳۹۰/۴۱۲dp؛ فونت ۲۰۰٪ — فقط روی دستگاه |
+| 242 | **O1 + فاز ۱** — برچسب امروز «ثبت پاسخ» ثابت است؛ برچسبِ وابسته به حالت گزینه/مرحلهٔ واقعی می‌خواهد |
+| 247 | **Gate** — دکمه در همهٔ stateها یک جا بماند؛ disabled تا انتخاب بی‌پاسخ باشد؛ فونت ۲۰۰٪ برچسب را نشکند؛ TalkBack state — فقط روی دستگاه |
+| 248 | **تصمیم (F-05(b))** — نوار درس با F-05 حذف شد؛ نوار موقعیتِ مرحله تصمیم طراح می‌خواهد |
+| 252 | **Gate** — نوار در پیشرفت صفر دیده شود؛ پرشدن از راست؛ TalkBack مقدار؛ فونت ۲۰۰٪ — فقط روی دستگاه |
+| 254 | **O1 + DRAFT** — ↺ انجام شده ولی نمایش پاسخ درست و برجسته‌کردن خطا قضاوت می‌خواهند؛ «چرا؟» محتوای کاننیکال می‌خواهد |
+| 256 | **O1** — نتیجهٔ معتبر نیست |
+| 257 | **فاز B + O1** — ساخت بازخورد درون‌درسی وابسته به فاز B و O1 است |
+| 258 | **Gate** — بازخورد با نمایش پاسخ درست؛ TalkBack بدون خوانش دوباره؛ layout جابه‌جا نشود؛ reduced-motion — فقط روی دستگاه |
+| 259 | **فاز B + O1 + DRAFT (K15)** — سطح نتیجه هست ولی بدون این دو بخش |
+| 260 | **فاز B + O1 (K15)** — ردشدن با یک ضربه انجام شده (#176) ولی محتوا نیست |
+| 262 | **فاز B** — حذف میکرو انجام شده ولی خلاصهٔ درس و لحظهٔ پایان واحد نیستند |
+| 263 | **DRAFT + فاز B (K15)** — باید از بستهٔ محلی تألیف شود |
+| 264 | **Gate** — خلاصه با یک ضربه رد شود؛ بدون XP/درصد/رتبه؛ TalkBack کامل — فقط روی دستگاه |
+| 266 | **CONTENT-006** — Main فقط پیشنهاد است، نه تصمیم مالک |
+| 267 | **CONTENT-006 + فاز B** — هیچ ماشین حالتِ شخصیت نیست؛ شخصیت‌ها تصویر استاتیک‌اند |
+| 270 | **CONTENT-006 + Asset** — فقط Dana/Fandogh خروجیِ واقعی با alpha دارند |
+| 271 | **Gate** — ‏cameo کوچکِ استاتیک در صفحه‌های مجاز؛ تحت reduced motion هیچ انیمیشنی نماند؛ TalkBack تزئینی نخواند — فقط روی دستگاه |
+| 272 | **فاز B + CONTENT-004** — بند هست؛ نام مفهوم تصویب‌نشده؛ guidebook و فهرست بخش‌ها نیستند |
+| 274 | **فاز B + CONTENT-004** — guidebook محتوا ندارد؛ در فازهای اول یک sheet ساده است، نه صفحهٔ جدا |
+| 275 | **CONTENT-004** — UI نام تازه اختراع نمی‌کند |
+| 276 | **Gate** — هدر با ضربه guidebook/sheet را باز کند؛ درس بدون خواندن guidebook شروع شود؛ اسکرین‌شات ۳۶۰dp — فقط روی دستگاه |
+| 277 | **فاز ۱/B** — اندازه‌ها در کامپوننتِ dormant (`ShomaraManipulative`) هستند ولی هیچ کاشیِ رندرشده‌ای در درس نیست |
+| 278 | **فاز ۱/B** — ‏stateهای کاشی (Idle/Active/Dragging/Accepted/Retry/Locked) به‌صورت منطق خالص‌اند؛ رندر نیست |
+| 279 | **O1/O2 + فاز ۱** — گزینه‌ها محتوا ندارند |
+| 280 | **Gate** — کاشی انتخاب‌شده «انتخاب‌شده» خوانده شود؛ فاصله‌ها در ۳۶۰dp؛ فونت ۲۰۰٪ — فقط روی دستگاه |
+| 281 | **فاز B** — توضیح قفل و شیت پرش هستند ولی guidebook نیست و شیت پرش فراخواننده ندارد |
+| 282 | **تصمیم + DRAFT** — هیچ مودال معرفی‌ای نیست؛ کدام ویژگی و با چه متنی، تصمیم/متن می‌خواهد |
+| 287 | **Asset (P8)** — آیکون دست‌ورزی T01–T15 ‏PENDING_OWNER؛ تا آن زمان عدد ترتیبی interim است. (تعارض F-12(a) در برابر N-02/C-02 — گلیف قفل یا بدون گلیف — هم تصمیم مالک می‌خواهد) |
+| 288 | **Gate + سندی** — فقط معیار قبولیِ اسکرین‌شات است (E-06: بدون کد)؛ و عدد «`rowHeight = 132`» در کد نیست (pitch واقعی ~۱۰۰dp) — متن چک‌لیست کهنه است |
+| 291 | **تصمیم + CONTENT-002 + O1/O2** — حباب درون‌مسیر یا sheet؟ پرش فقط درون‌فصل (N05-03)؛ تا آن زمان دکمهٔ بی‌عمل ساخته نمی‌شود |
+| 292 | **تصمیم (S-07)** — فقط لنگر یا ↑ هم؟ پس از تصمیم، اسکرین‌شات + TalkBack |
+| 296 | **CONTENT-004 + DRAFT** — نام سکشن و متن توصیف کاننیکال ندارد؛ CTA همان Primary شومارا می‌ماند |
+| 298 | **DRAFT** — محتوای زیرعنوان باید تصویب شود |
+| 299 | **O1/O2 + فاز ۱** — آداپتورها امروز ماشین حالت بدون رندرند |
+| 301 | **تصمیم (design-system)** — تصمیم `ShomaraClay`؛ اولویت پایین؛ در این نوبت هیچ تغییری |
+| 302 | **فاز ۱/۲** — پیشرفت واقعی محلی ندارد؛ فقط در تمرین/من، بدون کوئست/دوست/اقتصاد |
+| 303 | **تصمیم** — مالک باید حضور کم‌رنگ را بپذیرد؛ سه ستارهٔ خاکستری همچنان رد است |
+| 304 | **سندی (سؤال باز)** — از روی یک تصویر قابل فهم نیست؛ حدس زده نمی‌شود؛ Completed شومارا (✓ سفید) عوض نمی‌شود |
+| 305 | **تصمیم (طراحی) + Gate** — تغییر dash فقط با تصمیم طراحی و gate دستگاهی |
+| 306 | **فاز B + CONTENT-006** — ژست/حالت راهنما (POSE draft) + محتوای دمو |
+| 307 | **O1 + DRAFT** — مدل کلید پاسخ و متن‌های راهنما |
+| 308 | **فاز B + O1 + Asset** — محتوای Phase B + ‏asset دست‌کاری |
+| 309 | **O1 + DRAFT + CONTENT-001/014** — متن کاننیکالِ توضیح جایگزین |
+| 310 | **O1 + DRAFT** — ارزیاب باید «تلاش دوم» را بشناسد + متن راهنما |
+| 311 | **فاز B + تصمیم** — تعداد مسئلهٔ هر ایستگاه در بستهٔ محتوا + تصمیم مالک دربارهٔ «جشنِ تمام‌کردن» |
+| 312 | **تصمیم + ADR جدا** — بدون تصمیم صریح مالک و ADR جدا، هیچ‌یک پیاده نمی‌شود |
+| 313 | **فاز ۱/B** — قالب‌های کشیدنی رندر ندارند؛ `sameOutcomeAs` فقط منطق خالص است |
+| 314 | **تصمیم (توکن ۱۷ + تأیید پالت v2)** — توکن‌های رنگ فعالیت تعریف نشده‌اند |
+| 315 | **فاز ۱/B** — محتوا فقط از بستهٔ محلی + دادهٔ پیشرفت محلی |
+| 316 | **فاز ۱ + تصمیم** — دادهٔ پیشرفت محلی + تصمیم مالک دربارهٔ جزئیات گزارش |
+| 317 | **تصمیم + DRAFT** — جزئیات PIN (طول/تلاش/قفل/فراموشی) تصمیم مالک؛ متن‌های کاننیکال گیت |
+| 318 | **تصمیم + فاز ۱** — بدون تصمیم مالک فقط یک پروفایل می‌ماند؛ پیشرفت جداگانه برای هر پروفایل |
+| 319 | **DRAFT + CONTENT-004/005** — متن‌های کاننیکال دستور |
+| 320 | **تصمیم (طراحی) + Gate** — کف ۴۸dp انجام شده (الف-۰۱، ‏#56) ولی بازبینی به‌سمت ۶۴dp تبدیل واحد px→dp و آزمون دستگاه می‌خواهد؛ عدد ۶۴ مستقیماً dp نوشته نمی‌شود |
+
+### موارد وابسته به مالک/فاز ۱/B از diff-review (§۳) — اجرا نشدند
+
+| # | مورد | وابسته به | دلیل |
+|---|---|---|---|
+| O-01 | هر قضاوت درست/غلط (T15 گزینهٔ درست، T01 شمارش، T13 جهت/تلرانس، T05 سازگاری با قانون) | O1 | قضاوت کار ارزیاب محلی است (ADR-0039 §۲/§۳) |
+| O-02 | `stations/ST07.json` و `manifest.json` + لودر بسته + فعال‌سازی اتمی | O2 | فرمت بسته مصوب نیست (ADR-0039 §۴) |
+| O-03 | جهت واقعی ردگیری ۱ و تلرانس ۲۸dp | CONTENT-001 + CONTENT-011 + کالیبراسیون دستگاه | دو منبع خلاف هم می‌گویند؛ R-20 فقط نام‌گذاری/ادعا را اصلاح می‌کند |
+| O-04 | عدد نهایی پرش (۱ در برابر ۵ سؤال) + اثر آن بر progression | CONTENT-002 + CONTENT-014 + O1 | دو قرارداد ناسازگار؛ R-19 فقط پوستهٔ قابل‌پیکربندی است |
+| O-05 | حذف ارجاع‌های hint از ۲۶ آیتم P4 و `P5.i05` (یا تغییر policy) | تصمیم مالک (CONTENT-003) | اصلاح authoring است، نه حدس کدنویسی |
+| O-06 | نام ۸ ایستگاه + ۵ فصل و copy مسیر | CONTENT-004 | نام‌ها با محتوا نمی‌خوانند؛ copy نهایی تصمیم مالک است |
+| O-07 | آستانهٔ ۳ از ۴ + unlock پس از ناکامی + بازیابی | CONTENT-014 + O1 | آستانه فقط پیش‌نویس است |
+| O-08 | متن‌های کاننیکال (پیام host «از سرور نیامده‌اند»، «به اینترنت وصل نیستیم»، عنوان نتیجه، «چه چیزی تمرین شد»/«چرا؟») | مالک (DRAFT) | `CANONICAL_TEXTS_DRAFT_FA.md` تصویب‌نشده است |
+| O-09 | گزینهٔ (b) در R-10 — اعلام موقعیتی «مرحلهٔ N از M» | مالک (متن تازه) | جملهٔ تازه می‌خواهد؛ گزینهٔ (الف) بدون متن قابل اجراست |
+| O-10 | برچسب نهایی CTA بازپخش در R-08 | مالک | «تمرین دوباره» از واژگان موجود UI می‌آید ولی تصمیم نهایی با مالک است |
+| O-11 | انتخاب (الف) در برابر (ب) در R-05 (حذف deep link در برابر مسیریابی از shell) | هماهنگ‌کننده/مالک | (الف) یک fix عمدیِ قبلیِ تأییدشده روی دستگاه را برمی‌گرداند؛ (ب) اجرا شد |
+| O-12 | منبع محلی پروفایل/پیشرفت (F-02: کارت هویت و نوار پیشرفت Me همیشه خالی‌اند) | فاز ۱/۲ | بدون دادهٔ پیشرفت محلی، UI نمی‌تواند چیزی نشان دهد |
+| O-13 | حد روزانه، دشواری تطبیقی، چندپروفایل، بازبینی ۴۸→۶۴dp | تصمیم صریح مالک + ADR جدا / آزمون دستگاه | در `EXTERNAL_PATTERNS_FA.md` صریحاً تصمیم مالک‌اند |
+| O-14 | اتصال B3 (ماشین وضعیت آیتم) و B8/B9 (ثبت لمس/موتور قانون) به host؛ سیم‌کشی مدیر صدا به host؛ caller برای jump sheet | فاز ۱/B | به‌ترتیب به ارزیاب (O1)، اولین دارایی واقعی، و CONTENT-002 وابسته‌اند |
+| O-15 | چهرهٔ راهنما + ژست‌ها، فونت Vazirmatn، ۴۱ دارایی ST07، ۲۶ افکت SFX | CONTENT-006/007/009 + O8/O9 + مالک | همه `PENDING_OWNER`‌اند؛ ورود به runtime فقط پس از O2 |
+
+### موارد سندی در همین بسته (R-12/R-14/R-18 + D-04)
+
+- **R-12 — `DEEP_PAGE_REVIEW_FA.md` (§۱۷ F-18):** رکورد به سه ردیف تقسیم شد — BottomSheet ✅ فراخوانندهٔ زنده دارد (`ShomaraChildShellHost.kt:299`، شیت شروع ایستگاه)؛ TopBar هیچ فراخوانندهٔ زنده‌ای ندارد (فقط پیش‌نمایش کاتالوگ)؛ Dialog هیچ فراخواننده‌ای ندارد. ردیف F-18 در جدول تصمیم‌های مالک هم هم‌خوان شد. رکورد F-18 خانوادهٔ ۱۳ (ChallengeIntro، هیچ فراخواننده‌ای ندارد) دست نخورد.
+- **R-14 — فلش جهت + نقطهٔ شروع سبز «نیست» شدند (CONTENT-001):** `ASSET_AND_COMPONENT_LIST_FA.md` — ردیف P8-T13 (هست: فقط نماد کمرنگ + خط زمینه؛ نیست: فلش + نقطهٔ شروع؛ پرامپت‌های FA/EN هم‌خوان شدند) و N3-GLYPH-01/02 (GLYPH-01 دیگر «بالا به پایین» را تصمیم نمی‌خواند — فقط یک طرف تعارض، طرف دیگر «از پایین به بالا برای ۱ پذیرفته» از stage5). `STAGE_AND_GAME_COMPLETION_FA.md` — §۱۰ خط ۲۹۵ (GLYPH.*)، §۱۳ B2 خط ۳۶۸، §۱۳ B8 خطوط ۳۹۷–۳۹۹، و همان ادعای کهنه در خطوط ۸۸ و ۲۲۱؛ خط ۲۲۰ هم به‌روز شد (`canonicalStrokeOrder` → `referenceStrokeOrder` موقتی، R-20).
+- **R-18 — `ASSET_AND_COMPONENT_PROMPTS_FA.md:169`:** «ضربان ملایم دارد (خاموش تحت reduced motion)» حذف شد → «بدون ضربان؛ حلقهٔ استاتیک» (ADR-0040 R4).
+- **D-04 — `DEEP_REVIEW_BATCH_NOTE_FA.md`:** ردیف B1 به‌روز شد — B1 دیگر فقط guard نیست؛ چهار `toProjection()` واقعی + چهار snapshot تست شده‌اند (R-22).
+
+### تصمیم‌های ثبت‌شده (نه اجرا) — این بسته
+
+- **R-11 — رشتهٔ hint در `ShomaraSettingsScreen.kt` هنوز بیش‌گویی می‌کند** («انیمیشن‌ها متوقف می‌شوند» در حالی که اسلاید ModalBottomSheet gate نشده است). فقط کامنت واقعیت را ثبت کرد؛ بازنویسی رشته متن کاربرپسند است و تصویب مالک می‌خواهد.
+- **`ShomaraJumpAssessmentShell` وجود داشت؛ diff-review کهنه بود** (R-19 بالا). هیچ کدی عوض نشد؛ caller همچنان مسدود با CONTENT-002 است.
+- **انحراف ثبت‌شده — `ShomaraStationStartState.Resume`:** در enum/matrix ماند ولی از `stateFor` دسترس‌پذیر نیست (رزرو برای ورودیِ در-پیشرفتِ آینده با checkpoint). حذف case از enum در این بسته انجام نشد (تغییر API عمومیِ ماژول path)؛ تصمیم با هماهنگ‌کننده.
+- **`ShomaraLocalCalibrationTest` همچنان آستانهٔ ۳ از ۴ را پین می‌کند** در حالی که CONTENT-014 پیش‌نویس است (از بستهٔ قبل به ارث رسیده؛ این بسته فقط دو فیلد تازه را اضافه کرد).
+- **بدهی هم‌گام‌سازی AGENTS.md** (قوانین ۵/۶ در برابر ADR-0039) همچنان باز است — از بسته‌های قبل.
+
+### یادداشت ابزار — چرا `rg` بدون مسیر hang می‌کند (فقط ثبت، از `rg-investigation.md`)
+
+درخت کلون هیچ عیبی ندارد و `rg` با مسیر صریح روی کل درخت hang نمی‌کند (‏`rg -l "ShomaraMe" .` در ۰٫۳۶۶ ثانیه، ۱۱ match). علت بازتولیدشده: `rg <pattern>` بدون آرگومان مسیر، وقتی stdin یک TTY نیست (در این محیط stdin یک pipe بازِ بدون EOF است)، stdin را هدف جست‌وجو می‌گیرد و تا EOF منتظر می‌ماند — با `timeout 5` کشته شد (exit 124). راه‌حل پایدار: **همیشه مسیر صریح بدهید** (`rg <pattern> .`)؛ `git grep` جایگزین معتبر می‌ماند. صفر symlink loop و صفر FIFO/socket در درخت (به‌جز `.git` که `rg` رد می‌کند).
+
+### چه چیزی برای gate لوکال/دستگاهی کاربر مانده است (این بسته + انباشته)
+
+- `git pull` روی شاخه، `npm run verify:static:all`، `npm run android:gate` — شامل تست‌های تازهٔ این بسته: JVM ‏(`ShomaraLessonEntryRoutingTest`، `ShomaraOnboardingRestoreTest`، تست‌های به‌روز `OnboardingJourneyTest`/`OnboardingContractTest`/`ShomaraStationStartTest`/`ShomaraPracticeSetTest`/`ShomaraAssessmentDrawTest`/`ShomaraAudioManagerTest`/`ShomaraLocalCalibrationTest`/`ShomaraTemplateAdaptersTest`/`ShomaraProjectionSnapshotTest`/`St07JourneyGateTest`) + androidTest تازه (`ShomaraReducedMotionTest` — دو تست TextField، `ShomaraStationSheetTest` — دو تست تازه، `ShomaraJumpAssessmentShellTest`، `ShomaraOnboardingGatesTest`).
+- اسکرین‌شات‌های ۳۶۰/۳۹۰/۴۱۲dp + فونت ۲۰۰٪: شیت شروع/قفل/بازپخش، شیت پرش، بنر «ذخیره شد» در پروفایل/placement، نقطهٔ استاتیک TextField زیر reduced motion.
+- TalkBack با ژست واقعی: ضربه روی گرهٔ تکمیل‌شده → شیت بازپخش («تمرین دوباره»)؛ deep link درس → شیت شروع (نه درس مستقیم)؛ بنر «ذخیره شد» یک بار اعلام می‌شود؛ ردیف‌های jump sheet یک توقف‌اند.
+- نتیجهٔ re-run مربوط به `android:gate` پس از `c19460b` هنوز گزارش نشده است؛ gateهای فاز ۰/A و بسته‌های `0354cf64`/`5595ca69`/`9f3cc15`/`3626542`/`6be92df` هم هنوز بازند.

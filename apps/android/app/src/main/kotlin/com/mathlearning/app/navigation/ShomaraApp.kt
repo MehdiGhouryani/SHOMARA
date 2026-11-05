@@ -1,8 +1,13 @@
 package com.mathlearning.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +26,17 @@ import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.feature.onboarding.ShomaraAuthSession
 import com.mathlearning.feature.onboarding.ShomaraOnboardingHost
 import kotlinx.coroutines.launch
+
+/**
+ * R-05 — lesson-entry routing (F-01): the lesson host renders directly ONLY when the entry
+ * came through the station-start sheet's CTA (the shell sets [enteredViaSheet] on the way
+ * in); every other entry — a deep link, a restored back stack, a stray navigate — routes
+ * back through the shell, which opens the station-start sheet for the station (a locked
+ * station gets the Locked sheet, never the lesson). Pure decision, JVM-tested.
+ */
+object ShomaraLessonEntryRouting {
+    fun rendersLessonDirectly(enteredViaSheet: Boolean): Boolean = enteredViaSheet
+}
 
 /**
  * Root navigation (N04-07 launch migration, extended in N08-15).
@@ -47,6 +63,12 @@ fun ShomaraApp(
 ) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
+    // R-05/R-08 — lesson-entry handshake with the shell. The flags are rememberSaveable so a
+    // process death mid-lesson restores the same entry mode (the child already passed the
+    // sheet); they are cleared on exit to the shell, never while the lesson is live.
+    var lessonEnteredViaSheet by rememberSaveable { mutableStateOf(false) }
+    var lessonReplay by rememberSaveable { mutableStateOf(false) }
+    var pendingDeepLinkStationId by rememberSaveable { mutableStateOf<String?>(null) }
     val launchController = remember(authSession, profileDraftStore) {
         ShomaraLaunchController(
             session = authSession,
@@ -114,15 +136,35 @@ fun ShomaraApp(
         }
         composable(
             route = AppDestination.LESSON.route,
-            deepLinks = listOf(navDeepLink { uriPattern = "mathlearning://lesson/{stationId}" }),
+            deepLinks = listOf(navDeepLink { uriPattern = AppDestination.LESSON.deepLink }),
         ) { entry ->
             val stationId = entry.arguments?.getString("stationId") ?: "ST07"
-            com.mathlearning.feature.lesson.ShomaraLessonHost(
-                stationId = stationId,
-                gateway = lessonGateway,
-                checkpointStore = lessonCheckpoints,
-                onExitToShell = { navController.popBackStack(AppDestination.SHELL.route, inclusive = false) },
-            )
+            if (ShomaraLessonEntryRouting.rendersLessonDirectly(lessonEnteredViaSheet)) {
+                com.mathlearning.feature.lesson.ShomaraLessonHost(
+                    stationId = stationId,
+                    gateway = lessonGateway,
+                    checkpointStore = lessonCheckpoints,
+                    replay = lessonReplay,
+                    onExitToShell = {
+                        lessonEnteredViaSheet = false
+                        lessonReplay = false
+                        navController.popBackStack(AppDestination.SHELL.route, inclusive = false)
+                    },
+                )
+            } else {
+                // R-05 (F-01): a lesson deep link must not bypass the station-start sheet
+                // (or its lock) — it routes back through the shell, which opens the sheet
+                // for the station; only the sheet's «شروع/ادامه/تمرین دوباره» CTA enters
+                // the lesson. The deep link itself is kept (it was deliberately fixed and
+                // verified on device); it is the entry that is routed, not removed.
+                LaunchedEffect(stationId) {
+                    pendingDeepLinkStationId = stationId
+                    navController.navigate(AppDestination.SHELL.route) {
+                        popUpTo(AppDestination.LESSON.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            }
         }
         composable(
             route = AppDestination.SHELL.route,
@@ -140,7 +182,22 @@ fun ShomaraApp(
                         }
                     }
                 },
-                onStartStation = { stationId -> navController.navigate("lesson/$stationId") },
+                // R-05: a deep-linked station opens its start sheet in the shell; the pending
+                // id is consumed once by the shell so the sheet does not reopen.
+                initialStationId = pendingDeepLinkStationId,
+                onInitialStationConsumed = { pendingDeepLinkStationId = null },
+                // R-05/R-08: only the sheet's CTA enters a lesson. The flag marks the entry
+                // as sheet-approved; the replay flag marks a fresh run from P1.
+                onStartStation = { stationId ->
+                    lessonEnteredViaSheet = true
+                    lessonReplay = false
+                    navController.navigate("lesson/$stationId")
+                },
+                onReplayStation = { stationId ->
+                    lessonEnteredViaSheet = true
+                    lessonReplay = true
+                    navController.navigate("lesson/$stationId")
+                },
                 lessonGateway = lessonGateway,
                 lessonCheckpoints = lessonCheckpoints,
                 settingsStore = settingsStore,

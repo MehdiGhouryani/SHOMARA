@@ -159,6 +159,13 @@ fun ShomaraProfileScreen(
         if (saveState.failureMessage != null) {
             ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Retry, text = saveState.failureMessage)
         }
+        // #100: the visible «ذخیره شد» banner — announcement() finally has a real caller.
+        // It renders when the save actually succeeded (the success state is only set after
+        // the draft write completes — see saveProfile). The banner's live region announces
+        // it once to TalkBack.
+        if (saveState.saved) {
+            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Correct, text = saveState.announcement())
+        }
         ShomaraButton(
             text = ShomaraProfileStrings.Save,
             onClick = onSave,
@@ -173,8 +180,14 @@ fun ShomaraProfileScreen(
 @Composable
 fun ShomaraPlacementScreen(
     state: ShomaraPlacementState,
-    onSkip: () -> Unit,
+    // #88: null means no skip affordance at all — the button is not rendered, not merely
+    // disabled. The host passes a real callback only when the product/DEBUG flag allows it.
+    onSkip: (() -> Unit)?,
     modifier: Modifier = Modifier,
+    // #100: the save confirmation carried from the profile step — the profile step advances
+    // immediately on a successful save, so this is where the «ذخیره شد» banner is seen.
+    // Null when the user did not just save (no banner is invented).
+    savedAnnouncement: String? = null,
 ) {
     Column(
         modifier = modifier
@@ -190,6 +203,11 @@ fun ShomaraPlacementScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
+            // #100: the carried save confirmation — visible at the top of the step the user
+            // lands on after saving, with the banner's live region announcing it once.
+            if (savedAnnouncement != null) {
+                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Correct, text = savedAnnouncement)
+            }
             // Family 05 (Stage 1): no character here by contract.
             // Batch 2: the placement title is a TalkBack heading.
             Text(text = ShomaraProfileStrings.PlacementTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
@@ -211,11 +229,15 @@ fun ShomaraPlacementScreen(
                 }
             }
         }
-        ShomaraButton(
-            text = ShomaraProfileStrings.PlacementSkip,
-            onClick = onSkip,
-            variant = ShomaraButtonVariant.Ghost,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        // #88: the skip button renders only when a skip callback is supplied (product/DEBUG
+        // flag). In release there is no button at all — never a disabled or dead skip.
+        if (onSkip != null) {
+            ShomaraButton(
+                text = ShomaraProfileStrings.PlacementSkip,
+                onClick = onSkip,
+                variant = ShomaraButtonVariant.Ghost,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }

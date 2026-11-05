@@ -38,7 +38,8 @@ import androidx.compose.ui.unit.Dp
  *
  * Deep review (F-14): a plain in-flight latch re-admits a tap the instant the previous action
  * settles, so a fast double tap can still fire twice. [beginLatched] adds a short cooldown
- * after [end] (300 ms) for surfaces the child can hammer — buttons and cards. [begin]/[end]
+ * after [end] (300 ms) for surfaces the child can hammer — buttons, cards, tab targets and
+ * the top-bar Back (R-06). Dialog confirms stay on [begin]/[end] by design. [begin]/[end]
  * are untouched: the existing «tap guard admits the first tap only» test still holds.
  */
 class ShomaraTapGuard(

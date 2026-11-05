@@ -98,7 +98,8 @@ fun ShomaraTabBar(
                 .fillMaxWidth()
                 // Batch 2 (ADR-0040 R1): the tab bar is a tactile surface, so it
                 // renders its clay depth (Soft) instead of sitting flat on the canvas.
-                .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                // The elevation comes from the clay spec, never the raw token.
+                .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
                 .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
                 .padding(ShomaraTokens.Space4),
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
@@ -122,7 +123,9 @@ fun ShomaraTabBar(
                             if (tab.locked) contentDescription = "${tab.label} — ${ShomaraTabLogic.stateLabelFor(tab, isSelected)}"
                         }
                         .clickable(enabled = ShomaraTabLogic.canSelect(tab), role = Role.Tab) {
-                            if (tapGuard.begin()) {
+                            // R-06 (F-14): tab targets share the latched guard — a fast
+                            // double tap on a tab must not fire the selection twice.
+                            if (tapGuard.beginLatched()) {
                                 try { onSelected(ShomaraTabLogic.resolveSelection(selectedId, tab) ?: selectedId.orEmpty()) } finally { tapGuard.end() }
                             }
                         }
@@ -173,11 +176,15 @@ fun ShomaraTopBar(
                         .defaultMinSize(minWidth = ShomaraTopBarLogic.backTouchTarget(), minHeight = ShomaraTopBarLogic.backTouchTarget())
                         // Batch 2 (ADR-0040 R1): the back affordance is tactile,
                         // so it renders its Soft clay depth like every button.
-                        .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                        // The elevation comes from the clay spec, never the raw token.
+                        .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .semantics { role = Role.Button; stateDescription = "بازگشت" }
                         .clickable(role = Role.Button) {
-                            if (tapGuard.begin()) {
+                            // R-06 (F-14): the top-bar Back shares the latched guard — a fast
+                            // double tap must not pop twice. (Dialog confirms stay on begin()
+                            // by design; see the batch note.)
+                            if (tapGuard.beginLatched()) {
                                 try { onBack() } finally { tapGuard.end() }
                             }
                         }

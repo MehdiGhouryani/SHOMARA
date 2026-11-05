@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
+import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraEntryState
@@ -467,7 +468,7 @@ fun ShomaraPathScreen(
                     // الف-۰۱: the floating button is an icon-anchored control — its touch
                     // target is at least 48dp even though the label is short.
                     .defaultMinSize(minHeight = ShomaraTokens.ComponentTouchMin)
-                    .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusPill))
+                    .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .background(ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .semantics(mergeDescendants = true) {
                         role = Role.Button
@@ -501,8 +502,9 @@ private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
             .fillMaxWidth()
             // Batch 2: the unit banner is a card, so it carries the Soft clay
             // depth (the Duolingo unit banner is a raised coloured card, and
-            // a flat band reads as a background strip, not a card).
-            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            // a flat band reads as a background strip, not a card). The
+            // elevation comes from the clay spec, never the raw token.
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(bandBackground, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .padding(ShomaraTokens.Space16),
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
@@ -636,10 +638,9 @@ private fun ShomaraPathNodeCircle(
     content: Color,
 ) {
     val depth = if (state == ShomaraPathNodeState.Current) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft
-    val shadowElevation = if (state == ShomaraPathNodeState.Current) ShomaraTokens.ClayFeaturedElevation else ShomaraTokens.ClaySoftElevation
     Box(
         modifier = Modifier
-            .shadow(shadowElevation, CircleShape)
+            .shadow(ShomaraClay.specFor(depth).elevation, CircleShape)
             .size(nodeSize)
             .background(container, CircleShape)
             .border(

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -98,6 +100,10 @@ fun ShomaraTextField(
     numericLtr: Boolean = false,
     keyboardType: KeyboardType = if (numericLtr) KeyboardType.Number else KeyboardType.Text,
     hint: String = "",
+    // R-01 (F-33): under reduced motion the loading spinner renders as a static dot — same
+    // rule as the button's and the audio control's loading states. Defaults to the
+    // composition-wide flag so a caller cannot forget to pass it.
+    reducedMotion: Boolean = LocalShomaraReducedMotion.current,
 ) {
     // F-13: focus is the field's own state — the caller never passes it in (the old `focused`
     // parameter was only ever set to `true` in the catalog preview, and a caller-passed focus
@@ -129,7 +135,18 @@ fun ShomaraTextField(
         if (state == ShomaraFieldState.Disabled || state == ShomaraFieldState.Loading) {
             Box(modifier = fieldModifier, contentAlignment = Alignment.CenterStart) {
                 if (state == ShomaraFieldState.Loading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterEnd), color = ShomaraTokens.ColorMuted)
+                    if (reducedMotion) {
+                        // R-01 (F-33): static loading mark — same size and colour as the
+                        // spinner, no rotation.
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .size(ShomaraTokens.Space16)
+                                .background(ShomaraTokens.ColorMuted, CircleShape),
+                        )
+                    } else {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterEnd), color = ShomaraTokens.ColorMuted)
+                    }
                 }
                 Text(
                     text = if (value.isEmpty()) hint else value,

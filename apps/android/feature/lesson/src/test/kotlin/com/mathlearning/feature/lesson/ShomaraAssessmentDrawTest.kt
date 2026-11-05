@@ -65,4 +65,31 @@ class ShomaraAssessmentDrawTest {
             ShomaraAssessmentDraw.draw(shortPool, seenLastAttempt = emptySet(), count = 4)
         }
     }
+
+    @Test
+    fun `draw order never depends on map iteration order (R-17)`() {
+        // The same entries inserted in the opposite order must draw identically — the
+        // families are sorted before the draw, so a HashMap and a LinkedHashMap agree.
+        val shuffled = linkedMapOf(
+            "F4" to listOf("F4/a", "F4/b"),
+            "F3" to listOf("F3/a"),
+            "F2" to listOf("F2/a", "F2/b"),
+            "F1" to listOf("F1/a", "F1/b"),
+        )
+        val result = ShomaraAssessmentDraw.draw(shuffled, seenLastAttempt = emptySet())
+        assertTrue(result is ShomaraAssessmentDraw.DrawResult.Drawn)
+        assertEquals(listOf("F1/a", "F2/a", "F3/a", "F4/a"), (result as ShomaraAssessmentDraw.DrawResult.Drawn).items)
+        // With more families than the count, the first `count` in sorted order are drawn.
+        val five = linkedMapOf(
+            "F5" to listOf("F5/a"),
+            "F4" to listOf("F4/a"),
+            "F3" to listOf("F3/a"),
+            "F2" to listOf("F2/a"),
+            "F1" to listOf("F1/a"),
+        )
+        assertEquals(
+            listOf("F1/a", "F2/a"),
+            (ShomaraAssessmentDraw.draw(five, seenLastAttempt = emptySet(), count = 2) as ShomaraAssessmentDraw.DrawResult.Drawn).items,
+        )
+    }
 }

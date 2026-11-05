@@ -134,6 +134,9 @@ class OnboardingJourneyTest {
         holder.saveState = holder.saveState.copy(draft = holder.profileDraft)
         holder.saveProfile(onComplete = {})
         assertEquals(OnboardingStep.GradePlacement, holder.flow.step)
+        // #100: success is only marked after the write — and the saved state is real.
+        assertTrue(holder.saveState.saved)
+        assertEquals("ذخیره شد", holder.saveState.announcement())
         assertEquals("tok-journey", store.value)
     }
 
@@ -179,7 +182,7 @@ class OnboardingJourneyTest {
         holderThrottled.phone = "09123456789"
         holderThrottled.requestOtp()
         assertEquals(OnboardingStep.PhoneInput, holderThrottled.flow.step)
-        assertTrue(holderThrottled.banner!!.contains("صبر"))
+        assertTrue(holderThrottled.banner!!.text.contains("صبر"))
         assertEquals(0, server.requestCount)
     }
 
@@ -199,27 +202,58 @@ class OnboardingJourneyTest {
         holder.continueFromWelcome()
         holder.phone = "09123456789"
         holder.requestOtp() // offline -> failure banner
-        assertEquals(ShomaraNetworkFailure(ShomaraNetworkError.Offline, "test").userMessage(), holder.banner)
+        assertEquals(ShomaraNetworkFailure(ShomaraNetworkError.Offline, "test").userMessage(), holder.banner?.text)
         assertEquals(OnboardingStep.PhoneInput, holder.flow.step)
         assertNull(store.value)
     }
 
-    // F-06: the GradePlacement step is not «complete» — the host assigns it the fraction
-    // 0.875f (OnboardingHost stepProgressFraction), and the canonical progress bar must
-    // announce that fraction in words as «سه‌چهارم راه», never «کامل شد». The step mapping
-    // itself is a private function of the host, so this test locks the announcement the
-    // bar renders for exactly that fraction (and the 1.0 boundary that alone says complete).
+    // R-10 (option a) + F-06: the bar counts COMPLETED steps. GradePlacement is 0.75
+    // (phone + OTP + profile done) — never 1.0, and never 0.875 for merely ENTERING the
+    // step. The 0.75 fraction announces «سه‌چهارم راه», never «کامل شد».
     @Test
     fun `grade placement progress announces three quarters - never complete`() {
+        assertEquals(0.75f, ShomaraOnboardingProgress.fractionFor(OnboardingStep.GradePlacement))
         assertEquals(
             "سه‌چهارم راه",
-            ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.875f)),
+            ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = ShomaraOnboardingProgress.fractionFor(OnboardingStep.GradePlacement))),
         )
         assertFalse(
-            ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.875f))
+            ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.75f))
                 .contains("کامل شد"),
         )
         assertEquals("کامل شد", ShomaraProgressLogic.progressWords(1f))
+    }
+
+    @Test
+    fun `entering a step announces nothing completed yet (R-10 option a)`() {
+        assertEquals(0f, ShomaraOnboardingProgress.fractionFor(OnboardingStep.PhoneInput))
+        assertEquals(0.25f, ShomaraOnboardingProgress.fractionFor(OnboardingStep.OtpVerify))
+        assertEquals(0.5f, ShomaraOnboardingProgress.fractionFor(OnboardingStep.ProfileSetup))
+        assertEquals("هنوز شروع نشده", ShomaraProgressLogic.progressWords(ShomaraOnboardingProgress.fractionFor(OnboardingStep.PhoneInput)!!))
+        assertNull(ShomaraOnboardingProgress.fractionFor(OnboardingStep.Welcome))
+        assertNull(ShomaraOnboardingProgress.fractionFor(OnboardingStep.Complete))
+    }
+
+    // #100: a failing draft write keeps the user on the profile step with the failure
+    // banner — the flow never advances on a failed save, and saved stays false.
+    @Test
+    fun `a failing draft write never advances and never marks saved`() = runTest {
+        val failingStore = object : com.mathlearning.core.datastore.ShomaraProfileDraftStore {
+            override suspend fun save(snapshot: com.mathlearning.core.datastore.ShomaraProfileDraftSnapshot) {
+                throw IllegalStateException("disk full")
+            }
+
+            override suspend fun read(): com.mathlearning.core.datastore.ShomaraProfileDraftSnapshot? = null
+            override suspend fun clear() {}
+        }
+        val holder = ShomaraOnboardingStateHolder(session = null, draftStore = failingStore)
+        holder.flow = holder.flow.advanceTo(OnboardingStep.ProfileSetup)
+        holder.profileDraft = ShomaraProfileDraft(name = "آریا")
+        holder.saveState = holder.saveState.copy(draft = holder.profileDraft)
+        holder.saveProfile(onComplete = {})
+        assertEquals(OnboardingStep.ProfileSetup, holder.flow.step)
+        assertFalse(holder.saveState.saved)
+        assertTrue(holder.saveState.failureMessage != null)
     }
 
     @Test

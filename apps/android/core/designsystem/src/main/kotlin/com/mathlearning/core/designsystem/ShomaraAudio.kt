@@ -127,8 +127,9 @@ fun ShomaraAudioControl(
                     modifier = Modifier
                         .defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin)
                         // ADR-0040 R1: the control is tactile, so it renders
-                        // its Soft clay depth.
-                        .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                        // its Soft clay depth — the elevation comes from the
+                        // clay spec, never the raw token.
+                        .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .semantics {
                             role = Role.Button

@@ -17,6 +17,10 @@ class ShomaraLocalCalibrationTest {
         assertEquals(3, calibration.assessmentPassThreshold)
         assertEquals(4, calibration.assessmentPoolSize)
         assertEquals(listOf(30, 12, 3), calibration.audioBudgets)
+        // R-07: the audio numbers are explicit calibration fields now (initial values,
+        // NOT approved — CONTENT-011), instead of living only as manager constants.
+        assertEquals(3, calibration.maxSimultaneousEffects)
+        assertEquals(12, calibration.narratorDuckingDb)
     }
 
     @Test

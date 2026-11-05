@@ -62,4 +62,20 @@ class ShomaraAudioManagerTest {
         assertEquals(3, ShomaraAudioManager.MAX_SIMULTANEOUS_EFFECTS)
         assertEquals(12, ShomaraAudioManager.NARRATOR_DUCKING_DB)
     }
+
+    @Test
+    fun `effect cap and ducking are read from the calibration - not hardcoded (R-07)`() {
+        val defaults = ShomaraAudioManager()
+        assertEquals(3, defaults.maxSimultaneousEffects)
+        assertEquals(12, defaults.narratorDuckingDb)
+        // A caller-supplied calibration flows through: the getters never read the constants.
+        val custom = ShomaraAudioManager(
+            calibration = com.mathlearning.core.model.ShomaraLocalCalibration(
+                maxSimultaneousEffects = 2,
+                narratorDuckingDb = 6,
+            ),
+        )
+        assertEquals(2, custom.maxSimultaneousEffects)
+        assertEquals(6, custom.narratorDuckingDb)
+    }
 }

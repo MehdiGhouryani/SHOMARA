@@ -164,4 +164,24 @@ class St07JourneyGateTest {
         val journey = journey(MemoryCheckpoints())
         assertNull(journey.resume())
     }
+
+    @Test
+    fun `replay clears the checkpoint and restarts at P1 - never resumes the old run (R-08)`() = runTest {
+        val store = MemoryCheckpoints()
+        val journey = journey(store)
+        journey.enterStage(MacroStage.P2_GUIDED)
+        server.enqueue(MockResponse().setResponseCode(201).setBody("{\"nextAction\":\"ADVANCE\",\"correct\":true}"))
+        journey.submitCurrent("opt-1")
+        assertNotNull(store.read("session-st07", "ST07"))
+        assertEquals(2, journey.attemptIndex)
+
+        journey.restart()
+
+        // The checkpoint is gone, so a later resume finds nothing to resume from.
+        assertNull(store.read("session-st07", "ST07"))
+        assertNull(journey(store).resume())
+        // Position and attempt index are back at the start of the run.
+        assertEquals(MacroStage.P1_DISCOVER, journey.position.macroStage)
+        assertEquals(1, journey.attemptIndex)
+    }
 }

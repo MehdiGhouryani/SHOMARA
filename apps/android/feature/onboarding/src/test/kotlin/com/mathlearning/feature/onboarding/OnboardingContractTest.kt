@@ -89,20 +89,17 @@ class OnboardingContractTest {
         assertEquals(setOf("New", "Restoring", "Recover", "Error"), ShomaraAuthMode.entries.map { it.name }.toSet())
     }
 
-    // F-19: the banner kind follows the error class — a backend-configuration failure is an
-    // Error (retrying cannot fix an unconfigured service), a network failure is a Retry.
-    // The kind mapping itself (bannerKindFor) is a private function of the host, so no JVM
-    // test can call it; this test locks the holder-level input the branch reads: the two
-    // error classes must produce two distinct banner texts — the unconfigured-service text
-    // for a missing session, and the network userMessage for a real network failure. The
-    // Error-vs-Retry kind assertion itself needs a Compose test of the host (or internal
-    // visibility for bannerKindFor).
+    // F-19 / R-13: the banner kind follows the error class — a backend-configuration failure
+    // is an Error (retrying cannot fix an unconfigured service), a network failure is a Retry.
+    // The kind now travels WITH the banner (ShomaraBanner.kind) instead of being re-derived
+    // from the text by string equality, so this test locks both the text AND the kind.
     @Test
-    fun `backend-not-configured and network errors produce distinct banner texts`() = runTest {
+    fun `backend-not-configured and network errors produce distinct banner texts and kinds`() = runTest {
         val unconfigured = ShomaraOnboardingStateHolder(session = null)
         unconfigured.phone = "09123456789"
         unconfigured.requestOtp()
-        assertEquals(ShomaraAuthErrorMessages.BackendNotConfigured, unconfigured.banner)
+        assertEquals(ShomaraAuthErrorMessages.BackendNotConfigured, unconfigured.banner?.text)
+        assertEquals(com.mathlearning.core.designsystem.ShomaraFeedbackKind.Error, unconfigured.banner?.kind)
 
         val offlineSession = ShomaraAuthSession(
             api = ShomaraOtpApi(
@@ -116,7 +113,17 @@ class OnboardingContractTest {
         val offline = ShomaraOnboardingStateHolder(session = offlineSession)
         offline.phone = "09123456789"
         offline.requestOtp()
-        assertEquals(ShomaraNetworkFailure(ShomaraNetworkError.Offline, "test").userMessage(), offline.banner)
-        assertNotEquals(ShomaraAuthErrorMessages.BackendNotConfigured, offline.banner)
+        assertEquals(ShomaraNetworkFailure(ShomaraNetworkError.Offline, "test").userMessage(), offline.banner?.text)
+        assertEquals(com.mathlearning.core.designsystem.ShomaraFeedbackKind.Retry, offline.banner?.kind)
+        assertNotEquals(ShomaraAuthErrorMessages.BackendNotConfigured, offline.banner?.text)
+    }
+
+    @Test
+    fun `phone-format errors are Retry - only the unconfigured service is Error (R-13)`() = runTest {
+        val holder = ShomaraOnboardingStateHolder(session = null)
+        holder.phone = "not-a-phone"
+        holder.requestOtp()
+        assertEquals(com.mathlearning.core.designsystem.ShomaraFeedbackKind.Retry, holder.banner?.kind)
+        assertEquals(ShomaraAuthErrorMessages.forPhoneInput(), holder.banner?.text)
     }
 }
