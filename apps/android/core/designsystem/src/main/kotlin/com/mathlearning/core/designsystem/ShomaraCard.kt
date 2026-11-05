@@ -107,7 +107,8 @@ fun ShomaraCard(
                     it.clickable(
                         enabled = resolved != ShomaraCardState.Disabled,
                     ) {
-                        if (tapGuard.begin()) {
+                        // F-14: latched guard — a fast double tap cannot fire the card twice.
+                        if (tapGuard.beginLatched()) {
                             pressed = true
                             try { onClick() } finally { pressed = false; tapGuard.end() }
                         }

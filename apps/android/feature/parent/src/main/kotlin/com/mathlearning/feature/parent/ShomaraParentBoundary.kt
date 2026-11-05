@@ -1,6 +1,7 @@
 package com.mathlearning.feature.parent
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,7 +59,9 @@ class ShomaraParentGate(
     private val maxFailures: Int = 3,
     private val lockoutMs: Long = 60_000L,
 ) {
-    var state: ShomaraParentGateState = ShomaraParentGateState.Idle
+    // F-03a: the gate state is Compose state, not a plain var — a plain var never
+    // recomposes the screen, so a lockout or a failure never repainted the gate.
+    var state: ShomaraParentGateState by mutableStateOf(ShomaraParentGateState.Idle)
         private set
     var failures: Int = 0
         private set
@@ -114,12 +117,20 @@ object ShomaraParentSurfaceContract {
     fun isAllowed(section: String): Boolean = section in AllowedSections
 }
 
+/** Local label for the gate's back action (F-23): the string lives in this file because a
+ * cross-feature import (parent <- onboarding strings) is forbidden. */
+private const val ParentGateBackLabel: String = "بازگشت"
+
 @Composable
 fun ShomaraParentGateScreen(
     gate: ShomaraParentGate,
     onAuthenticated: () -> Unit,
     modifier: Modifier = Modifier,
-    nowMs: () -> Long = { 0L },
+    // F-03b: the default clock is the real clock. The old default (0L) froze every lockout
+    // until process death: `nowMs < untilMs` was true forever for any lockout set after boot.
+    nowMs: () -> Long = { System.currentTimeMillis() },
+    // F-23: an on-screen way back to the child shell — system Back alone is not an affordance.
+    onBack: (() -> Unit)? = null,
 ) {
     var passcode by remember { mutableStateOf("") }
     // Stage 4, family 15 guardian: calm, textual, preferred 24dp inset.
@@ -151,10 +162,21 @@ fun ShomaraParentGateScreen(
                 }
             },
             variant = ShomaraButtonVariant.Primary,
+            // F-03c: an empty submission used to burn one of the three attempts (and, with
+            // a null verifier, lock the gate). The button is disabled until something is typed.
+            enabled = passcode.isNotBlank(),
             // Batch 2: the primary entry action is full-width like every
             // other primary CTA in the app.
             modifier = Modifier.fillMaxWidth(),
         )
+        if (onBack != null) {
+            ShomaraButton(
+                text = ParentGateBackLabel,
+                onClick = onBack,
+                variant = ShomaraButtonVariant.Ghost,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
         // Honest lockout rule, stated before any failure happens.
         Text(text = "پس از چند تلاش ناموفق، ورود موقتاً قفل می‌شود.", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
     }
@@ -178,7 +200,11 @@ fun ShomaraParentHome(
                 // Batch 2 (ADR-0040 R1): the summary card is the one
                 // Featured surface of this viewport.
                 .shadow(ShomaraClay.specFor(ShomaraClayDepth.Featured).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
-                .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg)).padding(ShomaraTokens.Space12),
+                // F-31: the card carries its hairline border like every other surface card —
+                // a shadow without a border reads as a loose patch on the canvas.
+                .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .padding(ShomaraTokens.Space12),
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             verticalAlignment = Alignment.CenterVertically,
         ) {

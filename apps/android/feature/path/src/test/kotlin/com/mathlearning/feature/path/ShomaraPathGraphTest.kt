@@ -24,8 +24,10 @@ class ShomaraPathGraphTest {
         assertEquals(ShomaraPathNodeState.Perfect, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST02"), progress))
         assertEquals(ShomaraPathNodeState.Current, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST04"), progress))
         assertEquals(ShomaraPathNodeState.Locked, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST05"), progress))
-        // Offline freezes the graph to locked nodes with the recovery banner.
-        assertEquals(ShomaraPathNodeState.Locked, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST04"), progress.copy(offline = true)))
+        // F-40: offline no longer remaps nodes to Locked — the Current node keeps its real
+        // state and the offline banner carries the message.
+        assertEquals(ShomaraPathNodeState.Current, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST04"), progress.copy(offline = true)))
+        assertEquals(ShomaraPathNodeState.Completed, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), progress.copy(offline = true)))
     }
 
     @Test
@@ -174,23 +176,30 @@ class ShomaraPathGraphTest {
     }
 
     @Test
-    fun `item indices follow the lazy list model`() {
+    fun `item indices follow the lazy list model with chapter dividers`() {
+        // E-02: each chapter is band + 5 nodes + 1 divider (chapters 1-4); chapter 5 has no divider.
         assertEquals(1, ShomaraPathGraphLogic.headerItemIndexForChapter(1))
-        assertEquals(7, ShomaraPathGraphLogic.headerItemIndexForChapter(2))
-        assertEquals(25, ShomaraPathGraphLogic.headerItemIndexForChapter(5))
+        assertEquals(8, ShomaraPathGraphLogic.headerItemIndexForChapter(2))
+        assertEquals(29, ShomaraPathGraphLogic.headerItemIndexForChapter(5))
         assertEquals(2, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST01")))
         assertEquals(6, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST05")))
-        assertEquals(8, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST06")))
-        assertEquals(30, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST25")))
+        assertEquals(9, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST06")))
+        assertEquals(34, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST25")))
     }
 
     @Test
     fun `restore scroll targets the saved chapter header`() {
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(null))
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(1))
-        assertEquals(7, ShomaraPathGraphLogic.restoredFirstVisibleIndex(2))
-        assertEquals(25, ShomaraPathGraphLogic.restoredFirstVisibleIndex(5))
+        assertEquals(8, ShomaraPathGraphLogic.restoredFirstVisibleIndex(2))
+        assertEquals(29, ShomaraPathGraphLogic.restoredFirstVisibleIndex(5))
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(9))
+    }
+
+    @Test
+    fun `completed label names the replay affordance`() {
+        // F-12c: a completed node says what a tap does, not only what happened.
+        assertTrue(ShomaraPathGraphLogic.stateLabelFor(ShomaraPathNodeState.Completed).contains("تمرین دوباره"))
     }
 
     // ---- Screenshot evidence 2026-11-05: segmented Current ring + unit banner ----

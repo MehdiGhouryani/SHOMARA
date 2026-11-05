@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -54,7 +55,9 @@ fun ShomaraLessonStageHeader(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        // F-24: the header row is at least one node tall, so the guide image (72dp) never
+        // forces the row to clip the title at large font scales — the row grows with content.
+        modifier = modifier.fillMaxWidth().heightIn(min = ShomaraTokens.ComponentNodeSize),
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
         verticalAlignment = Alignment.CenterVertically,
     ) {

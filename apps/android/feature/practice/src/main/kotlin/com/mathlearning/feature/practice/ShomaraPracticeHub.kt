@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
@@ -30,8 +31,8 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 
-/** Practice-hub state matrix (family 12): loading/list/empty/locked/offline/error/history. */
-enum class ShomaraPracticeHubState { Loading, List, Empty, Locked, Offline, Error, History }
+/** Practice-hub state matrix (family 12): loading/list/empty/locked/offline/error. */
+enum class ShomaraPracticeHubState { Loading, List, Empty, Locked, Offline, Error }
 
 /** A real, caller-provided practice entry — the hub never fabricates data (family 12 anti-pattern). */
 data class ShomaraPracticeItem(
@@ -91,7 +92,9 @@ fun ShomaraPracticeHubScreen(
             // Static page shape, not a spinner: reduced-motion safe by construction.
             ShomaraPagePlaceholder()
         }
-        if (state == ShomaraPracticeHubState.List || state == ShomaraPracticeHubState.History) {
+        // F-25: there is no History state — stateFor never returns it and the history list
+        // below renders from `recent` directly. The dead branch is removed, not wired.
+        if (state == ShomaraPracticeHubState.List) {
             Text(text = "تمرین‌های قابل انجام", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             for (item in ShomaraPracticeHubLogic.recommendedFor(items)) {
                 PracticeRow(item = item, locked = false, onItemTap = onItemTap)
@@ -114,6 +117,10 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
     val container = if (locked) ShomaraTokens.ColorSurfaceAlt else ShomaraTokens.ColorSurface
     val content = if (locked) ShomaraTokens.ColorMuted else ShomaraTokens.ColorInk
     val description = if (locked) ShomaraPracticeHubLogic.lockedLabel(item) else item.title
+    // F-16: a locked row is not a button — no role, no click action. TalkBack reads the
+    // locked reason, never «دکمه». الف-۰۲: the row merges its descendants into one
+    // announcement (title + state) instead of three separate nodes.
+    val tappable = !locked
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,15 +130,20 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
             .shadow(ShomaraClay.specFor(if (locked) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .semantics {
-                role = Role.Button
+            .semantics(mergeDescendants = true) {
+                if (tappable) role = Role.Button
                 contentDescription = if (historical) "$description — انجام شده" else description
             }
-            .clickable(enabled = !locked, role = Role.Button) { onItemTap(item.id) }
+            .then(if (tappable) Modifier.clickable(role = Role.Button) { onItemTap(item.id) } else Modifier)
             .padding(ShomaraTokens.Space12),
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // F-30: a history row carries a visible ✓ — «done» is never colour alone. The
+        // mark is decorative for TalkBack: the contentDescription already says «انجام شده».
+        if (historical) {
+            Text(text = "✓", style = ShomaraTypography.Body, color = content, modifier = Modifier.clearAndSetSemantics {})
+        }
         Column {
             Text(text = item.title, style = ShomaraTypography.Body, color = content)
             if (locked) {

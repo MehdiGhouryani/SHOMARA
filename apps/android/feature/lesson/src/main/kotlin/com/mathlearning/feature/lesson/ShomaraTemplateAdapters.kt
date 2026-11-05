@@ -122,12 +122,21 @@ data class T05SlotAdapter(
 
 enum class T13Point { Top, Middle, Bottom }
 
+/** One raw touch point on the tracing surface (dp, in the surface's own coordinates). */
+data class ShomaraRawTouchPoint(val xDp: Int, val yDp: Int)
+
 data class T13TraceAdapter(
     val config: ServerLearningConfig = ServerLearningConfig.DEFAULT,
     val numeral: Int = 1,
     val visitedCheckpoints: Set<T13Point> = emptySet(),
     val tapFallbackUsed: Boolean = false,
     val state: String = "ready", // ready/tracing/completed
+    /**
+     * B8: raw touch points, recorded in order, with NO judgement attached — distance to the
+     * reference path, order and breaks are data for the evaluator, not a verdict here.
+     * Recording never changes [visitedCheckpoints], [state] or [completed].
+     */
+    val rawTouches: List<ShomaraRawTouchPoint> = emptyList(),
 ) {
     init {
         require(numeral == 1) { "ST07 pilot traces numeral ۱ only" }
@@ -156,6 +165,14 @@ data class T13TraceAdapter(
 
     val completed: Boolean
         get() = visitedCheckpoints.containsAll(canonicalStrokeOrder)
+
+    /**
+     * B8: records one raw touch point. Pure append — the checkpoints, the state and the
+     * completion are untouched, so recording can never judge a trace correct or wrong.
+     * Tolerance (28dp) and direction stay with the evaluator (K12 / CONTENT-001).
+     */
+    fun recordRawTouch(point: ShomaraRawTouchPoint): T13TraceAdapter =
+        copy(rawTouches = rawTouches + point)
 
     /** Either path (drag-trace or tap-checkpoints) reaches the identical completed state. */
     fun sameCompletionAs(other: T13TraceAdapter): Boolean = completed == other.completed && visitedCheckpoints == other.visitedCheckpoints

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -80,6 +82,9 @@ fun ShomaraAudioControl(
     modifier: Modifier = Modifier,
     onAction: (ShomaraAudioAction) -> Unit = {},
     tapGuard: ShomaraTapGuard = rememberShomaraTapGuard(),
+    // F-33: under reduced motion the loading spinner renders as a static dot — same rule
+    // as the button's loading state. Defaults to the composition-wide flag.
+    reducedMotion: Boolean = LocalShomaraReducedMotion.current,
 ) {
     val (container, content) = ShomaraAudioLogic.colorsFor(state)
     Column(
@@ -100,7 +105,17 @@ fun ShomaraAudioControl(
         ) {
             val action = ShomaraAudioLogic.actionFor(state)
             if (state == ShomaraAudioState.Loading) {
-                CircularProgressIndicator(modifier = Modifier.defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin).padding(ShomaraTokens.Space8), color = ShomaraTokens.ColorPrimary)
+                if (reducedMotion) {
+                    // F-33: static loading mark — same size and colour as the spinner, no rotation.
+                    Box(
+                        modifier = Modifier.defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin).padding(ShomaraTokens.Space8),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Box(modifier = Modifier.size(ShomaraTokens.Space16).background(ShomaraTokens.ColorPrimary, CircleShape))
+                    }
+                } else {
+                    CircularProgressIndicator(modifier = Modifier.defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin).padding(ShomaraTokens.Space8), color = ShomaraTokens.ColorPrimary)
+                }
             } else if (ShomaraAudioLogic.controlEnabled(state)) {
                 // Batch 2: the control renders only when it has a real action.
                 // Before, the Unavailable state rendered an empty 48dp box

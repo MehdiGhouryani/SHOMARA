@@ -10,12 +10,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -212,6 +217,11 @@ fun ShomaraJumpSheet(
         Text(text = ShomaraJumpSheetLogic.titleFor(titleStationId), style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         if (state.offline) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ پرش فعلاً ممکن نیست.")
         if (state.errorText != null) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = state.errorText)
+        // F-17: tapping a locked target does not select it — it shows the warm locked
+        // explanation in the sheet's own banner, so the child learns why instead of
+        // hitting a dead row. The message clears as soon as a real target is tapped.
+        var lockedMessage by remember { mutableStateOf<String?>(null) }
+        if (lockedMessage != null) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = lockedMessage!!)
         for (target in state.targets) {
             val selected = state.selectedId == target.meta.id
             val (_, border, content) = ShomaraPathGraphLogic.colorsFor(target.nodeState)
@@ -230,17 +240,30 @@ fun ShomaraJumpSheet(
                         stateDescription = ShomaraPathGraphLogic.stateLabelFor(target.nodeState) +
                             if (selected) "؛ انتخاب شد" else ""
                     }
-                    .clickable(role = Role.Button) { onSelect(target.meta.id) }
+                    .clickable(role = Role.Button) {
+                        if (target.nodeState == ShomaraPathNodeState.Locked) {
+                            lockedMessage = ShomaraStationStartLogic.lockedExplanation()
+                        } else {
+                            lockedMessage = null
+                            onSelect(target.meta.id)
+                        }
+                    }
                     .padding(ShomaraTokens.Space8),
                 horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Batch 2 (Duolingo list evidence, same pattern as the
-                // avatar rows): the selected target carries a visible ✓
-                // mark — selection is never colour alone. The mark is
-                // decorative for TalkBack: stateDescription already says
-                // "انتخاب شد" once, so the glyph must not be read twice.
-                Text(text = if (selected) "✓" else "", style = ShomaraTypography.Body, color = content, modifier = Modifier.clearAndSetSemantics {})
+                // F-17: the selection mark lives in a fixed-width box, so every row's text
+                // starts at the same x whether or not the row is selected — the mark is
+                // never a layout shift. Decorative for TalkBack: stateDescription already
+                // says "انتخاب شد" once.
+                Box(
+                    modifier = Modifier.width(ShomaraTokens.Space24),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (selected) {
+                        Text(text = "✓", style = ShomaraTypography.Body, color = content, modifier = Modifier.clearAndSetSemantics {})
+                    }
+                }
                 Column {
                     Text(text = target.meta.workingTitle, style = ShomaraTypography.Body, color = content)
                     Text(text = ShomaraPathGraphLogic.stateLabelFor(target.nodeState), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)

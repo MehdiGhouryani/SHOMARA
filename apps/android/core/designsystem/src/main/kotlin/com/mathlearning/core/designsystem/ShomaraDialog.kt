@@ -130,7 +130,9 @@ fun ShomaraDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShomaraBottomSheet(
-    title: String,
+    // F-01: the title is nullable so a sheet whose content owns its own heading (the station
+    // sheet renders its own title) does not get a second, doubled heading read by TalkBack.
+    title: String?,
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
     modifier: Modifier = Modifier,
@@ -145,8 +147,10 @@ fun ShomaraBottomSheet(
         dragHandle = if (ShomaraDialogLogic.canDismiss(state)) null else ({}) // drag handle only while dismissible
     ) {
         Column(modifier = Modifier.padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+            if (title != null) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+                }
             }
             content()
         }

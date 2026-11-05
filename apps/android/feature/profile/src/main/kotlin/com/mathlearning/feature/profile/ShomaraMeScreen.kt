@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
@@ -38,8 +39,8 @@ import com.mathlearning.core.designsystem.ShomaraProgressState
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 
-/** Me-tab state matrix (family 14): loading/ready/empty/offline/error/edit-return. */
-enum class ShomaraMeState { Loading, Ready, Empty, Offline, Error, EditReturn }
+/** Me-tab state matrix (family 14): loading/ready/empty/offline/error. */
+enum class ShomaraMeState { Loading, Ready, Empty, Offline, Error }
 
 /** Real facts only — rendered verbatim from caller/server data (no synthetic badges or streaks). */
 data class ShomaraMeFacts(
@@ -150,7 +151,9 @@ fun ShomaraMeScreen(
                     ),
                 )
                 }
-            ShomaraMeState.EditReturn -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "تغییرات ذخیره شد.")
+            // F-25: there is no EditReturn state — no caller ever returns from an edit into
+            // this tab with a «saved» banner, and a banner for a save that never happened
+            // would be a fabricated success. The dead branch is removed.
         }
         if (state == ShomaraMeState.Loading) {
             ShomaraPagePlaceholder()
@@ -158,7 +161,8 @@ fun ShomaraMeScreen(
         // N08 §4 dead end fixed: this row used to live INSIDE the Ready branch, so a child
         // whose profile is not complete yet had no way to reach avatar/settings at all — the
         // surface existed but was unreachable. Settings is a valid destination in every state.
-        MeRow(label = "آواتار و تنظیمات", description = "ظاهر و preferenceهای واقعی", onClick = onOpenSettings)
+        // F-20: the description is plain Persian — no Latin word inside a Persian sentence.
+        MeRow(label = "آواتار و تنظیمات", description = "ظاهر و تنظیم‌های واقعی", onClick = onOpenSettings)
         MeRow(label = "بخش والدین", description = "با تأیید بزرگ‌ترها باز می‌شود", onClick = onOpenParent)
     }
 }
@@ -174,7 +178,9 @@ private fun MeRow(label: String, description: String, onClick: () -> Unit) {
             .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .semantics {
+            // الف-۰۲: the row merges its descendants into one announcement (label +
+            // description) instead of three separate nodes.
+            .semantics(mergeDescendants = true) {
                 role = Role.Button
                 contentDescription = label + " — " + description
             }
@@ -187,6 +193,8 @@ private fun MeRow(label: String, description: String, onClick: () -> Unit) {
             Text(text = label, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk)
             Text(text = description, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
         }
-        Text(text = "←", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk2)
+        // F-32: the «←» arrow is decoration — the row's contentDescription already says
+        // where it goes. Without clearing, TalkBack reads the arrow glyph aloud.
+        Text(text = "←", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk2, modifier = Modifier.clearAndSetSemantics {})
     }
 }

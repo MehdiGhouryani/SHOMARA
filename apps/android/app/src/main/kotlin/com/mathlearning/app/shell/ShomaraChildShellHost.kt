@@ -21,13 +21,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
 import com.mathlearning.core.datastore.ShomaraSettingsStore
+import com.mathlearning.core.designsystem.ShomaraBottomSheet
 import com.mathlearning.core.designsystem.ShomaraTab
 import com.mathlearning.core.designsystem.ShomaraTabBar
+import com.mathlearning.core.designsystem.shomaraBackHandler
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
 import com.mathlearning.feature.path.ShomaraPathProgress
 import com.mathlearning.feature.path.ShomaraPathScreen
+import com.mathlearning.feature.path.ShomaraStationStartSheet
 import com.mathlearning.feature.practice.ShomaraPracticeCatalog
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
 import com.mathlearning.feature.profile.ShomaraMeScreen
@@ -62,6 +65,35 @@ fun ShomaraChildShell(
 ) {
     val navController = rememberNavController()
     var currentTab by rememberSaveable { mutableStateOf(ShomaraShellTab.Default) }
+    // F-01: the station-start sheet is shell-owned state. Tapping a node (path or practice)
+    // opens the sheet for that station; only the sheet's «شروع/ادامه» CTA navigates to the
+    // lesson. Before, the tap navigated straight to `lesson/$id` — the lock was bypassed
+    // and the sheet had no caller at all.
+    var selectedStationId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    fun goToTab(tab: ShomaraShellTab) {
+        if (tab != currentTab) {
+            currentTab = tab
+            navController.navigate(tab.route) {
+                popUpTo(ShomaraShellTab.Default.route) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
+
+    // F-25: system Back is deterministic — on a non-default TAB route it returns to the
+    // default tab; on the default tab the system handles it (exit). The handler is only
+    // enabled on tab routes: on the settings/parent destinations Back must pop the
+    // NavHost stack instead, and swallowing it here would trap the child there.
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val onTabRoute = backStackEntry?.destination?.route in ShomaraShellTab.entries.map { it.route }
+    val backTarget = if (onTabRoute) ShomaraShellLogic.backTarget(currentTab) else null
+    shomaraBackHandler(enabled = backTarget != null) {
+        val target = ShomaraShellLogic.backTarget(currentTab)
+        if (target != null) goToTab(target)
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         bottomBar = {
@@ -69,16 +101,7 @@ fun ShomaraChildShell(
                 tabs = ShomaraShellLogic.canonicalTabs().map { ShomaraTab(id = it.route, label = it.label) },
                 selectedId = currentTab.route,
                 onSelected = { route ->
-                    val tapped = ShomaraShellTab.fromRoute(route)
-                    val target = ShomaraShellLogic.select(currentTab, tapped)
-                    if (target != currentTab) {
-                        currentTab = target
-                        navController.navigate(target.route) {
-                            popUpTo(ShomaraShellTab.Default.route) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
+                    goToTab(ShomaraShellLogic.select(currentTab, ShomaraShellTab.fromRoute(route)))
                 },
             )
         },
@@ -92,7 +115,7 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Path.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Path.deepLink }),
                 ) {
-                    ShomaraPathScreen(progress = pathProgress, onStationTap = onStartStation)
+                    ShomaraPathScreen(progress = pathProgress, onStationTap = { selectedStationId = it })
                 }
                 composable(
                     route = ShomaraShellTab.Practice.route,
@@ -114,7 +137,9 @@ fun ShomaraChildShell(
                     ShomaraPracticeHubScreen(
                         items = practiceItems,
                         recent = practiceRecent,
-                        onItemTap = onStartStation,
+                        // F-01: a practice tap opens the same station sheet as a path tap —
+                        // the sheet is the one door into a lesson, never a direct navigation.
+                        onItemTap = { selectedStationId = it },
                     )
                 }
                 composable(
@@ -230,8 +255,36 @@ fun ShomaraChildShell(
                     if (authenticated) {
                         ShomaraParentHome(completedStations = completedStations, totalStations = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT, onSignOut = onSignOut)
                     } else {
-                        ShomaraParentGateScreen(gate = gate, onAuthenticated = { authenticated = true })
+                        ShomaraParentGateScreen(
+                            gate = gate,
+                            onAuthenticated = { authenticated = true },
+                            // F-03b: the gate clock is the real clock (the screen's default is
+                            // already real; the shell states it explicitly so the wiring is visible).
+                            nowMs = { System.currentTimeMillis() },
+                            // F-23: an on-screen way back to the child shell.
+                            onBack = { navController.popBackStack() },
+                        )
                     }
+                }
+            }
+            // F-01: the station-start sheet — the one door into a lesson. The sheet owns its
+            // own heading, so the bottom sheet renders with a null title (no doubled heading).
+            // A locked station's CTA dismisses; only Ready/Resume navigate to the lesson.
+            val sheetStationId = selectedStationId
+            if (sheetStationId != null) {
+                ShomaraBottomSheet(
+                    title = null,
+                    onDismiss = { selectedStationId = null },
+                ) {
+                    ShomaraStationStartSheet(
+                        stationId = sheetStationId,
+                        progress = pathProgress,
+                        onStart = {
+                            selectedStationId = null
+                            onStartStation(sheetStationId)
+                        },
+                        onDismiss = { selectedStationId = null },
+                    )
                 }
             }
         }

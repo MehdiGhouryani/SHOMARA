@@ -156,11 +156,10 @@ fun ShomaraPhoneScreen(
     simulatedSkip: (() -> Unit)? = null,
 ) {
     // Batch 2: the error is shown only once the user has typed something.
-    // Before, an empty field showed the invalid-format error on first
-    // paint — the child was told the number was wrong before typing a
-    // digit. The validation itself is untouched (ShomaraPhoneLogic still
-    // decides validity, and the CTA still stays disabled until valid).
-    val error = if (phone.isBlank()) null else ShomaraPhoneLogic.validationError(phone)
+    // F-08: «typed something» is not enough — a partial number (fewer than 11 digits) is
+    // still being typed, not wrong. The error appears only once 11 digits are in and the
+    // number is still invalid; the CTA still stays disabled until valid.
+    val error = if (phone.count { it.isDigit() } >= 11) ShomaraPhoneLogic.validationError(phone) else null
     val canContinue = ShomaraPhoneLogic.isValid(phone)
     Column(
         modifier = modifier
@@ -181,7 +180,8 @@ fun ShomaraPhoneScreen(
             Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             ShomaraCard {
                 Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-                    Text(text = ShomaraOnboardingStrings.WelcomeBody, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
+                    // F-27: the welcome body line lived inside the phone card too — the same
+                    // sentence twice on one screen. It stays on the welcome screen only.
                     ShomaraTextField(
                         value = phone,
                         onValueChange = onPhoneChange,

@@ -1,6 +1,7 @@
 package com.mathlearning.core.designsystem
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -33,9 +35,17 @@ import androidx.compose.ui.unit.Dp
  * Duplicate-action policy (COMPONENT_READINESS «duplicate-action policy»): a single in-flight
  * latch shared by buttons, tab targets and dialog confirms. begin() admits only the first tap;
  * the caller MUST call end() when the action settles.
+ *
+ * Deep review (F-14): a plain in-flight latch re-admits a tap the instant the previous action
+ * settles, so a fast double tap can still fire twice. [beginLatched] adds a short cooldown
+ * after [end] (300 ms) for surfaces the child can hammer — buttons and cards. [begin]/[end]
+ * are untouched: the existing «tap guard admits the first tap only» test still holds.
  */
-class ShomaraTapGuard {
+class ShomaraTapGuard(
+    private val nowMs: () -> Long = { System.currentTimeMillis() },
+) {
     private var inFlight: Boolean = false
+    private var lastEndMs: Long? = null
 
     fun begin(): Boolean {
         if (inFlight) return false
@@ -45,6 +55,25 @@ class ShomaraTapGuard {
 
     fun end() {
         inFlight = false
+        lastEndMs = nowMs()
+    }
+
+    /**
+     * Latched begin: like [begin], but a tap inside [LATCH_COOLDOWN_MS] after the previous
+     * action settled is refused — the child must lift and re-tap deliberately. The clock is
+     * injectable so the cooldown is JVM-testable without sleeping.
+     */
+    fun beginLatched(): Boolean {
+        if (inFlight) return false
+        val last = lastEndMs
+        if (last != null && nowMs() - last < LATCH_COOLDOWN_MS) return false
+        inFlight = true
+        return true
+    }
+
+    companion object {
+        /** Cooldown after an action settles before the same guard admits another tap. */
+        const val LATCH_COOLDOWN_MS: Long = 300L
     }
 }
 
@@ -118,6 +147,10 @@ fun ShomaraButton(
     loadingStateLabel: String = "در حال انجام",
     tapGuard: ShomaraTapGuard = rememberShomaraTapGuard(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    // F-33: under reduced motion the loading spinner renders as a static dot — a spinning
+    // indicator is motion the child asked to reduce. Defaults to the composition-wide flag
+    // so a caller cannot forget to pass it.
+    reducedMotion: Boolean = LocalShomaraReducedMotion.current,
 ) {
     val pressed by interactionSource.collectIsPressedAsState()
     val focused by interactionSource.collectIsFocusedAsState()
@@ -152,6 +185,14 @@ fun ShomaraButton(
             .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget, minHeight = ShomaraButtonLogic.minHeight())
             .shadow(depthElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            // E-03: a Ghost button is flat by design, but flat must not mean edgeless — it
+            // carries a hairline border in the line token so the touchable area stays visible
+            // against the canvas. The depth stays Flat (ADR-0040 R1).
+            .then(
+                if (variant == ShomaraButtonVariant.Ghost) {
+                    Modifier.border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                } else Modifier
+            )
             .semantics(mergeDescendants = true) {
                 role = Role.Button
                 if (state == ShomaraButtonState.Disabled) disabled()
@@ -165,7 +206,9 @@ fun ShomaraButton(
                         enabled = true,
                         role = Role.Button,
                     ) {
-                        if (tapGuard.begin()) {
+                        // F-14: the latched guard refuses a tap inside the cooldown after the
+                        // previous action settled — a fast double tap cannot fire twice.
+                        if (tapGuard.beginLatched()) {
                             try { onClick() } finally { tapGuard.end() }
                         }
                     }
@@ -179,11 +222,18 @@ fun ShomaraButton(
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8), verticalAlignment = Alignment.CenterVertically) {
             if (state == ShomaraButtonState.Loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(ShomaraTokens.Space16),
-                    color = content,
-                    strokeWidth = ShomaraTokens.Space4,
-                )
+                if (reducedMotion) {
+                    // F-33: static loading mark — same size and colour as the spinner, no rotation.
+                    Box(
+                        modifier = Modifier.size(ShomaraTokens.Space16).background(content, CircleShape),
+                    )
+                } else {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(ShomaraTokens.Space16),
+                        color = content,
+                        strokeWidth = ShomaraTokens.Space4,
+                    )
+                }
             }
             Text(
                 text = text,

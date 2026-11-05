@@ -7,6 +7,7 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasStateDescription
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import org.junit.Assert.assertEquals
@@ -90,9 +91,20 @@ class ShomaraInteractiveSemanticsTest {
         compose.setContent {
             ShomaraOtpInput(state = state, onStateChange = {})
         }
-        // Digit values render as text nodes; per-cell contentDescription is set on each cell.
-        compose.onNodeWithText("1").assert(hasContentDescription("رقم ۱ از ۴"))
-        compose.onNodeWithText("2").assert(hasContentDescription("رقم ۲ از ۴"))
+        // F-22b: one announcement per cell — position plus its digit, so TalkBack never
+        // reads a cell twice.
+        compose.onNodeWithText("1").assert(hasContentDescription("رقم ۱ از ۴: ۱"))
+        compose.onNodeWithText("2").assert(hasContentDescription("رقم ۲ از ۴: ۲"))
+    }
+
+    @Test
+    fun otpEmptyCellsAnnounceEmpty() {
+        val state = ShomaraOtpState.empty(4)
+        compose.setContent {
+            ShomaraOtpInput(state = state, onStateChange = {})
+        }
+        // An empty cell announces its position plus «خالی» — no silent cell.
+        compose.onNodeWithContentDescription("رقم ۱ از ۴: خالی").assertExists()
     }
 
     @Test

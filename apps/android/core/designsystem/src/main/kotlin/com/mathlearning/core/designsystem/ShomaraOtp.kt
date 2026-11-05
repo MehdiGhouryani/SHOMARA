@@ -160,8 +160,12 @@ private fun RowScope.OtpCell(
             shape = RoundedCornerShape(ShomaraTokens.RadiusSm),
         )
         .padding(vertical = ShomaraTokens.Space8)
-        .semantics {
-            contentDescription = ShomaraOtpLogic.cellLabel(index, state.length)
+        .semantics(mergeDescendants = true) {
+            // F-22b: one announcement per cell — position plus its digit (or «خالی»),
+            // so TalkBack never reads a cell twice. Digits stay Latin: the
+            // Persian/Latin digit choice is an open owner decision (F-22 الف).
+            contentDescription = ShomaraOtpLogic.cellLabel(index, state.length) +
+                ": " + (digit?.toString() ?: "خالی")
         }
     Box(
         modifier = if (enabled) {

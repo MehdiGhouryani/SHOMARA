@@ -25,8 +25,6 @@ import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
-import com.mathlearning.core.designsystem.ShomaraProgressBar
-import com.mathlearning.core.designsystem.ShomaraProgressState
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.designsystem.shomaraBackHandler
@@ -79,7 +77,18 @@ fun ShomaraLessonHost(
         gateway?.let { ShomaraLessonJourney(sessionId, stationId, it, checkpointStore ?: NoCheckpoints) }
     }
 
-    LaunchedEffect(Unit) { resumed = journey?.resume() != null }
+    // F-04: resume() returns the recovered step — the host used to throw it away and
+    // restart at P1 while still showing «از همون‌جا ادامه می‌دهیم». The recovered macro
+    // stage now actually becomes the current stage.
+    LaunchedEffect(Unit) {
+        val resumedStep = journey?.resume()
+        if (resumedStep != null) {
+            resumed = true
+            macroStage = resumedStep.macroStage
+        } else {
+            resumed = false
+        }
+    }
     LaunchedEffect(closeState) {
         if (closeState == ShomaraCloseConfirmState.ConfirmedExit) onExitToShell()
     }
@@ -114,12 +123,12 @@ fun ShomaraLessonHost(
             modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
-            ShomaraProgressBar(state = ShomaraProgressState())
+            // F-05: the indeterminate progress bar is gone. It never had a fraction (the
+            // server gives no total yet), so it rendered motion without meaning — a bar
+            // that fills nothing teaches the child nothing. The stage header below already
+            // names the current stage in words; a «مرحلهٔ N از ۵» bar is option ب and
+            // stays an open owner decision, not an invented fraction.
             ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
-            banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
-            if (resumed == true) {
-                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "از همون‌جا ادامه می‌دهیم.")
-            }
             val closeRequested = closeState == ShomaraCloseConfirmState.AwaitingConfirmation
             if (closeRequested) {
                 ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraCloseConfirmLogic.ExitQuestion)
@@ -170,15 +179,25 @@ fun ShomaraLessonHost(
                     text = "منتظر تأیید سرور هستیم؛ همین‌جا می‌مانیم.",
                 )
             } else if (choiceId == null) {
-                // No option to render means there is nothing honest to submit. Showing an inert
-                // button would be a dead end, and inventing an id would be a fake success, so the
-                // surface states the real dependency instead. The exit path above still works, so
-                // the child is never trapped.
-                ShomaraFeedbackBanner(
-                    kind = ShomaraFeedbackKind.Recovery,
-                    text = ShomaraLessonOptions.UnavailableMessage,
+                // B2: no option to render means the honest surface is the current stage's
+                // template skeleton — the shape of the task with honest empty data — not a
+                // bare banner. The existing UnavailableMessage stays as the skeleton's
+                // status line; the exit path above still works, so the child is never
+                // trapped. The skeleton's check action enters the evaluator-wait state
+                // (the existing «منتظر تأیید سرور» banner) once a real selection exists.
+                ShomaraTemplateSkeletonForStage(
+                    macroStage = macroStage,
+                    onCheck = { awaitingServerStage = true },
                 )
             }
+        }
+        // E-04: feedback banners live in a fixed slot above the pinned CTA — the child
+        // always sees the feedback, even scrolled to the bottom, and the banner never
+        // scrolls away with the content. The close-confirm question, the result surface
+        // and the exit button stay in the scrolling column above.
+        banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
+        if (resumed == true) {
+            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "از همون‌جا ادامه می‌دهیم.")
         }
         // Pinned bottom slot: the one primary CTA, only when a real option exists to
         // submit. Every other state leaves the slot empty — no inert button, no fake

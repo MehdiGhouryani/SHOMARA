@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -87,43 +89,48 @@ fun ShomaraTabBar(
     modifier: Modifier = Modifier,
     tapGuard: ShomaraTapGuard = rememberShomaraTapGuard(),
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            // Batch 2 (ADR-0040 R1): the tab bar is a tactile surface, so it
-            // renders its clay depth (Soft) instead of sitting flat on the canvas.
-            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .padding(ShomaraTokens.Space4),
-        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
-    ) {
-        for (tab in tabs) {
-            val isSelected = tab.id == selectedId
-            val (container, content) = ShomaraTabLogic.colorsFor(isSelected)
-            val label = ShomaraTabLogic.stateLabelFor(tab, isSelected)
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
-                    // The selected tab is the one active pill: it carries the
-                    // Soft depth, unselected tabs stay Flat — never a second
-                    // Featured surface in the same viewport.
-                    .shadow(ShomaraClay.specFor(if (isSelected) ShomaraClayDepth.Soft else ShomaraClayDepth.Flat).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-                    .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
-                    .semantics {
-                        role = Role.Tab
-                        if (label.isNotEmpty()) stateDescription = label
-                        if (tab.locked) contentDescription = "${tab.label} — ${ShomaraTabLogic.stateLabelFor(tab, isSelected)}"
-                    }
-                    .clickable(enabled = ShomaraTabLogic.canSelect(tab), role = Role.Tab) {
-                        if (tapGuard.begin()) {
-                            try { onSelected(ShomaraTabLogic.resolveSelection(selectedId, tab) ?: selectedId.orEmpty()) } finally { tapGuard.end() }
+    // E-05: a hairline above the tab row separates the bar from the content scrolling under
+    // it — the bar reads as a surface, not a loose strip on the canvas.
+    Column(modifier = modifier.fillMaxWidth()) {
+        HorizontalDivider(color = ShomaraTokens.ColorLine)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                // Batch 2 (ADR-0040 R1): the tab bar is a tactile surface, so it
+                // renders its clay depth (Soft) instead of sitting flat on the canvas.
+                .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .padding(ShomaraTokens.Space4),
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
+        ) {
+            for (tab in tabs) {
+                val isSelected = tab.id == selectedId
+                val (container, content) = ShomaraTabLogic.colorsFor(isSelected)
+                val label = ShomaraTabLogic.stateLabelFor(tab, isSelected)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
+                        // The selected tab is the one active pill: it carries the
+                        // Soft depth, unselected tabs stay Flat — never a second
+                        // Featured surface in the same viewport.
+                        .shadow(ShomaraClay.specFor(if (isSelected) ShomaraClayDepth.Soft else ShomaraClayDepth.Flat).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                        .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                        .semantics {
+                            role = Role.Tab
+                            if (label.isNotEmpty()) stateDescription = label
+                            if (tab.locked) contentDescription = "${tab.label} — ${ShomaraTabLogic.stateLabelFor(tab, isSelected)}"
                         }
-                    }
-                    .padding(ShomaraTokens.Space8),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = tab.label, style = ShomaraTypography.Body, color = content)
+                        .clickable(enabled = ShomaraTabLogic.canSelect(tab), role = Role.Tab) {
+                            if (tapGuard.begin()) {
+                                try { onSelected(ShomaraTabLogic.resolveSelection(selectedId, tab) ?: selectedId.orEmpty()) } finally { tapGuard.end() }
+                            }
+                        }
+                        .padding(ShomaraTokens.Space8),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = tab.label, style = ShomaraTypography.Body, color = content)
+                }
             }
         }
     }

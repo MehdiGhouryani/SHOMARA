@@ -199,10 +199,14 @@ fun ShomaraPlacementScreen(
                     verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    // F-29: the placement status is plain text, not a Recovery banner inside a
+                    // card — a banner implies an action or a problem, and placement has neither
+                    // yet. The server decision (when it exists) is the main line; the pending
+                    // note is a caption.
                     when {
-                        state.serverDecision != null -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = state.serverDecision)
-                        state.isSkipped -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraProfileStrings.GradeOne)
-                        else -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraProfileStrings.PlacementPending)
+                        state.serverDecision != null -> Text(text = state.serverDecision, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, textAlign = TextAlign.Center)
+                        state.isSkipped -> Text(text = ShomaraProfileStrings.GradeOne, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, textAlign = TextAlign.Center)
+                        else -> Text(text = ShomaraProfileStrings.PlacementPending, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted, textAlign = TextAlign.Center)
                     }
                 }
             }

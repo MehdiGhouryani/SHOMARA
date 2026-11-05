@@ -18,8 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -57,7 +58,6 @@ class ShomaraOnboardingStateHolder(
     var profileDraft by mutableStateOf(ShomaraProfileDraft())
     var saveState by mutableStateOf(ShomaraProfileSaveState(profileDraft))
     var placement by mutableStateOf(ShomaraPlacementState())
-    var resumedFromDraft by mutableStateOf(false)
 
     /**
      * N04-04 incomplete-profile resume: on start, a saved draft re-enters the profile step with
@@ -71,7 +71,6 @@ class ShomaraOnboardingStateHolder(
         profileDraft = draft
         saveState = ShomaraProfileSaveState.resumed(draft)
         flow = flow.advanceTo(OnboardingStep.ProfileSetup)
-        resumedFromDraft = true
     }
 
     suspend fun persistDraft() {
@@ -188,7 +187,21 @@ class ShomaraOnboardingStateHolder(
 fun rememberOnboardingStateHolder(
     session: ShomaraAuthSession?,
     draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
-): ShomaraOnboardingStateHolder = remember { ShomaraOnboardingStateHolder(session = session, draftStore = draftStore) }
+): ShomaraOnboardingStateHolder = rememberSaveable(
+    session,
+    draftStore,
+    // F-26: the typed phone survives process death — the holder is state, not a plain
+    // remember, and the Saver persists only the phone (never the OTP code: a code must
+    // never be restored across death). The session/store are constructor inputs, not
+    // saved values, so restore rebuilds the holder around the same live inputs.
+    saver = Saver(
+        save = { holder -> holder.phone },
+        restore = { savedPhone ->
+            ShomaraOnboardingStateHolder(session = session, draftStore = draftStore)
+                .also { it.phone = savedPhone }
+        },
+    ),
+) { ShomaraOnboardingStateHolder(session = session, draftStore = draftStore) }
 
 /**
  * Real navigation host (N04-07): renders the current onboarding step from the flow state and
@@ -230,7 +243,10 @@ fun ShomaraOnboardingHost(
                 text = ShomaraSimulatedAuth.DevelopmentModeBanner,
             )
         }
-        holder.banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Retry, text = it) }
+        // F-19: the banner kind matches the error class — a backend-configuration failure is
+        // an Error, not a Retry: retrying cannot fix an unconfigured service, and a Retry
+        // banner invites the user to try again forever.
+        holder.banner?.let { ShomaraFeedbackBanner(kind = bannerKindFor(it), text = it) }
         // Duolingo principle (progress as a first-class surface; INSPIRATION_GUARDRAILS adopt
         // list): a calm canonical bar shows onboarding position. Welcome is the gate — no bar.
         stepProgressFraction(holder.flow.step)?.let { fraction ->
@@ -265,8 +281,12 @@ fun ShomaraOnboardingHost(
                     }
                     Text(text = ShomaraOtpStepStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
                     if (holder.phone.isNotBlank()) {
+                        // F-41a: the number is shown in its canonical 09-form, not the raw
+                        // typed input — a +98-prefixed entry used to read back differently
+                        // from what the user typed, and the code went to the canonical form.
+                        val shownPhone = ShomaraPhoneLogic.canonical(holder.phone) ?: holder.phone
                         Text(
-                            text = "${ShomaraOtpStepStrings.SentToPrefix} ${holder.phone} ${ShomaraOtpStepStrings.SentToSuffix}",
+                            text = "${ShomaraOtpStepStrings.SentToPrefix} $shownPhone ${ShomaraOtpStepStrings.SentToSuffix}",
                             style = ShomaraTypography.Body,
                             color = ShomaraTokens.ColorInk2,
                         )
@@ -366,9 +386,15 @@ private fun stepProgressFraction(step: OnboardingStep): Float? = when (step) {
     OnboardingStep.PhoneInput -> 0.25f
     OnboardingStep.OtpVerify -> 0.5f
     OnboardingStep.ProfileSetup -> 0.75f
-    OnboardingStep.GradePlacement -> 1f
+    // F-06: placement is not «complete» — the bar at 1.0 announced completion before the
+    // child had finished. 0.875 leaves the last eighth for the actual completion.
+    OnboardingStep.GradePlacement -> 0.875f
     OnboardingStep.Welcome, OnboardingStep.Complete -> null
 }
+
+/** F-19: the banner kind follows the error class (see the call site). */
+private fun bannerKindFor(text: String): ShomaraFeedbackKind =
+    if (text == ShomaraAuthErrorMessages.BackendNotConfigured) ShomaraFeedbackKind.Error else ShomaraFeedbackKind.Retry
 
 /** Copy for the redesigned OTP step (seed strings; canonical-source overrides arrive with CMS). */
 private object ShomaraOtpStepStrings {

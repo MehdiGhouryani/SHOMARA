@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 
@@ -78,11 +80,18 @@ fun ShomaraFeedbackBanner(
             // Batch 2: the feedback panel is the bottom card of the lesson
             // loop (Duolingo structure), so it carries the Soft clay depth
             // like every other card — it is a surface, not a flat strip.
-            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            // F-35: the elevation comes from the clay spec, never the raw
+            // token — the token is the spec's input, not the call site's.
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .padding(ShomaraTokens.Space12)
-            .semantics { stateDescription = ShomaraFeedbackLogic.stateLabelFor(kind) },
+            .semantics {
+                stateDescription = ShomaraFeedbackLogic.stateLabelFor(kind)
+                // الف-۰۳: feedback is announced when it appears — a child who
+                // cannot see the panel must still hear the result.
+                liveRegion = LiveRegionMode.Polite
+            },
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
         verticalAlignment = Alignment.CenterVertically,
     ) {

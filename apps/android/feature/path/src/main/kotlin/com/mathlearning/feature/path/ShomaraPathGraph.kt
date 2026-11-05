@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.stickyHeader
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -45,6 +47,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -126,7 +129,9 @@ object ShomaraPathGraphLogic {
     }
 
     fun stateFor(meta: StationNodeMeta, progress: ShomaraPathProgress): ShomaraPathNodeState = when {
-        progress.offline -> ShomaraPathNodeState.Locked
+        // F-40: offline no longer remaps every node to Locked — the nodes keep their real
+        // state and the offline banner carries the message. A locked-looking path while
+        // offline was a lie: the child's progress did not disappear with the network.
         meta.id == progress.currentStationId -> ShomaraPathNodeState.Current
         meta.id in progress.perfectStationIds -> ShomaraPathNodeState.Perfect
         meta.id in progress.completedStationIds -> ShomaraPathNodeState.Completed
@@ -138,7 +143,9 @@ object ShomaraPathGraphLogic {
     fun stateLabelFor(state: ShomaraPathNodeState): String = when (state) {
         ShomaraPathNodeState.Fresh -> "آمادهٔ شروع"
         ShomaraPathNodeState.Current -> "ایستگاه فعلی"
-        ShomaraPathNodeState.Completed -> "تکمیل شد"
+        // F-12c: a completed node says what a tap does — replay for practice — instead of
+        // only stating the past. The label is the affordance, not a trophy.
+        ShomaraPathNodeState.Completed -> "تکمیل شد — برای تمرین دوباره ضربه بزن"
         ShomaraPathNodeState.Perfect -> "کامل و بی‌نقص"
         ShomaraPathNodeState.Locked -> "هنوز قفل؛ با ترتیب مسیر باز می‌شود"
     }
@@ -233,9 +240,11 @@ object ShomaraPathGraphLogic {
     }
 
     // Lazy-list index model: item 0 is the header; each chapter contributes one sticky
-    // band header plus five node items; the last item is the bottom spacer.
+    // band header plus five node items plus one chapter-boundary divider (chapters 1-4;
+    // E-02); the last item is the bottom spacer. The top spacer is not modelled: the
+    // anchor/restore indices count from the header, as the existing tests encode.
     fun headerItemIndexForChapter(chapter: Int): Int =
-        1 + (chapter - 1) * (ShomaraStationCatalog.STATIONS_PER_CHAPTER + 1)
+        1 + (chapter - 1) * (ShomaraStationCatalog.STATIONS_PER_CHAPTER + 2)
 
     fun itemIndexForStation(meta: StationNodeMeta): Int {
         val positionInChapter = (meta.ordinal - 1) % ShomaraStationCatalog.STATIONS_PER_CHAPTER
@@ -423,6 +432,27 @@ fun ShomaraPathScreen(
                         )
                     }
                 }
+                // E-02: chapter-boundary divider after the last node of chapters 1-4 — two
+                // hairlines around the NEXT chapter's station span, so the boundary reads as
+                // a section break (Duolingo unit boundary), not a gap. Decorative for
+                // TalkBack: the next chapter's sticky band already announces the same span.
+                if (chapter < ShomaraChapterCatalog.All.size) {
+                    item(key = "chapter-divider-$chapter") {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().clearAndSetSemantics {},
+                            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            HorizontalDivider(color = ShomaraTokens.ColorLine2, modifier = Modifier.weight(1f))
+                            Text(
+                                text = ShomaraPathGraphLogic.chapterSpanLabel(chapter + 1),
+                                style = ShomaraTypography.Caption,
+                                color = ShomaraTokens.ColorMuted,
+                            )
+                            HorizontalDivider(color = ShomaraTokens.ColorLine2, modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
             }
             // Bottom spacer keeps the last node clear of the floating button.
             item(key = "path-bottom-spacer") {
@@ -434,6 +464,9 @@ fun ShomaraPathScreen(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(ShomaraTokens.Space16)
+                    // الف-۰۱: the floating button is an icon-anchored control — its touch
+                    // target is at least 48dp even though the label is short.
+                    .defaultMinSize(minHeight = ShomaraTokens.ComponentTouchMin)
                     .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .background(ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .semantics(mergeDescendants = true) {

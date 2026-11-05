@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -77,7 +79,7 @@ object ShomaraSettingsStrings {
     const val Title: String = "آواتار و تنظیمات"
     const val AvatarSection: String = "آواتار من"
     const val ReducedMotionLabel: String = "حرکت کمتر"
-    const val ReducedMotionHint: String = "انیمیشن‌ها آرام‌تر می‌شوند."
+    const val ReducedMotionHint: String = "انیمیشن‌ها متوقف می‌شوند."
     const val Save: String = "ذخیره"
     const val SavedMessage: String = "ذخیره شد."
     const val SaveFailed: String = "ذخیره نشد؛ دوباره تلاش کن."
@@ -179,6 +181,9 @@ private fun RowScope.AvatarTile(option: com.mathlearning.core.model.ShomaraAvata
 
 @Composable
 private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Boolean, onChecked: (Boolean) -> Unit) {
+    // F-15: the whole row is the switch — a `toggleable` with Role.Switch — so TalkBack
+    // announces «حرکت کمتر، سوئیچ، روشن/خاموش» once, and the full row is the tap target.
+    // The old inner button made TalkBack read two controls for one setting.
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -188,6 +193,11 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
             .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onChecked)
+            .semantics {
+                contentDescription = label
+                stateDescription = if (checked) "روشن" else "خاموش"
+            }
             .padding(ShomaraTokens.Space12),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -196,11 +206,13 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
             Text(text = label, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk)
             Text(text = hint, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
         }
-        ShomaraButton(
+        // Status indicator only, not a button: the row owns the toggle. It is invisible
+        // to TalkBack (cleared semantics) so the state is announced exactly once, by the row.
+        Text(
             text = if (checked) "روشن" else "خاموش",
-            onClick = { onChecked(!checked) },
-            enabled = enabled,
-            variant = if (checked) ShomaraButtonVariant.Secondary else ShomaraButtonVariant.Ghost,
+            style = ShomaraTypography.Body,
+            color = if (checked) ShomaraTokens.ColorPrimaryDark else ShomaraTokens.ColorInk2,
+            modifier = Modifier.clearAndSetSemantics {},
         )
     }
 }

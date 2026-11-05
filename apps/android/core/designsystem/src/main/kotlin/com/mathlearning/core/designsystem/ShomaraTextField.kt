@@ -16,9 +16,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.error
@@ -90,11 +95,14 @@ fun ShomaraTextField(
     errorText: String? = null,
     enabled: Boolean = true,
     busy: Boolean = false,
-    focused: Boolean = false,
     numericLtr: Boolean = false,
     keyboardType: KeyboardType = if (numericLtr) KeyboardType.Number else KeyboardType.Text,
     hint: String = "",
 ) {
+    // F-13: focus is the field's own state — the caller never passes it in (the old `focused`
+    // parameter was only ever set to `true` in the catalog preview, and a caller-passed focus
+    // can never be true at first paint anyway). The field state re-evaluates on recomposition.
+    var focused by remember { mutableStateOf(false) }
     val state = ShomaraFieldLogic.stateFor(value, focused, errorText != null, enabled, busy)
     val borderColor = ShomaraFieldLogic.borderFor(state)
     Column(modifier = modifier.fillMaxWidth()) {
@@ -133,6 +141,12 @@ fun ShomaraTextField(
             // change is reported through onValueChange. Quiet states (disabled/loading) render
             // the plain read-only branch above, so this branch is always interactive.
             val editableState = rememberTextFieldState(initialText = value)
+            // F-34: an external reset (e.g. the caller clearing the value) is synced back
+            // into the owned editing state — without this the field keeps showing the old
+            // text after the caller has cleared it.
+            LaunchedEffect(value) {
+                if (editableState.text.toString() != value) editableState.setTextAndPlaceCursorAtEnd(value)
+            }
             LaunchedEffect(editableState.text) {
                 val text = editableState.text.toString()
                 if (text != value) onValueChange(text)
@@ -141,7 +155,7 @@ fun ShomaraTextField(
                 state = editableState,
                 modifier = fieldModifier.semantics(mergeDescendants = true) {
                     if (state == ShomaraFieldState.Invalid && errorText != null) error(errorText)
-                },
+                }.onFocusChanged { focused = it.isFocused },
                 textStyle = ShomaraFieldLogic.textStyleFor(numericLtr, state),
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                 cursorBrush = SolidColor(ShomaraTokens.ColorPrimary),

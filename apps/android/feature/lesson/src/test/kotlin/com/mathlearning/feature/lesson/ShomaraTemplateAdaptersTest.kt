@@ -91,6 +91,26 @@ class ShomaraTemplateAdaptersTest {
         assertFalse(viaDrag.tapFallbackUsed)
     }
 
+    @Test
+    fun `t13 raw touch recording never judges - checkpoints state and completion untouched (B8)`() {
+        val adapter = T13TraceAdapter(config = config)
+            .recordRawTouch(ShomaraRawTouchPoint(xDp = 120, yDp = 40))
+            .recordRawTouch(ShomaraRawTouchPoint(xDp = 118, yDp = 90))
+        assertEquals(
+            listOf(ShomaraRawTouchPoint(120, 40), ShomaraRawTouchPoint(118, 90)),
+            adapter.rawTouches,
+        )
+        assertTrue(adapter.visitedCheckpoints.isEmpty())
+        assertEquals("ready", adapter.state)
+        assertFalse(adapter.completed)
+        // Recording after a completed trace still changes nothing about the completion.
+        val completed = adapter.tapCheckpoint(T13Point.Top).tapCheckpoint(T13Point.Middle).tapCheckpoint(T13Point.Bottom)
+        val recorded = completed.recordRawTouch(ShomaraRawTouchPoint(xDp = 0, yDp = 0))
+        assertTrue(recorded.completed)
+        assertEquals(completed.visitedCheckpoints, recorded.visitedCheckpoints)
+        assertEquals(completed.state, recorded.state)
+    }
+
     // ---- T15 ----
 
     @Test
