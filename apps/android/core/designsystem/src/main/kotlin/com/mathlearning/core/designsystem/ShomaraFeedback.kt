@@ -15,7 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 
@@ -73,13 +77,54 @@ fun ShomaraFeedbackBanner(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ShomaraFeedbackLogic.bannerHeight())
+            // Batch 2: the feedback panel is the bottom card of the lesson
+            // loop (Duolingo structure), so it carries the Soft clay depth
+            // like every other card — it is a surface, not a flat strip.
+            // F-35: the elevation comes from the clay spec, never the raw
+            // token — the token is the spec's input, not the call site's.
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .padding(ShomaraTokens.Space12)
-            .semantics { stateDescription = ShomaraFeedbackLogic.stateLabelFor(kind) },
+            .semantics {
+                stateDescription = ShomaraFeedbackLogic.stateLabelFor(kind)
+                // الف-۰۳: feedback is announced when it appears — a child who
+                // cannot see the panel must still hear the result.
+                liveRegion = LiveRegionMode.Polite
+            },
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Checklist component 4 ("درست" row): the correct panel carries a
+        // ✓ icon next to its short sentence — status is never colour alone. The
+        // icon is decorative for TalkBack (cleared semantics): the banner's
+        // stateDescription ("درست") already announces the kind once, so the glyph
+        // must not be read a second time.
+        // ADR-0040 (option B, resolving the open × conflict): the wrong-kind
+        // panel carries NO × — it carries the neutral retry mark ↺ (the same
+        // mark the card system already uses for Retry), in the same decorative
+        // pattern. The copied structure stays whole — immediate panel + the
+        // correct answer shown + a try-again action — only the "wrong" glyph
+        // changes, because the content-library rule ("neutral and encouraging,
+        // no red") is child-education-specific and older than the visual.
+        // Showing the correct answer itself still needs O1, so the
+        // component-4 item stays unticked for that part alone.
+        if (kind == ShomaraFeedbackKind.Correct) {
+            Text(
+                text = "✓",
+                style = ShomaraTypography.Title,
+                color = content,
+                modifier = Modifier.clearAndSetSemantics {},
+            )
+        }
+        if (kind == ShomaraFeedbackKind.Retry) {
+            Text(
+                text = "↺",
+                style = ShomaraTypography.Title,
+                color = content,
+                modifier = Modifier.clearAndSetSemantics {},
+            )
+        }
         Text(text = text, style = ShomaraTypography.Body, color = content)
     }
 }
@@ -114,14 +159,27 @@ object ShomaraProgressLogic {
 
     /**
      * Controlled announcement: a single deterministic string per state (the composable sets it
-     * as stateDescription; no live region). The server-supplied fraction is rendered verbatim —
-     * the component never infers mastery.
+     * as stateDescription; no live region). ADR-0040: progress is announced in words,
+     * never as a percentage or a score — TalkBack is heard by the child, so the
+     * "no %, no score" rule covers it too. The fraction still comes only from
+     * caller state; the component never infers mastery, it only names the last
+     * completed quarter of the way.
      */
     fun announcementFor(state: ShomaraProgressState): String = when (kindFor(state)) {
-        ShomaraProgressKind.Determinate -> "پیشرفت ${ShomaraDigits.toFa(((state.fraction ?: 0f) * 100).toInt())} درصد"
+        ShomaraProgressKind.Determinate -> progressWords(state.fraction ?: 0f)
         ShomaraProgressKind.Indeterminate -> "در حال آماده‌سازی"
         ShomaraProgressKind.Paused -> "متوقف شد"
         ShomaraProgressKind.Offline -> "آفلاین؛ بعداً ادامه می‌دهیم"
+    }
+
+    /** Word bands for a determinate fraction (ADR-0040): the last completed quarter. */
+    fun progressWords(fraction: Float): String = when {
+        fraction <= 0f -> "هنوز شروع نشده"
+        fraction < 0.25f -> "در ابتدای راه"
+        fraction < 0.5f -> "یک‌چهارم راه"
+        fraction < 0.75f -> "نصف راه"
+        fraction < 1f -> "سه‌چهارم راه"
+        else -> "کامل شد"
     }
 
     /** Reduced motion stops the indeterminate animation; determinate width was never animated. */

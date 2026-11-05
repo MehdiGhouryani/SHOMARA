@@ -130,4 +130,36 @@ class ShomaraReducedMotionTest {
         )
         return compose.onAllNodes(matcher, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     }
+
+    // ---- R-01 (F-33): the loading text field ----
+    //
+    // The busy field renders CircularProgressIndicator (animated, exposes
+    // ProgressBarRangeInfo) when motion is allowed, and a static dot of the same size and
+    // colour when reduced motion is on. The dot is a plain Box — no range-info semantics.
+
+    @Test
+    fun textFieldLoadingSpinnerAnimatesWhenMotionIsAllowed() {
+        compose.setContent {
+            ShomaraTheme(reducedMotion = false) {
+                ShomaraTextField(value = "", onValueChange = {}, label = "شماره", busy = true)
+            }
+        }
+        assertTrue(
+            "a busy text field with motion allowed must render the animated spinner",
+            hasAnimatedIndicator(),
+        )
+    }
+
+    @Test
+    fun textFieldLoadingSpinnerIsStaticUnderReducedMotion() {
+        compose.setContent {
+            ShomaraTheme(reducedMotion = true) {
+                ShomaraTextField(value = "", onValueChange = {}, label = "شماره", busy = true)
+            }
+        }
+        assertFalse(
+            "a busy text field under reduced motion must render the static dot, not the spinner",
+            hasAnimatedIndicator(),
+        )
+    }
 }

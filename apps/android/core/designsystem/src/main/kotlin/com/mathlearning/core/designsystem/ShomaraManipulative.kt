@@ -5,7 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
@@ -152,19 +154,27 @@ fun ShomaraNumberTile(
     ShomaraManipulativeRules.requireBand(size)
     val (container, border, content) = manipulativeColors(state)
     val semanticsLabel = state.stateLabel()
+    // Batch 2 (ADR-0040 R1): a manipulative tile is tactile, so it renders
+    // its clay depth — Soft for every interactive tile, Flat for a locked
+    // tile (quiet, non-affordant, like a disabled button).
+    val tileDepth = if (state == ShomaraManipulativeState.Locked) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft
     // N08-03: the 72–80dp band is the MINIMUM educational target, not a fixed box. A 40sp digit
     // becomes 80sp at 200% font scale; a fixed .size() clipped it, so the tile grows instead.
+    // F-40: a locked tile is not a button — no role, no click action. TalkBack reads the
+    // label plus the «قفل» state, never «دکمه».
+    val tappable = enabled && state != ShomaraManipulativeState.Locked
     Box(
         modifier = modifier
             .defaultMinSize(minWidth = size, minHeight = size)
+            .shadow(ShomaraClay.specFor(tileDepth).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics {
-                role = Role.Button
+                if (tappable) role = Role.Button
                 contentDescription = label
                 if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
             }
-            .clickable(enabled = enabled && state != ShomaraManipulativeState.Locked, role = Role.Button) { onTap(tileId) }
+            .then(if (tappable) Modifier.clickable(role = Role.Button) { onTap(tileId) } else Modifier)
             .padding(ShomaraTokens.Space8),
         contentAlignment = Alignment.Center,
     ) {
@@ -173,6 +183,7 @@ fun ShomaraNumberTile(
 }
 
 /** Bead-style counting grid; every bead is a 48dp+ target (token-driven). */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ShomaraCountersGrid(
     count: Int,
@@ -181,7 +192,16 @@ fun ShomaraCountersGrid(
     enabled: Boolean = true,
 ) {
     require(count >= 0) { "bead count must be non-negative" }
-    Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8), modifier = modifier) {
+    // Batch 2 (ADR-0040 R1): beads are tappable, so they render Soft clay
+    // depth when enabled and stay Flat when the grid is disabled.
+    val beadDepth = if (enabled) ShomaraClayDepth.Soft else ShomaraClayDepth.Flat
+    // F-37: a FlowRow wraps the beads onto the next line instead of a Column
+    // growing past the screen — a 20-bead count never overflows vertically.
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+        modifier = modifier,
+    ) {
         repeat(count) { index ->
             Box(
                 modifier = Modifier
@@ -189,6 +209,7 @@ fun ShomaraCountersGrid(
                     // correct here — it carries no label that could clip. Kept as defaultMinSize so
                     // an ancestor that grows the row never shrinks the touch target below 48dp.
                     .defaultMinSize(minWidth = ShomaraTokens.ComponentTrayBead, minHeight = ShomaraTokens.ComponentTrayBead)
+                    .shadow(ShomaraClay.specFor(beadDepth).elevation, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .background(ShomaraTokens.ColorPrimarySoft, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .semantics {
@@ -220,7 +241,10 @@ fun ShomaraEquationSlot(
                     },
                 )
                 if (index < operands.lastIndex) {
-                    val operator = operators.getOrNull(index) ?: "?"
+                    // F-37: a missing operator is a caller defect, not a «?» to render — fail
+                    // loudly instead of teaching the child a placeholder glyph as maths.
+                    require(index < operators.size) { "operator missing between operand $index and ${index + 1}" }
+                    val operator = operators[index]
                     Text(text = operator, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk2)
                 }
             }

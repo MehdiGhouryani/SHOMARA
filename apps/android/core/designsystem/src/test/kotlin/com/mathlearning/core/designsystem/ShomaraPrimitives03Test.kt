@@ -25,6 +25,44 @@ class ShomaraPrimitives03Test {
         guard.end()
     }
 
+    // ---- F-14: latched tap guard (300ms cooldown after settle) ----
+
+    @Test
+    fun `latched begin refuses a tap inside the cooldown after settle`() {
+        var nowMs = 1_000L
+        val guard = ShomaraTapGuard(nowMs = { nowMs })
+        assertTrue(guard.beginLatched())
+        assertFalse(guard.beginLatched())
+        guard.end()
+        // 100ms later: still inside the 300ms cooldown.
+        nowMs = 1_100L
+        assertFalse(guard.beginLatched())
+        // 300ms after the settle: admitted again.
+        nowMs = 1_300L
+        assertTrue(guard.beginLatched())
+        guard.end()
+    }
+
+    @Test
+    fun `latched begin admits the first tap when nothing settled yet`() {
+        val guard = ShomaraTapGuard(nowMs = { 0L })
+        assertTrue(guard.beginLatched())
+        guard.end()
+    }
+
+    @Test
+    fun `plain begin is unchanged by the latch`() {
+        // The existing contract holds: end() re-admits immediately for plain begin(),
+        // so the dialog confirm (which uses begin()) keeps its old behaviour.
+        var nowMs = 5_000L
+        val guard = ShomaraTapGuard(nowMs = { nowMs })
+        assertTrue(guard.begin())
+        guard.end()
+        nowMs = 5_001L
+        assertTrue(guard.begin())
+        guard.end()
+    }
+
     // ---- button ----
 
     @Test

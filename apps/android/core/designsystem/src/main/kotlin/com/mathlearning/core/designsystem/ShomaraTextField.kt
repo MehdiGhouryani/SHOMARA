@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,8 +18,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.error
@@ -89,11 +97,18 @@ fun ShomaraTextField(
     errorText: String? = null,
     enabled: Boolean = true,
     busy: Boolean = false,
-    focused: Boolean = false,
     numericLtr: Boolean = false,
     keyboardType: KeyboardType = if (numericLtr) KeyboardType.Number else KeyboardType.Text,
     hint: String = "",
+    // R-01 (F-33): under reduced motion the loading spinner renders as a static dot — same
+    // rule as the button's and the audio control's loading states. Defaults to the
+    // composition-wide flag so a caller cannot forget to pass it.
+    reducedMotion: Boolean = LocalShomaraReducedMotion.current,
 ) {
+    // F-13: focus is the field's own state — the caller never passes it in (the old `focused`
+    // parameter was only ever set to `true` in the catalog preview, and a caller-passed focus
+    // can never be true at first paint anyway). The field state re-evaluates on recomposition.
+    var focused by remember { mutableStateOf(false) }
     val state = ShomaraFieldLogic.stateFor(value, focused, errorText != null, enabled, busy)
     val borderColor = ShomaraFieldLogic.borderFor(state)
     Column(modifier = modifier.fillMaxWidth()) {
@@ -106,6 +121,10 @@ fun ShomaraTextField(
         val fieldModifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
+            // Batch 2 (ADR-0040 R1): the field is the tactile input surface,
+            // so it renders Soft clay depth when interactive and stays Flat
+            // in its quiet states (disabled/loading).
+            .shadow(ShomaraClay.specFor(if (state == ShomaraFieldState.Disabled || state == ShomaraFieldState.Loading) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusSm))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
             .border(
                 width = ShomaraFieldLogic.borderWidthFor(state),
@@ -116,7 +135,18 @@ fun ShomaraTextField(
         if (state == ShomaraFieldState.Disabled || state == ShomaraFieldState.Loading) {
             Box(modifier = fieldModifier, contentAlignment = Alignment.CenterStart) {
                 if (state == ShomaraFieldState.Loading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterEnd), color = ShomaraTokens.ColorMuted)
+                    if (reducedMotion) {
+                        // R-01 (F-33): static loading mark — same size and colour as the
+                        // spinner, no rotation.
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .size(ShomaraTokens.Space16)
+                                .background(ShomaraTokens.ColorMuted, CircleShape),
+                        )
+                    } else {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterEnd), color = ShomaraTokens.ColorMuted)
+                    }
                 }
                 Text(
                     text = if (value.isEmpty()) hint else value,
@@ -128,6 +158,17 @@ fun ShomaraTextField(
             // change is reported through onValueChange. Quiet states (disabled/loading) render
             // the plain read-only branch above, so this branch is always interactive.
             val editableState = rememberTextFieldState(initialText = value)
+            // F-34: an external reset (e.g. the caller clearing the value) is synced back
+            // into the owned editing state — without this the field keeps showing the old
+            // text after the caller has cleared it.
+            LaunchedEffect(value) {
+                // foundation 1.12.0 has no setTextAndPlaceCursorAtEnd; the equivalent is an
+                // edit block that replaces the whole buffer and moves the cursor to the end.
+                if (editableState.text.toString() != value) editableState.edit {
+                    replace(0, length, value)
+                    placeCursorBeforeCharAt(value.length)
+                }
+            }
             LaunchedEffect(editableState.text) {
                 val text = editableState.text.toString()
                 if (text != value) onValueChange(text)
@@ -136,7 +177,7 @@ fun ShomaraTextField(
                 state = editableState,
                 modifier = fieldModifier.semantics(mergeDescendants = true) {
                     if (state == ShomaraFieldState.Invalid && errorText != null) error(errorText)
-                },
+                }.onFocusChanged { focused = it.isFocused },
                 textStyle = ShomaraFieldLogic.textStyleFor(numericLtr, state),
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                 cursorBrush = SolidColor(ShomaraTokens.ColorPrimary),

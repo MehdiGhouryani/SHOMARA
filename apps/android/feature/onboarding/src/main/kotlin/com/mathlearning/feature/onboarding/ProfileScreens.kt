@@ -2,8 +2,6 @@ package com.mathlearning.feature.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
@@ -72,10 +72,13 @@ fun ShomaraProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
+            // Family 04 (Stage 1): the guide is the smallest slot (72dp) so it
+            // never overwhelms the form. It is a guide, not an avatar option:
+            // avatar options stay the abstract preset catalog (default sun).
             ShomaraCharacterImage(
                 character = ShomaraCharacter.Main,
                 poseId = 1,
-                slot = ShomaraCharacterSlot.Lesson,
+                slot = ShomaraCharacterSlot.Inline,
                 decorative = true,
             )
             Text(
@@ -83,6 +86,7 @@ fun ShomaraProfileScreen(
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { heading() },
             )
             Text(
                 text = ShomaraProfileUiStrings.Subtitle,
@@ -100,32 +104,25 @@ fun ShomaraProfileScreen(
                     errorText = ShomaraProfileDraft.nameValidationError(draft.name),
                 )
             }
-            // Avatar presets from the canonical catalog (2-column grid); selection is draft-only
-            // until save, and the tile reports "انتخاب‌شده" to TalkBack via ShomaraCard semantics.
+            // Avatar presets from the canonical catalog as full-width selectable
+            // rows (Duolingo list evidence, ADR-0040): one option per row, label
+            // plus a visible ✓ mark when selected (via ShomaraChoiceTile) — the
+            // selection is never colour alone, and TalkBack reads "انتخاب‌شده".
+            // Selection is draft-only until save.
             Text(
                 text = ShomaraProfileUiStrings.AvatarSectionTitle,
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics { heading() },
             )
-            ShomaraAvatarCatalog.Options.chunked(2).forEach { rowOptions ->
-                Row(
+            ShomaraAvatarCatalog.Options.forEach { option ->
+                ShomaraChoiceTile(
+                    label = option.label,
+                    selectedId = draft.avatarId,
+                    id = option.id,
+                    onSelected = { onDraftChange(draft.withAvatar(it)) },
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
-                ) {
-                    rowOptions.forEach { option ->
-                        ShomaraChoiceTile(
-                            label = option.label,
-                            selectedId = draft.avatarId,
-                            id = option.id,
-                            onSelected = { onDraftChange(draft.withAvatar(it)) },
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    if (rowOptions.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
+                )
             }
             // Grade section: the available grade is highlighted and read-only; locked grades are
             // explained warmly on tap (AGENTS rule 9) and are never selectable.
@@ -133,7 +130,7 @@ fun ShomaraProfileScreen(
                 text = ShomaraProfileStrings.GradeLabel,
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics { heading() },
             )
             availableGrades.forEach { grade ->
                 ShomaraCard(state = ShomaraCardState.Selected) {
@@ -162,6 +159,13 @@ fun ShomaraProfileScreen(
         if (saveState.failureMessage != null) {
             ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Retry, text = saveState.failureMessage)
         }
+        // #100: the visible «ذخیره شد» banner — announcement() finally has a real caller.
+        // It renders when the save actually succeeded (the success state is only set after
+        // the draft write completes — see saveProfile). The banner's live region announces
+        // it once to TalkBack.
+        if (saveState.saved) {
+            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Correct, text = saveState.announcement())
+        }
         ShomaraButton(
             text = ShomaraProfileStrings.Save,
             onClick = onSave,
@@ -176,8 +180,14 @@ fun ShomaraProfileScreen(
 @Composable
 fun ShomaraPlacementScreen(
     state: ShomaraPlacementState,
-    onSkip: () -> Unit,
+    // #88: null means no skip affordance at all — the button is not rendered, not merely
+    // disabled. The host passes a real callback only when the product/DEBUG flag allows it.
+    onSkip: (() -> Unit)?,
     modifier: Modifier = Modifier,
+    // #100: the save confirmation carried from the profile step — the profile step advances
+    // immediately on a successful save, so this is where the «ذخیره شد» banner is seen.
+    // Null when the user did not just save (no banner is invented).
+    savedAnnouncement: String? = null,
 ) {
     Column(
         modifier = modifier
@@ -193,32 +203,41 @@ fun ShomaraPlacementScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
-            ShomaraCharacterImage(
-                character = ShomaraCharacter.Number,
-                poseId = 1,
-                slot = ShomaraCharacterSlot.Hero,
-                decorative = true,
-            )
-            Text(text = ShomaraProfileStrings.PlacementTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+            // #100: the carried save confirmation — visible at the top of the step the user
+            // lands on after saving, with the banner's live region announcing it once.
+            if (savedAnnouncement != null) {
+                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Correct, text = savedAnnouncement)
+            }
+            // Family 05 (Stage 1): no character here by contract.
+            // Batch 2: the placement title is a TalkBack heading.
+            Text(text = ShomaraProfileStrings.PlacementTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             ShomaraCard {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    // F-29: the placement status is plain text, not a Recovery banner inside a
+                    // card — a banner implies an action or a problem, and placement has neither
+                    // yet. The server decision (when it exists) is the main line; the pending
+                    // note is a caption.
                     when {
-                        state.serverDecision != null -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = state.serverDecision)
-                        state.isSkipped -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraProfileStrings.GradeOne)
-                        else -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraProfileStrings.PlacementPending)
+                        state.serverDecision != null -> Text(text = state.serverDecision, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, textAlign = TextAlign.Center)
+                        state.isSkipped -> Text(text = ShomaraProfileStrings.GradeOne, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, textAlign = TextAlign.Center)
+                        else -> Text(text = ShomaraProfileStrings.PlacementPending, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted, textAlign = TextAlign.Center)
                     }
                 }
             }
         }
-        ShomaraButton(
-            text = ShomaraProfileStrings.PlacementSkip,
-            onClick = onSkip,
-            variant = ShomaraButtonVariant.Ghost,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        // #88: the skip button renders only when a skip callback is supplied (product/DEBUG
+        // flag). In release there is no button at all — never a disabled or dead skip.
+        if (onSkip != null) {
+            ShomaraButton(
+                text = ShomaraProfileStrings.PlacementSkip,
+                onClick = onSkip,
+                variant = ShomaraButtonVariant.Ghost,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }

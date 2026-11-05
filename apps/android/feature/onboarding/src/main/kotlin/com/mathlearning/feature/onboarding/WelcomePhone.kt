@@ -2,10 +2,8 @@ package com.mathlearning.feature.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
@@ -92,9 +92,12 @@ fun ShomaraWelcomeScreen(
     title: String = ShomaraOnboardingStrings.WelcomeTitle,
     body: String = ShomaraOnboardingStrings.WelcomeBody,
 ) {
-    // Duolingo-inspired interaction pattern (principles ONLY, per design/INSPIRATION_GUARDRAILS):
-    // a breathing content zone and ONE primary CTA anchored at the bottom — always reachable
-    // without scrolling, never floating mid-screen.
+    // Duolingo welcome structure (ADR-0039 structure copy, ADR-0040): a
+    // breathing content zone centred in the upper area — character, title and
+    // one line of body — with ONE primary CTA anchored at the bottom, always
+    // reachable without scrolling, never floating mid-screen. No text changed
+    // here: the canonical welcome wording is still DRAFT (see
+    // design/playbook/CANONICAL_TEXTS_DRAFT_FA.md) and needs owner approval.
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -107,13 +110,15 @@ fun ShomaraWelcomeScreen(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16, Alignment.CenterVertically),
         ) {
-            Spacer(modifier = Modifier.height(ShomaraTokens.Space32))
+            // Family 01 (Stage 1): a small, static character — Lesson slot (84dp),
+            // not the 180dp Hero. The hero of this screen is the welcome
+            // message and the single CTA, not the artwork.
             ShomaraCharacterImage(
                 character = ShomaraCharacter.Main,
                 poseId = 1,
-                slot = ShomaraCharacterSlot.Hero,
+                slot = ShomaraCharacterSlot.Lesson,
                 decorative = true,
             )
             Text(
@@ -121,6 +126,7 @@ fun ShomaraWelcomeScreen(
                 style = ShomaraTypography.Display,
                 color = ShomaraTokens.ColorInk,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { heading() },
             )
             Text(
                 text = body,
@@ -149,7 +155,11 @@ fun ShomaraPhoneScreen(
     /** DEBUG simulation only (N08-15); null in release, so the button never renders there. */
     simulatedSkip: (() -> Unit)? = null,
 ) {
-    val error = ShomaraPhoneLogic.validationError(phone)
+    // Batch 2: the error is shown only once the user has typed something.
+    // F-08: «typed something» is not enough — a partial number (fewer than 11 digits) is
+    // still being typed, not wrong. The error appears only once 11 digits are in and the
+    // number is still invalid; the CTA still stays disabled until valid.
+    val error = if (phone.count { it.isDigit() } >= 11) ShomaraPhoneLogic.validationError(phone) else null
     val canContinue = ShomaraPhoneLogic.isValid(phone)
     Column(
         modifier = modifier
@@ -165,10 +175,13 @@ fun ShomaraPhoneScreen(
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
             // Section header above the card; the field keeps its own persistent label inside.
-            Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+            // Batch 2: the section title is a TalkBack heading, like every
+            // other screen title in the flow.
+            Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             ShomaraCard {
                 Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-                    Text(text = ShomaraOnboardingStrings.WelcomeBody, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
+                    // F-27: the welcome body line lived inside the phone card too — the same
+                    // sentence twice on one screen. It stays on the welcome screen only.
                     ShomaraTextField(
                         value = phone,
                         onValueChange = onPhoneChange,

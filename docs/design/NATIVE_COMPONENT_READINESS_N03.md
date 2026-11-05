@@ -1,3 +1,6 @@
+<!-- Snapshot تاریخی N03 (2026-10-31) — canonical: `design/playbook/COMPONENT_READINESS.md`؛ این فایل قرارداد نیست. -->
+<!-- Historical N03 snapshot; the component-readiness contract lives in `design/playbook/COMPONENT_READINESS.md`. -->
+
 # Native Design System readiness — N03 snapshot (2026-10-31)
 
 این سند وضعیت صادقانهٔ componentهای N03 را ثبت می‌کند. طبق `design/playbook/COMPONENT_READINESS.md`، وضعیت هر خانواده فقط با شواهد نام‌برده تغییر می‌کند؛ «فقط preview یا source test» یعنی `NATIVE_PENDING`، نه `TESTED_NATIVE`.

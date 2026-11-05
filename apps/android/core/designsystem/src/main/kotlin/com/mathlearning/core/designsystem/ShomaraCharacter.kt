@@ -115,7 +115,9 @@ fun ShomaraCharacterImage(
             .semantics(mergeDescendants = true) {
                 if (!decorative) {
                     role = Role.Image
-                    contentDescription = "${character.displayNameFa} — ${ShomaraCharacterPoses.labelFor(poseId)}"
+                    // F-38: TalkBack hears the character's name only — the pose number is a
+                    // file-naming detail, not something the child needs announced.
+                    contentDescription = character.displayNameFa
                 }
                 if (!stateLabel.isNullOrEmpty()) stateDescription = stateLabel
             },

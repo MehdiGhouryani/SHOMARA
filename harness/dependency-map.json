@@ -213,6 +213,8 @@
       "apps/mobile/src/path/__fixtures__/design-trail.json",
       "apps/mobile/src/ui/v1/README.md",
       "apps/mobile/src/ui/v1/icons.ts",
+      "design/playbook/POSE_TO_PAGE_MAPPING_DRAFT.md",
+      "design/playbook/STEP_ZERO_RECONCILIATION.md",
       "docs/README.md",
       "docs/adr/ADR-0035-ui-v1-from-2026-10-pages.md",
       "docs/architecture/REPOSITORY_MAP_FA.md",

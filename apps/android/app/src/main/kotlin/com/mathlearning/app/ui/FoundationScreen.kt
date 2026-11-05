@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +15,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import com.mathlearning.app.R
 import com.mathlearning.core.designsystem.ShomaraTokens
+import com.mathlearning.core.designsystem.ShomaraTypography
 
 @Composable
 fun FoundationScreen(modifier: Modifier = Modifier) {
@@ -28,14 +28,19 @@ fun FoundationScreen(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // F-42: the foundation screen renders with the design-system typography and
+            // tokens, not Material defaults — it is a SHOMARA surface, not a stock one.
+            // The strings stay resource-backed (stringResource is unchanged).
             Text(
                 text = stringResource(R.string.foundation_title),
-                style = MaterialTheme.typography.headlineSmall,
+                style = ShomaraTypography.Title,
+                color = ShomaraTokens.ColorInk,
                 modifier = Modifier.semantics { heading() },
             )
             Text(
                 text = stringResource(R.string.foundation_description),
-                style = MaterialTheme.typography.bodyLarge,
+                style = ShomaraTypography.Body,
+                color = ShomaraTokens.ColorInk2,
                 modifier = Modifier.padding(top = ShomaraTokens.Space12),
             )
         }

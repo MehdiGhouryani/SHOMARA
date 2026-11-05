@@ -10,7 +10,10 @@ SHOMARA is a calm, joyful Persian mathematics garden for children. It should fee
 2. what they should do now;
 3. what happens after the action.
 
-Duolingo-inspired principles are limited to learning-by-doing, one clear task, immediate feedback, multiple representations, gradual difficulty and system-level craft. AVA contributes only verified architecture/process lessons. UI/UX Pro Max contributes a design-system-first decision method. Brand imitation and external design dependencies are forbidden; `design/INSPIRATION_GUARDRAILS.md` is binding.
+Duolingo is the UI model (ADR-0039): page layouts, path geometry, lesson loop, feedback and component system are copied, adapted to Persian RTL and SHOMARA v2 tokens; learning-by-doing, one clear task, immediate feedback, multiple representations, gradual difficulty and system-level craft carry over. AVA contributes only verified architecture/process lessons. UI/UX Pro Max contributes a design-system-first decision method. Brand imitation (logo, the owl, brand colours/font/text, assets) and external design dependencies are forbidden; `design/INSPIRATION_GUARDRAILS.md` is binding.
+
+
+Sync with ADR-0039 (2026-11-05): the source of truth is the versioned, checksummed, signed content package inside the APK + the local evaluator; Duolingo structure/behaviour is the UI model, brand is not copied. Open owner decisions (not decided here): O1 answer-key model — (1) key in the APK inside a separate evaluator layer; (2) evaluator without an extractable key, proven per template; (3) evaluator from item parameters at runtime. O2 package format — ADR-0039 §4 proposal (manifest.json + stations/*.json + audio/*.opus + images/*.webp; three models + separate evaluator layer), confirm or replace.
 
 ## 2. Visual language
 
@@ -50,8 +53,8 @@ Every interactive component defines: default, pressed, focused, selected, disabl
 - Wrong answers receive warm, actionable recovery—not shame, violent motion or loss framing.
 - Assessment is visually quieter than teaching and practice.
 - Provide tap/select alternatives for drag interactions.
-- Never expose answer keys, guardian data, internal errors or sensitive identifiers.
-- Apply curriculum rules through `skills/shomara-learning-content/SKILL.md`; a draft never overrides server truth or becomes enabled merely because UI references it.
+- Never expose answer keys, guardian data, internal errors or sensitive identifiers. The answer key lives only in the local evaluator layer (ADR-0039) and never enters the child lesson projection, the database, logs, or telemetry.
+- Apply curriculum rules through `skills/shomara-learning-content/SKILL.md`; a draft never overrides the versioned local content package or becomes enabled merely because UI references it.
 
 ## 6. Accessibility and RTL
 
@@ -64,11 +67,11 @@ Every interactive component defines: default, pressed, focused, selected, disabl
 
 ## 7. Native architecture boundary
 
-Compose screens render immutable state and emit intents. ViewModels coordinate use cases; repositories own local/remote data. UI code never decides mastery, station completion or answer correctness. Feature modules depend on public core/domain APIs and never on another feature's implementation.
+Compose screens render immutable state and emit intents. ViewModels coordinate use cases; repositories own local data (bundled content package, Room/DataStore). UI code never decides mastery, station completion or answer correctness; those decisions come from the local evaluator over the versioned bundled content package (ADR-0039), not from a server, and the UI renders what the evaluator returns. Feature modules depend on public core/domain APIs and never on another feature's implementation.
 
 ## 8. Audio and CMS-ready surfaces
 
-Audio UI must expose unavailable, loading, playing, paused, failed and cached/offline states. Runtime receives versioned content/audio descriptors; it does not hardcode administrator-controlled URLs or copy. CMS publishing requires provenance, rights, moderation, checksum and activation gates defined in N07.
+Audio UI must expose unavailable, loading, playing, paused, failed and cached/offline states. Runtime receives versioned content/audio descriptors from the bundled local package; it does not hardcode administrator-controlled URLs or copy. Authoring and publishing require provenance, rights, moderation, checksum and activation gates defined in N07. "Offline" is the normal state of the product, not an error (ADR-0039).
 
 The current source inventory proposes 25 stations and 15 interaction patterns, but only ST07 is a complete draft pilot. Do not generalize ST07 numeral visibility, timing or assets to every station.
 

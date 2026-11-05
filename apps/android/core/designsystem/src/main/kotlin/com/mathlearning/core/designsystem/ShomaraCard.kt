@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -84,10 +85,15 @@ fun ShomaraCard(
         else -> ShomaraCardState.Default
     }
     val resolvedDepth = ShomaraCardLogic.depthFor(resolved)
+    // Batch 2 (ADR-0040 R1, same latent gap the button had): the computed clay
+    // depth is rendered, never logic-only. A tactile card carries its token
+    // shadow (Soft by default, Hint when pressed, Flat when disabled); the
+    // elevation comes only from the clay spec, so no raw size enters this file.
     Box(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ShomaraTokens.ComponentRowH)
+            .shadow(ShomaraClay.specFor(resolvedDepth).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .semantics(mergeDescendants = true) {
@@ -101,7 +107,8 @@ fun ShomaraCard(
                     it.clickable(
                         enabled = resolved != ShomaraCardState.Disabled,
                     ) {
-                        if (tapGuard.begin()) {
+                        // F-14: latched guard — a fast double tap cannot fire the card twice.
+                        if (tapGuard.beginLatched()) {
                             pressed = true
                             try { onClick() } finally { pressed = false; tapGuard.end() }
                         }
@@ -159,7 +166,22 @@ fun ShomaraChoiceTile(
         onClick = if (enabled) ({ onSelected(ShomaraChoiceLogic.select(listOf(id), selectedId, id)) }) else null,
         tapGuard = tapGuard,
     ) {
-        Column {
+        // ADR-0040 (Duolingo list evidence): a selected option carries a visible
+        // ✓ mark beside its label — selection is never colour alone, and the
+        // mark is decorative for TalkBack (the card already announces
+        // "انتخاب‌شده" once via stateDescription + selected=true).
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (resolvedState == ShomaraCardState.Selected) {
+                Text(
+                    text = "✓",
+                    style = ShomaraTypography.Title,
+                    color = ShomaraCardLogic.colorsFor(resolvedState).third,
+                    modifier = Modifier.clearAndSetSemantics {},
+                )
+            }
             Text(text = label, style = ShomaraTypography.Body, color = ShomaraCardLogic.colorsFor(resolvedState).third)
         }
     }

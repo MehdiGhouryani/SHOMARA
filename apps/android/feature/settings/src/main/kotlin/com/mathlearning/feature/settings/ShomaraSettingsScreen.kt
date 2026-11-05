@@ -6,21 +6,31 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
+import com.mathlearning.core.designsystem.ShomaraClay
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
@@ -63,13 +73,40 @@ data class ShomaraSettingsState(
     /** Toggle-fail: the preference reverts and the error is announced (never silently lost). */
     fun onSaveFailure(message: String): ShomaraSettingsState =
         copy(save = ShomaraSettingsSaveState.Error, errorText = message)
+
+    /**
+     * BUG 3 (found on device 2026-11-05) — re-seed rule for the host wiring. The host seeds
+     * this screen from the settings store, but `collectAsStateWithLifecycle` delivers the
+     * `Defaults` placeholder synchronously at first composition and the real stored value only
+     * later. A seed-once flag therefore consumed the placeholder ("sun") and the later real
+     * emission ("moon") was ignored, so re-entering Settings showed "sun" although the store
+     * held "moon" and the save banner had said "ذخیره شد.". The rule is: re-seed from the
+     * store on every emission WHILE THE SCREEN IS STILL UNTOUCHED (Clean) — the user has made
+     * no edit yet, so the store is the only truth. Once the user edits (Dirty / Saving /
+     * Saved / Error) the screen state is authoritative and a later emission — including the
+     * echo of our own save — must never overwrite the in-flight edit.
+     */
+    fun reseededFrom(avatarId: String, reducedMotion: Boolean): ShomaraSettingsState =
+        if (save == ShomaraSettingsSaveState.Clean) {
+            ShomaraSettingsState(avatarId = avatarId, reducedMotion = reducedMotion)
+        } else {
+            this
+        }
 }
 
 object ShomaraSettingsStrings {
     const val Title: String = "آواتار و تنظیمات"
     const val AvatarSection: String = "آواتار من"
     const val ReducedMotionLabel: String = "حرکت کمتر"
-    const val ReducedMotionHint: String = "انیمیشن‌ها آرام‌تر می‌شوند."
+    // R-11 (F-36): this hint OVERCLAIMS — it says all animations stop, but the reduced-motion
+    // flag only gates the spinners (button/audio/text-field), the indeterminate progress bar
+    // and the splash. The one motion it does NOT gate is the ModalBottomSheet enter/exit
+    // slide (platform animation inside Material3, in ShomaraBottomSheet) — so the station
+    // sheet still slides in with reduced motion on. Rewording this user-facing string needs
+    // the owner's approval (it is UI text, and no new user-facing text is invented here),
+    // so the string stays verbatim and the overclaim is recorded here and in the
+    // application note instead of being silently kept as fact.
+    const val ReducedMotionHint: String = "انیمیشن‌ها متوقف می‌شوند."
     const val Save: String = "ذخیره"
     const val SavedMessage: String = "ذخیره شد."
     const val SaveFailed: String = "ذخیره نشد؛ دوباره تلاش کن."
@@ -83,15 +120,31 @@ fun ShomaraSettingsScreen(
     onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
-        Text(text = ShomaraSettingsStrings.AvatarSection, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
-        Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+    // Stage 4, family 15, parent/settings dial 2/2/5: calm and textual.
+    // Inset stays 16dp, not 24dp, by arithmetic: the avatar grid is
+    // 4 x 72dp tiles + 3 x 8dp gaps = 312dp, which would exactly fill a
+    // 360dp screen at 24dp insets with no slack. 16dp is the adaptive
+    // reduction, still a v2 token, and it is recorded here, not hidden.
+    // Checklist (family 15 acceptance, 200% font): the column scrolls, so the
+    // avatar grid + toggles + save button can never clip on a small screen.
+    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+        Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        Text(text = ShomaraSettingsStrings.AvatarSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        // Stage 5, 200%-font fix: the row fills the width and each tile
+        // takes an equal weight with a MINIMUM height of 72dp instead of
+        // a fixed 72dp size, so at 200% font the tile grows taller rather
+        // than clipping its label. Width at 360dp stays ~76dp (360 - 32
+        // insets - 24 gaps, / 4), so no target drops below 48dp.
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
             for (option in ShomaraAvatarCatalog.Options) {
                 val equipped = option.id == state.avatarId
                 AvatarTile(option = option, equipped = equipped, onEquip = onAvatarSelect)
             }
         }
+        // Selected state is stated in plain text, never carried by
+        // colour or border width alone.
+        Text(text = "آواتار انتخاب‌شده: " + ShomaraAvatarCatalog.option(state.avatarId).label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+        Text(text = "تنظیمات", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         ToggleRow(
             label = ShomaraSettingsStrings.ReducedMotionLabel,
             hint = ShomaraSettingsStrings.ReducedMotionHint,
@@ -110,26 +163,36 @@ fun ShomaraSettingsScreen(
             enabled = state.canSave,
             loading = state.save == ShomaraSettingsSaveState.Saving,
             variant = ShomaraButtonVariant.Primary,
+            // Batch 2 (Duolingo structure): the primary save action is
+            // full-width like every other primary CTA in the app, not a
+            // narrow wrap-content button in a scrolling column.
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
 
 @Composable
-private fun AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, equipped: Boolean, onEquip: (String) -> Unit) {
+private fun RowScope.AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, equipped: Boolean, onEquip: (String) -> Unit) {
     val container = if (equipped) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface
     val border = if (equipped) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine
     Column(
         modifier = Modifier
-            .size(ShomaraTokens.ComponentNodeSize)
+            .weight(1f)
+            .heightIn(min = ShomaraTokens.ComponentNodeSize)
+            // Batch 2 (ADR-0040 R1): the equipped tile is the one Featured
+            // surface of this viewport; the other tiles render Soft depth.
+            .shadow(ShomaraClay.specFor(if (equipped) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(
                 if (equipped) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
                 border,
                 RoundedCornerShape(ShomaraTokens.RadiusMd),
             )
-            .semantics {
+            // الف-۰۲: one TalkBack stop per tile — the visible ✓ and the label merge into
+            // this tile's node («خورشیدی — انتخاب‌شده، دکمه») instead of three stops.
+            .semantics(mergeDescendants = true) {
                 role = Role.Button
-                contentDescription = option.label
+                contentDescription = if (equipped) option.label + " — انتخاب‌شده" else option.label
                 stateDescription = if (equipped) "انتخاب‌شده" else ""
             }
             .clickable(role = Role.Button) { onEquip(option.id) }
@@ -137,17 +200,36 @@ private fun AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        // Visible tick, not colour alone: the selected tile shows it.
+        if (equipped) {
+            Text(text = "✓", style = ShomaraTypography.Title, color = ShomaraTokens.ColorPrimaryDark)
+        }
         Text(text = option.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk)
     }
 }
 
 @Composable
 private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Boolean, onChecked: (Boolean) -> Unit) {
+    // F-15: the whole row is the switch — a `toggleable` with Role.Switch — so TalkBack
+    // announces «حرکت کمتر، سوئیچ، روشن/خاموش» once, and the full row is the tap target.
+    // The old inner button made TalkBack read two controls for one setting.
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(min = ShomaraTokens.ComponentTouchMin)
+            // Batch 2 (ADR-0040 R1): the toggle row is a tactile surface
+            // (it holds the on/off control), so it renders Soft clay depth.
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onChecked)
+            // R-03 (F-15): one TalkBack stop per row — the label and hint texts merge
+            // into the row's node, like MeRow/PracticeRow, instead of separate stops
+            // that read the label twice.
+            .semantics(mergeDescendants = true) {
+                contentDescription = label
+                stateDescription = if (checked) "روشن" else "خاموش"
+            }
             .padding(ShomaraTokens.Space12),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -156,11 +238,13 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
             Text(text = label, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk)
             Text(text = hint, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
         }
-        ShomaraButton(
+        // Status indicator only, not a button: the row owns the toggle. It is invisible
+        // to TalkBack (cleared semantics) so the state is announced exactly once, by the row.
+        Text(
             text = if (checked) "روشن" else "خاموش",
-            onClick = { onChecked(!checked) },
-            enabled = enabled,
-            variant = if (checked) ShomaraButtonVariant.Secondary else ShomaraButtonVariant.Ghost,
+            style = ShomaraTypography.Body,
+            color = if (checked) ShomaraTokens.ColorPrimaryDark else ShomaraTokens.ColorInk2,
+            modifier = Modifier.clearAndSetSemantics {},
         )
     }
 }

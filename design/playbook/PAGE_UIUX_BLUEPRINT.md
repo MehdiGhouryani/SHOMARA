@@ -11,7 +11,10 @@
 - حداقل target برابر 48dp است؛ manipulativeهای پایه‌های اول ترجیحاً 72–80dp با فاصلهٔ 16dp و inset کناری 24dp.
 - هر state تصمیم فقط یک CTA اصلی دارد. CTA در `loading` قفل و idempotent است، اما layout جابه‌جا نمی‌شود.
 - animation کوتاه، هدفمند و قابل لغو است؛ reduced-motion نسخهٔ بدون حرکت دارد. feedback معنایی فقط رنگ/سایه نیست.
-- پاسخ، mastery، unlock و Station Pass از repository/server می‌آید؛ UI هیچ answer key یا ارزیابی محلی تازه‌ای نمی‌سازد.
+- پاسخ، mastery، unlock و Station Pass از ارزیاب محلی روی بستهٔ محتوای نسخه‌دارِ باندل‌شده می‌آید (ADR-0039)؛ UI هیچ answer key یا ارزیابی تازه‌ای نمی‌سازد و کلید پاسخ فقط در لایهٔ ارزیاب محلی زندگی می‌کند. O1 (مدل answer key) و O2 (فرمت بسته) باز — تصمیم مالک.
+
+
+> هم‌گام‌سازی با ADR-0039 (۲۰۲۶-۱۱-۰۵): O1 (مدل answer key) و O2 (فرمت بسته) باز — تصمیم مالک. گزینه‌های O1: (۱) کلید در APK داخل لایهٔ ارزیاب جداگانه؛ (۲) ارزیاب بدون کلید قابل‌استخراج، اثبات‌شده برای هر قالب؛ (۳) ارزیاب از پارامترهای آیتم در زمان اجرا. گزینهٔ O2: پیشنهاد ADR-0039 §۴ (manifest.json + stations/*.json + audio/*.opus + images/*.webp؛ سه مدل + لایهٔ ارزیاب جداگانه) — تایید یا جایگزینی.
 
 ## طرح خانواده‌های صفحه
 
@@ -19,20 +22,20 @@
 |---|---|---|---|---|---|---|---|
 | 01 | Launch/Welcome · `feature:onboarding` | بفهمد ورود جدید است یا ادامهٔ امن | hero گرم و کوتاه؛ character کوچک؛ ابتدا session resolution | «شروع» یا «ادامه» متناسب با session | flat + یک featured | resolving/new/returning/offline/error | flash ورود، splash حلقه‌ای، ادعای جایزه |
 | 02 | Onboarding · `feature:onboarding` | هر بار یک مفهوم و جایگاه مرحله را بفهمد | illustration محدود + عنوان یک‌خطی + progress متنی/دیداری | «ادامه»؛ skip فقط با مجوز محصول | hint + soft CTA | first/resume/back/save/loading/error | carousel شلوغ، چند CTA هم‌وزن، dark pattern |
-| 03 | Phone/OTP · `feature:auth` | شماره یا کد را بدون ابهام وارد کند | label پایدار، input LTR و error نزدیک فیلد | «دریافت کد» / «تأیید» | flat form + soft CTA | empty/focused/invalid/sending/code/paste/expired/cooldown/offline | log کد، error صرفاً قرمز، CTA زیر keyboard |
+| 03 | Phone/OTP · `feature:auth` — در مدل آفلاین حذف می‌شود (فاز ۲، ADR-0039) | شماره یا کد را بدون ابهام وارد کند | label پایدار، input LTR و error نزدیک فیلد | «دریافت کد» / «تأیید» | flat form + soft CTA | empty/focused/invalid/sending/code/paste/expired/cooldown/offline | log کد، error صرفاً قرمز، CTA زیر keyboard |
 | 04 | Profile setup · `feature:onboarding` | حداقل اطلاعات لازم را بسازد | یک پرسش در هر view؛ avatar کوچک و واقعی | «ذخیره و ادامه» | hint + soft controls | empty/invalid/saving/save-fail/resume | پروفایل اجتماعی، دادهٔ اضافه، avatar غالب |
-| 05 | Grade/Placement · `feature:placement` | پایهٔ قابل‌دسترسی را انتخاب و تعیین‌سطح را بفهمد | cardهای پایه با locked/unavailable صریح؛ assessment آرام | «ادامه» / «شروع تعیین‌سطح» | soft cards؛ assessment flat | selected/locked/unavailable/loading/exit/resume/error | نمایش پایهٔ غیرفعال به‌عنوان موجود، mastery محلی |
+| 05 | Grade/Placement · `feature:placement` | پایهٔ قابل‌دسترسی را انتخاب و تعیین‌سطح را بفهمد | cardهای پایه با locked/unavailable صریح؛ assessment آرام | «ادامه» / «شروع تعیین‌سطح» | soft cards؛ assessment flat | selected/locked/unavailable/loading/exit/resume/error | نمایش پایهٔ غیرفعال به‌عنوان موجود، تصمیم mastery در UI |
 | 06 | Learning path · `feature:path` | جای فعلی و گام بعدی را در مسیر ببیند | ribbon فصل + current node واحد + tooltip انتخابی | CTA همان node انتخاب‌شده | canvas flat؛ current featured؛ nodes soft | fresh/current/completed/perfect/locked/offline/error/restore-scroll | glow همهٔ nodeها، disabled غلط برای locked tappable |
 | 07 | Station start · `feature:learning-player` | هدف کوتاه ایستگاه را بداند و شروع/ادامه دهد | lesson aim + character محدود + metadata واقعی | «شروع» یا «ادامه» | یک featured hero/CTA | loading/ready/resume/locked/offline/error/starting | CTA تکراری، success جعلی، hero مزاحم در 360dp |
 | 08 | Teach/Discover · `feature:learning-player` | مفهوم را با مشاهده/تعامل کشف کند | manipulative ریاضی hero؛ متن کوتاه؛ audio اختیاری | «ادامه» پس از شرط معتبر | focal featured؛ chrome flat | ready/interactive/audio-unavailable/loading/playing/failed/reduced-motion | character بزرگ‌تر از مفهوم، قفل‌شدن به صوت، animation پیوسته |
 | 09 | Guided practice · `feature:learning-player` | با راهنمایی پاسخ دهد و راه بعدی را بفهمد | objectهای بزرگ + انتخاب واضح + feedback پایدار | «بررسی» سپس «ادامه/دوباره» | choices soft؛ feedback hint | idle/selected/submitting/correct/retry/recovery/offline/error | drag بدون tap alternative، submit دوگانه، hint ساختگی |
-| 10 | Assessment · `feature:learning-player` / `feature:placement` | مستقل و بدون افشای پاسخ مسئله را حل کند | صورت مسئله dominant؛ decoration حداقلی؛ choiceها جدا | «بررسی پاسخ» | canvas flat؛ choices soft | idle/selected/submitting/result/disconnect/resume/expired | hint/audio افشاگر، celebration پیش از نتیجهٔ معتبر، grade محلی |
-| 11 | Recovery/Result · `feature:learning-player` | بدون شرم بداند چگونه اصلاح کند یا بعد کجاست | feedback sheet ثابت؛ celebration فقط پس از success سرور | «دوباره تلاش کن» / «ادامه مسیر» | sheet soft؛ success featured محدود | correct/retry/recovery/pass/fail/offline/resume | shake خشن، دوباره‌شماری progress، اجبار تماشای مجدد |
+| 10 | Assessment · `feature:learning-player` / `feature:placement` | مستقل و بدون افشای پاسخ مسئله را حل کند | صورت مسئله dominant؛ decoration حداقلی؛ choiceها جدا | «بررسی پاسخ» | canvas flat؛ choices soft | idle/selected/submitting/result/disconnect/resume/expired | hint/audio افشاگر، celebration پیش از نتیجهٔ معتبر، grade در UI |
+| 11 | Recovery/Result · `feature:learning-player` | بدون شرم بداند چگونه اصلاح کند یا بعد کجاست | feedback sheet ثابت؛ celebration فقط پس از success معتبر (ارزیاب محلی) | «دوباره تلاش کن» / «ادامه مسیر» | sheet soft؛ success featured محدود | correct/retry/recovery/pass/fail/offline/resume | shake خشن، دوباره‌شماری progress، اجبار تماشای مجدد |
 | 12 | Practice tab · `feature:practice` | تمرین واقعاً موجود را پیدا و ادامه دهد | recent/topic rows واقعی؛ empty state راهنما | «شروع/ادامه تمرین» | rows soft؛ shell flat | loading/list/empty/locked/offline/error/history | grid placeholder، mission پنهان را زنده‌کردن، دادهٔ ساختگی |
 | 13 | Challenge · `feature:learning-player` | قانون چالش و round جاری را روشن بفهمد | intro کوتاه؛ در round سؤال همیشه focal | «شروع چالش» / «ثبت پاسخ» | intro featured؛ round flat/soft | unavailable/intro/round/submitting/retry/result/offline | casino reward، answer leak، player قدیمی داخل shell جدید |
 | 14 | Profile/Me · `feature:profile` | هویت و پیشرفت واقعی خود را ساده ببیند | header گرم + آواتار واقعی + facts قابل‌فهم | action متناسب با row؛ بدون CTA مصنوعی | header hint؛ rows soft | loading/ready/empty/offline/error/edit-return | dashboard تاریک، badge/streak ساختگی، log دادهٔ کودک |
 | 15 | Avatar/Settings/Guardian · `feature:profile/settings/guardian` | ظاهر و preference واقعی را امن تغییر دهد | grid پنج asset واقعی؛ setting rows سبک؛ guardian جدا از shell | «ذخیره» فقط در صورت نیاز | selected soft؛ dialog featured محدود | owned/equipped/locked/saving/toggle-fail/restart/re-auth/error | avatar خیالی، toggle جعلی، پاک‌کردن بدون confirm، guardian داخل tab کودک |
-| 16 | System states · shared | علت توقف و اقدام بعدی را بفهمد | layout پایدار + پیام کوتاه + action واقعی | «تلاش دوباره» یا fallback معتبر | flat/hint؛ CTA soft | loading/empty/offline/error/permission/missing-asset/pending-sync | spinner بی‌انتها، متن فنی برای کودک، retry بی‌اثر |
+| 16 | System states · shared | علت توقف و اقدام بعدی را بفهمد | layout پایدار + پیام کوتاه + action واقعی | «تلاش دوباره» یا fallback معتبر | flat/hint؛ CTA soft | loading/empty/offline/error/permission/missing-asset | spinner بی‌انتها، متن فنی برای کودک، retry بی‌اثر |
 | 17 | Navigation · app shell | همیشه بداند کجاست و Back چه می‌کند | سه tab ثابت «مسیر/تمرین/من»؛ active marker روشن | destination tap؛ بدون CTA محتوایی جدید | shell flat؛ selected hint | selected/reselect/deep-link/nested/back/modal/IME/restoration | tab چهارم پنهان، duplicate navigation، overlay روی کنترل |
 
 ## ترتیب اجرایی وابسته به ریسک
@@ -42,7 +45,7 @@
 | U0 | `N02-07` سبز | token codegen، Theme، type/math direction، primitives و fixtureها | مشترک | drift صفر؛ component contract و semantics test |
 | U1 | U0 | root coordinator، onboarding/auth/profile setup | 01–05, 16 | fresh/returning/OTP/IME/process recreation؛ screenshot 360/390/412 |
 | U2 | U0 + navigation primitives | shell و مسیر تا start ایستگاه | 06, 07, 17 | deep link/Back/scroll restore/locked semantics |
-| U3 | U2 + content schema boundary | player state machine: teach → guided → assessment → recovery/result | 08–11 | reducer/use-case test؛ single-submit؛ offline/resume؛ بدون answer key |
+| U3 | U2 + content schema boundary | player state machine: teach → guided → assessment → recovery/result | 08–11 | reducer/use-case test؛ single-submit؛ offline/resume؛ بدون answer key در projection کودک (کلید فقط در لایهٔ ارزیاب، ADR-0039) |
 | U4 | U3 | challenge و practice | 12–13 | round recovery و empty/offline واقعی؛ `missions` همچنان unreachable |
 | U5 | U1/U2 | profile، avatar، settings و guardian | 14–15 | persistence/re-auth/privacy؛ asset crop device check |
 | U6 | همه | hardening cross-route | 01–17 | TalkBack، 200% font، predictive Back، process death، performance و child/education QA |

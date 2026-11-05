@@ -29,7 +29,7 @@ class ShomaraPrimitives05Test {
         assertFalse(ShomaraTabLogic.canSelect(locked))
         assertTrue(ShomaraTabLogic.canSelect(open))
         assertTrue(ShomaraTabLogic.stateLabelFor(locked, isSelected = false).startsWith("قفل"))
-        assertEquals("", ShomaraTabLogic.stateLabelFor(open, isSelected = false))
+        assertEquals("انتخاب نشده", ShomaraTabLogic.stateLabelFor(open, isSelected = false))
         org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
             ShomaraTab(id = "x", label = "بسته", locked = true, lockReason = null)
         }

@@ -45,6 +45,28 @@ class WelcomePhoneTest {
         assertNull(ShomaraPhoneLogic.validationError("09123456789"))
     }
 
+    // F-08: the phone screen shows the error only once 11 digits are in and the number is
+    // still invalid — a partial number is still being typed, not wrong. The display gate
+    // (`phone.count { it.isDigit() } >= 11` in ShomaraPhoneScreen) lives in the composable,
+    // so this JVM test locks its two halves with the real logic: the digit count that keeps
+    // the gate closed, and the validation result that opens it at 11 digits.
+    @Test
+    fun `partial number shows no error - eleven invalid digits do`() {
+        // «۰۹» is only 2 digits: below the 11-digit gate, so no error is shown — even
+        // though the strict validator itself still reports the partial input as invalid.
+        val partial = "۰۹"
+        assertEquals(2, partial.count { it.isDigit() })
+        assertTrue(partial.count { it.isDigit() } < 11)
+        assertEquals(ShomaraOnboardingStrings.PhoneInvalid, ShomaraPhoneLogic.validationError(partial))
+        // 11 digits, wrong trunk: the gate opens and the error is shown.
+        val elevenInvalid = "08123456789"
+        assertEquals(11, elevenInvalid.count { it.isDigit() })
+        assertTrue(elevenInvalid.count { it.isDigit() } >= 11)
+        assertEquals(ShomaraOnboardingStrings.PhoneInvalid, ShomaraPhoneLogic.validationError(elevenInvalid))
+        // 11 valid digits: no error at any gate.
+        assertNull(ShomaraPhoneLogic.validationError("۰۹۱۲۳۴۵۶۷۸۹"))
+    }
+
     @Test
     fun `back behavior maps every step deterministically`() {
         assertEquals(null, ShomaraBackLogic.backTarget(OnboardingStep.Welcome))

@@ -76,7 +76,7 @@ fun ShomaraDesignSystemCatalog(
             ShomaraButton(text = "در حال ذخیره", onClick = {}, variant = ShomaraButtonVariant.Primary, loading = true)
 
             // TextField + OTP (LTR math inside RTL).
-            ShomaraTextField(value = "", onValueChange = {}, label = "نام شما", hint = "مثلاً آریا", focused = true)
+            ShomaraTextField(value = "", onValueChange = {}, label = "نام شما", hint = "مثلاً آریا")
             ShomaraTextField(value = "", onValueChange = {}, label = "شماره تلفن", hint = "۰۹۱۲…", numericLtr = true, errorText = "شماره را کامل وارد کنید")
             ShomaraOtpInput(state = ShomaraOtpState.empty(4), onStateChange = {})
 

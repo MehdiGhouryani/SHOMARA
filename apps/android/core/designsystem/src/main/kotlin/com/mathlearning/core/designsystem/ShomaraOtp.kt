@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.contentDescription
@@ -149,6 +150,9 @@ private fun RowScope.OtpCell(
     val cellModifier = Modifier
         .weight(1f)
         .defaultMinSize(minWidth = ShomaraTokens.ComponentTrayBead, minHeight = ShomaraTokens.ComponentTrayBead)
+        // Batch 2 (ADR-0040 R1): OTP cells are tappable (tap moves focus),
+        // so they render Soft clay depth when enabled, Flat when disabled.
+        .shadow(ShomaraClay.specFor(if (enabled) ShomaraClayDepth.Soft else ShomaraClayDepth.Flat).elevation, RoundedCornerShape(ShomaraTokens.RadiusSm))
         .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
         .border(
             width = if (fieldState == ShomaraOtpFieldState.Invalid || (fieldState == ShomaraOtpFieldState.Focused && isFocusCell)) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
@@ -156,8 +160,12 @@ private fun RowScope.OtpCell(
             shape = RoundedCornerShape(ShomaraTokens.RadiusSm),
         )
         .padding(vertical = ShomaraTokens.Space8)
-        .semantics {
-            contentDescription = ShomaraOtpLogic.cellLabel(index, state.length)
+        .semantics(mergeDescendants = true) {
+            // F-22b: one announcement per cell — position plus its digit (or «خالی»),
+            // so TalkBack never reads a cell twice. Digits stay Latin: the
+            // Persian/Latin digit choice is an open owner decision (F-22 الف).
+            contentDescription = ShomaraOtpLogic.cellLabel(index, state.length) +
+                ": " + (digit?.toString() ?: "خالی")
         }
     Box(
         modifier = if (enabled) {

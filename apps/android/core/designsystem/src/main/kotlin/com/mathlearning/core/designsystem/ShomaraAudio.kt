@@ -1,6 +1,7 @@
 package com.mathlearning.core.designsystem
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -16,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -78,12 +82,19 @@ fun ShomaraAudioControl(
     modifier: Modifier = Modifier,
     onAction: (ShomaraAudioAction) -> Unit = {},
     tapGuard: ShomaraTapGuard = rememberShomaraTapGuard(),
+    // F-33: under reduced motion the loading spinner renders as a static dot — same rule
+    // as the button's loading state. Defaults to the composition-wide flag.
+    reducedMotion: Boolean = LocalShomaraReducedMotion.current,
 ) {
     val (container, content) = ShomaraAudioLogic.colorsFor(state)
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            // Batch 2: the audio card gets its hairline border, so it reads as
+            // one card instead of a loose patch of the canvas (same frame as
+            // every other surface card; no new token, no new size).
+            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .padding(ShomaraTokens.Space8),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
@@ -94,12 +105,31 @@ fun ShomaraAudioControl(
         ) {
             val action = ShomaraAudioLogic.actionFor(state)
             if (state == ShomaraAudioState.Loading) {
-                CircularProgressIndicator(modifier = Modifier.defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin).padding(ShomaraTokens.Space8), color = ShomaraTokens.ColorPrimary)
-            } else {
+                if (reducedMotion) {
+                    // F-33: static loading mark — same size and colour as the spinner, no rotation.
+                    Box(
+                        modifier = Modifier.defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin).padding(ShomaraTokens.Space8),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Box(modifier = Modifier.size(ShomaraTokens.Space16).background(ShomaraTokens.ColorPrimary, CircleShape))
+                    }
+                } else {
+                    CircularProgressIndicator(modifier = Modifier.defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin).padding(ShomaraTokens.Space8), color = ShomaraTokens.ColorPrimary)
+                }
+            } else if (ShomaraAudioLogic.controlEnabled(state)) {
+                // Batch 2: the control renders only when it has a real action.
+                // Before, the Unavailable state rendered an empty 48dp box
+                // (controlLabel is "" there) — a dead visual with no label.
+                // The state line beside it already says the audio is missing,
+                // and the mandatory text fallback below carries the lesson.
                 val controlLabel = ShomaraAudioLogic.controlLabelFor(state)
                 Box(
                     modifier = Modifier
                         .defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin)
+                        // ADR-0040 R1: the control is tactile, so it renders
+                        // its Soft clay depth — the elevation comes from the
+                        // clay spec, never the raw token.
+                        .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .semantics {
                             role = Role.Button

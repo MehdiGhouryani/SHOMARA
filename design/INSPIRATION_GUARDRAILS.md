@@ -4,15 +4,18 @@
 
 ## تقدم تصمیم‌ها
 
-ایمنی کودک، قرارداد محصول و server truth ← محتوای تأییدشده ← Design System SHOMARA ← اصول الهام ← سلیقهٔ صفحه.
+ایمنی کودک، قرارداد محصول و بستهٔ محتوای نسخه‌دار محلی + ارزیاب محلی (ADR-0039) ← محتوای تأییدشده ← Design System SHOMARA ← اصول الهام (کپی ساختار دولینگو، نه برند) ← سلیقهٔ صفحه.
 
 اگر الهام با دسترس‌پذیری، وضوح آموزشی، فارسی/RTL یا قرارداد دامنه تعارض داشت، کنار گذاشته می‌شود.
+
+
+> هم‌گام‌سازی با ADR-0039 (۲۰۲۶-۱۱-۰۵): مرجع حقیقت، بستهٔ محتوای نسخه‌دار، checksumدار و امضاشده داخل APK + ارزیاب محلی است؛ ساختار و رفتار دولینگو مدل UI است، برند کپی نمی‌شود. تصمیم‌های باز مالک (اینجا انتخاب نشده‌اند): O1 مدل answer key — (۱) کلید در APK داخل لایهٔ ارزیاب جداگانه؛ (۲) ارزیاب بدون کلید قابل‌استخراج، اثبات‌شده برای هر قالب؛ (۳) ارزیاب از پارامترهای آیتم در زمان اجرا. O2 فرمت بسته — پیشنهاد ADR-0039 §۴ (manifest.json + stations/*.json + audio/*.opus + images/*.webp؛ سه مدل + لایهٔ ارزیاب جداگانه)، تایید یا جایگزینی.
 
 ## ماتریس adopt / adapt / reject
 
 | منبع | می‌پذیریم | برای SHOMARA تطبیق می‌دهیم | رد می‌کنیم |
 |---|---|---|---|
-| Duolingo | learning-by-doing، micro-loop، feedback فوری، hierarchy روشن، craft و consistency | جلسهٔ کوتاه بدون اقتصاد اعتیادآور؛ assessment آرام‌تر از teaching | کپی صفحه/رنگ/کاراکتر/متن، lives، streak تنبیهی، leaderboard و currency |
+| Duolingo | learning-by-doing، micro-loop، feedback فوری، hierarchy روشن، craft و consistency | کپی ساختار و رفتار (مسیر مارپیچ، حلقهٔ درس، بازخورد فوری) با تطبیق RTL فارسی؛ جلسهٔ کوتاه بدون اقتصاد اعتیادآور؛ assessment آرام‌تر از teaching | کپی برند (لوگو، جغد، رنگ/فونت/متن برند، asset)، lives، streak تنبیهی، leaderboard و currency |
 | AVA | درس‌آموخته‌های معماری، فرایند QA و تفکیک محتوا از runtime | فقط پس از تطبیق با قراردادهای SHOMARA | کد، asset، هویت، نام‌گذاری یا رفتار ناسازگار با SHOMARA |
 | UI/UX Pro Max | design-system-first، انتخاب آگاهانهٔ pattern/style/type/motion، ثبت anti-pattern و pre-delivery review | جست‌وجوی گزینه‌ها به decision record داخلی و tokenهای موجود محدود می‌شود | نصب generator، palette/font تصادفی، dependency یا override منبع canonical |
 | Claymorphism | عمق برای hierarchy، سطح لمسی، press feedback و focus | clay محدود و semantic؛ assessment تخت‌تر و آرام‌تر | blur فراگیر، سایهٔ کم‌کنتراست، depth روی متن، container برای همه‌چیز |

@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 
@@ -74,7 +75,7 @@ fun ShomaraDialog(
                 onDismiss()
             }
         },
-        title = { Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk) },
+        title = { Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() }) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
                 Text(text = body, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
@@ -129,7 +130,9 @@ fun ShomaraDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShomaraBottomSheet(
-    title: String,
+    // F-01: the title is nullable so a sheet whose content owns its own heading (the station
+    // sheet renders its own title) does not get a second, doubled heading read by TalkBack.
+    title: String?,
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
     modifier: Modifier = Modifier,
@@ -144,8 +147,10 @@ fun ShomaraBottomSheet(
         dragHandle = if (ShomaraDialogLogic.canDismiss(state)) null else ({}) // drag handle only while dismissible
     ) {
         Column(modifier = Modifier.padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+            if (title != null) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+                }
             }
             content()
         }
