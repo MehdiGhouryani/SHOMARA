@@ -135,4 +135,67 @@ class ShomaraSettingsWiringTest {
             assertEquals(option.id, state.avatarId)
         }
     }
+
+    // ---- BUG 3: re-entering Settings showed "sun" although the store held "moon" ----
+    //
+    // The host seeded the screen once from the first `collectAsStateWithLifecycle` value —
+    // but that first value is the `Defaults` placeholder, not a store emission, so the
+    // seed-once flag was consumed by "sun" and the later real "moon" emission was ignored.
+    // The fix re-seeds on every store emission while the screen is still Clean, and never
+    // once the user has edited. These tests pin that rule on the pure state machine; the
+    // Compose wiring itself (placeholder first frame, then real emission) is only provable
+    // by the device check "select moon -> BACK -> re-enter Settings -> moon".
+
+    @Test
+    fun `reseed replaces the avatar while the state is still clean`() {
+        // The exact device repro: the screen was seeded from the placeholder ("sun") while
+        // the store really holds "moon". A Clean screen has no in-flight edit, so the
+        // store is the only truth and the reseed must apply.
+        val seededFromPlaceholder = fresh(avatarId = "sun")
+        val reseeded = seededFromPlaceholder.reseededFrom(avatarId = "moon", reducedMotion = false)
+        assertEquals("moon", reseeded.avatarId)
+        assertEquals(ShomaraSettingsSaveState.Clean, reseeded.save)
+    }
+
+    @Test
+    fun `reseed preserves the reduced-motion preference of the stored snapshot`() {
+        val reseeded = fresh(avatarId = "sun", reducedMotion = false)
+            .reseededFrom(avatarId = "moon", reducedMotion = true)
+        assertEquals("moon", reseeded.avatarId)
+        assertTrue("stored motion preference lost by the reseed", reseeded.reducedMotion)
+    }
+
+    @Test
+    fun `reseed never overwrites a dirty edit`() {
+        // The user picked "moon" but the store still echoes the old "sun" (the write has
+        // not landed yet): the in-flight edit wins and the stale emission is ignored.
+        val dirty = fresh(avatarId = "sun").withAvatar("moon")
+        val afterStaleEmission = dirty.reseededFrom(avatarId = "sun", reducedMotion = false)
+        assertEquals("moon", afterStaleEmission.avatarId)
+        assertEquals(ShomaraSettingsSaveState.Dirty, afterStaleEmission.save)
+    }
+
+    @Test
+    fun `reseed never overwrites a saving or saved state`() {
+        // The store emission that follows our own save carries the write back; the screen
+        // already holds the saved value, so the echo must not touch it.
+        val saving = fresh(avatarId = "sun").withAvatar("moon").startSave()
+        val afterEchoWhileSaving = saving.reseededFrom(avatarId = "sun", reducedMotion = false)
+        assertEquals("moon", afterEchoWhileSaving.avatarId)
+        assertEquals(ShomaraSettingsSaveState.Saving, afterEchoWhileSaving.save)
+        val saved = saving.onSaveSuccess()
+        val afterEchoWhileSaved = saved.reseededFrom(avatarId = "sun", reducedMotion = false)
+        assertEquals("moon", afterEchoWhileSaved.avatarId)
+        assertEquals(ShomaraSettingsSaveState.Saved, afterEchoWhileSaved.save)
+    }
+
+    @Test
+    fun `reseed never overwrites a failed save`() {
+        val failed = fresh(avatarId = "sun").withAvatar("moon").startSave()
+            .onSaveFailure("disk full")
+        val afterEmission = failed.reseededFrom(avatarId = "sun", reducedMotion = false)
+        assertEquals("moon", afterEmission.avatarId)
+        assertEquals(ShomaraSettingsSaveState.Error, afterEmission.save)
+        assertEquals("disk full", afterEmission.errorText)
+    }
 }

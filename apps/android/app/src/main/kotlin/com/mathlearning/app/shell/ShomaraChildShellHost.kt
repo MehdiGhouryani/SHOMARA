@@ -214,22 +214,25 @@ fun ShomaraChildShell(
                             ),
                         )
                     }
-                    // SEEDING BUG (found on device): `collectAsStateWithLifecycle` starts at
-                    // ShomaraSettingsSnapshot.Defaults and only later emits the real stored value.
-                    // Seeding `remember` from the placeholder meant the screen believed the avatar
-                    // was the DEFAULT, so the first interaction wrote that default back over the
-                    // child's saved choice — choosing "moon", relaunching, then toggling anything
-                    // silently reset it to "sun". This seeds ONCE from the first real emission and
-                    // then leaves the screen state authoritative for in-flight edits.
-                    var seededFromStore by remember { mutableStateOf(false) }
+                    // SEEDING BUG, second half (found on device 2026-11-05): the seed-once
+                    // guard that used to sit here consumed the PLACEHOLDER, not the first real
+                    // emission. `collectAsStateWithLifecycle(initialValue = Defaults)` delivers
+                    // Defaults synchronously at first composition, so this effect's first run
+                    // always saw "sun", set the flag, and the later real emission ("moon") was
+                    // ignored — re-entering Settings showed "sun" although the store held
+                    // "moon" and the save banner had said "ذخیره شد.". The screen is therefore
+                    // re-seeded from the store on every emission WHILE IT IS STILL UNTOUCHED
+                    // (see ShomaraSettingsState.reseededFrom): a Clean screen has no in-flight
+                    // edit, so the store is the only truth; once the user edits, the screen
+                    // state is authoritative and later emissions — including the echo of our
+                    // own save — must not overwrite it. The `remember` seed above still starts
+                    // from the placeholder, so the first frame may briefly show the default
+                    // before the real emission lands; the settled value is the stored one.
                     LaunchedEffect(persisted) {
-                        if (!seededFromStore) {
-                            screenState = ShomaraSettingsState(
-                                avatarId = persisted.avatarId,
-                                reducedMotion = persisted.reducedMotion,
-                            )
-                            seededFromStore = true
-                        }
+                        screenState = screenState.reseededFrom(
+                            avatarId = persisted.avatarId,
+                            reducedMotion = persisted.reducedMotion,
+                        )
                     }
                     val scope = rememberCoroutineScope()
 

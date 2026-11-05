@@ -73,6 +73,25 @@ data class ShomaraSettingsState(
     /** Toggle-fail: the preference reverts and the error is announced (never silently lost). */
     fun onSaveFailure(message: String): ShomaraSettingsState =
         copy(save = ShomaraSettingsSaveState.Error, errorText = message)
+
+    /**
+     * BUG 3 (found on device 2026-11-05) — re-seed rule for the host wiring. The host seeds
+     * this screen from the settings store, but `collectAsStateWithLifecycle` delivers the
+     * `Defaults` placeholder synchronously at first composition and the real stored value only
+     * later. A seed-once flag therefore consumed the placeholder ("sun") and the later real
+     * emission ("moon") was ignored, so re-entering Settings showed "sun" although the store
+     * held "moon" and the save banner had said "ذخیره شد.". The rule is: re-seed from the
+     * store on every emission WHILE THE SCREEN IS STILL UNTOUCHED (Clean) — the user has made
+     * no edit yet, so the store is the only truth. Once the user edits (Dirty / Saving /
+     * Saved / Error) the screen state is authoritative and a later emission — including the
+     * echo of our own save — must never overwrite the in-flight edit.
+     */
+    fun reseededFrom(avatarId: String, reducedMotion: Boolean): ShomaraSettingsState =
+        if (save == ShomaraSettingsSaveState.Clean) {
+            ShomaraSettingsState(avatarId = avatarId, reducedMotion = reducedMotion)
+        } else {
+            this
+        }
 }
 
 object ShomaraSettingsStrings {

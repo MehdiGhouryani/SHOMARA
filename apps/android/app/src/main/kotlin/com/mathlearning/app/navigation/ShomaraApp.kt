@@ -108,6 +108,9 @@ fun ShomaraApp(
             ShomaraOnboardingHost(
                 session = authSession,
                 draftStore = profileDraftStore,
+                // The profile avatar must land in the settings store (the single source
+                // the Me tab and the Settings screen read), not only in the draft store.
+                settingsStore = settingsStore,
                 simulatedAuth = simulatedAuth,
                 onStepRoute = { stepRoute ->
                     // P0 FIX: this used to call navController.navigate(stepRoute) for every
