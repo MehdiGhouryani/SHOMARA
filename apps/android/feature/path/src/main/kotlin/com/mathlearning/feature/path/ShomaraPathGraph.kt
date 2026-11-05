@@ -466,6 +466,10 @@ private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            // Batch 2: the unit banner is a card, so it carries the Soft clay
+            // depth (the Duolingo unit banner is a raised coloured card, and
+            // a flat band reads as a background strip, not a card).
+            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(bandBackground, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .padding(ShomaraTokens.Space16),
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),

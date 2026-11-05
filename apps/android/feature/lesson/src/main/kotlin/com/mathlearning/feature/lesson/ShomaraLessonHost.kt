@@ -127,15 +127,20 @@ fun ShomaraLessonHost(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
                 ) {
+                    // Batch 2: at 200% font the two confirm buttons share the
+                    // row equally instead of overflowing a 360dp screen —
+                    // each grows in height with its label, never clips it.
                     ShomaraButton(
                         text = ShomaraCloseConfirmLogic.ConfirmLabel,
                         onClick = { closeState = ShomaraCloseConfirmLogic.confirmExit(closeState) },
                         variant = ShomaraButtonVariant.Primary,
+                        modifier = Modifier.weight(1f),
                     )
                     ShomaraButton(
                         text = ShomaraCloseConfirmLogic.StayLabel,
                         onClick = { closeState = ShomaraCloseConfirmLogic.stay(closeState) },
                         variant = ShomaraButtonVariant.Ghost,
+                        modifier = Modifier.weight(1f),
                     )
                 }
             } else if (resultSurface == null) {
@@ -143,6 +148,7 @@ fun ShomaraLessonHost(
                     text = "خروج از ایستگاه",
                     onClick = { closeState = ShomaraCloseConfirmLogic.request(closeState) },
                     variant = ShomaraButtonVariant.Ghost,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             if (resultSurface != null) {

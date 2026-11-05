@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
@@ -152,11 +153,16 @@ fun ShomaraNumberTile(
     ShomaraManipulativeRules.requireBand(size)
     val (container, border, content) = manipulativeColors(state)
     val semanticsLabel = state.stateLabel()
+    // Batch 2 (ADR-0040 R1): a manipulative tile is tactile, so it renders
+    // its clay depth — Soft for every interactive tile, Flat for a locked
+    // tile (quiet, non-affordant, like a disabled button).
+    val tileDepth = if (state == ShomaraManipulativeState.Locked) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft
     // N08-03: the 72–80dp band is the MINIMUM educational target, not a fixed box. A 40sp digit
     // becomes 80sp at 200% font scale; a fixed .size() clipped it, so the tile grows instead.
     Box(
         modifier = modifier
             .defaultMinSize(minWidth = size, minHeight = size)
+            .shadow(ShomaraClay.specFor(tileDepth).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics {
@@ -181,6 +187,9 @@ fun ShomaraCountersGrid(
     enabled: Boolean = true,
 ) {
     require(count >= 0) { "bead count must be non-negative" }
+    // Batch 2 (ADR-0040 R1): beads are tappable, so they render Soft clay
+    // depth when enabled and stay Flat when the grid is disabled.
+    val beadDepth = if (enabled) ShomaraClayDepth.Soft else ShomaraClayDepth.Flat
     Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8), modifier = modifier) {
         repeat(count) { index ->
             Box(
@@ -189,6 +198,7 @@ fun ShomaraCountersGrid(
                     // correct here — it carries no label that could clip. Kept as defaultMinSize so
                     // an ancestor that grows the row never shrinks the touch target below 48dp.
                     .defaultMinSize(minWidth = ShomaraTokens.ComponentTrayBead, minHeight = ShomaraTokens.ComponentTrayBead)
+                    .shadow(ShomaraClay.specFor(beadDepth).elevation, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .background(ShomaraTokens.ColorPrimarySoft, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusPill))
                     .semantics {

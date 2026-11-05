@@ -1,6 +1,7 @@
 package com.mathlearning.core.designsystem
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -84,6 +86,10 @@ fun ShomaraAudioControl(
         modifier = modifier
             .fillMaxWidth()
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            // Batch 2: the audio card gets its hairline border, so it reads as
+            // one card instead of a loose patch of the canvas (same frame as
+            // every other surface card; no new token, no new size).
+            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .padding(ShomaraTokens.Space8),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
@@ -95,11 +101,19 @@ fun ShomaraAudioControl(
             val action = ShomaraAudioLogic.actionFor(state)
             if (state == ShomaraAudioState.Loading) {
                 CircularProgressIndicator(modifier = Modifier.defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin).padding(ShomaraTokens.Space8), color = ShomaraTokens.ColorPrimary)
-            } else {
+            } else if (ShomaraAudioLogic.controlEnabled(state)) {
+                // Batch 2: the control renders only when it has a real action.
+                // Before, the Unavailable state rendered an empty 48dp box
+                // (controlLabel is "" there) — a dead visual with no label.
+                // The state line beside it already says the audio is missing,
+                // and the mandatory text fallback below carries the lesson.
                 val controlLabel = ShomaraAudioLogic.controlLabelFor(state)
                 Box(
                     modifier = Modifier
                         .defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin)
+                        // ADR-0040 R1: the control is tactile, so it renders
+                        // its Soft clay depth.
+                        .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .semantics {
                             role = Role.Button

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.error
@@ -106,6 +107,10 @@ fun ShomaraTextField(
         val fieldModifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
+            // Batch 2 (ADR-0040 R1): the field is the tactile input surface,
+            // so it renders Soft clay depth when interactive and stays Flat
+            // in its quiet states (disabled/loading).
+            .shadow(ShomaraClay.specFor(if (state == ShomaraFieldState.Disabled || state == ShomaraFieldState.Loading) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusSm))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
             .border(
                 width = ShomaraFieldLogic.borderWidthFor(state),

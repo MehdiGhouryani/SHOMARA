@@ -17,9 +17,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -88,6 +90,9 @@ fun ShomaraTabBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            // Batch 2 (ADR-0040 R1): the tab bar is a tactile surface, so it
+            // renders its clay depth (Soft) instead of sitting flat on the canvas.
+            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .padding(ShomaraTokens.Space4),
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
@@ -100,6 +105,10 @@ fun ShomaraTabBar(
                 modifier = Modifier
                     .weight(1f)
                     .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
+                    // The selected tab is the one active pill: it carries the
+                    // Soft depth, unselected tabs stay Flat — never a second
+                    // Featured surface in the same viewport.
+                    .shadow(ShomaraClay.specFor(if (isSelected) ShomaraClayDepth.Soft else ShomaraClayDepth.Flat).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
                     .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
                     .semantics {
                         role = Role.Tab
@@ -155,6 +164,9 @@ fun ShomaraTopBar(
                 Box(
                     modifier = Modifier
                         .defaultMinSize(minWidth = ShomaraTopBarLogic.backTouchTarget(), minHeight = ShomaraTopBarLogic.backTouchTarget())
+                        // Batch 2 (ADR-0040 R1): the back affordance is tactile,
+                        // so it renders its Soft clay depth like every button.
+                        .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
                         .semantics { role = Role.Button; stateDescription = "بازگشت" }
                         .clickable(role = Role.Button) {
@@ -174,7 +186,7 @@ fun ShomaraTopBar(
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).semantics { heading() },
             )
             if (trailing != null) {
                 Spacer(modifier = Modifier.width(ShomaraTokens.Space8))

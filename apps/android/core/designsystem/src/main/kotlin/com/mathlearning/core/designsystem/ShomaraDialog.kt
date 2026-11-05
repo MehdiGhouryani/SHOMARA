@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 
@@ -74,7 +75,7 @@ fun ShomaraDialog(
                 onDismiss()
             }
         },
-        title = { Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk) },
+        title = { Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() }) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
                 Text(text = body, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
@@ -145,7 +146,7 @@ fun ShomaraBottomSheet(
     ) {
         Column(modifier = Modifier.padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             }
             content()
         }

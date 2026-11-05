@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -24,12 +25,16 @@ import androidx.compose.ui.semantics.semantics
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
+import com.mathlearning.core.designsystem.ShomaraClayDepth
+import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraPagePlaceholder
 import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraAvatarOption
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
+import com.mathlearning.core.designsystem.ShomaraProgressBar
+import com.mathlearning.core.designsystem.ShomaraProgressState
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 
@@ -106,6 +111,11 @@ fun ShomaraMeScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        // Batch 2: the identity card is the one Featured
+                        // surface of this viewport (ADR-0040 R1 — at most
+                        // one Featured per viewport), so it renders the
+                        // Featured clay depth; the rows below stay Soft.
+                        .shadow(ShomaraClay.specFor(ShomaraClayDepth.Featured).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
                         .background(ShomaraTokens.ColorPrimarySoft, RoundedCornerShape(ShomaraTokens.RadiusLg))
                         .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusLg))
                         .padding(ShomaraTokens.Space12),
@@ -127,6 +137,18 @@ fun ShomaraMeScreen(
                         Text(text = "آواتار من: " + f.avatar.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
                     }
                 }
+                // Batch 2 (goal-card structure, ADR-0040 §5 — allowed for
+                // Me with real local progress data, and with no economy
+                // content of any kind): the one progress layer of this tab. The
+                // fraction comes only from the caller-provided facts
+                // (completed / total stations); TalkBack announces it in
+                // words via ShomaraProgressBar, never as a percentage or a
+                // score, and no second progress layer is added anywhere.
+                ShomaraProgressBar(
+                    state = ShomaraProgressState(
+                        fraction = if (f.totalStations > 0) f.completedStations.toFloat() / f.totalStations.toFloat() else 0f,
+                    ),
+                )
                 }
             ShomaraMeState.EditReturn -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "تغییرات ذخیره شد.")
         }
@@ -147,6 +169,9 @@ private fun MeRow(label: String, description: String, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = ShomaraTokens.ComponentTouchMin)
+            // Batch 2 (ADR-0040 R1): the row is a tactile navigation target,
+            // so it renders Soft clay depth.
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics {

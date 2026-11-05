@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
@@ -124,6 +126,7 @@ fun ShomaraWelcomeScreen(
                 style = ShomaraTypography.Display,
                 color = ShomaraTokens.ColorInk,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { heading() },
             )
             Text(
                 text = body,
@@ -152,7 +155,12 @@ fun ShomaraPhoneScreen(
     /** DEBUG simulation only (N08-15); null in release, so the button never renders there. */
     simulatedSkip: (() -> Unit)? = null,
 ) {
-    val error = ShomaraPhoneLogic.validationError(phone)
+    // Batch 2: the error is shown only once the user has typed something.
+    // Before, an empty field showed the invalid-format error on first
+    // paint — the child was told the number was wrong before typing a
+    // digit. The validation itself is untouched (ShomaraPhoneLogic still
+    // decides validity, and the CTA still stays disabled until valid).
+    val error = if (phone.isBlank()) null else ShomaraPhoneLogic.validationError(phone)
     val canContinue = ShomaraPhoneLogic.isValid(phone)
     Column(
         modifier = modifier
@@ -168,7 +176,9 @@ fun ShomaraPhoneScreen(
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
             // Section header above the card; the field keeps its own persistent label inside.
-            Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+            // Batch 2: the section title is a TalkBack heading, like every
+            // other screen title in the flow.
+            Text(text = title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             ShomaraCard {
                 Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
                     Text(text = ShomaraOnboardingStrings.WelcomeBody, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)

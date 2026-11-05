@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,11 +17,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
+import com.mathlearning.core.designsystem.ShomaraClay
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
+import com.mathlearning.core.designsystem.ShomaraProgressBar
+import com.mathlearning.core.designsystem.ShomaraProgressState
 import com.mathlearning.core.designsystem.ShomaraTextField
 import com.mathlearning.core.designsystem.ShomaraTokens
 import androidx.compose.ui.semantics.heading
@@ -118,7 +125,9 @@ fun ShomaraParentGateScreen(
     // Stage 4, family 15 guardian: calm, textual, preferred 24dp inset.
     // The gate logic is untouched: fail-closed, verifier == null can
     // never authenticate, and no bypass is added here.
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+    // Batch 2: the column scrolls, so a 200%-font gate can never clip the
+    // entry button below the fold on a short window.
+    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Text(text = "بخش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "این بخش برای بزرگ‌ترهاست؛ لطفاً گذرواژه را وارد کن.")
         when (val state = gate.state) {
@@ -142,6 +151,9 @@ fun ShomaraParentGateScreen(
                 }
             },
             variant = ShomaraButtonVariant.Primary,
+            // Batch 2: the primary entry action is full-width like every
+            // other primary CTA in the app.
+            modifier = Modifier.fillMaxWidth(),
         )
         // Honest lockout rule, stated before any failure happens.
         Text(text = "پس از چند تلاش ناموفق، ورود موقتاً قفل می‌شود.", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
@@ -155,10 +167,18 @@ fun ShomaraParentHome(
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+    // Batch 2: the column scrolls (200% font), and the progress summary
+    // is the one progress layer of this adult surface — the same real
+    // numbers as the text line, rendered as a bar whose TalkBack
+    // announcement uses words, never a percentage or a score.
+    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Text(text = "گزارش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         Row(
-            modifier = Modifier.fillMaxWidth().background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg)).padding(ShomaraTokens.Space12),
+            modifier = Modifier.fillMaxWidth()
+                // Batch 2 (ADR-0040 R1): the summary card is the one
+                // Featured surface of this viewport.
+                .shadow(ShomaraClay.specFor(ShomaraClayDepth.Featured).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg)).padding(ShomaraTokens.Space12),
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -168,10 +188,16 @@ fun ShomaraParentHome(
                 color = ShomaraTokens.ColorInk2,
             )
         }
+        ShomaraProgressBar(
+            state = ShomaraProgressState(
+                fraction = if (totalStations > 0) completedStations.toFloat() / totalStations.toFloat() else 0f,
+            ),
+        )
         ShomaraButton(
             text = "خروج از حساب",
             onClick = onSignOut,
             variant = ShomaraButtonVariant.Ghost,
+            modifier = Modifier.fillMaxWidth(),
         )
         Text(
             text = "این سطح فقط خلاصهٔ بزرگسالان نشان می‌دهد و محتوای درس کودک را باز نمی‌کند.",

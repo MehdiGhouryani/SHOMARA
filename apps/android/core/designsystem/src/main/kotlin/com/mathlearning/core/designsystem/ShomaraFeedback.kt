@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
@@ -74,6 +75,10 @@ fun ShomaraFeedbackBanner(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ShomaraFeedbackLogic.bannerHeight())
+            // Batch 2: the feedback panel is the bottom card of the lesson
+            // loop (Duolingo structure), so it carries the Soft clay depth
+            // like every other card — it is a surface, not a flat strip.
+            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .padding(ShomaraTokens.Space12)

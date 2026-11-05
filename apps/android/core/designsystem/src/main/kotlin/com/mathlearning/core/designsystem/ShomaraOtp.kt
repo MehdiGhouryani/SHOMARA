@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.contentDescription
@@ -149,6 +150,9 @@ private fun RowScope.OtpCell(
     val cellModifier = Modifier
         .weight(1f)
         .defaultMinSize(minWidth = ShomaraTokens.ComponentTrayBead, minHeight = ShomaraTokens.ComponentTrayBead)
+        // Batch 2 (ADR-0040 R1): OTP cells are tappable (tap moves focus),
+        // so they render Soft clay depth when enabled, Flat when disabled.
+        .shadow(ShomaraClay.specFor(if (enabled) ShomaraClayDepth.Soft else ShomaraClayDepth.Flat).elevation, RoundedCornerShape(ShomaraTokens.RadiusSm))
         .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
         .border(
             width = if (fieldState == ShomaraOtpFieldState.Invalid || (fieldState == ShomaraOtpFieldState.Focused && isFocusCell)) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,

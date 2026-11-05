@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -26,6 +27,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
+import com.mathlearning.core.designsystem.ShomaraClay
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
@@ -131,6 +134,10 @@ fun ShomaraSettingsScreen(
             enabled = state.canSave,
             loading = state.save == ShomaraSettingsSaveState.Saving,
             variant = ShomaraButtonVariant.Primary,
+            // Batch 2 (Duolingo structure): the primary save action is
+            // full-width like every other primary CTA in the app, not a
+            // narrow wrap-content button in a scrolling column.
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -143,6 +150,9 @@ private fun RowScope.AvatarTile(option: com.mathlearning.core.model.ShomaraAvata
         modifier = Modifier
             .weight(1f)
             .heightIn(min = ShomaraTokens.ComponentNodeSize)
+            // Batch 2 (ADR-0040 R1): the equipped tile is the one Featured
+            // surface of this viewport; the other tiles render Soft depth.
+            .shadow(ShomaraClay.specFor(if (equipped) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(
                 if (equipped) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
@@ -173,6 +183,9 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = ShomaraTokens.ComponentTouchMin)
+            // Batch 2 (ADR-0040 R1): the toggle row is a tactile surface
+            // (it holds the on/off control), so it renders Soft clay depth.
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .padding(ShomaraTokens.Space12),

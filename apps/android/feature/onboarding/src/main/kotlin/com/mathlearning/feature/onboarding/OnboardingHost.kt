@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.mathlearning.core.designsystem.ShomaraButton
@@ -261,7 +263,7 @@ fun ShomaraOnboardingHost(
                             color = ShomaraTokens.ColorInk2,
                         )
                     }
-                    Text(text = ShomaraOtpStepStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                    Text(text = ShomaraOtpStepStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
                     if (holder.phone.isNotBlank()) {
                         Text(
                             text = "${ShomaraOtpStepStrings.SentToPrefix} ${holder.phone} ${ShomaraOtpStepStrings.SentToSuffix}",

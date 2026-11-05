@@ -16,12 +16,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
+import com.mathlearning.core.designsystem.ShomaraClay
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraPagePlaceholder
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
@@ -115,6 +118,9 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = ShomaraTokens.ComponentTouchMin)
+            // Batch 2 (ADR-0040 R1): a practiseable row is tactile, so it
+            // renders Soft clay depth; a locked row is quiet and stays Flat.
+            .shadow(ShomaraClay.specFor(if (locked) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics {

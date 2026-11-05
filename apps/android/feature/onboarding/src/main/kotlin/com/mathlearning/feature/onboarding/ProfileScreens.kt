@@ -15,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
@@ -84,6 +86,7 @@ fun ShomaraProfileScreen(
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { heading() },
             )
             Text(
                 text = ShomaraProfileUiStrings.Subtitle,
@@ -110,7 +113,7 @@ fun ShomaraProfileScreen(
                 text = ShomaraProfileUiStrings.AvatarSectionTitle,
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics { heading() },
             )
             ShomaraAvatarCatalog.Options.forEach { option ->
                 ShomaraChoiceTile(
@@ -127,7 +130,7 @@ fun ShomaraProfileScreen(
                 text = ShomaraProfileStrings.GradeLabel,
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics { heading() },
             )
             availableGrades.forEach { grade ->
                 ShomaraCard(state = ShomaraCardState.Selected) {
@@ -188,7 +191,8 @@ fun ShomaraPlacementScreen(
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
             // Family 05 (Stage 1): no character here by contract.
-            Text(text = ShomaraProfileStrings.PlacementTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+            // Batch 2: the placement title is a TalkBack heading.
+            Text(text = ShomaraProfileStrings.PlacementTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             ShomaraCard {
                 Column(
                     modifier = Modifier.fillMaxWidth(),

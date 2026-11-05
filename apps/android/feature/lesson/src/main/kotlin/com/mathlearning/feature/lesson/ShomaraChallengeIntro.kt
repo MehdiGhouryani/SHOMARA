@@ -2,8 +2,11 @@ package com.mathlearning.feature.lesson
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,30 +41,44 @@ fun ShomaraChallengeIntro(
     modifier: Modifier = Modifier,
 ) {
     if (session.state != ShomaraChallengeState.Intro) return
+    // Batch 2 (Duolingo lesson structure, same pinned-CTA pattern as the
+    // welcome/profile screens): the intro copy scrolls in a breathing zone
+    // and the single start CTA is pinned at the bottom, always reachable
+    // without scrolling — before, the CTA scrolled away with the text on a
+    // short window at 200% font. No text changed: the rounds line and the
+    // intro line are the existing strings, reused verbatim.
     Column(
-        modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize().padding(ShomaraTokens.Space24),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
-        Text(
-            text = "چالش",
-            style = ShomaraTypography.Title,
-            color = ShomaraTokens.ColorInk,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.semantics { heading() },
-        )
-        Text(
-            text = "تعداد دورها: ${ShomaraDigits.toFa(session.totalRounds)}",
-            style = ShomaraTypography.Body,
-            color = ShomaraTokens.ColorInk2,
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = "آماده‌ای؟ سؤال اول را با هم شروع می‌کنیم.",
-            style = ShomaraTypography.Body,
-            color = ShomaraTokens.ColorInk2,
-            textAlign = TextAlign.Center,
-        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16, Alignment.CenterVertically),
+        ) {
+            Text(
+                text = "چالش",
+                style = ShomaraTypography.Title,
+                color = ShomaraTokens.ColorInk,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { heading() },
+            )
+            Text(
+                text = "تعداد دورها: ${ShomaraDigits.toFa(session.totalRounds)}",
+                style = ShomaraTypography.Body,
+                color = ShomaraTokens.ColorInk2,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "آماده‌ای؟ سؤال اول را با هم شروع می‌کنیم.",
+                style = ShomaraTypography.Body,
+                color = ShomaraTokens.ColorInk2,
+                textAlign = TextAlign.Center,
+            )
+        }
         ShomaraButton(
             text = "شروع چالش",
             onClick = onStart,

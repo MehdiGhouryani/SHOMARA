@@ -16,9 +16,11 @@ import com.mathlearning.core.designsystem.ShomaraButtonVariant
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
+import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.model.MacroStage
+import com.mathlearning.core.model.ShomaraStationCatalog
 
 /**
  * Stage 3 display-only lesson chrome (families 08-11).
@@ -66,8 +68,16 @@ fun ShomaraLessonStageHeader(
                 decorative = true,
             )
         }
+        // Batch 2: the header used to print the raw Latin station id
+        // ("ایستگاه ST07") into a Persian heading. The id is resolved
+        // through the canonical catalog instead — Persian ordinal plus the
+        // catalog working title, both already user-visible on the path —
+        // and an unknown id falls back to the old rendering, never a crash.
+        val stationTitle = runCatching { ShomaraStationCatalog.station(stationId) }.getOrNull()?.let { meta ->
+            "ایستگاه ${ShomaraDigits.toFa(meta.ordinal)} — ${meta.workingTitle}"
+        } ?: "ایستگاه $stationId"
         Text(
-            text = "ایستگاه $stationId — مرحلهٔ ${ShomaraLessonStageLabels.labelFor(macroStage)}",
+            text = "$stationTitle — مرحلهٔ ${ShomaraLessonStageLabels.labelFor(macroStage)}",
             style = ShomaraTypography.Title,
             color = ShomaraTokens.ColorInk,
             textAlign = TextAlign.Start,

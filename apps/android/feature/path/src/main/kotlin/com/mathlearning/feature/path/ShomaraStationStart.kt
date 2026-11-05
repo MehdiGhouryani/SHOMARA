@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.heading
@@ -122,8 +126,13 @@ fun ShomaraStationStartSheet(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            // Batch 2: the sheet is a raised card (Soft depth), and it
+            // scrolls — at 200% font the character row + banner + CTA can
+            // otherwise overflow a short sheet window.
+            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .verticalScroll(rememberScrollState())
             .padding(ShomaraTokens.Space16),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
@@ -150,7 +159,7 @@ fun ShomaraStationStartSheet(
                 )
             }
             Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
-                Text(text = meta.workingTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                Text(text = meta.workingTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
                 Text(text = ShomaraStationStartLogic.metadataLine(meta), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
             }
         }
@@ -192,8 +201,11 @@ fun ShomaraJumpSheet(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            // Batch 2: same raised-card depth and scroll as the station sheet.
+            .shadow(ShomaraTokens.ClaySoftElevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .verticalScroll(rememberScrollState())
             .padding(ShomaraTokens.Space16),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
@@ -223,7 +235,12 @@ fun ShomaraJumpSheet(
                 horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = if (selected) "●" else "", style = ShomaraTypography.Body, color = content)
+                // Batch 2 (Duolingo list evidence, same pattern as the
+                // avatar rows): the selected target carries a visible ✓
+                // mark — selection is never colour alone. The mark is
+                // decorative for TalkBack: stateDescription already says
+                // "انتخاب شد" once, so the glyph must not be read twice.
+                Text(text = if (selected) "✓" else "", style = ShomaraTypography.Body, color = content, modifier = Modifier.clearAndSetSemantics {})
                 Column {
                     Text(text = target.meta.workingTitle, style = ShomaraTypography.Body, color = content)
                     Text(text = ShomaraPathGraphLogic.stateLabelFor(target.nodeState), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
