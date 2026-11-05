@@ -39,6 +39,21 @@ class ShomaraMeTest {
     }
 
     @Test
+    fun `stage 5 wiring resolves the persisted avatar, not the default`() {
+        // "Chosen moon survives relaunch and shows in Me": the host reads
+        // the persisted settings store and resolves it through this
+        // function, so a saved "moon" must not be replaced by "sun".
+        assertEquals("moon", ShomaraMeAvatarWiring.resolve("moon").id)
+        assertEquals("ماه", ShomaraMeAvatarWiring.resolve("moon").label)
+        assertEquals("sun", ShomaraMeAvatarWiring.resolve("sun").id)
+    }
+
+    @Test
+    fun `stage 5 wiring falls back to the default for an unknown id`() {
+        assertEquals(ShomaraAvatarCatalog.defaultId, ShomaraMeAvatarWiring.resolve("no-such-avatar").id)
+    }
+
+    @Test
     fun `no synthetic reward surfaces exist in the Me contract`() {
         // The facts model exposes ONLY identity + real progress: no stars, coins, streaks, badges.
         val facts = ShomaraMeFacts("آریا", avatar, 3, 25)

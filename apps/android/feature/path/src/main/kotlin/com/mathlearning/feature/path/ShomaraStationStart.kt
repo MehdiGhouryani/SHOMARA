@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import com.mathlearning.core.designsystem.ShomaraButton
@@ -124,7 +125,7 @@ fun ShomaraStationStartSheet(
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .padding(ShomaraTokens.Space16),
-        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
         // Family 07: character in a frame, static and small, from the shipped
         // drawables only (Main pose 1). The concise lesson goal is the
@@ -196,7 +197,7 @@ fun ShomaraJumpSheet(
             .padding(ShomaraTokens.Space16),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
-        Text(text = ShomaraJumpSheetLogic.titleFor(titleStationId), style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+        Text(text = ShomaraJumpSheetLogic.titleFor(titleStationId), style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         if (state.offline) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ پرش فعلاً ممکن نیست.")
         if (state.errorText != null) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = state.errorText)
         for (target in state.targets) {
@@ -212,7 +213,10 @@ fun ShomaraJumpSheet(
                     .semantics {
                         role = Role.Button
                         contentDescription = label
-                        stateDescription = if (selected) "انتخاب شد" else ""
+                        // Stage 5 TalkBack: every jump target announces its
+                        // state, not only the selected one.
+                        stateDescription = ShomaraPathGraphLogic.stateLabelFor(target.nodeState) +
+                            if (selected) "؛ انتخاب شد" else ""
                     }
                     .clickable(role = Role.Button) { onSelect(target.meta.id) }
                     .padding(ShomaraTokens.Space8),

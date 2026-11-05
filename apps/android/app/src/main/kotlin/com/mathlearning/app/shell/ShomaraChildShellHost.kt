@@ -121,10 +121,19 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Me.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Me.deepLink }),
                 ) {
+                    // Stage 5 (global hardening): Me avatar now comes from the
+                    // persisted settings store, not the catalog default. The
+                    // store validates ids and falls back to the default on
+                    // corrupt/unknown data, so resolve() here cannot throw
+                    // for a stored value. Before this change every child
+                    // always saw "sun" in Me, even after choosing "moon".
+                    val persistedMe by settingsStore.state.collectAsStateWithLifecycle(
+                        initialValue = ShomaraSettingsSnapshot.Defaults,
+                    )
                     val facts = childName?.let {
                         com.mathlearning.feature.profile.ShomaraMeFacts(
                             childName = it,
-                            avatar = com.mathlearning.core.model.ShomaraAvatarCatalog.defaultId.let { id -> com.mathlearning.core.model.ShomaraAvatarCatalog.option(id) },
+                            avatar = com.mathlearning.feature.profile.ShomaraMeAvatarWiring.resolve(persistedMe.avatarId),
                             completedStations = completedStations,
                             totalStations = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT,
                         )

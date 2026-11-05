@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import com.mathlearning.core.designsystem.ShomaraCharacter
@@ -109,7 +110,8 @@ fun ShomaraPathScreen(
     val completedCount = progress.completedStationIds.size
     val remainingStations = (totalStations - completedCount).coerceAtLeast(0)
     val progressFraction = if (totalStations > 0) completedCount.toFloat() / totalStations.toFloat() else 0f
-    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
+    // Stage 5: screen inset unified with Stage 4 language (24dp / 16dp).
+    Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
             verticalAlignment = Alignment.CenterVertically,
@@ -123,7 +125,7 @@ fun ShomaraPathScreen(
                 decorative = true,
             )
             Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
-                Text(text = "مسیر یادگیری", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk)
+                Text(text = "مسیر یادگیری", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
                 Text(
                     text = if (remainingStations == 0) "مسیر کامل شد" else "ایستگاه‌های باقی‌مانده: ${ShomaraDigits.toFa(remainingStations)}",
                     style = ShomaraTypography.Caption,
@@ -150,12 +152,15 @@ fun ShomaraPathScreen(
             ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ مسیر آفلاین دیده می‌شود.")
         }
         for (chapter in ShomaraChapterCatalog.All) {
-            Text(text = ShomaraChapterCatalog.labelFor(chapter), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+            Text(text = ShomaraChapterCatalog.labelFor(chapter), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2, modifier = Modifier.semantics { heading() })
             for (meta in ShomaraStationCatalog.stationsInChapter(chapter)) {
                 val state = ShomaraPathGraphLogic.stateFor(meta, progress)
                 val (container, border, content) = ShomaraPathGraphLogic.colorsFor(state)
                 val depth = if (state == ShomaraPathNodeState.Current) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft
-                val label = "${meta.workingTitle} — ${ShomaraPathGraphLogic.stateLabelFor(state)}"
+                // Stage 5 TalkBack: title and state are separate semantics
+                // (content = title, state = state label), so a locked node
+                // is announced as locked for every state, not only Current.
+                val label = meta.workingTitle
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -169,7 +174,7 @@ fun ShomaraPathScreen(
                         .semantics {
                             role = Role.Button
                             contentDescription = label
-                            if (state == ShomaraPathNodeState.Current) stateDescription = ShomaraPathGraphLogic.stateLabelFor(state)
+                            stateDescription = ShomaraPathGraphLogic.stateLabelFor(state)
                         }
                         .clickable(role = Role.Button) { onStationTap(meta.id) }
                         .padding(ShomaraTokens.Space12),

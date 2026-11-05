@@ -86,9 +86,10 @@ fun ShomaraLessonHost(
         closeState = ShomaraLessonBackLogic.onBack(closeState)
     }
 
+    // Stage 5: screen inset unified with Stage 4 language (24dp / 16dp).
     Column(
-        modifier = modifier.fillMaxSize().padding(ShomaraTokens.Space16),
-        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+        modifier = modifier.fillMaxSize().padding(ShomaraTokens.Space24),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
         ShomaraProgressBar(state = ShomaraProgressState())
         ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)

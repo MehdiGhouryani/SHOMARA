@@ -23,6 +23,7 @@ import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
 import com.mathlearning.core.designsystem.ShomaraPagePlaceholder
+import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraAvatarOption
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
@@ -47,6 +48,23 @@ data class ShomaraMeFacts(
 
     fun progressLine(): String =
         ShomaraDigits.toFa(completedStations) + " از " + ShomaraDigits.toFa(totalStations) + " ایستگاه کامل شده"
+}
+
+/**
+ * Stage 5 wiring resolver (family 14): the Me tab shows the PERSISTED
+ * avatar choice, not the catalog default. The settings store already
+ * validates ids; an unknown id (e.g. a catalog change) falls back to
+ * the default instead of crashing the Me surface. This is the pure
+ * function the "moon survives relaunch" test covers; the host reads
+ * the same store, so a saved choice flows host -> facts -> label.
+ */
+object ShomaraMeAvatarWiring {
+    fun resolve(persistedAvatarId: String): ShomaraAvatarOption =
+        try {
+            ShomaraAvatarCatalog.option(persistedAvatarId)
+        } catch (e: IllegalArgumentException) {
+            ShomaraAvatarCatalog.option(ShomaraAvatarCatalog.defaultId)
+        }
 }
 
 object ShomaraMeLogic {
@@ -98,11 +116,10 @@ fun ShomaraMeScreen(
                     Column {
                         Text(text = f.childName, style = ShomaraTypography.Title, color = ShomaraTokens.ColorPrimaryDark)
                         Text(text = f.progressLine(), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
-                        // The avatar preset was carried in facts but never rendered.
-                        // Rendered here as its label only. NOTE: the shell host
-                        // currently passes the default preset (sun) for every
-                        // child; wiring the persisted choice into Me is an open
-                        // item in STAGE4_IMPLEMENTATION_NOTE.md, not claimed here.
+                        // Stage 5: the shell host now passes the persisted
+                        // settings choice (see ShomaraMeAvatarWiring), so this
+                        // label is the saved choice once the store has emitted
+                        // its first real value, not a hard-coded default.
                         Text(text = "آواتار من: " + f.avatar.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
                     }
                 }

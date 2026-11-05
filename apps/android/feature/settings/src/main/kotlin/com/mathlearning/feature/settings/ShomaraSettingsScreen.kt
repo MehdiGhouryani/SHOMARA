@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -94,7 +93,12 @@ fun ShomaraSettingsScreen(
     Column(modifier = modifier.fillMaxWidth().padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         Text(text = ShomaraSettingsStrings.AvatarSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-        Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+        // Stage 5, 200%-font fix: the row fills the width and each tile
+        // takes an equal weight with a MINIMUM height of 72dp instead of
+        // a fixed 72dp size, so at 200% font the tile grows taller rather
+        // than clipping its label. Width at 360dp stays ~76dp (360 - 32
+        // insets - 24 gaps, / 4), so no target drops below 48dp.
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
             for (option in ShomaraAvatarCatalog.Options) {
                 val equipped = option.id == state.avatarId
                 AvatarTile(option = option, equipped = equipped, onEquip = onAvatarSelect)
@@ -132,7 +136,8 @@ private fun AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, 
     val border = if (equipped) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine
     Column(
         modifier = Modifier
-            .size(ShomaraTokens.ComponentNodeSize)
+            .weight(1f)
+            .heightIn(min = ShomaraTokens.ComponentNodeSize)
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .border(
                 if (equipped) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
