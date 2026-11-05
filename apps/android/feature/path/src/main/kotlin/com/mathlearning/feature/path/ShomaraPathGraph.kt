@@ -54,7 +54,6 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
@@ -504,8 +503,9 @@ private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
  * and the title, station line and visible state label sit under it. The whole item is
  * offset by the sine wave, so the nodes snake across the screen instead of a flat list.
  * Triple encoding, never colour alone: node circle (shape + colour), visible state label,
- * and the TalkBack label on the merged node. Only the Current node uses Featured depth
- * (border + Clay shadow); every other node stays flat.
+ * and the TalkBack label on the merged node. ADR-0040: every node carries a 3D bottom edge
+ * (Clay shadow — Soft for every node, Featured for the Current one); only the Current node
+ * is Featured, so the one-Featured-per-viewport rule still holds.
  */
 @Composable
 private fun ShomaraPathNodeItem(
@@ -586,8 +586,9 @@ private fun ShomaraPathNodeItem(
     }
 }
 
-/** The node circle itself (72 dp, 84 dp for the one Current node). Only the Current
- * node uses Featured depth (border + Clay shadow); every other node stays flat. */
+/** The node circle itself (72 dp, 84 dp for the one Current node). ADR-0040: every node
+ * carries the 3D bottom edge (Clay shadow) — Soft elevation for every node, Featured
+ * elevation for the Current node; no node is flat. */
 @Composable
 private fun ShomaraPathNodeCircle(
     meta: StationNodeMeta,
@@ -598,9 +599,10 @@ private fun ShomaraPathNodeCircle(
     content: Color,
 ) {
     val depth = if (state == ShomaraPathNodeState.Current) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft
+    val shadowElevation = if (state == ShomaraPathNodeState.Current) ShomaraTokens.ClayFeaturedElevation else ShomaraTokens.ClaySoftElevation
     Box(
         modifier = Modifier
-            .then(if (state == ShomaraPathNodeState.Current) Modifier.shadow(ShomaraTokens.ClayFeaturedElevation, CircleShape) else Modifier)
+            .shadow(shadowElevation, CircleShape)
             .size(nodeSize)
             .background(container, CircleShape)
             .border(
@@ -646,8 +648,10 @@ private fun ShomaraCurrentNodeRing(fraction: Float, modifier: Modifier = Modifie
             style = Stroke(width = strokePx),
         )
         if (fraction > 0f) {
-            val segment = 14.dp.toPx()
-            val gap = 8.dp.toPx()
+            // Dash lengths come from spacing tokens only (the design-system guard
+            // rejects raw dp literals); 12dp segments with 8dp gaps.
+            val segment = ShomaraTokens.Space12.toPx()
+            val gap = ShomaraTokens.Space8.toPx()
             drawArc(
                 color = fillColor,
                 startAngle = -90f,

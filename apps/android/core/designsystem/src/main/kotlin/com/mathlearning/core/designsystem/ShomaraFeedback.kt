@@ -81,17 +81,31 @@ fun ShomaraFeedbackBanner(
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // Checklist component 4 ("درست" row, partial): the correct panel carries a
+        // Checklist component 4 ("درست" row): the correct panel carries a
         // ✓ icon next to its short sentence — status is never colour alone. The
         // icon is decorative for TalkBack (cleared semantics): the banner's
         // stateDescription ("درست") already announces the kind once, so the glyph
-        // must not be read a second time. The wrong-kind icon stays open: the copy
-        // plan says ×, content-library bans red/× — neither is chosen here, so no
-        // × is rendered and the component-4 item is NOT ticked (showing the correct
-        // answer still needs O1).
+        // must not be read a second time.
+        // ADR-0040 (option B, resolving the open × conflict): the wrong-kind
+        // panel carries NO × — it carries the neutral retry mark ↺ (the same
+        // mark the card system already uses for Retry), in the same decorative
+        // pattern. The copied structure stays whole — immediate panel + the
+        // correct answer shown + a try-again action — only the "wrong" glyph
+        // changes, because the content-library rule ("neutral and encouraging,
+        // no red") is child-education-specific and older than the visual.
+        // Showing the correct answer itself still needs O1, so the
+        // component-4 item stays unticked for that part alone.
         if (kind == ShomaraFeedbackKind.Correct) {
             Text(
                 text = "✓",
+                style = ShomaraTypography.Title,
+                color = content,
+                modifier = Modifier.clearAndSetSemantics {},
+            )
+        }
+        if (kind == ShomaraFeedbackKind.Retry) {
+            Text(
+                text = "↺",
                 style = ShomaraTypography.Title,
                 color = content,
                 modifier = Modifier.clearAndSetSemantics {},
@@ -131,14 +145,27 @@ object ShomaraProgressLogic {
 
     /**
      * Controlled announcement: a single deterministic string per state (the composable sets it
-     * as stateDescription; no live region). The server-supplied fraction is rendered verbatim —
-     * the component never infers mastery.
+     * as stateDescription; no live region). ADR-0040: progress is announced in words,
+     * never as a percentage or a score — TalkBack is heard by the child, so the
+     * "no %, no score" rule covers it too. The fraction still comes only from
+     * caller state; the component never infers mastery, it only names the last
+     * completed quarter of the way.
      */
     fun announcementFor(state: ShomaraProgressState): String = when (kindFor(state)) {
-        ShomaraProgressKind.Determinate -> "پیشرفت ${ShomaraDigits.toFa(((state.fraction ?: 0f) * 100).toInt())} درصد"
+        ShomaraProgressKind.Determinate -> progressWords(state.fraction ?: 0f)
         ShomaraProgressKind.Indeterminate -> "در حال آماده‌سازی"
         ShomaraProgressKind.Paused -> "متوقف شد"
         ShomaraProgressKind.Offline -> "آفلاین؛ بعداً ادامه می‌دهیم"
+    }
+
+    /** Word bands for a determinate fraction (ADR-0040): the last completed quarter. */
+    fun progressWords(fraction: Float): String = when {
+        fraction <= 0f -> "هنوز شروع نشده"
+        fraction < 0.25f -> "در ابتدای راه"
+        fraction < 0.5f -> "یک‌چهارم راه"
+        fraction < 0.75f -> "نصف راه"
+        fraction < 1f -> "سه‌چهارم راه"
+        else -> "کامل شد"
     }
 
     /** Reduced motion stops the indeterminate animation; determinate width was never animated. */

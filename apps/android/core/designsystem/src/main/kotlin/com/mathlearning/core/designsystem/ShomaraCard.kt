@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -159,7 +159,22 @@ fun ShomaraChoiceTile(
         onClick = if (enabled) ({ onSelected(ShomaraChoiceLogic.select(listOf(id), selectedId, id)) }) else null,
         tapGuard = tapGuard,
     ) {
-        Column {
+        // ADR-0040 (Duolingo list evidence): a selected option carries a visible
+        // ✓ mark beside its label — selection is never colour alone, and the
+        // mark is decorative for TalkBack (the card already announces
+        // "انتخاب‌شده" once via stateDescription + selected=true).
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (resolvedState == ShomaraCardState.Selected) {
+                Text(
+                    text = "✓",
+                    style = ShomaraTypography.Title,
+                    color = ShomaraCardLogic.colorsFor(resolvedState).third,
+                    modifier = Modifier.clearAndSetSemantics {},
+                )
+            }
             Text(text = label, style = ShomaraTypography.Body, color = ShomaraCardLogic.colorsFor(resolvedState).third)
         }
     }

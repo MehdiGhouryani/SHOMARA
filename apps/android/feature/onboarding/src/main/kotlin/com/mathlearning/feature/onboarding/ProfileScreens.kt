@@ -2,8 +2,6 @@ package com.mathlearning.feature.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -103,32 +101,25 @@ fun ShomaraProfileScreen(
                     errorText = ShomaraProfileDraft.nameValidationError(draft.name),
                 )
             }
-            // Avatar presets from the canonical catalog (2-column grid); selection is draft-only
-            // until save, and the tile reports "انتخاب‌شده" to TalkBack via ShomaraCard semantics.
+            // Avatar presets from the canonical catalog as full-width selectable
+            // rows (Duolingo list evidence, ADR-0040): one option per row, label
+            // plus a visible ✓ mark when selected (via ShomaraChoiceTile) — the
+            // selection is never colour alone, and TalkBack reads "انتخاب‌شده".
+            // Selection is draft-only until save.
             Text(
                 text = ShomaraProfileUiStrings.AvatarSectionTitle,
                 style = ShomaraTypography.Title,
                 color = ShomaraTokens.ColorInk,
                 modifier = Modifier.fillMaxWidth(),
             )
-            ShomaraAvatarCatalog.Options.chunked(2).forEach { rowOptions ->
-                Row(
+            ShomaraAvatarCatalog.Options.forEach { option ->
+                ShomaraChoiceTile(
+                    label = option.label,
+                    selectedId = draft.avatarId,
+                    id = option.id,
+                    onSelected = { onDraftChange(draft.withAvatar(it)) },
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
-                ) {
-                    rowOptions.forEach { option ->
-                        ShomaraChoiceTile(
-                            label = option.label,
-                            selectedId = draft.avatarId,
-                            id = option.id,
-                            onSelected = { onDraftChange(draft.withAvatar(it)) },
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    if (rowOptions.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
+                )
             }
             // Grade section: the available grade is highlighted and read-only; locked grades are
             // explained warmly on tap (AGENTS rule 9) and are never selectable.

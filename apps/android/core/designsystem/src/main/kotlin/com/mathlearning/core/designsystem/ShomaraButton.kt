@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
@@ -140,9 +141,16 @@ fun ShomaraButton(
     // enabled=false, so quiet states skip the clickable modifier entirely
     // (found by the instrumented N08-02 semantics tests).
     val interactive = ShomaraButtonLogic.isEnabled(state)
+    // ADR-0040: the computed clay depth is rendered, never logic-only. The token
+    // shadow is the 3D bottom edge the Duolingo evidence shows on every primary
+    // button (Soft by default, Hint when pressed, Flat — 0 elevation, no shadow —
+    // when disabled/loading, and Flat for Ghost by design). The elevation comes
+    // only from the clay spec, so no raw size ever enters this file.
+    val depthElevation = ShomaraClay.specFor(depth).elevation
     Box(
         modifier = modifier
             .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget, minHeight = ShomaraButtonLogic.minHeight())
+            .shadow(depthElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics(mergeDescendants = true) {
                 role = Role.Button

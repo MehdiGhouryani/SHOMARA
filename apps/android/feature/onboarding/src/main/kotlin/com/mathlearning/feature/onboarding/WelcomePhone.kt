@@ -2,10 +2,8 @@ package com.mathlearning.feature.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -92,9 +90,12 @@ fun ShomaraWelcomeScreen(
     title: String = ShomaraOnboardingStrings.WelcomeTitle,
     body: String = ShomaraOnboardingStrings.WelcomeBody,
 ) {
-    // Duolingo-inspired interaction pattern (principles ONLY, per design/INSPIRATION_GUARDRAILS):
-    // a breathing content zone and ONE primary CTA anchored at the bottom — always reachable
-    // without scrolling, never floating mid-screen.
+    // Duolingo welcome structure (ADR-0039 structure copy, ADR-0040): a
+    // breathing content zone centred in the upper area — character, title and
+    // one line of body — with ONE primary CTA anchored at the bottom, always
+    // reachable without scrolling, never floating mid-screen. No text changed
+    // here: the canonical welcome wording is still DRAFT (see
+    // design/playbook/CANONICAL_TEXTS_DRAFT_FA.md) and needs owner approval.
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -107,9 +108,8 @@ fun ShomaraWelcomeScreen(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16, Alignment.CenterVertically),
         ) {
-            Spacer(modifier = Modifier.height(ShomaraTokens.Space32))
             // Family 01 (Stage 1): a small, static character — Lesson slot (84dp),
             // not the 180dp Hero. The hero of this screen is the welcome
             // message and the single CTA, not the artwork.

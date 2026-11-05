@@ -103,12 +103,23 @@ class ShomaraPrimitives04Test {
     }
 
     @Test
-    fun `progress announcements are deterministic and rendered verbatim from caller state`() {
-        assertEquals("پیشرفت ۴۰ درصد", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.4f)))
-        assertEquals("پیشرفت ۱۰۰ درصد", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 1f)))
+    fun `progress announcements are deterministic word bands, never a percentage`() {
+        // ADR-0040 amends the contract: TalkBack progress is announced in words
+        // (the last completed quarter), never as a percentage or a score.
+        assertEquals("یک‌چهارم راه", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.4f)))
+        assertEquals("کامل شد", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 1f)))
+        assertEquals("هنوز شروع نشده", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0f)))
+        assertEquals("در ابتدای راه", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.1f)))
+        assertEquals("نصف راه", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.6f)))
+        assertEquals("سه‌چهارم راه", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.9f)))
         assertEquals("در حال آماده‌سازی", ShomaraProgressLogic.announcementFor(ShomaraProgressState()))
         assertEquals("متوقف شد", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.2f, paused = true)))
         assertEquals("آفلاین؛ بعداً ادامه می‌دهیم", ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.2f, offline = true)))
+        // No determinate announcement ever carries a percentage word or a score.
+        for (fraction in listOf(0f, 0.1f, 0.4f, 0.6f, 0.9f, 1f)) {
+            val announcement = ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = fraction))
+            assertFalse(announcement.contains("درصد"))
+        }
     }
 
     @Test
