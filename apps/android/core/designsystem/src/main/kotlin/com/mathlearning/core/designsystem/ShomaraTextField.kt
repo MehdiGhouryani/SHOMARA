@@ -162,7 +162,12 @@ fun ShomaraTextField(
             // into the owned editing state — without this the field keeps showing the old
             // text after the caller has cleared it.
             LaunchedEffect(value) {
-                if (editableState.text.toString() != value) editableState.setTextAndPlaceCursorAtEnd(value)
+                // foundation 1.12.0 has no setTextAndPlaceCursorAtEnd; the equivalent is an
+                // edit block that replaces the whole buffer and moves the cursor to the end.
+                if (editableState.text.toString() != value) editableState.edit {
+                    replace(0, length, value)
+                    placeCursorBeforeCharAt(value.length)
+                }
             }
             LaunchedEffect(editableState.text) {
                 val text = editableState.text.toString()

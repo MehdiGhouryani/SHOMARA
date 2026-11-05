@@ -1,1 +1,58 @@
-IyBTSE9NQVJBIGluc3BpcmF0aW9uIGd1YXJkcmFpbHMKCtin24zZhiDYs9mG2K8g2KrYsdis2YXZh9mUINmF2YbYp9io2Lkg2KfZhNmH2KfZhSDYqNmHINiq2LXZhduM2YXigIzZh9in24wg2YLYp9io2YQg2KfYrNix2KfYs9iqLiDZhdmG2KjYuSDYrdmC24zZgtiqINio2LXYsduMINmH2YXahtmG2KfZhiBgZGVzaWduL01BU1RFUi5tZGAg2YggdG9rZW7Zh9in24wgY2Fub25pY2FsINmH2LPYqtmG2K/YmyDZh9uM2oYg2YXZhtio2Lkg2KjbjNix2YjZhtuMINio2YcgcnVudGltZSDbjNinIGJ1aWxkINmI2KfYqNiz2Krar9uMINin24zYrNin2K8g2YbZhduM4oCM2qnZhtivLgoKIyMg2KrZgtiv2YUg2KrYtdmF24zZheKAjNmH2KcKCtin24zZhdmG24wg2qnZiNiv2qnYjCDZgtix2KfYsdiv2KfYryDZhdit2LXZiNmEINmIINio2LPYqtmH2ZQg2YXYrdiq2YjYp9uMINmG2LPYrtmH4oCM2K/Yp9ixINmF2K3ZhNuMICsg2KfYsdiy24zYp9ioINmF2K3ZhNuMIChBRFItMDAzOSkg4oaQINmF2K3YqtmI2KfbjCDYqtij24zbjNiv2LTYr9mHIOKGkCBEZXNpZ24gU3lzdGVtIFNIT01BUkEg4oaQINin2LXZiNmEINin2YTZh9in2YUgKNqp2b7bjCDYs9in2K7Yqtin2LEg2K/ZiNmE24zZhtqv2YjYjCDZhtmHINio2LHZhtivKSDihpAg2LPZhNuM2YLZh9mUINi12YHYrdmHLgoK2Kfar9ixINin2YTZh9in2YUg2KjYpyDYr9iz2KrYsdiz4oCM2b7YsNuM2LHbjNiMINmI2LbZiNitINii2YXZiNiy2LTbjNiMINmB2KfYsdiz24wvUlRMINuM2Kcg2YLYsdin2LHYr9in2K8g2K/Yp9mF2YbZhyDYqti52KfYsdi2INiv2KfYtNiq2Iwg2qnZhtin2LEg2q/YsNin2LTYqtmHINmF24zigIzYtNmI2K8uCgoKPiDZh9mF4oCM2q/Yp9mF4oCM2LPYp9iy24wg2KjYpyBBRFItMDAzOSAo27LbsNuy27Yt27HbsS3bsNu1KTog2YXYsdis2Lkg2K3ZgtuM2YLYqtiMINio2LPYqtmH2ZQg2YXYrdiq2YjYp9uMINmG2LPYrtmH4oCM2K/Yp9ix2IwgY2hlY2tzdW3Yr9in2LEg2Ygg2KfZhdi22KfYtNiv2Ycg2K/Yp9iu2YQgQVBLICsg2KfYsdiy24zYp9ioINmF2K3ZhNuMINin2LPYqtibINiz2KfYrtiq2KfYsSDZiCDYsdmB2KrYp9ixINiv2YjZhNuM2Ybar9mIINmF2K/ZhCBVSSDYp9iz2KrYjCDYqNix2YbYryDaqdm+24wg2YbZhduM4oCM2LTZiNivLiDYqti12YXbjNmF4oCM2YfYp9uMINio2KfYsiDZhdin2YTaqSAo2KfbjNmG2KzYpyDYp9mG2KrYrtin2Kgg2YbYtNiv2YfigIzYp9mG2K8pOiBPMSDZhdiv2YQgYW5zd2VyIGtleSDigJQgKNuxKSDaqdmE24zYryDYr9ixIEFQSyDYr9in2K7ZhCDZhNin24zZh9mUINin2LHYstuM2KfYqCDYrNiv2Kfar9in2YbZh9ibICjbsikg2KfYsdiy24zYp9ioINio2K/ZiNmGINqp2YTbjNivINmC2KfYqNmE4oCM2KfYs9iq2K7Ysdin2KzYjCDYp9ir2KjYp9iq4oCM2LTYr9mHINio2LHYp9uMINmH2LEg2YLYp9mE2KjYmyAo27MpINin2LHYstuM2KfYqCDYp9iyINm+2KfYsdin2YXYqtix2YfYp9uMINii24zYqtmFINiv2LEg2LLZhdin2YYg2KfYrNix2KcuIE8yINmB2LHZhdiqINio2LPYqtmHIOKAlCDZvtuM2LTZhtmH2KfYryBBRFItMDAzOSDCp9u0IChtYW5pZmVzdC5qc29uICsgc3RhdGlvbnMvKi5qc29uICsgYXVkaW8vKi5vcHVzICsgaW1hZ2VzLyoud2VicNibINiz2Ycg2YXYr9mEICsg2YTYp9uM2YfZlCDYp9ix2LLbjNin2Kgg2KzYr9in2q/Yp9mG2Ycp2Iwg2KrYp9uM24zYryDbjNinINis2KfbjNqv2LLbjNmG24wuCgojIyDZhdin2KrYsduM2LMgYWRvcHQgLyBhZGFwdCAvIHJlamVjdAoKfCDZhdmG2KjYuSB8INmF24zigIzZvtiw24zYsduM2YUgfCDYqNix2KfbjCBTSE9NQVJBINiq2LfYqNuM2YIg2YXbjOKAjNiv2YfbjNmFIHwg2LHYryDZhduM4oCM2qnZhtuM2YUgfAp8LS0tfC0tLXwtLS18LS0tfAp8IER1b2xpbmdvIHwgbGVhcm5pbmctYnktZG9pbmfYjCBtaWNyby1sb29w2IwgZmVlZGJhY2sg2YHZiNix24zYjCBoaWVyYXJjaHkg2LHZiNi02YbYjCBjcmFmdCDZiCBjb25zaXN0ZW5jeSB8INqp2b7bjCDYs9in2K7Yqtin2LEg2Ygg2LHZgdiq2KfYsSAo2YXYs9uM2LEg2YXYp9ix2b7bjNqG2Iwg2K3ZhNmC2YfZlCDYr9ix2LPYjCDYqNin2LLYrtmI2LHYryDZgdmI2LHbjCkg2KjYpyDYqti32KjbjNmCIFJUTCDZgdin2LHYs9uM2Jsg2KzZhNiz2YfZlCDaqdmI2KrYp9mHINio2K/ZiNmGINin2YLYqti12KfYryDYp9i52KrbjNin2K/YotmI2LHYmyBhc3Nlc3NtZW50INii2LHYp9mF4oCM2KrYsSDYp9iyIHRlYWNoaW5nIHwg2qnZvtuMINio2LHZhtivICjZhNmI2q/ZiNiMINis2LrYr9iMINix2Ybary/ZgdmI2YbYqi/Zhdiq2YYg2KjYsdmG2K/YjCBhc3NldCnYjCBsaXZlc9iMIHN0cmVhayDYqtmG2KjbjNmH24zYjCBsZWFkZXJib2FyZCDZiCBjdXJyZW5jeSB8CnwgQVZBIHwg2K/Ysdiz4oCM2KLZhdmI2K7YqtmH4oCM2YfYp9uMINmF2LnZhdin2LHbjNiMINmB2LHYp9uM2YbYryBRQSDZiCDYqtmB2qnbjNqpINmF2K3YqtmI2Kcg2KfYsiBydW50aW1lIHwg2YHZgti3INm+2LMg2KfYsiDYqti32KjbjNmCINio2Kcg2YLYsdin2LHYr9in2K/Zh9in24wgU0hPTUFSQSB8INqp2K/YjCBhc3NldNiMINmH2YjbjNiq2Iwg2YbYp9mF4oCM2q/YsNin2LHbjCDbjNinINix2YHYqtin2LEg2YbYp9iz2KfYstqv2KfYsSDYqNinIFNIT01BUkEgfAp8IFVJL1VYIFBybyBNYXggfCBkZXNpZ24tc3lzdGVtLWZpcnN02Iwg2KfZhtiq2K7Yp9ioINii2q/Yp9mH2KfZhtmH2ZQgcGF0dGVybi9zdHlsZS90eXBlL21vdGlvbtiMINir2KjYqiBhbnRpLXBhdHRlcm4g2YggcHJlLWRlbGl2ZXJ5IHJldmlldyB8INis2LPYquKAjNmI2KzZiNuMINqv2LLbjNmG2YfigIzZh9inINio2YcgZGVjaXNpb24gcmVjb3JkINiv2KfYrtmE24wg2YggdG9rZW7Zh9in24wg2YXZiNis2YjYryDZhdit2K/ZiNivINmF24zigIzYtNmI2K8gfCDZhti12KggZ2VuZXJhdG9y2IwgcGFsZXR0ZS9mb250INiq2LXYp9iv2YHbjNiMIGRlcGVuZGVuY3kg24zYpyBvdmVycmlkZSDZhdmG2KjYuSBjYW5vbmljYWwgfAp8IENsYXltb3JwaGlzbSB8INi52YXZgiDYqNix2KfbjCBoaWVyYXJjaHnYjCDYs9i32K0g2YTZhdiz24zYjCBwcmVzcyBmZWVkYmFjayDZiCBmb2N1cyB8IGNsYXkg2YXYrdiv2YjYryDZiCBzZW1hbnRpY9ibIGFzc2Vzc21lbnQg2KrYrtiq4oCM2KrYsSDZiCDYotix2KfZheKAjNiq2LEgfCBibHVyINmB2LHYp9qv24zYsdiMINiz2KfbjNmH2ZQg2qnZheKAjNqp2YbYqtix2KfYs9iq2IwgZGVwdGgg2LHZiNuMINmF2KrZhtiMIGNvbnRhaW5lciDYqNix2KfbjCDZh9mF2YfigIzahtuM2LIgfAoKIyMgZGVzaWduIGRpYWxzINm+24zYtOKAjNmB2LHYtgoK2KfbjNmGINin2LnYr9in2K8gcmVxdWlyZW1lbnQg2KjYtdix24wg2YbbjNiz2KrZhtiv2Jsg2YbZgti32YfZlCDYtNix2YjYuSByZXZpZXcg2YfYs9iq2YbYryDZiCDZh9ixINin2YbYrdix2KfZgSDYqNin24zYryDYr9mE24zZhCDYr9in2LTYqtmHINio2KfYtNivLgoKfCDYs9i32K0gfCBWYXJpYW5jZSB8IE1vdGlvbiB8IERlbnNpdHkgfCDYqtmI2LbbjNitIHwKfC0tLXwtLS06fC0tLTp8LS0tOnwtLS18CnwgdGVhY2hpbmcvZGlzY292ZXJ5IHwgNS8xMCB8IDQvMTAgfCAzLzEwIHwg24zaqSBtYW5pcHVsYXRpdmUg2KjYsdis2LPYqtmH2Iwg2K3Ysdqp2Kog2qnZiNiq2KfZhyDZiCDZgdi22KfbjCDYqtmG2YHYsyDYstuM2KfYryB8CnwgZ3VpZGVkIHByYWN0aWNlIHwgNC8xMCB8IDMvMTAgfCA0LzEwIHwg2KrZhdix2qnYsiDYsdmI24wgdGFzayDZiCBmZWVkYmFja9iMIGRlY29yYXRpb24g2YXYrdiv2YjYryB8CnwgYXNzZXNzbWVudCB8IDIvMTAgfCAyLzEwIHwgMy8xMCB8INqp2YXYqtix24zZhiDYrdmI2KfYs+KAjNm+2LHYqtuM2Jsgb2JqZWN0INix24zYp9i224wgaGVybyDYp9iz2KogfAp8IGNoaWxkIHNoZWxsL3BhdGggfCA0LzEwIHwgMy8xMCB8IDQvMTAgfCDZhdiz24zYsSDZgtin2KjZhCDZgdmH2YXYjCBoaWVyYXJjaHkg2KvYp9io2KrYjCDZiNi22LnbjNiqINmC2YHZhCDYsdmI2LTZhiB8CnwgcGFyZW50L3NldHRpbmdzIHwgMi8xMCB8IDIvMTAgfCA1LzEwIHwg2qnYp9ix2KjYsdiv24zYjCDZhdiq2YbbjOKAjNiq2LEg2Ygg2KjYr9mI2YYgY2xheSDYqtiy2KbbjNmG24wgfAoKIyMg2KrYtdmF24zZhSDYp9is2KjYp9ix24wg2YLYqNmEINin2LIgVUkKCtio2LHYp9uMINmH2LEgcm91dGUg24zYpyBjb21wb25lbnQg2YXZiNin2LHYryDYstuM2LEg2LHYpyDYr9ixIHJldmlldyBjYXJkINir2KjYqiDaqdmGOgoKMS4gb3V0Y29tZSDaqdmI2K/aqSDZiCBzdGF0ZSDYr9mC24zZgtibCjIuIGZvY2FsIG9iamVjdCDZiCDYqtmG2YfYpyBDVEEg2KfYtdmE24zYmwozLiDYp9i32YTYp9i52KfYqtuMINqp2Ycg2KjYpyB0eXBl2IwgY29sb3LYjCBzaGFwZSDZiCBkZXB0aCDZhdmG2KrZgtmEINmF24zigIzYtNmI2YbYr9ibCjQuIHN0YXRl2YfYp9uMIGxvYWRpbmcvb2ZmbGluZS9lcnJvci9lbXB0eS9kaXNhYmxlZC9wcmVzc2VkL3NlbGVjdGVk2JsKNS4g2YbZgti0IENsYXkg2Ygg2K/ZhNuM2YQg2YjYrNmI2K8g2YfYsSBkZXB0aCB0aWVy2JsKNi4gYW50aS1wYXR0ZXJu2YfYp9uMINmF2K7Yqti1INi12YHYrdmH2JsKNy4g2KfYq9ixINmB2KfYsdiz24wvUlRM2IwgbWF0aCBkaXJlY3Rpb27YjCBUYWxrQmFjayDZiCBmb250IHNjYWxl2JsKOC4gZXZpZGVuY2Ug2YTYp9iy2YUg2KjYsdin24wg2KfYr9i52KfbjCDZvtuM2KfYr9mH4oCM2LPYp9iy24wg24zYpyDYotiy2YXZiNmGLgoKIyMg2KLYstmF2YjZhiDCq9it2LDZgSDaqdmGINmIINio2KjbjNmGwrsKCtmH2LEgZGVjb3JhdGlvbtiMIGNhcmQg24zYpyBhbmltYXRpb24g2LHYpyDZhdmI2YLYqtin2Ysg2K3YsNmBINqp2YYuINin2q/YsSB0YXNrINmI2KfYttit4oCM2KrYsSDbjNinINiv2LPYqtix2LPigIzZvtiw24zYsdiq2LEg2LTYr9iMINii2YYg2LnZhti12LEg2KjYsdmG2YXbjOKAjNqv2LHYr9ivLiDYp9qv2LEgaGllcmFyY2h5INin2LIg2KjbjNmGINix2YHYqtiMINi52YbYtdixINio2KfbjNivINio2KcgdG9rZW4gc2VtYW50aWMg2Ygg2qnZhdiq2LHbjNmGINi02K/YqiDZhNin2LLZhSDYqNin2LLar9ix2K/Yry4KCiMjINmF2YbYp9io2Lkg2b7amNmI2YfYtNuM2Iwg2YbZhyBkZXBlbmRlbmN5CgotIFVJL1VYIFBybyBNYXg6IGBodHRwczovL2dpdGh1Yi5jb20vbmV4dGxldmVsYnVpbGRlci91aS11eC1wcm8tbWF4LXNraWxsYAotIER1b2xpbmdvIGRlc2lnbiBjcmFmdDogYGh0dHBzOi8vYmxvZy5kdW9saW5nby5jb20vY29yZS10YWJzLXJlZGVzaWduL2AKLSBXM0MgYWNjZXNzaWJpbGl0eSBndWlkYW5jZTogYGh0dHBzOi8vd3d3LnczLm9yZy9UUi93Y2FnMy9gCgrZh9uM2oYg2YbYs9iu2YfYjCDYotmF2KfYsdiMIHBhbGV0dGUg24zYpyBzbmlwcGV0INiu2KfYsdis24wg2K/YsSDYp9uM2YYg2LPZhtivINmC2LHYp9ix2K/Yp9ivIHJ1bnRpbWUg2YXYrdiz2YjYqCDZhtmF24zigIzYtNmI2K8uCg==
+# SHOMARA inspiration guardrails
+
+این سند ترجمهٔ منابع الهام به تصمیم‌های قابل اجراست. منبع حقیقت بصری همچنان `design/MASTER.md` و tokenهای canonical هستند؛ هیچ منبع بیرونی به runtime یا build وابستگی ایجاد نمی‌کند.
+
+## تقدم تصمیم‌ها
+
+ایمنی کودک، قرارداد محصول و بستهٔ محتوای نسخه‌دار محلی + ارزیاب محلی (ADR-0039) ← محتوای تأییدشده ← Design System SHOMARA ← اصول الهام (کپی ساختار دولینگو، نه برند) ← سلیقهٔ صفحه.
+
+اگر الهام با دسترس‌پذیری، وضوح آموزشی، فارسی/RTL یا قرارداد دامنه تعارض داشت، کنار گذاشته می‌شود.
+
+
+> هم‌گام‌سازی با ADR-0039 (۲۰۲۶-۱۱-۰۵): مرجع حقیقت، بستهٔ محتوای نسخه‌دار، checksumدار و امضاشده داخل APK + ارزیاب محلی است؛ ساختار و رفتار دولینگو مدل UI است، برند کپی نمی‌شود. تصمیم‌های باز مالک (اینجا انتخاب نشده‌اند): O1 مدل answer key — (۱) کلید در APK داخل لایهٔ ارزیاب جداگانه؛ (۲) ارزیاب بدون کلید قابل‌استخراج، اثبات‌شده برای هر قالب؛ (۳) ارزیاب از پارامترهای آیتم در زمان اجرا. O2 فرمت بسته — پیشنهاد ADR-0039 §۴ (manifest.json + stations/*.json + audio/*.opus + images/*.webp؛ سه مدل + لایهٔ ارزیاب جداگانه)، تایید یا جایگزینی.
+
+## ماتریس adopt / adapt / reject
+
+| منبع | می‌پذیریم | برای SHOMARA تطبیق می‌دهیم | رد می‌کنیم |
+|---|---|---|---|
+| Duolingo | learning-by-doing، micro-loop، feedback فوری، hierarchy روشن، craft و consistency | کپی ساختار و رفتار (مسیر مارپیچ، حلقهٔ درس، بازخورد فوری) با تطبیق RTL فارسی؛ جلسهٔ کوتاه بدون اقتصاد اعتیادآور؛ assessment آرام‌تر از teaching | کپی برند (لوگو، جغد، رنگ/فونت/متن برند، asset)، lives، streak تنبیهی، leaderboard و currency |
+| AVA | درس‌آموخته‌های معماری، فرایند QA و تفکیک محتوا از runtime | فقط پس از تطبیق با قراردادهای SHOMARA | کد، asset، هویت، نام‌گذاری یا رفتار ناسازگار با SHOMARA |
+| UI/UX Pro Max | design-system-first، انتخاب آگاهانهٔ pattern/style/type/motion، ثبت anti-pattern و pre-delivery review | جست‌وجوی گزینه‌ها به decision record داخلی و tokenهای موجود محدود می‌شود | نصب generator، palette/font تصادفی، dependency یا override منبع canonical |
+| Claymorphism | عمق برای hierarchy، سطح لمسی، press feedback و focus | clay محدود و semantic؛ assessment تخت‌تر و آرام‌تر | blur فراگیر، سایهٔ کم‌کنتراست، depth روی متن، container برای همه‌چیز |
+
+## design dials پیش‌فرض
+
+این اعداد requirement بصری نیستند؛ نقطهٔ شروع review هستند و هر انحراف باید دلیل داشته باشد.
+
+| سطح | Variance | Motion | Density | توضیح |
+|---|---:|---:|---:|---|
+| teaching/discovery | 5/10 | 4/10 | 3/10 | یک manipulative برجسته، حرکت کوتاه و فضای تنفس زیاد |
+| guided practice | 4/10 | 3/10 | 4/10 | تمرکز روی task و feedback، decoration محدود |
+| assessment | 2/10 | 2/10 | 3/10 | کمترین حواس‌پرتی؛ object ریاضی hero است |
+| child shell/path | 4/10 | 3/10 | 4/10 | مسیر قابل فهم، hierarchy ثابت، وضعیت قفل روشن |
+| parent/settings | 2/10 | 2/10 | 5/10 | کاربردی، متنی‌تر و بدون clay تزئینی |
+
+## تصمیم اجباری قبل از UI
+
+برای هر route یا component موارد زیر را در review card ثبت کن:
+
+1. outcome کودک و state دقیق؛
+2. focal object و تنها CTA اصلی؛
+3. اطلاعاتی که با type، color، shape و depth منتقل می‌شوند؛
+4. stateهای loading/offline/error/empty/disabled/pressed/selected؛
+5. نقش Clay و دلیل وجود هر depth tier؛
+6. anti-patternهای مختص صفحه؛
+7. اثر فارسی/RTL، math direction، TalkBack و font scale؛
+8. evidence لازم برای ادعای پیاده‌سازی یا آزمون.
+
+## آزمون «حذف کن و ببین»
+
+هر decoration، card یا animation را موقتاً حذف کن. اگر task واضح‌تر یا دسترس‌پذیرتر شد، آن عنصر برنمی‌گردد. اگر hierarchy از بین رفت، عنصر باید با token semantic و کمترین شدت لازم بازگردد.
+
+## منابع پژوهشی، نه dependency
+
+- UI/UX Pro Max: `https://github.com/nextlevelbuilder/ui-ux-pro-max-skill`
+- Duolingo design craft: `https://blog.duolingo.com/core-tabs-redesign/`
+- W3C accessibility guidance: `https://www.w3.org/TR/wcag3/`
+
+هیچ نسخه، آمار، palette یا snippet خارجی در این سند قرارداد runtime محسوب نمی‌شود.

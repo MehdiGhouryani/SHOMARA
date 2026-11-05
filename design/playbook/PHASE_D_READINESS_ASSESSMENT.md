@@ -1,1 +1,47 @@
-IyBQaGFzZSBEIHJlYWRpbmVzcyBhc3Nlc3NtZW50IOKAlCB3aGF0IHdhcyBkb25lIGFuZCB3aGF0IHdhcyBub3QgKDIwMjYtMTEtMDUpCgpTY29wZTogUGhhc2UgRCAoZmFtaWxpZXMgMDEsIDAyLCAwNCwgMDcsIDExLCAxMiwgMTMsIDE0LCAxNSwgMTYsIDE3KSBhZnRlciB0aGUKQURSLTAwMzkgZG9jIHN5bmMgKGNvbW1pdCBhMmY2OTQxKS4gU291cmNlIG9mIHZlcmRpY3RzOgpgfi93b3Jrc3BhY2Uvc2hvbWFyYS1kZXNpZ24tcmVhZGluZXNzL1NUQUdFX0NBUkRTX0ZBLm1kYCAoZmFtaWx5IGNhcmRzKSBhbmQKYERFU0lHTl9SRUFESU5FU1NfRkEubWRgLiBObyBjb2RlIHdhcyBjaGFuZ2VkIGluIHRoaXMgYXNzZXNzbWVudCBleGNlcHQgdGhlClA4IHJlZ2lzdHJ5IHJvdyBiZWxvdzsgbm8gZ2F0ZSB3YXMgcnVuOyBubyBQQVNTIGlzIGNsYWltZWQuCgojIyBEb25lIGluIHRoaXMgYmF0Y2gKCi0gKipQOCBhZGRlZCB0byBgZGVzaWduL3BsYXlib29rL0lNQUdFX1JFR0lTVFJZLm1kYCoqIChQRU5ESU5HX09XTkVSLCByb3cgb25seSwKICBubyBpbWFnZSk6IG1hbmlwdWxhdGl2ZSBpY29ucyBmb3IgdGVtcGxhdGVzIFQwMeKAk1QxNSwgV2ViUCB3aXRoIGFscGhhCiAgODAweDgwMCwgb25lIGljb24gcGVyIHRlbXBsYXRlLCBubyB0ZXh0L251bWJlcnMvY2hhcmFjdGVycy9yZXdhcmQgbW90aWZzLgogIEVhY2ggaWNvbiBtdXN0IGRlcGljdCBleGFjdGx5IGl0cyBvd24gdGVtcGxhdGUncyBtYW5pcHVsYXRpdmUgYW5kIGlzCiAgY2hlY2tlZCBhZ2FpbnN0IHRoZSB0ZW1wbGF0ZSBzcGVjIGJlZm9yZSBhcHByb3ZhbC4gR2VuZXJhdGlvbiBjYW5kaWRhdGUKICB3aXRoIHRoYXQgcGVyLXRlbXBsYXRlIGNoZWNrLiBObyBpY29uIHNoaXBzIHVudGlsIGl0cyB0ZW1wbGF0ZSdzCiAgbWFuaXB1bGF0aXZlIGlzIGRlZmluZWQgaW4gYXBwcm92ZWQgY29udGVudCAodG9kYXkgb25seSBTVDA3J3MgdGVtcGxhdGVzCiAgYXJlIHNwZWNjZWQpLgoKIyMgRmFtaWxpZXMgY2hlY2tlZCDigJQgbm8gY29kZSBjaGFuZ2UsIHdpdGggcmVhc29uCgp8IEZhbWlseSB8IENhcmQgdmVyZGljdCB8IFdoeSBubyBjb2RlIGNoYW5nZSBub3cgfAp8LS0tfC0tLXwtLS18CnwgMDEgTGF1bmNoL1dlbGNvbWUgfCDil5AgaGFsZi1yZWFkeSB8IFdlbGNvbWUgdGV4dCBub3QgY2Fub25pY2FsIChvd25lciBhcHByb3ZhbCkgKyBsb2NhbCBzZXNzaW9uIG1vZGVsIGlzIFBoYXNlIDIgfAp8IDAyIE9uYm9hcmRpbmcgfCDil5AgaGFsZi1yZWFkeSB8IFRleHRzICsgY2FsaWJyYXRpb24gaXRlbXMgbm90IHJlYWR5IHwKfCAwNCBQcm9maWxlIHNldHVwIHwg4peQIGhhbGYtcmVhZHkgfCBRdWVzdGlvbiB0ZXh0cyArIGxvY2FsIHByb2ZpbGUgbW9kZWwgbm90IHJlYWR5IHwKfCAwNyBTdGF0aW9uIHN0YXJ0IHwg4peQIGhhbGYtcmVhZHkgfCBSZWFsIGFpbS9tZXRhZGF0YSBub3QgcmVhZHkgKENPTlRFTlQtMDA0KSArIGNvbm5lY3Rpb24gdG8gbG9jYWwgcHJvZ3Jlc3MgbmVlZHMgUGhhc2UgMSB8CnwgMTEgUmVjb3ZlcnkvUmVzdWx0IHwg4peQIGhhbGYtcmVhZHkgfCBSZXN1bHQgc3VyZmFjZSBleGlzdHMgKFN0YWdlIDMpOyBpbi1sZXNzb24gZmVlZGJhY2sgcGFuZWwsICJ3aGF0IHdhcyBwcmFjdGlzZWQiLCAid2h5PyIsIGFuZCBtaXN0YWtlIHJldmlldyBuZWVkIFBoYXNlIEIgLyBsb2NhbCBwYWNrYWdlIGNvbnRlbnQgfAp8IDEyIFByYWN0aWNlIHRhYiB8IOKXkCBoYWxmLXJlYWR5IHwgSHViIHN0cnVjdHVyZSBleGlzdHMgKFN0YWdlIDQpOyByZWFsIHByYWN0aWNlIGNvbnRlbnQgKyAibXkgbWlzdGFrZXMiIG5lZWQgUGhhc2UgMSB8CnwgMTMgQ2hhbGxlbmdlIHwg4peQIGhhbGYtcmVhZHkgfCBJbnRybyBleGlzdHMgKFN0YWdlIDMpOyByb3VuZCArIGNvbnRlbnQgbm90IHJlYWR5IChDT05URU5ULTAxNiArIFBoYXNlIEIpIHwKfCAxNCBQcm9maWxlL01lIHwg4peQIGhhbGYtcmVhZHkgfCBTdHJ1Y3R1cmUgZXhpc3RzIChTdGFnZSA0LzUpOyByZWFsIGZhY3RzIChwcm9ncmVzcyArIHNhdmVkIGF2YXRhcikgbmVlZCBQaGFzZSAxLzIgfAp8IDE1IEF2YXRhci9TZXR0aW5ncy9HdWFyZGlhbiB8IOKchSByZWFkeSB8IFN0cnVjdHVyZSwgc3RhdGUgbWFjaGluZSBhbmQgZ2F0ZSBhcmUgZG9uZSAoU3RhZ2VzIDQvNSk7IHJlbWFpbmluZyB3b3JrIGlzIGd1YXJkaWFuL1BJTiB0ZXh0cyAobm90IGNhbm9uaWNhbCDigJQgb3duZXIgYXBwcm92YWwpICsgdmVyaWZpZXIgd2lyaW5nIChQaGFzZSAyKS4gYFNob21hcmFQYXJlbnRHYXRlYCBzdGF5cyBmYWlsLWNsb3NlZCB3aXRoIGB2ZXJpZmllciA9IG51bGxgLiB8CnwgMTYgU3lzdGVtIHN0YXRlcyB8IOKchSByZWFkeSB8IGBTaG9tYXJhU3RhdGVTdXJmYWNlYCBpcyBkb25lIChTdGFnZSAxKTsgdGhlIGNvZGUgaGFzIG5vIHBlbmRpbmctc3luYyBzdGF0ZSB0byByZW1vdmUgKGVudW0gaXMgTG9hZGluZy9PZmZsaW5lL0Vycm9yL0VtcHR5IG9ubHkpLiBSZW1haW5pbmcgd29yayBpcyB0aGUgcmVkZWZpbmVkIG9mZmxpbmUgdGV4dHMgKG5vdCBjYW5vbmljYWwg4oCUIG93bmVyIGFwcHJvdmFsKSBhbmQgZGVsZXRpbmcgaW50ZXJuZXQtZGVwZW5kZW50IGNvcHkgaW4gYFNob21hcmFMYXVuY2hHYXRlYCAoUGhhc2UgMiwgcGVyIHRoZSBjYXJkKS4gfAp8IDE3IE5hdmlnYXRpb24vc2hlbGwgfCDinIUgcmVhZHkgfCBTdHJ1Y3R1cmUgY29tcGxldGUgKFN0YWdlcyAxLzUgKyBQaGFzZSBBIGZsb2F0aW5nIGJ1dHRvbik7IG9ubHkgdGhlIGRldmljZSBnYXRlIChyZWFsLWdlc3R1cmUgVGFsa0JhY2sgKyBCYWNrKSByZW1haW5zLiB8CnwgMDMgUGhvbmUvT1RQIHwg4pyFIHJlYWR5IOKAlCBhcyBkZWxldGlvbiB8IERlbGV0aW9uIGlzIFBoYXNlIDIgKGxvY2FsIGlkZW50aXR5IHJlcGxhY2VzIE9UUCk7IGRlbGV0aW5nIGl0IG5vdywgd2l0aG91dCB0aGUgbG9jYWwgcHJvZmlsZS9QSU4sIHdvdWxkIGJyZWFrIG9uYm9hcmRpbmcuIE5vdCBkb25lIGhlcmUuIHwKCkZhbWlsaWVzIDA1LCAwOCwgMDksIDEwIHdlcmUgbm90IGF0dGVtcHRlZDogdGhlaXIgY2FyZHMgc2F5ICJub3QgcmVhZHkiCigwNSBuZWVkcyBPMS9PMiArIENPTlRFTlQtMDE0LzAwMjsgMDgvMDkvMTAgbmVlZCBQaGFzZSAxIGNvbnRlbnQgKwpldmFsdWF0b3IpLiBQaGFzZSBCL0MvRSB3ZXJlIG5vdCBhdHRlbXB0ZWQ6IGJsb2NrZWQgb24gTzEgKyBPMiArIFBoYXNlIDEuCgojIyBTdGlsbCBvcGVuIChvd25lciBkZWNpc2lvbnMsIG5vdCBndWVzc2VkKQoKLSBPMSBhbnN3ZXIta2V5IG1vZGVsICgzIG9wdGlvbnMsIEFEUi0wMDM5IMKnMykgYW5kIE8yIHBhY2thZ2UgZm9ybWF0CiAgKEFEUi0wMDM5IMKnNCBwcm9wb3NhbCkg4oCUIGJsb2NrIFBoYXNlIDEgYW5kIFBoYXNlIEIuCi0gQ2Fub25pY2FsIHRleHRzIHN0aWxsIG1pc3Npbmc6IHdlbGNvbWUgdGV4dCAoMDEpLCBvbmJvYXJkaW5nL3Byb2ZpbGUKICBxdWVzdGlvbiB0ZXh0cyAoMDIvMDQpLCBndWFyZGlhbi9QSU4gdGV4dHMgKDE1KSwgcmVkZWZpbmVkIG9mZmxpbmUvZXJyb3IKICB0ZXh0cyAoMTYpLiBObyBuZXcgdXNlci1mYWNpbmcgc2VudGVuY2Ugd2FzIGludmVudGVkIGluIHRoaXMgYmF0Y2guCg==
+# Phase D readiness assessment — what was done and what was not (2026-11-05)
+
+Scope: Phase D (families 01, 02, 04, 07, 11, 12, 13, 14, 15, 16, 17) after the
+ADR-0039 doc sync (commit a2f6941). Source of verdicts:
+`~/workspace/shomara-design-readiness/STAGE_CARDS_FA.md` (family cards) and
+`DESIGN_READINESS_FA.md`. No code was changed in this assessment except the
+P8 registry row below; no gate was run; no PASS is claimed.
+
+## Done in this batch
+
+- **P8 added to `design/playbook/IMAGE_REGISTRY.md`** (PENDING_OWNER, row only,
+  no image): manipulative icons for templates T01–T15, WebP with alpha
+  800x800, one icon per template, no text/numbers/characters/reward motifs.
+  Each icon must depict exactly its own template's manipulative and is
+  checked against the template spec before approval. Generation candidate
+  with that per-template check. No icon ships until its template's
+  manipulative is defined in approved content (today only ST07's templates
+  are specced).
+
+## Families checked — no code change, with reason
+
+| Family | Card verdict | Why no code change now |
+|---|---|---|
+| 01 Launch/Welcome | ◐ half-ready | Welcome text not canonical (owner approval) + local session model is Phase 2 |
+| 02 Onboarding | ◐ half-ready | Texts + calibration items not ready |
+| 04 Profile setup | ◐ half-ready | Question texts + local profile model not ready |
+| 07 Station start | ◐ half-ready | Real aim/metadata not ready (CONTENT-004) + connection to local progress needs Phase 1 |
+| 11 Recovery/Result | ◐ half-ready | Result surface exists (Stage 3); in-lesson feedback panel, "what was practised", "why?", and mistake review need Phase B / local package content |
+| 12 Practice tab | ◐ half-ready | Hub structure exists (Stage 4); real practice content + "my mistakes" need Phase 1 |
+| 13 Challenge | ◐ half-ready | Intro exists (Stage 3); round + content not ready (CONTENT-016 + Phase B) |
+| 14 Profile/Me | ◐ half-ready | Structure exists (Stage 4/5); real facts (progress + saved avatar) need Phase 1/2 |
+| 15 Avatar/Settings/Guardian | ✅ ready | Structure, state machine and gate are done (Stages 4/5); remaining work is guardian/PIN texts (not canonical — owner approval) + verifier wiring (Phase 2). `ShomaraParentGate` stays fail-closed with `verifier = null`. |
+| 16 System states | ✅ ready | `ShomaraStateSurface` is done (Stage 1); the code has no pending-sync state to remove (enum is Loading/Offline/Error/Empty only). Remaining work is the redefined offline texts (not canonical — owner approval) and deleting internet-dependent copy in `ShomaraLaunchGate` (Phase 2, per the card). |
+| 17 Navigation/shell | ✅ ready | Structure complete (Stages 1/5 + Phase A floating button); only the device gate (real-gesture TalkBack + Back) remains. |
+| 03 Phone/OTP | ✅ ready — as deletion | Deletion is Phase 2 (local identity replaces OTP); deleting it now, without the local profile/PIN, would break onboarding. Not done here. |
+
+Families 05, 08, 09, 10 were not attempted: their cards say "not ready"
+(05 needs O1/O2 + CONTENT-014/002; 08/09/10 need Phase 1 content +
+evaluator). Phase B/C/E were not attempted: blocked on O1 + O2 + Phase 1.
+
+## Still open (owner decisions, not guessed)
+
+- O1 answer-key model (3 options, ADR-0039 §3) and O2 package format
+  (ADR-0039 §4 proposal) — block Phase 1 and Phase B.
+- Canonical texts still missing: welcome text (01), onboarding/profile
+  question texts (02/04), guardian/PIN texts (15), redefined offline/error
+  texts (16). No new user-facing sentence was invented in this batch.
