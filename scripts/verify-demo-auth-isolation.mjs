@@ -180,8 +180,11 @@ const onboardingHost = join(
 );
 if (existsSync(onboardingHost)) {
   const text = readFileSync(onboardingHost, 'utf8');
-  if (!text.includes('ShomaraSimulatedAuth.DevelopmentModeBanner')) {
-    fail('ShomaraOnboardingHost does not render the development-mode banner');
+  // OWNER DECISION (2026-11-06): the development-mode banner was removed
+  // from the onboarding surface by the owner; the label stays defined in the
+  // simulation contract, and the host must NOT render it anymore.
+  if (text.includes('ShomaraSimulatedAuth.DevelopmentModeBanner')) {
+    fail('ShomaraOnboardingHost must not render the development-mode banner (owner decision)');
   }
   if (!text.includes('ShomaraSimulatedAuth.DevelopmentCodeHint')) {
     fail('ShomaraOnboardingHost does not show the development code hint');

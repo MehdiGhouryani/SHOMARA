@@ -765,7 +765,7 @@ private fun ShomaraProfileGradeCard(
             // Owner: the grade cards run ~22% smaller than the shared row
             // height so the whole grid + CTA fit without scrolling (>=48dp
             // touch target preserved).
-            .defaultMinSize(minHeight = 56.dp)
+            .defaultMinSize(minHeight = ShomaraTokens.ComponentGradeCardH)
             .shadow(ShomaraClay.specFor(depth).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(
                 if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface,

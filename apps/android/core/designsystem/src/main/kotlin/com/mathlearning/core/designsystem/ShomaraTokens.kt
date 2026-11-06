@@ -88,6 +88,9 @@ object ShomaraTokens {
   val ComponentTrayBead = 48.dp
   val ComponentProgressH = 14.dp
   val ComponentRowH = 72.dp
+
+  /** Owner page-02: grade cards run ~22% smaller than the shared row height. */
+  val ComponentGradeCardH = 56.dp
   val ComponentTopBarH = 56.dp
   val ComponentCharacterHero = 180.dp
   val ComponentCharacterCompactWidth = 360.dp
