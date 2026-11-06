@@ -2,11 +2,14 @@ package com.mathlearning.feature.lesson
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -118,13 +121,24 @@ private fun ShomaraT01DiscoverSkeleton(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
+        // Owner page-08: the three tiles spread evenly across the width —
+        // fixed-size tiles bunched at the start read as a broken skeleton.
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                // A11y: empty skeleton slots were silent boxes; one merged
+                // description gives TalkBack the structure.
+                .semantics(mergeDescendants = true) {
+                    contentDescription = "جای گزینه‌ها"
+                },
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             repeat(3) {
                 SkeletonSlot(
-                    modifier = Modifier.size(ShomaraTokens.ComponentNodeSize),
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f),
                 )
             }
         }
@@ -143,7 +157,11 @@ private fun ShomaraT15Skeleton(modifier: Modifier = Modifier) {
     ) {
         repeat(3) {
             SkeletonSlot(
-                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = ShomaraTokens.ComponentNodeSize),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = ShomaraTokens.ComponentNodeSize)
+                    // A11y: silent empty cards get a structure description.
+                    .semantics { contentDescription = "جای پاسخ" },
             )
         }
     }
@@ -167,6 +185,9 @@ private fun ShomaraT05GameSkeleton(modifier: Modifier = Modifier) {
             color = ShomaraTokens.ColorInk,
         )
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) { contentDescription = "جای الگو" },
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -175,6 +196,9 @@ private fun ShomaraT05GameSkeleton(modifier: Modifier = Modifier) {
             }
         }
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) { contentDescription = "سینی گزینه‌ها" },
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -199,6 +223,9 @@ private fun ShomaraT05GameSkeleton(modifier: Modifier = Modifier) {
 private fun ShomaraT13Skeleton(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
+            // A11y: the tracing canvas describes its job (CONTENT-001 direction is
+            // still open, so no directional language).
+            .semantics { contentDescription = "محل نوشتن مسیر" }
             .fillMaxWidth()
             .heightIn(min = ShomaraTokens.Space40 * 6)
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
