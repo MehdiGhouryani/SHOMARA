@@ -44,8 +44,16 @@ enum class FlowEvent { LaunchFresh, LaunchWithSavedDraft, BackPressed, SaveStart
 
 /**
  * Profile draft (UI-004/UI-005): avatar selection from the canonical catalog, grade selection
- * restricted to AVAILABLE grades of the canonical catalog (locked grades are explained, never
- * selectable), and warm validation. Incomplete drafts are resumable across process death.
+ * from the canonical catalog, and warm validation. Incomplete drafts are resumable across
+ * process death.
+ *
+ * Grade rule (owner decision 2026-11-06, page 02-profile): ALL six grades are selectable —
+ * availability no longer gates selection or draft construction. The catalog's `available`
+ * flags and [ShomaraGradeCatalog.lockedReason] still describe which grades have curriculum
+ * content (only G1 today; G2-G6 content does not exist yet, Phase 3), but they are content
+ * truth, not a selection gate. The stored gradeId drives nothing downstream today (the path
+ * shows G1 content regardless of the stored grade — see the page-02 implementation note).
+ * Only an UNKNOWN grade id is rejected, at construction.
  */
 data class ShomaraProfileDraft(
     val name: String = "",
@@ -53,9 +61,8 @@ data class ShomaraProfileDraft(
     val gradeId: String = ShomaraGradeCatalog.activeDefaultId,
 ) {
     init {
-        require(ShomaraGradeCatalog.option(gradeId).available) {
-            "${ShomaraGradeCatalog.lockedReason(gradeId)}"
-        }
+        // Unknown ids only: availability no longer gates selection (owner decision 2026-11-06).
+        require(ShomaraGradeCatalog.option(gradeId).id == gradeId) { "unknown grade $gradeId" }
         require(ShomaraAvatarCatalog.option(avatarId).id == avatarId) { "unknown avatar $avatarId" }
     }
 

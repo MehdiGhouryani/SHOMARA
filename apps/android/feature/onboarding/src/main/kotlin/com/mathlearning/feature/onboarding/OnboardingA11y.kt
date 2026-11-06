@@ -37,12 +37,14 @@ object ShomaraOnboardingA11y {
             digit(3, 4),
             button(ShomaraOnboardingStrings.Back),
         )
+        // Page 02-profile (2026-11-06): the avatar rows and the body subtitle are gone; the
+        // grade section is a second heading and the CTA reads «ادامه». The six grade cards
+        // are RadioButton nodes inside the grid (not listed individually here).
         OnboardingStep.ProfileSetup -> listOf(
-            heading(ShomaraProfileStrings.PlacementTitle),
+            heading(ShomaraProfileStrings.ProfileTitle),
             field(ShomaraProfileStrings.NameLabel),
-            body(ShomaraProfileStrings.GradeLabel),
-            body(ShomaraProfileStrings.GradeOne),
-            button(ShomaraProfileStrings.Save),
+            heading(ShomaraProfileStrings.GradeSectionTitle),
+            button(ShomaraProfileStrings.Continue),
         )
         OnboardingStep.GradePlacement -> listOf(
             heading(ShomaraProfileStrings.PlacementTitle),

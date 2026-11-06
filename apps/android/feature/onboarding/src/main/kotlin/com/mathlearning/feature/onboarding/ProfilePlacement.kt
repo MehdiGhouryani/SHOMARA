@@ -7,9 +7,13 @@ object ShomaraProfileStrings {
     const val NameLabel: String = "نام کودک"
     const val NameHint: String = "مثلاً آریا"
     const val NameInvalid: String = "نام را کوتاه و بدون عدد وارد کن."
-    const val GradeLabel: String = "پایهٔ تحصیلی"
+    /** Page 02-profile title (owner-supplied, 2026-11-06; replaces PlacementTitle on this page only). */
+    const val ProfileTitle: String = "نام کودک را وارد کنید"
+    /** Page 02-profile grade section title (owner-supplied, 2026-11-06). */
+    const val GradeSectionTitle: String = "پایه تحصیلی را انتخاب کنید"
     const val GradeOne: String = "پایه اول ابتدایی"
-    const val Save: String = "ذخیره"
+    /** Page 02-profile CTA label (owner-supplied, 2026-11-06; replaces «ذخیره» as the button text). */
+    const val Continue: String = "ادامه"
     const val SaveFailed: String = "ذخیره نشد؛ دوباره تلاش می‌کنیم."
     const val SaveRetry: String = "ذخیره نشد؛ یک بار دیگر امتحان کن."
     const val PlacementSkip: String = "فعلاً رد می‌کنم"
