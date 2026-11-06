@@ -918,11 +918,11 @@ private fun ShomaraPhoneLeaves(
 /**
  * The page-03 CTA: one big green pill, exactly the Primary button's colours,
  * Clay depth, tap guard and disabled states — pill-shaped with the drawn
- * arrow, mirroring [ShomaraProfileCta] on page 02 (which mirrors page 01).
+ * arrow, mirroring the page-02 profile CTA (which mirrors page 01).
  * [ShomaraButton] is text-only (no icon slot), so this page-local button
  * reuses its logic object instead of duplicating colours or depth.
  *
- * Page-local CTA colour (the same override as [ShomaraProfileCta]): the
+ * Page-local CTA colour (the same override as the page-02 profile CTA): the
  * owner wants «ادامه» dark even while the phone is still incomplete. The
  * shared quiet mapping stays untouched for every other button; here Disabled
  * renders the darker token and stays non-clickable.
@@ -960,7 +960,7 @@ private fun ShomaraPhoneCta(
     // Disabled buttons must not expose an OnClick action to a11y services:
     // Compose's clickable keeps advertising OnClick even when enabled=false,
     // so the quiet state skips the clickable modifier entirely (the same
-    // pattern as [ShomaraProfileCta]).
+    // pattern as the page-02 profile CTA).
     val interactive = ShomaraButtonLogic.isEnabled(state)
     val depthElevation = ShomaraClay.specFor(depth).elevation
     Box(
