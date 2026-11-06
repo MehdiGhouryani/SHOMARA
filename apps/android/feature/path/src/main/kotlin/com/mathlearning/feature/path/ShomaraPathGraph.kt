@@ -150,6 +150,14 @@ object ShomaraPathGraphLogic {
         ShomaraPathNodeState.Locked -> "هنوز قفل؛ با ترتیب مسیر باز می‌شود"
     }
 
+    /**
+     * Owner page-06: the locked reason reads as a 2-3 line wall when repeated
+     * on every locked node, so the VISIBLE third line shows this short label
+     * while the merged semantics keep the full warm reason (stateDescription
+     * is unchanged — TalkBack truth is not shortened).
+     */
+    val lockedShortLabel: String = "هنوز قفل"
+
     fun stateMarkFor(state: ShomaraPathNodeState): String = when (state) {
         ShomaraPathNodeState.Completed, ShomaraPathNodeState.Perfect -> "✓"
         else -> ""
@@ -346,7 +354,7 @@ fun ShomaraPathScreen(
     )
     val scope = rememberCoroutineScope()
     val anchorIndex = nextStep?.let { ShomaraPathGraphLogic.itemIndexForStation(it) }
-    val anchorLabel = if (progress.currentStationId != null) "بازگشت به ایستگاه فعلی" else "بازگشت به نقطه شروع"
+    val anchorLabel = if (progress.currentStationId != null) "بازگشت به ایستگاه فعلی" else "بازگشت به نقطهٔ شروع"
     // The floating button only appears once the anchor node has scrolled off-screen, and
     // the jump is instant (no animation), so it stays safe under reduced motion.
     val showBackToAnchor by remember(anchorIndex) {
@@ -621,7 +629,13 @@ private fun ShomaraPathNodeItem(
             textAlign = TextAlign.Center,
         )
         Text(
-            text = ShomaraPathGraphLogic.stateLabelFor(state),
+            // Owner page-06: locked nodes show the short visual label — the
+            // full warm reason stays in stateDescription for TalkBack.
+            text = if (state == ShomaraPathNodeState.Locked) {
+                ShomaraPathGraphLogic.lockedShortLabel
+            } else {
+                ShomaraPathGraphLogic.stateLabelFor(state)
+            },
             style = ShomaraTypography.Caption,
             color = ShomaraTokens.ColorMuted,
             textAlign = TextAlign.Center,
