@@ -20,8 +20,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 
@@ -103,6 +105,13 @@ object ShomaraOtpLogic {
 
     fun expiredLabel(): String = "کد منقضی شد؛ کد جدید بفرست."
 
+    /**
+     * The wrong-code label announced on the cells when the verify fails — the
+     * cell-level companion of [expiredLabel], so an error is never colour
+     * alone. Warm and actionable, no blame (AGENTS rule 9).
+     */
+    fun invalidLabel(): String = "کد تأیید درست نیست."
+
     fun cellBorderFor(fieldState: ShomaraOtpFieldState, isFocusCell: Boolean): Color = when {
         fieldState == ShomaraOtpFieldState.Invalid -> ShomaraTokens.ColorDanger
         fieldState == ShomaraOtpFieldState.Focused && isFocusCell -> ShomaraTokens.ColorPrimary
@@ -144,6 +153,17 @@ private fun RowScope.OtpCell(
 ) {
     val digit = state.digits[index]
     val isFocusCell = index == state.focusIndex
+    // The input's error state is announced ON the cells — the focus point
+    // after a failed verify — so the failure is never colour alone: Expired
+    // carries the existing expired label, Invalid carries the invalid label
+    // and additionally raises the semantics error flag (the same non-colour
+    // status carrier the text fields use). The per-digit content description
+    // below is unchanged.
+    val cellStatusLabel = when (fieldState) {
+        ShomaraOtpFieldState.Invalid -> ShomaraOtpLogic.invalidLabel()
+        ShomaraOtpFieldState.Expired -> ShomaraOtpLogic.expiredLabel()
+        else -> null
+    }
     // N08-03: the 48dp bead is the MINIMUM target, not a fixed box. A 40sp digit becomes 80sp at
     // 200% font scale and a fixed .size() would clip it; weight(1f) also guarantees the four cells
     // share the row width so a scaled digit can never push the row into horizontal overflow.
@@ -166,6 +186,8 @@ private fun RowScope.OtpCell(
             // Persian/Latin digit choice is an open owner decision (F-22 الف).
             contentDescription = ShomaraOtpLogic.cellLabel(index, state.length) +
                 ": " + (digit?.toString() ?: "خالی")
+            if (cellStatusLabel != null) stateDescription = cellStatusLabel
+            if (fieldState == ShomaraOtpFieldState.Invalid) error(ShomaraOtpLogic.invalidLabel())
         }
     Box(
         modifier = if (enabled) {

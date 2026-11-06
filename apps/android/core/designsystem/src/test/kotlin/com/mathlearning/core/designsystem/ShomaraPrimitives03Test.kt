@@ -201,4 +201,17 @@ class ShomaraPrimitives03Test {
         // LTR layout contract is encoded by forcing the layout direction at render time.
         assertEquals(LayoutDirection.Ltr, ShomaraDirections.DefaultMathDirection)
     }
+
+    @Test
+    fun `otp error labels are warm distinct and non-colour status carriers`() {
+        // The cell-level wrong-code label (announced through stateDescription +
+        // the semantics error flag) and the expired label must stay distinct,
+        // non-blank and truthful: a wrong code must never announce as expired.
+        val invalid = ShomaraOtpLogic.invalidLabel()
+        val expired = ShomaraOtpLogic.expiredLabel()
+        assertTrue(invalid.isNotBlank())
+        assertTrue(invalid.contains("درست نیست"))
+        assertTrue(expired.contains("منقضی"))
+        assertTrue(invalid != expired)
+    }
 }
