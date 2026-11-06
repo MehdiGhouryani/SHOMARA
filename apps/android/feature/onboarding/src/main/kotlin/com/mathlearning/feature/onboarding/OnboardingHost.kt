@@ -529,6 +529,7 @@ fun ShomaraOnboardingHost(
             )
             OnboardingStep.GradePlacement -> ShomaraPlacementScreen(
                 state = holder.placement,
+                chosenGradeLabel = ShomaraProfileDraft.gradeLabel(holder.profileDraft.gradeId),
                 // #88: the skip is a product/DEBUG affordance, gated behind the same flag as
                 // simulatedAuth (true only in a DEBUG build). In release the placement
                 // screen renders no skip button at all — no dead affordance, no bypass.

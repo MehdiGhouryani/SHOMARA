@@ -50,7 +50,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -962,6 +964,9 @@ fun ShomaraPlacementScreen(
     // #88: null means no skip affordance at all — the button is not rendered, not merely
     // disabled. The host passes a real callback only when the product/DEBUG flag allows it.
     onSkip: (() -> Unit)?,
+    // Owner bug fix: the skipped state used to hardcode «پایه اول ابتدایی» — a child
+    // who picked G3 read G1. The host passes the draft's actual grade label.
+    chosenGradeLabel: String? = null,
     modifier: Modifier = Modifier,
     // #100: the save confirmation carried from the profile step — the profile step advances
     // immediately on a successful save, so this is where the «ذخیره شد» banner is seen.
@@ -1001,8 +1006,21 @@ fun ShomaraPlacementScreen(
                     // yet. The server decision (when it exists) is the main line; the pending
                     // note is a caption.
                     when {
-                        state.serverDecision != null -> Text(text = state.serverDecision, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, textAlign = TextAlign.Center)
-                        state.isSkipped -> Text(text = ShomaraProfileStrings.GradeOne, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, textAlign = TextAlign.Center)
+                        state.serverDecision != null -> Text(
+                            text = state.serverDecision,
+                            style = ShomaraTypography.Body,
+                            color = ShomaraTokens.ColorInk,
+                            textAlign = TextAlign.Center,
+                            // A11y gap (a): when a server decision ever lands, TalkBack
+                            // announces the card's change instead of staying silent.
+                            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                        )
+                        state.isSkipped -> Text(
+                            text = chosenGradeLabel ?: ShomaraProfileStrings.GradeOne,
+                            style = ShomaraTypography.Body,
+                            color = ShomaraTokens.ColorInk,
+                            textAlign = TextAlign.Center,
+                        )
                         else -> Text(text = ShomaraProfileStrings.PlacementPending, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted, textAlign = TextAlign.Center)
                     }
                 }
