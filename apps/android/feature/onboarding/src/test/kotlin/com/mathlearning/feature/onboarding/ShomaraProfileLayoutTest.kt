@@ -48,7 +48,10 @@ class ShomaraProfileLayoutTest {
             layout.LeavesBottomRightWidth,
             layout.CtaWidthFraction,
         )) {
-            assertTrue("fraction $fraction must be inside [0, 1]", fraction in 0f..1f)
+            // The mascot's Y may poke slightly above the hero top (owner
+            // mockup: the bow nearly touches the progress bar).
+            val bound = if (fraction == layout.MascotYFraction) -0.06f else 0f
+            assertTrue("fraction $fraction must be inside [$bound, 1]", fraction in bound..1f)
         }
         assertTrue(layout.HeroAspectRatio > 1f)
     }
@@ -63,9 +66,10 @@ class ShomaraProfileLayoutTest {
         // centre, so the curve covers the lower body and the mascot peeks.
         val mascotHeightFractionOfHero = layout.MascotWidthFraction / layout.MascotAspectRatio * layout.HeroAspectRatio
         val mascotBottom = layout.MascotYFraction + mascotHeightFractionOfHero
-        // Front curve: 180/878 of the width tall, bottom-anchored; its top edge
+        // Front curve: 355/878 of the width tall (owner mockup: the dome cut
+        // passes at the mascot's resting hands), bottom-anchored; its top edge
         // at the centre is 11/180 down its own height (owner SVG 12).
-        val curveHeightFractionOfHero = 180f / 878f * layout.HeroAspectRatio
+        val curveHeightFractionOfHero = 355f / 878f * layout.HeroAspectRatio
         val curveCentreTop = 1f - curveHeightFractionOfHero + 11f / 180f * curveHeightFractionOfHero
         assertTrue("mascot bottom $mascotBottom must be below curve centre top $curveCentreTop", mascotBottom > curveCentreTop)
     }

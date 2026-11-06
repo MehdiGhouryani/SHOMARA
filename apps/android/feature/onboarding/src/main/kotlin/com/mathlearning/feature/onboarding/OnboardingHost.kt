@@ -364,12 +364,6 @@ fun ShomaraOnboardingHost(
             .padding(ShomaraTokens.Space16),
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
-        if (simulatedAuth) {
-            ShomaraFeedbackBanner(
-                kind = ShomaraFeedbackKind.Recovery,
-                text = ShomaraSimulatedAuth.DevelopmentModeBanner,
-            )
-        }
         // R-13: the banner carries its kind with its text — the kind is decided where the
         // banner is created (see ShomaraBanner), never re-derived from the text here.
         holder.banner?.let { ShomaraFeedbackBanner(kind = it.kind, text = it.text) }

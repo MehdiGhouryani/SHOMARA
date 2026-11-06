@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -107,15 +108,17 @@ import com.mathlearning.core.model.ShomaraGradeOption
  */
 internal object ShomaraProfileLayout {
     /** Hero height as a fraction of screen height (sample: hero ends ~0.28). */
-    const val HeroHeightFraction: Float = 0.28f
+    const val HeroHeightFraction: Float = 0.387f
 
     /** Hero width/height (878 / 502). */
-    const val HeroAspectRatio: Float = 1.749f
+    const val HeroAspectRatio: Float = 1.27f
 
     /** Mascot: x, y (of hero height), width (of hero width), image aspect. */
-    const val MascotXFraction: Float = 0.267f
-    const val MascotYFraction: Float = 0.275f
-    const val MascotWidthFraction: Float = 0.485f
+    const val MascotXFraction: Float = 0.11f
+    // Owner: raise the mascot a touch so the hands clearly drape over the
+    // hill edge (mockup: the bow nearly touches the progress bar).
+    const val MascotYFraction: Float = -0.03f
+    const val MascotWidthFraction: Float = 0.78f
     const val MascotAspectRatio: Float = 1.5f // 1536x1024
 
     /** Clouds (x, y of hero height, width of hero width). */
@@ -132,8 +135,11 @@ internal object ShomaraProfileLayout {
     const val CloudBottomRightY: Float = 0.55f
     const val CloudBottomRightWidth: Float = 0.22f
 
-    /** Yellow rays, upper right of the mascot. */
-    const val RaysX: Float = 0.66f
+    /** Yellow rays: right of the mascot's head in the free space. Offsets
+     * are RTL-mirrored (measured from the start/right edge), so 0.27 lands
+     * the 0.10-wide box at 0.63-0.73 of the width from the left, matching
+     * the owner mockup. */
+    const val RaysX: Float = 0.27f
     const val RaysY: Float = 0.05f
     const val RaysWidth: Float = 0.10f
 
@@ -226,34 +232,16 @@ fun ShomaraProfileScreen(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+                verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             ) {
                 // Full-bleed hero: no horizontal padding here (the children
                 // below carry it); the sample's hero spans the whole width.
                 ShomaraProfileHero()
-                Text(
-                    text = ShomaraProfileStrings.ProfileTitle,
-                    style = ShomaraTypography.Title,
-                    color = ShomaraTokens.ColorInk,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(horizontal = ShomaraTokens.Space24)
-                        .semantics { heading() },
-                )
                 ShomaraProfileNameField(
                     value = draft.name,
                     onValueChange = { onDraftChange(draft.copy(name = it)) },
-                    errorText = nameError,
+                    errorText = if (saveState.attempt > 0) nameError else null,
                     modifier = Modifier.padding(horizontal = ShomaraTokens.Space24),
-                )
-                Text(
-                    text = ShomaraProfileStrings.GradeSectionTitle,
-                    style = ShomaraTypography.Title,
-                    color = ShomaraTokens.ColorInk,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(horizontal = ShomaraTokens.Space24)
-                        .semantics { heading() },
                 )
                 ShomaraProfileGradeGrid(
                     draft = draft,
@@ -469,12 +457,12 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .size(width = heroWidth, height = heroWidth * (180f / 878f)),
+                    .size(width = heroWidth, height = heroWidth * (355f / 878f)),
             )
             Canvas(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .size(width = heroWidth, height = heroWidth * (180f / 878f)),
+                    .size(width = heroWidth, height = heroWidth * (355f / 878f)),
             ) {
                 drawPath(
                     path = ShomaraProfileShapes.heroFrontCurve2Path(size.width, size.height),
@@ -728,13 +716,13 @@ private fun ShomaraProfileGradeGrid(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
         // The first child of each Row is on the right in RTL, so chunking
         // G1..G6 in pairs gives the sample's order.
         for (pair in ShomaraGradeCatalog.Options.chunked(2)) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+                horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             ) {
                 for (grade in pair) {
                     ShomaraProfileGradeCard(
@@ -751,8 +739,8 @@ private fun ShomaraProfileGradeGrid(
 
 /**
  * One grade card: title only, centred. The selected card carries the pale
- * green background, the green border and the circular check mark — selection
- * is never colour alone. TalkBack announces the selection through the
+ * green background and the green border (owner: no check mark). Selection
+ * is never colour alone for TalkBack: the card announces it through the
  * card's own label («انتخاب‌شده») + selected=true, the same pattern as
  * [ShomaraChoiceTile].
  *
@@ -774,7 +762,10 @@ private fun ShomaraProfileGradeCard(
     val depth = if (pressed) ShomaraClayDepth.Hint else ShomaraClayDepth.Soft
     Box(
         modifier = modifier
-            .defaultMinSize(minHeight = ShomaraTokens.ComponentRowH)
+            // Owner: the grade cards run ~22% smaller than the shared row
+            // height so the whole grid + CTA fit without scrolling (>=48dp
+            // touch target preserved).
+            .defaultMinSize(minHeight = 56.dp)
             .shadow(ShomaraClay.specFor(depth).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(
                 if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface,
@@ -805,43 +796,20 @@ private fun ShomaraProfileGradeCard(
                     }
                 }
             }
-            .padding(ShomaraTokens.Space16),
+            .padding(horizontal = ShomaraTokens.Space12, vertical = ShomaraTokens.Space8),
         contentAlignment = Alignment.Center,
     ) {
+        // Owner: the cards show the short grade name («پایه اول») — the
+        // shared «ابتدایی» suffix is dropped on THIS card only, so all six
+        // cards read uniform; the catalog title stays canonical elsewhere.
         Text(
-            text = grade.title,
+            text = grade.title.removeSuffix("ابتدایی").trim(),
             style = ShomaraTypography.Body,
             color = ShomaraTokens.ColorInk,
             textAlign = TextAlign.Center,
             maxLines = 2,
             modifier = Modifier.fillMaxWidth(),
         )
-        // Circular check at the card's layout-start (visual right in RTL),
-        // decorative for TalkBack — the card already announces the selection.
-        if (selected) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .size(ShomaraTokens.Space20)
-                    .background(ShomaraTokens.ColorPrimary, CircleShape)
-                    .clearAndSetSemantics {},
-                contentAlignment = Alignment.Center,
-            ) {
-                // The owner SVG's check path (15-icon-check), drawn with the
-                // mockup's bold stroke (Space4, as on the page-01 arrow) —
-                // the SVG's own 5/48 stroke would read thin at 20dp.
-                Canvas(modifier = Modifier.size(ShomaraTokens.Space20)) {
-                    drawPath(
-                        path = ShomaraProfileShapes.iconCheckPath(size.width, size.height),
-                        color = ShomaraTokens.ColorSurface,
-                        style = Stroke(
-                            width = ShomaraTokens.Space4.toPx(),
-                            cap = StrokeCap.Round,
-                        ),
-                    )
-                }
-            }
-        }
     }
 }
 
@@ -876,10 +844,18 @@ private fun ShomaraProfileCta(
         focused -> ShomaraButtonState.Focused
         else -> ShomaraButtonState.Default
     }
-    val (container, content) = ShomaraButtonLogic.colors(
-        ShomaraButtonVariant.Primary,
-        state,
-    )
+    // Page-local CTA colour: the owner wants «ادامه» dark even while the
+    // name is still empty (mockup shows the dark green). The shared quiet
+    // mapping stays untouched for every other button; here Disabled renders
+    // the darker token and stays non-clickable.
+    val (container, content) = if (state == ShomaraButtonState.Disabled) {
+        ShomaraTokens.ColorPrimaryDark to ShomaraTokens.ColorWhite
+    } else {
+        ShomaraButtonLogic.colors(
+            ShomaraButtonVariant.Primary,
+            state,
+        )
+    }
     val depth = ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, state)
     val semanticsLabel = when (state) {
         ShomaraButtonState.Disabled -> "غیرفعال"
