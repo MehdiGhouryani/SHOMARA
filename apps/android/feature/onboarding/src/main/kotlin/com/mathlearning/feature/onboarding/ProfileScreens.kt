@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -71,10 +72,10 @@ import com.mathlearning.core.designsystem.ShomaraFieldLogic
 import com.mathlearning.core.designsystem.ShomaraFieldState
 import com.mathlearning.core.designsystem.ShomaraProfileDrawables
 import com.mathlearning.core.designsystem.ShomaraTokens
+import com.mathlearning.core.designsystem.rememberShomaraTapGuard
 import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.model.ShomaraGradeCatalog
 import com.mathlearning.core.model.ShomaraGradeOption
-import com.mathlearning.core.model.ShomaraProfileDraft
 
 /**
  * Page 02-profile — the profile step, reproduced from the owner's sample
@@ -315,7 +316,7 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
         ) {
             // Clouds first (bottom of the stack).
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.cloudTopLeftPath,
+                buildPath = ShomaraProfileShapes::cloudTopLeftPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -329,7 +330,7 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
                     ),
             )
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.cloudTopRightPath,
+                buildPath = ShomaraProfileShapes::cloudTopRightPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -343,7 +344,7 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
                     ),
             )
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.cloudBottomLeftPath,
+                buildPath = ShomaraProfileShapes::cloudBottomLeftPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -357,7 +358,7 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
                     ),
             )
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.cloudBottomRightPath,
+                buildPath = ShomaraProfileShapes::cloudBottomRightPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -372,7 +373,7 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
             )
             // Back hills, bottom-anchored, behind the mascot.
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.heroHillBackLeftPath,
+                buildPath = ShomaraProfileShapes::heroHillBackLeftPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -382,7 +383,7 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
                     ),
             )
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.heroHillBackRightPath,
+                buildPath = ShomaraProfileShapes::heroHillBackRightPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -403,9 +404,9 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
                         width = heroWidth * ShomaraProfileLayout.LeavesTopLeftWidth,
                         height = heroWidth * ShomaraProfileLayout.LeavesTopLeftWidth * (150f / 180f),
                     ),
-                first = ShomaraProfileShapes.leavesTopLeft1Path,
-                second = ShomaraProfileShapes.leavesTopLeft2Path,
-                third = ShomaraProfileShapes.leavesTopLeft3Path,
+                first = ShomaraProfileShapes::leavesTopLeft1Path,
+                second = ShomaraProfileShapes::leavesTopLeft2Path,
+                third = ShomaraProfileShapes::leavesTopLeft3Path,
             )
             ShomaraProfileLeaves(
                 modifier = Modifier
@@ -418,9 +419,9 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
                         width = heroWidth * ShomaraProfileLayout.LeavesTopRightWidth,
                         height = heroWidth * ShomaraProfileLayout.LeavesTopRightWidth * (175f / 175f),
                     ),
-                first = ShomaraProfileShapes.leavesTopRight1Path,
-                second = ShomaraProfileShapes.leavesTopRight2Path,
-                third = ShomaraProfileShapes.leavesTopRight3Path,
+                first = ShomaraProfileShapes::leavesTopRight1Path,
+                second = ShomaraProfileShapes::leavesTopRight2Path,
+                third = ShomaraProfileShapes::leavesTopRight3Path,
             )
             // Yellow rays, upper right of the mascot.
             Canvas(
@@ -464,7 +465,7 @@ private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
             // Front curve last: it covers the mascot's lower body, so the
             // mascot reads as peeking over the hill.
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.heroFrontCurve1Path,
+                buildPath = ShomaraProfileShapes::heroFrontCurve1Path,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -536,7 +537,7 @@ private fun ShomaraProfileBottomBackground(modifier: Modifier = Modifier) {
         ) {
             // Bottom clouds, above the hills.
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.cloudBottomLeftPath,
+                buildPath = ShomaraProfileShapes::cloudBottomLeftPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -550,7 +551,7 @@ private fun ShomaraProfileBottomBackground(modifier: Modifier = Modifier) {
                     ),
             )
             ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes.cloudBottomRightPath,
+                buildPath = ShomaraProfileShapes::cloudBottomRightPath,
                 color = ShomaraTokens.ColorSurfaceAlt,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -583,9 +584,9 @@ private fun ShomaraProfileBottomBackground(modifier: Modifier = Modifier) {
                         width = layerWidth * ShomaraProfileLayout.LeavesBottomLeftWidth,
                         height = layerWidth * ShomaraProfileLayout.LeavesBottomLeftWidth * (215f / 170f),
                     ),
-                first = ShomaraProfileShapes.leavesBottomLeft1Path,
-                second = ShomaraProfileShapes.leavesBottomLeft2Path,
-                third = ShomaraProfileShapes.leavesBottomLeft3Path,
+                first = ShomaraProfileShapes::leavesBottomLeft1Path,
+                second = ShomaraProfileShapes::leavesBottomLeft2Path,
+                third = ShomaraProfileShapes::leavesBottomLeft3Path,
             )
             ShomaraProfileLeaves(
                 modifier = Modifier
@@ -595,9 +596,9 @@ private fun ShomaraProfileBottomBackground(modifier: Modifier = Modifier) {
                         width = layerWidth * ShomaraProfileLayout.LeavesBottomRightWidth,
                         height = layerWidth * ShomaraProfileLayout.LeavesBottomRightWidth * (230f / 170f),
                     ),
-                first = ShomaraProfileShapes.leavesBottomRight1Path,
-                second = ShomaraProfileShapes.leavesBottomRight2Path,
-                third = ShomaraProfileShapes.leavesBottomRight3Path,
+                first = ShomaraProfileShapes::leavesBottomRight1Path,
+                second = ShomaraProfileShapes::leavesBottomRight2Path,
+                third = ShomaraProfileShapes::leavesBottomRight3Path,
             )
         }
     }
@@ -780,7 +781,7 @@ private fun ShomaraProfileGradeCard(
                 RoundedCornerShape(ShomaraTokens.RadiusLg),
             )
             .border(
-                width = if (selected) ShomaraTokens.AnswerTileBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
+                width = if (selected) ShomaraTokens.ClayAnswerTileBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
                 color = if (selected) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine,
                 shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
             )
