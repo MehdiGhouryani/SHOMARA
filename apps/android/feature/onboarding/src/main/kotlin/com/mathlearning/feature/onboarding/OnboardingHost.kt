@@ -538,8 +538,12 @@ fun ShomaraOnboardingHost(
     }
 }
 
-/** Copy for the redesigned OTP step (seed strings; canonical-source overrides arrive with CMS). */
-private object ShomaraOtpStepStrings {
+/**
+ * Copy for the redesigned OTP step (seed strings; canonical-source overrides arrive with CMS).
+ * Internal so ShomaraOnboardingA11y's traversal contract references these exact labels instead
+ * of duplicating them.
+ */
+internal object ShomaraOtpStepStrings {
     const val Title: String = "کد تأیید را وارد کن"
     const val SentToPrefix: String = "کد تأیید برای"
     const val SentToSuffix: String = "ارسال شد"

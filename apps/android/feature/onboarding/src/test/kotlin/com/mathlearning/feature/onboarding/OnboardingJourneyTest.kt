@@ -90,6 +90,52 @@ class OnboardingJourneyTest {
         assertTrue(digits[3].label.contains("۴"))
     }
 
+    // Page-03: the contract must match the ACTUAL rendered traversal — the
+    // compact decorative hero is silent, the body line renders under the
+    // title, and the CTA is the page-local dark-disabled pill.
+    @Test
+    fun `phone traversal matches the rendered page-03 order`() {
+        val traversal = ShomaraOnboardingA11y.traversalFor(OnboardingStep.PhoneInput)
+        assertEquals(
+            listOf(
+                "Heading" to ShomaraOnboardingStrings.PhoneLabel,
+                "Text" to ShomaraOnboardingStrings.WelcomeBody,
+                "EditField" to ShomaraOnboardingStrings.PhoneLabel,
+                "Button" to ShomaraOnboardingStrings.Continue,
+                "Button" to ShomaraOnboardingStrings.Back,
+            ),
+            traversal.map { it.role to it.label },
+        )
+    }
+
+    // Page-03: the old standalone «کد تأیید» field node never existed as a
+    // rendered label — the real order is title → sent-to → cells → keypad
+    // buttons → «تأیید کد» → resend → paste → «بازگشت» (DEBUG simulation
+    // buttons stay outside the release contract).
+    @Test
+    fun `otp traversal matches the rendered page-03 order`() {
+        val traversal = ShomaraOnboardingA11y.traversalFor(OnboardingStep.OtpVerify)
+        assertEquals("Heading", traversal.first().role)
+        assertEquals(ShomaraOtpStepStrings.Title, traversal.first().label)
+        assertEquals(
+            "${ShomaraOtpStepStrings.SentToPrefix} ${ShomaraOtpStepStrings.SentToSuffix}",
+            traversal[1].label,
+        )
+        // The four cells sit between the sent-to line and the keypad.
+        assertEquals(listOf(2, 3, 4, 5), traversal.withIndex().filter { it.value.role == "DigitCell" }.map { it.index })
+        // Every Button node in the keypad-then-actions order, «بازگشت» last.
+        assertEquals(
+            listOf(
+                "1", "2", "3", "4", "5", "6", "7", "8", "9", "⌫", "0",
+                ShomaraOtpStepStrings.Confirm,
+                ShomaraOtpStepStrings.Resend,
+                ShomaraOtpStepStrings.Paste,
+                ShomaraOtpStepStrings.Back,
+            ),
+            traversal.filter { it.role == "Button" }.map { it.label },
+        )
+    }
+
     @Test
     fun `traversal copy stays warm and free of banned terms`() {
         val all = OnboardingStep.entries.flatMap { ShomaraOnboardingA11y.traversalFor(it) }.map { it.label }
