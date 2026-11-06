@@ -92,7 +92,9 @@ class OnboardingJourneyTest {
 
     // Page-03: the contract must match the ACTUAL rendered traversal — the
     // compact decorative hero is silent, the body line renders under the
-    // title, and the CTA is the page-local dark-disabled pill.
+    // title, and the CTA keeps the shared quiet disabled mapping (a dark
+    // disabled CTA read as «looks on, does nothing» — owner decision was
+    // profile-specific).
     @Test
     fun `phone traversal matches the rendered page-03 order`() {
         val traversal = ShomaraOnboardingA11y.traversalFor(OnboardingStep.PhoneInput)

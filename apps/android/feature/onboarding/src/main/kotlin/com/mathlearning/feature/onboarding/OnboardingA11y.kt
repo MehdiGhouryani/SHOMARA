@@ -40,7 +40,7 @@ object ShomaraOnboardingA11y {
         // sent-to → the four LTR cells → the keypad's own buttons →
         // «تأیید کد» → resend → paste → «بازگشت». The sent-to line carries
         // the actual phone between the two canonical fragments. The
-        // DEBUG-only simulation buttons render before «تأیید کد» and are not
+        // DEBUG-only simulation buttons render after «تأیید کد» and are not
         // part of the release contract.
         OnboardingStep.OtpVerify -> buildList {
             add(heading(ShomaraOtpStepStrings.Title))

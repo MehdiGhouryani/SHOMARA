@@ -449,53 +449,62 @@ fun ShomaraOnboardingHost(
                     enabled = !holder.otpBusy,
                 )
                 }
-                if (simulatedAuth) {
-                    ShomaraButton(
-                        text = ShomaraOtpStepStrings.FillSimulationCode,
-                        onClick = {
-                            holder.otp = ShomaraOtpState.empty(ShomaraOnboardingStateHolder.OTP_LENGTH)
-                                .fillFromCode(ShomaraSimulatedAuth.DevelopmentCode)
-                            if (holder.session == null) holder.skipAuthInSimulation()
-                            else scope.launch { holder.verifyOtp() }
-                        },
-                        variant = ShomaraButtonVariant.Secondary,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    ShomaraButton(
-                        text = ShomaraOtpStepStrings.SimulationSkip,
-                        onClick = { holder.skipAuthInSimulation() },
-                        variant = ShomaraButtonVariant.Ghost,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+                // Owner UX: the primary action sits directly under the keypad —
+                // the DEBUG buttons below it used to push «تأیید کد» under the fold.
                 ShomaraOtpConfirmButton(
                     onClick = { scope.launch { holder.verifyOtp() } },
                     enabled = holder.otp.isComplete && !holder.otpBusy,
                     loading = holder.otpBusy,
                     modifier = Modifier.fillMaxWidth(),
                 )
+                if (simulatedAuth) {
+                    // Owner UX: the DEBUG pair shares one row — two full-width
+                    // buttons pushed «تأیید کد» and the keypad under the fold.
+                    Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+                        ShomaraButton(
+                            text = ShomaraOtpStepStrings.FillSimulationCode,
+                            onClick = {
+                                holder.otp = ShomaraOtpState.empty(ShomaraOnboardingStateHolder.OTP_LENGTH)
+                                    .fillFromCode(ShomaraSimulatedAuth.DevelopmentCode)
+                                if (holder.session == null) holder.skipAuthInSimulation()
+                                else scope.launch { holder.verifyOtp() }
+                            },
+                            variant = ShomaraButtonVariant.Secondary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        ShomaraButton(
+                            text = ShomaraOtpStepStrings.SimulationSkip,
+                            onClick = { holder.skipAuthInSimulation() },
+                            variant = ShomaraButtonVariant.Ghost,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
                 // Stage 1 (family 03): resend reuses the real server request,
                 // so the server throttle banner (remaining seconds) IS the
                 // cooldown — no client-invented cooldown duration, and the
                 // code is never logged. Paste reuses ShomaraOtpState
                 // .fillFromCode, which keeps digits in LTR cell order.
-                ShomaraButton(
-                    text = ShomaraOtpStepStrings.Resend,
-                    onClick = { scope.launch { holder.requestOtp() } },
-                    enabled = !holder.otpBusy,
-                    variant = ShomaraButtonVariant.Ghost,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                ShomaraButton(
-                    text = ShomaraOtpStepStrings.Paste,
-                    onClick = {
-                        val pasted = clipboard.getText()?.text.orEmpty()
-                        if (pasted.isNotEmpty()) holder.otp = holder.otp.fillFromCode(pasted)
-                    },
-                    enabled = !holder.otpBusy,
-                    variant = ShomaraButtonVariant.Ghost,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                // Owner UX: resend + paste share a row (same fold reason).
+                Row(horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+                    ShomaraButton(
+                        text = ShomaraOtpStepStrings.Resend,
+                        onClick = { scope.launch { holder.requestOtp() } },
+                        enabled = !holder.otpBusy,
+                        variant = ShomaraButtonVariant.Ghost,
+                        modifier = Modifier.weight(1f),
+                    )
+                    ShomaraButton(
+                        text = ShomaraOtpStepStrings.Paste,
+                        onClick = {
+                            val pasted = clipboard.getText()?.text.orEmpty()
+                            if (pasted.isNotEmpty()) holder.otp = holder.otp.fillFromCode(pasted)
+                        },
+                        enabled = !holder.otpBusy,
+                        variant = ShomaraButtonVariant.Ghost,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
                 ShomaraButton(
                     text = ShomaraOtpStepStrings.Back,
                     onClick = { holder.back() },
@@ -586,16 +595,13 @@ private fun ShomaraOtpConfirmButton(
         focused -> ShomaraButtonState.Focused
         else -> ShomaraButtonState.Default
     }
-    // Page-local Disabled colour override (ShomaraProfileCta pattern); every
-    // other state keeps the shared Primary mapping.
-    val (container, content) = if (state == ShomaraButtonState.Disabled) {
-        ShomaraTokens.ColorPrimaryDark to ShomaraTokens.ColorWhite
-    } else {
-        ShomaraButtonLogic.colors(
-            ShomaraButtonVariant.Primary,
-            state,
-        )
-    }
+    // Disabled keeps the shared quiet mapping: a dark disabled CTA read as
+    // «looks on, does nothing» on device (owner complaint pattern); the
+    // owner's dark-CTA decision was profile-specific.
+    val (container, content) = ShomaraButtonLogic.colors(
+        ShomaraButtonVariant.Primary,
+        state,
+    )
     val depth = ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, state)
     val semanticsLabel = when (state) {
         ShomaraButtonState.Disabled -> "غیرفعال"

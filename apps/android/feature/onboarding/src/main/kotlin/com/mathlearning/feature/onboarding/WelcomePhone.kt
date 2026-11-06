@@ -642,7 +642,7 @@ internal object ShomaraPhoneHeroLayout {
     const val MascotAspectRatio: Float = 1.5f
 
     /** Front-curve dome box height, as a fraction of the hero width (the same dome as page-02). */
-    const val FrontCurveHeightFraction: Float = 355f / 878f
+    const val FrontCurveHeightFraction: Float = 242f / 878f
 
     /** Front-curve stroke: 5 viewBox units in an 878-wide viewBox (page-02). */
     const val FrontCurveStrokeWidthFraction: Float = 5f / 878f
