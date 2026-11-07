@@ -109,6 +109,7 @@ export const V2_TOKENS =
       "trayBead": 48,
       "progressH": 14,
       "rowH": 72,
+      "gradeCardH": 56,
       "topBarH": 56,
       "characterHero": 180,
       "characterCompactWidth": 360,

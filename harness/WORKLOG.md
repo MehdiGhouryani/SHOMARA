@@ -645,3 +645,14 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
   - instrumented Compose assertion for the splash semantics;
   - `SCREEN_LEDGER.csv` / `NATIVE_IMPLEMENTATION_BACKLOG.csv` / `START_HERE.md` updates.
 - task status: N08-15 stays IN_PROGRESS. No harness task status was flipped.
+
+## 2026-11-07 — N08R-00 (فاز موازی N08R شروع شد) — branch native/n08r-ui-polish (از page-17-nav)
+
+- ثبت فاز موازی `N08R — Native UI/UX Visual Refinement` طبق دستور مالک (mission: `design/playbook/N08R_MISSION_FA.md`، در canonicalDocs/file-ledger ثبت شد): ۱۸ task، allowedPaths محدود، gates از allowlist. `roadmap.schema.json` برای id فاز با پسوند R همگام شد (`^N\d{2}R?$`).
+- `npm run harness:validate` → HARNESS_VALID (118 tasks, 12 phases) exit 0؛ `npm run verify:repository` → PASS (118 tasks, 60 ledger entries, 1880 edges).
+- Baseline صادقانه **قبل از** رفع drift: `npx vitest run` → 563 passed / **1 failed** (`codegen.drift.test` — `ComponentGradeCardH` دست‌نویس در ShomaraTokens.kt خارج از منبع canonical). `npm run verify:static:all` → **PASS (90/90)**. `npm run android:gate` → **PASS** (BUILD SUCCESSFUL, gate.json).
+- رفع drift توکن: `gradeCardH: 56` به `v2.component` در `packages/design-system/src/tokens.json` افزوده شد و codegen رسمی اجرا شد → TOKEN_DRIFT: PASS؛ diff خروجی Kotlin فقط حذف کامنت دست‌نویس است (مقدار 56.dp ثابت → صفر تغییر بصری). `npx vitest run` → **564/564 PASS**.
+- Baseline بصری صفحات محافظت‌شده روی emulator-5554 (AVD Pixel_6a): ۱۰ PNG + `SHA256SUMS.txt` در `build-reports/android/device-check/n08r-baseline/` (خارج از Git طبق قرارداد repo؛ sha256 ثبت شد): اسپلش سیستم، اسپلش اپ (artwork+وردمارک+نوار پیشرفت) در 360/412، Welcome در 360/390، Profile Setup در 360/390/412 و فونت 200٪.
+- **یافته P1 (صفحهٔ محافظت‌شده — تصمیم مالک):** Profile Setup در 360dp + فونت 200٪ سرریز دارد — ردیف سوم گرید پایه (پایه پنجم/ششم) زیر CTA گم می‌شود و «پایه چهارم» دوخطی می‌شود (`n08r-profile-360dp-200font.png`). چون صفحه قفل است، اصلاح فقط با تأیید مالک. همچنین Welcome در 200٪ عنوان دوروخط دارد (مورد ثبت‌شدهٔ page-01).
+- debug APK: `apps/android/app/build/outputs/apk/debug/app-debug.apk` — sha256 `e0a4cc944a1c7bbb70c0ae4e19cdc91773d52cdb88572585c334e554b7f1e2e1`.
+- N08-06..N08-12 دست‌نخورده ماندند؛ N08-08 همچنان OWNER_DECISION_PENDING است و N08R از آن عبور نمی‌کند.
