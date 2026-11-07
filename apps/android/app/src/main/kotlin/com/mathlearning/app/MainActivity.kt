@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
                         profileDraftStore = container.profileDraftStore,
                         lessonGateway = container.lessonGateway,
                         lessonCheckpoints = container.lessonCheckpointStore,
+                        lessonDiscoverSteps = container.lessonDiscoverSteps,
                         settingsStore = container.settingsStore,
                         simulatedAuth = container.simulatedAuthEnabled,
                         backendConfigured = container.isBackendConfigured(),

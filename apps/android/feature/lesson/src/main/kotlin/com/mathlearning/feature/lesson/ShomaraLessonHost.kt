@@ -66,6 +66,10 @@ fun ShomaraLessonHost(
     // R-08: a replay entry starts the station over from P1 — the host clears the leftover
     // checkpoint instead of resuming it, so «تمرین دوباره» is a fresh run, not a resume.
     replay: Boolean = false,
+    // N08R-08: the child-safe DISCOVER projection (ST07 pilot P1 structure) — empty in
+    // release until the local content package exists (Phase 1, O1/O2-gated). The debug
+    // build wires the DRAFT-pilot structure for design review; the renderer never judges.
+    discoverSteps: List<ShomaraDiscoverStep> = emptyList(),
 ) {
     val scope = rememberCoroutineScope()
     var closeState by remember { mutableStateOf<ShomaraCloseConfirmState>(ShomaraCloseConfirmState.NotRequested) }
@@ -174,6 +178,13 @@ fun ShomaraLessonHost(
                 ShomaraLessonResultSurface(
                     surface = resultSurface!!,
                     onExitToShell = onExitToShell,
+                )
+            } else if (macroStage == MacroStage.P1_DISCOVER && discoverSteps.isNotEmpty()) {
+                // N08R-08: the discover stage renders its real (projected) steps — the
+                // concept animation IS the lesson; no answer/evaluator fields exist here.
+                ShomaraDiscoverStage(
+                    steps = discoverSteps,
+                    onAllStepsComplete = { /* evaluator wiring lands with the local package (Phase 1) */ },
                 )
             } else if (activeJourney != null && !awaitingServerStage && choiceId == null) {
                 // B2: no option to render means the honest surface is the current stage's

@@ -18,6 +18,7 @@ import com.mathlearning.core.datastore.ShomaraProfileDraftStore
 import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.core.network.ShomaraOtpApi
+import com.mathlearning.feature.lesson.ShomaraDiscoverStep
 import com.mathlearning.core.network.ShomaraOtpEndpoints
 import com.mathlearning.core.network.ShomaraOtpProvider
 import com.mathlearning.feature.onboarding.ShomaraAuthSession
@@ -32,6 +33,9 @@ interface AppContainer {
     val authSession: ShomaraAuthSession
     val profileDraftStore: ShomaraProfileDraftStore
     val lessonCheckpointStore: LessonCheckpointStore
+
+    /** N08R-08: discover preview steps (debug wiring only; release empty). */
+    val lessonDiscoverSteps: List<ShomaraDiscoverStep>
     val lessonGateway: LessonGateway
     val localDatabase: LocalLearningDatabase
     val outboxSyncEngine: OutboxSyncEngine
@@ -71,6 +75,8 @@ class DefaultAppContainer(
     private val debugBuild: Boolean = false,
     /** DEBUG-only provider factory; null in release, so no simulated code path can be reached. */
     private val debugOtpProvider: ((ShomaraOtpApi) -> ShomaraOtpProvider)? = null,
+    /** N08R-08: discover preview steps — non-empty ONLY from the debug variant wiring. */
+    private val discoverSteps: List<ShomaraDiscoverStep> = emptyList(),
 ) : AppContainer {
     override val logger: AppLogger = SafeAppLogger(AndroidLogSink)
 
@@ -107,6 +113,9 @@ class DefaultAppContainer(
     override val profileDraftStore: ShomaraProfileDraftStore = PreferencesProfileDraftStore(dataStore)
 
     override val lessonCheckpointStore: LessonCheckpointStore = PreferencesLessonCheckpointStore(dataStore)
+
+    // N08R-08: debug-only discover preview (ST07 P1 DRAFT structure); release is empty.
+    override val lessonDiscoverSteps: List<ShomaraDiscoverStep> = discoverSteps
 
     override val settingsStore: ShomaraSettingsStore = PreferencesSettingsStore(dataStore)
 

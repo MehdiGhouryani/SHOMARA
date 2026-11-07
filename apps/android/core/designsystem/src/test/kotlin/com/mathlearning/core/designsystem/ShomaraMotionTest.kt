@@ -171,4 +171,12 @@ class ShomaraMotionTest {
         assertEquals(ShomaraTokens.MotionPressScale.toFloat(), ShomaraPressFeedbackLogic.pressedScale())
         assertTrue("press must stay subtle", ShomaraPressFeedbackLogic.pressedScale() in 0.9f..0.99f)
     }
+
+    @Test
+    fun `pressed surface sinks half the clay edge and never more`() {
+        // N08R Clay axis: the sink is the edge token halved — tactile weight without
+        // exaggerated travel, and strictly smaller than the full edge.
+        assertEquals(ShomaraTokens.ComponentEdge / 2, ShomaraPressFeedbackLogic.pressedSink())
+        assertTrue(ShomaraPressFeedbackLogic.pressedSink().value < ShomaraTokens.ComponentEdge.value)
+    }
 }

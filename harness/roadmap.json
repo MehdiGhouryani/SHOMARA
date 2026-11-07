@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-07T00:00:00.000Z",
   "currentPhase": "N08R",
-  "currentTask": "N08R-08",
+  "currentTask": "N08R-09",
   "statusValues": [
     "TODO",
     "READY",
@@ -2174,7 +2174,7 @@
         {
           "id": "N08R-08",
           "title": "U3 — خانوادهٔ ۰۸ Teach/Discover (فقط chrome)",
-          "status": "TODO",
+          "status": "DONE",
           "dependsOn": [
             "N08R-07"
           ],
@@ -2183,7 +2183,15 @@
             "بدون ساخت prompt/گزینهٔ ساختگی",
             "اسکرین‌شات قبل/بعد + ledger"
           ],
-          "evidence": []
+          "evidence": [
+            "Content map for ST07.P1 recorded (design/playbook/N08R_ST07_P1_CONTENT_MAP_FA.md) from the DRAFT pilot + 6 honest gaps (O1/O2, 41 assets, zero audio binaries, CONTENT-004/006)",
+            "Child-safe discover projection (ShomaraDiscoverStep/Card — NO answer/correct/threshold fields, reflection-guarded test) + pure ShomaraDiscoverLogic + ShomaraDiscoverStage renderer (count-mark-on-touch concept animation, amber Featured reveal, honest end banner)",
+            "Wiring: ShomaraLessonHost(discoverSteps) <- ShomaraApp <- AppContainer.lessonDiscoverSteps <- LessonContentWiring debug/release variants (debug = DRAFT ST07 P1 structure for design review; release = empty, fail-closed)",
+            "Clay press upgraded: press sinks ComponentEdge/2 (token-derived) with the token spring; reduced-motion snap; new test",
+            "android:gate PASS — 496 JVM tests, 0 failures (5 discover + 1 sink tests new)",
+            "Device evidence (emulator-5554, APK sha256 1024c185...): sheet->lesson P1 with 3 RTL tiles, touch->count marks, reveal 1, advance, pairs reveal 2, honest end banner, reduced-motion static reveal",
+            "Honest limits: write-in glyph animation awaits GLYPH.1/2; audio silent (CONTENT-017); real P1->P2 advance blocked on the local evaluator (O1/Phase 1); N08R-05 + Home 200% sweep pending"
+          ]
         },
         {
           "id": "N08R-09",

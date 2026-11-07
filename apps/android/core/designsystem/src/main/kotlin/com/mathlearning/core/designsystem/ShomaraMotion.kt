@@ -1,11 +1,14 @@
 package com.mathlearning.core.designsystem
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.graphicsLayer
 import kotlin.math.sqrt
 
@@ -113,6 +116,9 @@ object ShomaraPressFeedbackLogic {
 
     /** Pressed scale target from the token (0.96); resting scale is always exactly 1. */
     fun pressedScale(): Float = ShomaraTokens.MotionPressScale.toFloat()
+
+    /** How far a pressed surface sinks: half the clay edge token (2dp) — tactile weight, no raw dp. */
+    fun pressedSink(): Dp = ShomaraTokens.ComponentEdge / 2
 }
 
 /**
@@ -136,5 +142,20 @@ fun Modifier.shomaraPressScale(pressed: Boolean, reducedMotion: Boolean): Modifi
         },
         label = "shomaraPressScale",
     )
-    return graphicsLayer { scaleX = scale; scaleY = scale }
+    // N08R directive (Clay axis): a pressed surface also SINKS — a short downward move that
+    // reads as the soft object giving way under the finger, settling back on release with the
+    // same token spring. The travel is the clay edge token halved (2dp), so no raw dp enters.
+    val sink by animateDpAsState(
+        targetValue = if (pressed) ShomaraPressFeedbackLogic.pressedSink() else 0.dp,
+        animationSpec = if (reducedMotion) snap() else spring(
+            dampingRatio = ShomaraPressFeedbackLogic.dampingRatio(),
+            stiffness = ShomaraPressFeedbackLogic.stiffness(),
+        ),
+        label = "shomaraPressSink",
+    )
+    return graphicsLayer {
+        scaleX = scale
+        scaleY = scale
+        translationY = sink.toPx()
+    }
 }

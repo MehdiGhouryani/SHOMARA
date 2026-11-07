@@ -2,6 +2,7 @@ package com.mathlearning.app
 
 import android.app.Application
 import com.mathlearning.app.di.AuthProviderWiring
+import com.mathlearning.app.di.LessonContentWiring
 import com.mathlearning.app.di.DefaultAppContainer
 
 class ShomaraApplication : Application() {
@@ -18,6 +19,7 @@ class ShomaraApplication : Application() {
             context = this,
             debugBuild = AuthProviderWiring.IsDebugBuild,
             debugOtpProvider = AuthProviderWiring.simulatedProviderFactory,
+            discoverSteps = LessonContentWiring.discoverSteps,
         )
     }
 }

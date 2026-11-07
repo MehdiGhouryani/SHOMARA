@@ -57,6 +57,8 @@ fun ShomaraApp(
     profileDraftStore: ShomaraProfileDraftStore,
     lessonGateway: LessonGateway,
     lessonCheckpoints: LessonCheckpointStore,
+    // N08R-08: debug-only discover preview steps (release keeps this empty, fail-closed).
+    lessonDiscoverSteps: List<com.mathlearning.feature.lesson.ShomaraDiscoverStep> = emptyList(),
     settingsStore: ShomaraSettingsStore,
     simulatedAuth: Boolean = false,
     backendConfigured: Boolean = false,
@@ -147,6 +149,7 @@ fun ShomaraApp(
                     stationId = stationId,
                     gateway = lessonGateway,
                     checkpointStore = lessonCheckpoints,
+                    discoverSteps = lessonDiscoverSteps,
                     replay = lessonReplay,
                     onExitToShell = {
                         lessonEnteredViaSheet = false
