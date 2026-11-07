@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-07T00:00:00.000Z",
   "currentPhase": "N08R",
-  "currentTask": "N08R-07",
+  "currentTask": "N08R-08",
   "statusValues": [
     "TODO",
     "READY",
@@ -2155,7 +2155,7 @@
         {
           "id": "N08R-07",
           "title": "U2 — خانوادهٔ ۰۷ شروع ایستگاه",
-          "status": "TODO",
+          "status": "DONE",
           "dependsOn": [
             "N08R-06"
           ],
@@ -2164,7 +2164,12 @@
             "jump sheet همچنان بدون فراخوانندهٔ تولیدی می‌ماند تا wiring فاز B (هیچ دکمهٔ بی‌عمل)",
             "اسکرین‌شات قبل/بعد + ledger"
           ],
-          "evidence": []
+          "evidence": [
+            "Station-start sheet redesigned to the chapter hero block (tint+accent from chapterBandColors, 3D lip, character in accent-bordered white circle, chapter badge, full-width CTA) — logic/wiring/pinned texts untouched; jump sheet (dead code, Phase B) untouched",
+            "android:gate PASS incl. new test 'sheet hero keeps chapter identity and readable marks for every chapter' (white-on-accent >= 3:1 for 5 chapters)",
+            "Device evidence (emulator-5554, APK sha256 b88ad996...): before/after locked+ready sheets at 360dp, 412dp, 200% font (hero wraps, no clipping); Back returns to path with position; START CTA enters lesson P1 (honest skeleton + disabled submit)",
+            "Honest limits: androidTest not run (outside gate); Replay/Resume states unreachable on device without real progress (logic-covered); N08R-05 + Home 200% sweep remain pending"
+          ]
         },
         {
           "id": "N08R-08",

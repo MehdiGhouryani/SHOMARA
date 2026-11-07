@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -140,33 +145,52 @@ fun ShomaraStationStartSheet(
 ) {
     val meta = ShomaraStationCatalog.station(stationId)
     val state = ShomaraStationStartLogic.stateFor(meta, progress, loading, starting, errorText)
+    // N08R-07: the sheet wears its chapter — the same tint+accent pair the path nodes and
+    // the unit banner use, so sheet / path / band read as ONE design system.
+    val (heroTint, heroAccent) = ShomaraPathGraphLogic.chapterBandColors(meta.chapter)
     Column(
         modifier = modifier
             .fillMaxWidth()
-            // Batch 2: the sheet is a raised card (Soft depth), and it
-            // scrolls — at 200% font the character row + banner + CTA can
-            // otherwise overflow a short sheet window. The elevation comes
-            // from the clay spec, never the raw token (R-02).
-            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .verticalScroll(rememberScrollState())
-            .padding(ShomaraTokens.Space16),
+            // N08R-07: the sheet surface itself is the canvas (ShomaraBottomSheet already
+            // provides the white surface); the chapter hero block carries the identity and
+            // the whole column scrolls — at 200% font the hero + banner + CTA can otherwise
+            // overflow a short sheet window.
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
-        // Family 07: character in a frame, static and small, from the shipped
-        // drawables only (Main pose 1). The concise lesson goal is the
-        // catalog working title itself; no goal description is invented here,
-        // and stations that are not authored are never faked as available.
+        // N08R-07 (Duolingo lesson-intro evidence): the station opens inside its CHAPTER —
+        // a tinted hero block with the 3D lip, the framed guide character and the chapter
+        // badge. The concise lesson goal is the catalog working title itself; no goal
+        // description is invented here (CONTENT-004 stays with the owner), and stations
+        // that are not authored are never faked as available.
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    // The same 3D bottom lip as the unit banner (N08R-06): the card rect
+                    // repeated one edge-token down in the tint blended toward the accent.
+                    val edge = ShomaraTokens.ComponentEdge.toPx()
+                    drawRoundRect(
+                        color = lerp(heroTint, heroAccent, 0.45f),
+                        topLeft = Offset(0f, edge),
+                        size = size,
+                        cornerRadius = CornerRadius(ShomaraTokens.RadiusLg.toPx()),
+                    )
+                }
+                .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .background(heroTint, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .padding(ShomaraTokens.Space16),
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // Framed guide character: a white circle with the chapter accent border — the
+            // same node-like frame language as the path. Static cameo, shipped asset only.
             Box(
                 modifier = Modifier
                     .size(ShomaraTokens.ComponentNodeSize)
-                    .background(ShomaraTokens.ColorSurfaceAlt, RoundedCornerShape(ShomaraTokens.RadiusMd))
-                    .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd)),
+                    .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, CircleShape)
+                    .background(ShomaraTokens.ColorSurface, CircleShape)
+                    .border(ShomaraTokens.ClayAnswerTileBorderWidth, heroAccent, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 ShomaraCharacterImage(
@@ -176,9 +200,21 @@ fun ShomaraStationStartSheet(
                     decorative = true,
                 )
             }
-            Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+            Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4), modifier = Modifier.weight(1f)) {
                 Text(text = meta.workingTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-                Text(text = ShomaraStationStartLogic.metadataLine(meta), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+                Text(text = ShomaraStationStartLogic.metadataLine(meta), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+            }
+            // Chapter badge: the number identity of the station's unit (white on the
+            // accent, contrast guarded by test). Decorative for TalkBack — the heading
+            // and the metadata line already announce everything.
+            Box(
+                modifier = Modifier
+                    .size(ShomaraTokens.Space40)
+                    .background(heroAccent, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                    .clearAndSetSemantics {},
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = ShomaraDigits.toFa(meta.chapter), style = ShomaraTypography.Title, color = ShomaraTokens.ColorWhite)
             }
         }
         when (state) {
@@ -192,6 +228,7 @@ fun ShomaraStationStartSheet(
         val cta = ShomaraStationStartLogic.ctaLabel(state)
         if (cta != null) {
             ShomaraButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = cta,
                 // R-08: Locked dismisses, Replay replays, everything else starts.
                 onClick = {
@@ -209,7 +246,7 @@ fun ShomaraStationStartSheet(
         // Exactly one dismissing action when locked: the "متوجه شدم" CTA
         // above already dismisses, so a second "بستن" button would duplicate it.
         if (state != ShomaraStationStartState.Locked) {
-            ShomaraButton(text = "بستن", onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
+            ShomaraButton(modifier = Modifier.fillMaxWidth(), text = "بستن", onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
         }
     }
 }

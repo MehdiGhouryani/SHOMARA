@@ -675,3 +675,10 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - شواهد دستگاه (emulator-5554): before/after در 360dp (n08r-path-before/after…/final2)، اسکرول‌شده (خط پیوستهٔ ۲→۳→۴)، 412dp بدون برش افقی (برش پایین = نشانهٔ اسکرول C-03)؛ ضربه روی گرهٔ قفل ۲ → شیت شروع با توضیح گرم + تک-CTA (قرارداد F-01 سالم). APK نهایی sha256 a55d15f4…
 - jev_review در دسترس نبود (بدون API key در این محیط) — بازبینی patch با چک‌لیست دستی: صفر hex/dp خام، semantics دست‌نخورده، بدون داده/متن ساختگی، دامنه دست‌نخورده، صفحات محافظت‌شده لمس نشدند.
 - ترتیب اجرا با directive مالک جابه‌جا شد (Home قبل از nav)؛ N08R-05 (nav) همچنان TODO و بعدی طبق directive: Station Start (N08R-07).
+
+## 2026-11-07 — N08R-07 (Station Start دولینگویی) — branch native/n08r-ui-polish
+
+- بازطراحی `ShomaraStationStartSheet`: بلوک هیروی فصل (تینت+accent از همان `chapterBandColors` مسیر/بنر — یک سیستم)، لبهٔ سه‌بعدی lip (دستور N08R-06)، کاراکتر Main در دایرهٔ سفید با قاب accent (جای قاب مربعی کرم)، badge شمارهٔ فصل (سفید روی accent، TalkBack-decorative)، CTA تمام‌عرض (Primary/Ghost طبق state) و «بستن» تمام‌عرض. متن‌های pinشدهٔ تست («شروع/ادامه/تمرین دوباره/متوجه شدم»، lockedExplanation، metadataLine) و wiring شل (Back/deep-link/CTA→lesson) عیناً حفظ شد — منطق `ShomaraStationStartLogic` و `ShomaraJumpSheet` دست نخورد.
+- تست تازه: `sheet hero keeps chapter identity and readable marks for every chapter` (۵ فصل: تینت مشخص + white-on-accent ≥3:1). `android:gate` PASS.
+- شواهد دستگاه (emulator-5554، APK sha256 b88ad996…): BEFORE (`n08r-sheet-before-locked-open.png`) در برابر AFTER: Locked 360 (`after2-locked`)، Ready 360 (hero+CTA تمام‌عرض سبز «شروع»+بستن)، 412dp، فونت ۲۰۰٪ (هیرو دوخطی بدون بریدگی، اسکرول سالم)؛ Back → مسیر با حفظ موقعیت (`after2-back`)؛ CTA «شروع» گرهٔ ۱ → ورود واقعی به درس (P1 کشف، اسکلت صادقانه + بنر «گزینه‌ها نیامده»، «بررسی» غیرفعال) (`after2-lesson-entered3`).
+- صادقانه: androidTest (`ShomaraStationSheetTest`) در gate اجرا نمی‌شود (connectedCheck خارج از gate) — پوشش رفتار با تعامل واقعی دستگاه انجام شد؛ Replay/Resume روی دستگاه بدون progress واقعی دست‌نیافتنی‌اند (منطق تست‌پوشیده)؛ N08R-05 و sweep فونت ۲۰۰٪ مسیر Home همچنان pending.
