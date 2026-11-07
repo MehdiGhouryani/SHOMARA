@@ -224,4 +224,43 @@ class ShomaraPathGraphTest {
         assertEquals("ایستگاه‌های ۶ تا ۱۰", ShomaraPathGraphLogic.chapterSpanLabel(2))
         assertEquals("ایستگاه‌های ۲۱ تا ۲۵", ShomaraPathGraphLogic.chapterSpanLabel(5))
     }
+
+    // ---- N08R-01: WCAG 1.4.11 guard — every chapter accent reads against its band tint ----
+
+    private fun relativeLuminance(color: androidx.compose.ui.graphics.Color): Double {
+        fun channel(v: Float): Double {
+            val c = v.toDouble()
+            return if (c <= 0.04045) c / 12.92 else Math.pow((c + 0.055) / 1.055, 2.4)
+        }
+        return 0.2126 * channel(color.red) + 0.7152 * channel(color.green) + 0.0722 * channel(color.blue)
+    }
+
+    private fun contrastRatio(a: androidx.compose.ui.graphics.Color, b: androidx.compose.ui.graphics.Color): Double {
+        val l1 = relativeLuminance(a)
+        val l2 = relativeLuminance(b)
+        return (maxOf(l1, l2) + 0.05) / (minOf(l1, l2) + 0.05)
+    }
+
+    @Test
+    fun `every chapter accent meets the 3 to 1 non-text contrast floor on its band`() {
+        // N08R-01 audit: amber on amberSoft was 1.64:1 and chapter 3 switched to amberInk.
+        // This guard keeps any future accent change from regressing to an invisible bar.
+        val floors = listOf(
+            ShomaraTokens.ColorPrimary to ShomaraTokens.ColorPrimarySoft,
+            ShomaraTokens.ColorSky to ShomaraTokens.ColorSkySoft,
+            ShomaraTokens.ColorAmberInk to ShomaraTokens.ColorAmberSoft,
+            ShomaraTokens.ColorBerry to ShomaraTokens.ColorBerrySoft,
+            ShomaraTokens.ColorInk2 to ShomaraTokens.ColorSurfaceAlt,
+        )
+        floors.forEachIndexed { index, (accent, band) ->
+            val ratio = contrastRatio(accent, band)
+            assertTrue("chapter ${index + 1} accent contrast $ratio must be >= 3.0", ratio >= 3.0)
+        }
+    }
+
+    @Test
+    fun `chapter accents stay pairwise distinct`() {
+        val accents = (1..5).map { ShomaraPathGraphLogic.chapterBandColors(it).second }
+        assertEquals(5, accents.toSet().size)
+    }
 }

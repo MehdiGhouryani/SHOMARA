@@ -148,4 +148,27 @@ class ShomaraMotionTest {
         assertEquals("correct-1", gate.begin("correct-1"))
         assertEquals(1, gate.concurrentCount())
     }
+
+    // ---- N08R-01: press feedback spring is token-derived, never a literal ----
+
+    @Test
+    fun `press spring stiffness is the motion token verbatim`() {
+        assertEquals(ShomaraTokens.MotionSpringStiffness.toFloat(), ShomaraPressFeedbackLogic.stiffness())
+    }
+
+    @Test
+    fun `press damping ratio derives from the physical token spring`() {
+        // c / 2*sqrt(k*m) with tokens 14/220/1 ≈ 0.472 — bouncy enough to feel alive,
+        // contained enough to never wobble (restrained Claymorphism).
+        val expected = (ShomaraTokens.MotionSpringDamping /
+            (2.0 * kotlin.math.sqrt(ShomaraTokens.MotionSpringStiffness.toDouble() * ShomaraTokens.MotionSpringMass))).toFloat()
+        assertEquals(expected, ShomaraPressFeedbackLogic.dampingRatio(), 1e-6f)
+        assertTrue("damping must stay in the bouncy-but-controlled band", ShomaraPressFeedbackLogic.dampingRatio() in 0.4f..0.55f)
+    }
+
+    @Test
+    fun `press scale target is the motion press token and resting is exact`() {
+        assertEquals(ShomaraTokens.MotionPressScale.toFloat(), ShomaraPressFeedbackLogic.pressedScale())
+        assertTrue("press must stay subtle", ShomaraPressFeedbackLogic.pressedScale() in 0.9f..0.99f)
+    }
 }

@@ -656,3 +656,12 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **یافته P1 (صفحهٔ محافظت‌شده — تصمیم مالک):** Profile Setup در 360dp + فونت 200٪ سرریز دارد — ردیف سوم گرید پایه (پایه پنجم/ششم) زیر CTA گم می‌شود و «پایه چهارم» دوخطی می‌شود (`n08r-profile-360dp-200font.png`). چون صفحه قفل است، اصلاح فقط با تأیید مالک. همچنین Welcome در 200٪ عنوان دوروخط دارد (مورد ثبت‌شدهٔ page-01).
 - debug APK: `apps/android/app/build/outputs/apk/debug/app-debug.apk` — sha256 `e0a4cc944a1c7bbb70c0ae4e19cdc91773d52cdb88572585c334e554b7f1e2e1`.
 - N08-06..N08-12 دست‌نخورده ماندند؛ N08-08 همچنان OWNER_DECISION_PENDING است و N08R از آن عبور نمی‌کند.
+
+## 2026-11-07 — N08R-01 (U0 — Design Foundation) — branch native/n08r-ui-polish
+
+- ممیزی کنتراست WCAG روی ۳۱ جفت مصرفی v2 (اسکریپت تحلیل بیرون-repo، جدول در `design/playbook/N08R_U0_AUDIT_FA.md`): ۱۸ جفت متنی همه PASS؛ تطبیق hex MASTER.md↔tokens.json بدون مغایرت؛ **هیچ مقدار توکن تغییر نکرد** (نتیجهٔ انتقادی: پالت سالم است).
+- ۵ مورد زیر-۳:۱ غیرمتنی: ۴ مورد معاف تزئینی/جداکننده؛ **accent بنر فصل ۳** amber→amberInk (1.64→11.18) + تست رگرسیون WCAG≥3 برای هر ۵ فصل.
+- تصمیم C-16 (هایلایت مورب دولینگو): REJECT — ثبت در چک‌لیست و سند audit §2.
+- حفرهٔ motion برطرف شد: `Modifier.shomaraPressScale` با spring توکن‌مشتق (dampingRatio c/2√(k·m)≈0.47، stiffness=220، target=0.96) روی `ShomaraButton` و گرهٔ مسیر؛ reduced-motion = snap؛ کامنت N08-04 صادقانه به‌روز شد (تعاملی ≠ تزئینی).
+- گیت‌ها: `android:gate` PASS (484 تست JVM شامل ۵ تازه) · vitest 564/564 · static 90/90 · harness:validate PASS.
+- Visual regression محافظت‌شده: recapture Profile Setup با APK U0 (sha256 7936a148…) → pixel-diff ناحیهٔ اپ vs baseline = **0.0000٪**؛ Splash هیچ مصرف‌کنندهٔ تغییرکرده‌ای ندارد.

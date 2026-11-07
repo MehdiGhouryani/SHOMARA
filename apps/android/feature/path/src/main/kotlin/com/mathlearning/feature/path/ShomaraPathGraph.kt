@@ -42,7 +42,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
@@ -59,6 +58,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
+import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
@@ -68,6 +68,7 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraStateSurface
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
+import com.mathlearning.core.designsystem.shomaraPressScale
 import com.mathlearning.core.model.ShomaraChapterCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.core.model.StationNodeMeta
@@ -248,7 +249,10 @@ object ShomaraPathGraphLogic {
     fun chapterBandColors(chapter: Int): Pair<Color, Color> = when (chapter) {
         1 -> ShomaraTokens.ColorPrimarySoft to ShomaraTokens.ColorPrimary
         2 -> ShomaraTokens.ColorSkySoft to ShomaraTokens.ColorSky
-        3 -> ShomaraTokens.ColorAmberSoft to ShomaraTokens.ColorAmber
+        // N08R-01 contrast audit: amber on amberSoft was 1.64:1 — washed out next to the other
+        // chapter accents (all ≥3:1). The amber family's own ink token carries the chapter's
+        // accent identity instead (11.18:1), matching chapter 5's dark-accent precedent (ink2).
+        3 -> ShomaraTokens.ColorAmberSoft to ShomaraTokens.ColorAmberInk
         4 -> ShomaraTokens.ColorBerrySoft to ShomaraTokens.ColorBerry
         else -> ShomaraTokens.ColorSurfaceAlt to ShomaraTokens.ColorInk2
     }
@@ -571,16 +575,19 @@ private fun ShomaraPathNodeItem(
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     var focused by remember { mutableStateOf(false) }
-    val pressScale = if (pressed) ShomaraTokens.MotionPressScale.toFloat() else 1f
     // Focus is a neutral ink ring around the whole item: never a filled colour, so it can
-    // never be mistaken for "open". Pressed shrinks the item slightly (tactile depth).
+    // never be mistaken for "open". Pressed compresses the node through the token spring
+    // (N08R-01 — tactile depth; reduced motion gets a hard cut instead of the spring).
     // mergeDescendants keeps TalkBack to one announcement (title + state) per node.
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .offset(x = ShomaraPathGraphLogic.sineOffsetDp(meta.ordinal - 1, isRtl))
             .width(PathNodeColumnWidth)
-            .graphicsLayer { scaleX = pressScale; scaleY = pressScale }
+            .shomaraPressScale(
+                pressed = pressed,
+                reducedMotion = LocalShomaraReducedMotion.current,
+            )
             .border(
                 width = ShomaraTokens.ClayFeaturedBorderWidth,
                 color = if (focused) ShomaraTokens.ColorInk else Color.Transparent,
