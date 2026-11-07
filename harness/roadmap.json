@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-07T00:00:00.000Z",
   "currentPhase": "N08R",
-  "currentTask": "N08R-02",
+  "currentTask": "N08R-07",
   "statusValues": [
     "TODO",
     "READY",
@@ -2056,7 +2056,9 @@
           "id": "N08R-01",
           "title": "U0 — تثبیت Design System: ممیزی کنتراست پالت، پالایش Clay، توکن‌های motion",
           "status": "DONE",
-          "dependsOn": ["N08R-00"],
+          "dependsOn": [
+            "N08R-00"
+          ],
           "acceptance": [
             "جدول کنتراست WCAG تمام جفت‌های مصرفی v2 تولید شود؛ رفع failها فقط روی توکن‌هایی که صفحات محافظت‌شده مصرف نمی‌کنند (یا variant کنترل‌شده با مجوز مأموریت §5)",
             "پالایش ShomaraClay در محدودهٔ ۴ سطح + قاعدهٔ یک Featured؛ تصمیم هایلایت مورب C-16 ثبت شود",
@@ -2076,7 +2078,9 @@
           "id": "N08R-02",
           "title": "U1 — خانوادهٔ ۰۲ آنبوردینگ (ساختار premium؛ بدون متن تازه)",
           "status": "TODO",
-          "dependsOn": ["N08R-01"],
+          "dependsOn": [
+            "N08R-01"
+          ],
           "acceptance": [
             "چرخهٔ ۱۰ مرحله‌ای صفحه با اسکرین‌شات قبل/بعد 360/390/412 + فونت 200٪",
             "هیچ متن کاننیکال تازه‌ای بدون تصویب مالک وارد نشود",
@@ -2088,7 +2092,9 @@
           "id": "N08R-03",
           "title": "U1 — خانوادهٔ ۰۳ تلفن/OTP (تصمیم مالک: فقط اصلاح حداقلی)",
           "status": "TODO",
-          "dependsOn": ["N08R-01"],
+          "dependsOn": [
+            "N08R-01"
+          ],
           "acceptance": [
             "محدودهٔ حداقلی رعایت شود: هم‌راستایی توکن/a11y و رفع باگ — بدون بازطراحی بصری",
             "semantics و IME بررسی و ثبت شود",
@@ -2100,7 +2106,9 @@
           "id": "N08R-04",
           "title": "U1 — خانوادهٔ ۰۵ Grade/Placement (فقط stateهای واقعی)",
           "status": "TODO",
-          "dependsOn": ["N08R-03"],
+          "dependsOn": [
+            "N08R-03"
+          ],
           "acceptance": [
             "فقط stateهای واقعی موجود طراحی/پولیش شود؛ بدون محتوای تعیین‌سطح (مسدود O1/O2) و بدون بن‌بست جدید",
             "locked/unavailable با توضیح گرم و TalkBack «قفل»",
@@ -2112,7 +2120,9 @@
           "id": "N08R-05",
           "title": "U2 — خانوادهٔ ۱۷ ناوبری/تب‌بار",
           "status": "TODO",
-          "dependsOn": ["N08R-01"],
+          "dependsOn": [
+            "N08R-01"
+          ],
           "acceptance": [
             "sweep دستگاهی + پولیش Clay/motion تب‌بار و pill فعال",
             "Back/deep-link/restoration و TalkBack stateها تأیید شود",
@@ -2123,20 +2133,32 @@
         {
           "id": "N08R-06",
           "title": "U2 — خانوادهٔ ۰۶ مسیر یادگیری",
-          "status": "TODO",
-          "dependsOn": ["N08R-05"],
+          "status": "DONE",
+          "dependsOn": [
+            "N08R-05"
+          ],
           "acceptance": [
             "معیارهای C-03 (۵-۶ گره در نما، گرهٔ آخر بریده) و C-04 (لغزش بنر چسبان) با اسکرین‌شات دستگاهی بسته شود",
             "پولیش Clay گره‌ها/بنر فصل در محدودهٔ ADR-0040؛ بدون asset تازه (P8 همچنان PENDING_OWNER — عدد interim می‌ماند)",
             "وضعیت‌های Fresh/Current/Completed/Perfect/Locked روی دستگاه با TalkBack چک شود"
           ],
-          "evidence": []
+          "evidence": [
+            "Owner directive reordered execution: Home (N08R-06) before nav (N08R-05 still TODO)",
+            "Deterministic zigzag geometry (alternating sides, [1,.55,1,.55] rhythm, responsive amplitude clamp) replacing sine; connector continuous behind nodes (swoop-in + tail for every node, label mask, onGloballyPositioned circle-centre anchor); RTL canvas mirroring fixed (recorded double-negation handled on canvas side)",
+            "Chapter-aware node colours (solid accent + white mark + lerp edge; Fresh = white + accent numeral; Locked neutral Line2/Ink2), drawn checkmark, anchor bubble reusing existing canonical CTA strings, chapter badge + 3D band lip (no second progress layer)",
+            "android:gate PASS (489+ JVM tests, 0 failures) incl. 6 new zigzag/connector/contrast tests replacing the sine test",
+            "Device evidence (emulator-5554): before/after 360dp, scrolled 2->3->4 continuous line, 412dp no horizontal cut, locked-node tap opens sheet with warm explanation + single CTA; APK sha256 a55d15f4202947bc9b010813a1278fd300d2e5173e821e18a9914fd6f3ee7650",
+            "jev_review unavailable (no API key) — manual patch-review checklist applied (no raw hex/dp, semantics intact, no fabricated data/text, domain untouched, protected screens untouched)",
+            "Honest limits: Completed/Perfect/Current solid-state visuals verified on device only via logic tests + Fresh/Locked on screen (live app has no progress data — F-02); 200% font sweep for the new path still pending (next device pass)"
+          ]
         },
         {
           "id": "N08R-07",
           "title": "U2 — خانوادهٔ ۰۷ شروع ایستگاه",
           "status": "TODO",
-          "dependsOn": ["N08R-06"],
+          "dependsOn": [
+            "N08R-06"
+          ],
           "acceptance": [
             "شیت شروع در ۳۶۰dp بدون hero مزاحم؛ دقیقاً یک CTA",
             "jump sheet همچنان بدون فراخوانندهٔ تولیدی می‌ماند تا wiring فاز B (هیچ دکمهٔ بی‌عمل)",
@@ -2148,7 +2170,9 @@
           "id": "N08R-08",
           "title": "U3 — خانوادهٔ ۰۸ Teach/Discover (فقط chrome)",
           "status": "TODO",
-          "dependsOn": ["N08R-07"],
+          "dependsOn": [
+            "N08R-07"
+          ],
           "acceptance": [
             "فقط chrome/CTA/بنر/motion پولیش شود؛ قضاوت پاسخ و محتوا مسدود O1/O2 می‌ماند و صادقانه BLOCKED ثبت می‌شود",
             "بدون ساخت prompt/گزینهٔ ساختگی",
@@ -2160,7 +2184,9 @@
           "id": "N08R-09",
           "title": "U3 — خانوادهٔ ۰۹ Guided Practice (فقط chrome)",
           "status": "TODO",
-          "dependsOn": ["N08R-08"],
+          "dependsOn": [
+            "N08R-08"
+          ],
           "acceptance": [
             "حلقهٔ «بررسی←ادامه» و اسلات بازخورد پولیش شود؛ آیتم/هینت مسدود O1/O2",
             "single-submit و حفظ layout هنگام بازخورد تأیید شود",
@@ -2172,7 +2198,9 @@
           "id": "N08R-10",
           "title": "U3 — خانوادهٔ ۱۰ Assessment (فقط chrome آرام)",
           "status": "TODO",
-          "dependsOn": ["N08R-09"],
+          "dependsOn": [
+            "N08R-09"
+          ],
           "acceptance": [
             "dial آرام‌تر (۲/۲/۳) حفظ شود؛ بدون شخصیت/hint/جشن",
             "اسلات‌های حالت idle/selected/submitting/result بدون جعل محتوا",
@@ -2184,7 +2212,9 @@
           "id": "N08R-11",
           "title": "U3 — خانوادهٔ ۱۱ Recovery/Result",
           "status": "TODO",
-          "dependsOn": ["N08R-10"],
+          "dependsOn": [
+            "N08R-10"
+          ],
           "acceptance": [
             "سطح نتیجه با یک CTA و رد شدن با یک ضربه؛ بدون XP/درصد/رتبه",
             "«چه چیزی تمرین شد» بدون متن کاننیکال ساخته نمی‌شود — مسدود ثبت شود",
@@ -2196,7 +2226,9 @@
           "id": "N08R-12",
           "title": "U4 — خانوادهٔ ۱۲ تب تمرین (سیم‌کشی stateهای دست‌نیافتنی)",
           "status": "TODO",
-          "dependsOn": ["N08R-05"],
+          "dependsOn": [
+            "N08R-05"
+          ],
           "acceptance": [
             "loading/offline/error از شِل واقعاً سیم‌کشی شود (کد موجود، مسیر از شِل بسته است)",
             "ردیف‌ها بدون دادهٔ ساختگی؛ locked با دلیل گرم",
@@ -2209,7 +2241,9 @@
           "id": "N08R-13",
           "title": "U4 — خانوادهٔ ۱۳ چالش",
           "status": "TODO",
-          "dependsOn": ["N08R-11"],
+          "dependsOn": [
+            "N08R-11"
+          ],
           "acceptance": [
             "اینترودُ و اسلات round پولیش شود؛ محتوای round مسدود فاز B/CONTENT-016",
             "تایمر فقط در round و تحت reduced-motion پنهان (قرارداد موجود حفظ)",
@@ -2221,7 +2255,9 @@
           "id": "N08R-14",
           "title": "U5 — خانوادهٔ ۱۴ من (Profile/Me)",
           "status": "TODO",
-          "dependsOn": ["N08R-05"],
+          "dependsOn": [
+            "N08R-05"
+          ],
           "acceptance": [
             "F-02 (facts همیشه Empty) بدون منبع پیشرفت محلی حل نمی‌شود — ساختاری پولیش و مسدودی صادقانه ثبت شود",
             "بدون badge/streak/دادهٔ ساختگی",
@@ -2233,7 +2269,9 @@
           "id": "N08R-15",
           "title": "U5 — خانوادهٔ ۱۵ آواتار/تنظیمات/والدین",
           "status": "TODO",
-          "dependsOn": ["N08R-14"],
+          "dependsOn": [
+            "N08R-14"
+          ],
           "acceptance": [
             "F-03 (در صورت زنده بودن) رفع و تست شود؛ fail-closed گیت والد حفظ",
             "grid آواتار در فونت 200٪ و انتخاب سه‌طریقه تأیید شود",
@@ -2245,7 +2283,9 @@
           "id": "N08R-16",
           "title": "U6 — خانوادهٔ ۱۶ حالت‌های سیستمی + FoundationScreen",
           "status": "TODO",
-          "dependsOn": ["N08R-01"],
+          "dependsOn": [
+            "N08R-01"
+          ],
           "acceptance": [
             "pending-sync رد (ADR-0039)؛ error = بستهٔ خراب؛ آفلاین حالت عادی — فقط ساختاری، بدون متن تازه",
             "FoundationScreen از placeholder دو-متنه به StateSurface واقعی با اتصال state صحیح",
@@ -2257,7 +2297,17 @@
           "id": "N08R-17",
           "title": "U6 — سراسری: QA journeys، regression محافظت‌شده، بستن gateهای معلق چک‌لیست",
           "status": "TODO",
-          "dependsOn": ["N08R-02", "N08R-04", "N08R-07", "N08R-11", "N08R-12", "N08R-13", "N08R-14", "N08R-15", "N08R-16"],
+          "dependsOn": [
+            "N08R-02",
+            "N08R-04",
+            "N08R-07",
+            "N08R-11",
+            "N08R-12",
+            "N08R-13",
+            "N08R-14",
+            "N08R-15",
+            "N08R-16"
+          ],
           "acceptance": [
             "۱۱ مسیر QA_JOURNEYS اجرا و ثبت شود (مسیرهای وابسته به محتوا صادقانه BLOCKED)",
             "visual regression Splash + Profile Setup در برابر baseline ن08r سبز",

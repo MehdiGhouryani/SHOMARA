@@ -26,8 +26,8 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N08R
-current_task: N08R-02
-phase_status: N08R_2_OF_18_DONE__U0_DESIGN_FOUNDATION_CLOSED__U1_NEXT
+current_task: N08R-07
+phase_status: N08R_HOME_REDESIGN_DONE__NEXT_STATION_START_PER_OWNER_ORDER
 apk_status: DEBUG_APK_BUILT_INSTALLED__LAUNCH_AND_DEEPLINK_VERIFIED
 blocked_note: N08-06..12 remain blocked on N08-08 (OWNER_DECISION_PENDING for CONTENT-005/006/007/016). Parallel owner-authorized phase N08R (Duolingo-level UI/UX refinement, mission: design/playbook/N08R_MISSION_FA.md) registered on branch native/n08r-ui-polish from page-17-nav; it must not bypass N08-08 or touch protected screens (Splash, Profile Setup).
 ```

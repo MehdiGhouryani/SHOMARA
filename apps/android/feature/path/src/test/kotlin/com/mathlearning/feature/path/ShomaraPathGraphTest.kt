@@ -7,6 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
 /** N05-02 path graph + N05-09 metadata tests. Phase A adds Fresh, anchor, counts and index tests. */
@@ -162,17 +163,90 @@ class ShomaraPathGraphTest {
 
     // ---- Phase A: sine geometry + lazy-list index model ----
 
+    // ---- N08R-06: deterministic zigzag geometry (Duolingo-style winding path) ----
+
     @Test
-    fun `sine offsets stay within the token amplitude and mirror in RTL`() {
+    fun `zigzag offsets alternate sides every row and stay within the token amplitude`() {
         val amplitude = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
+        val contentWidth = 312.dp // 360dp screen minus the 24dp side insets
+        var previousSign = 0f
         for (globalIndex in 0..24) {
-            val ltr = ShomaraPathGraphLogic.sineOffsetDp(globalIndex, isRtl = false)
-            val rtl = ShomaraPathGraphLogic.sineOffsetDp(globalIndex, isRtl = true)
-            assertEquals(-ltr, rtl)
-            assertTrue(abs(ltr.value) <= amplitude.value)
+            val offset = ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex, isRtl = false, contentWidth = contentWidth)
+            assertTrue(abs(offset.value) <= amplitude.value)
+            // Never on the centre line: every node visibly leaves the axis (no vertical list).
+            assertTrue(offset.value != 0f)
+            val sign = if (offset.value > 0f) 1f else -1f
+            if (previousSign != 0f) {
+                assertEquals("nodes must alternate sides (index $globalIndex)", -previousSign, sign)
+            }
+            previousSign = sign
         }
-        // The wave actually moves: not every node sits on the centre line.
-        assertFalse((0..24).all { ShomaraPathGraphLogic.sineOffsetDp(it, isRtl = false) == ShomaraPathGraphLogic.sineOffsetDp(0, isRtl = false) })
+        // Deterministic: the same input yields the same offset.
+        assertEquals(
+            ShomaraPathGraphLogic.zigzagOffsetDp(7, isRtl = false, contentWidth = contentWidth),
+            ShomaraPathGraphLogic.zigzagOffsetDp(7, isRtl = false, contentWidth = contentWidth),
+        )
+    }
+
+    @Test
+    fun `zigzag mirrors in RTL so the path begins top-right and winds left`() {
+        val contentWidth = 312.dp
+        for (globalIndex in 0..24) {
+            val ltr = ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex, isRtl = false, contentWidth = contentWidth)
+            val rtl = ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex, isRtl = true, contentWidth = contentWidth)
+            assertEquals(-ltr, rtl)
+        }
+    }
+
+    @Test
+    fun `zigzag amplitude clamps on narrow content so nodes never cut at the edge`() {
+        // 312dp content: the full token amplitude fits.
+        assertEquals(
+            (ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8).value,
+            ShomaraPathGraphLogic.zigzagAmplitudeDp(312.dp).value,
+            0.001f,
+        )
+        // A narrow 240dp screen (192dp content) clamps below the token amplitude, and the
+        // offset label column still stays fully inside the content width.
+        val clamped = ShomaraPathGraphLogic.zigzagAmplitudeDp(192.dp)
+        assertTrue(clamped.value < (ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8).value)
+        val columnHalf = (ShomaraTokens.Space40 * 4).value / 2f
+        assertTrue(clamped.value + columnHalf <= 192f / 2f)
+    }
+
+    @Test
+    fun `connector enters at the previous node offset so the line chains across items`() {
+        val contentWidth = 312.dp
+        for (globalIndex in 1..24) {
+            assertEquals(
+                ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex - 1, isRtl = false, contentWidth = contentWidth),
+                ShomaraPathGraphLogic.connectorEnterOffsetDp(globalIndex, isRtl = false, contentWidth = contentWidth),
+            )
+        }
+    }
+
+    @Test
+    fun `node colours follow the chapter`() {
+        val ch1 = ShomaraPathGraphLogic.colorsFor(ShomaraPathNodeState.Completed, 1)
+        val ch2 = ShomaraPathGraphLogic.colorsFor(ShomaraPathNodeState.Completed, 2)
+        assertTrue("completed nodes must tint with their chapter", ch1.container != ch2.container)
+        assertEquals(ShomaraTokens.ColorWhite, ch1.content)
+    }
+
+    @Test
+    fun `white marks stay readable on every chapter accent and edges are darker`() {
+        // Completed/Perfect/Current draw white marks on the solid chapter accent — the WCAG
+        // non-text floor is 3:1 (N08R-01 audit pattern). The 3D edge must be strictly darker
+        // than the face, or the tactile lip disappears.
+        for (chapter in 1..5) {
+            val accent = ShomaraPathGraphLogic.accentFor(chapter)
+            val ratio = contrastRatio(androidx.compose.ui.graphics.Color.White, accent)
+            assertTrue("chapter $chapter white-on-accent $ratio must be >= 3.0", ratio >= 3.0)
+            assertTrue(
+                "chapter $chapter edge must be darker than the face",
+                relativeLuminance(ShomaraPathGraphLogic.edgeFor(accent)) < relativeLuminance(accent),
+            )
+        }
     }
 
     @Test

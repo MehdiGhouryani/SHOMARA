@@ -245,14 +245,16 @@ fun ShomaraJumpSheet(
         if (lockedMessage != null) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = lockedMessage!!)
         for (target in state.targets) {
             val selected = state.selectedId == target.meta.id
-            val (_, border, content) = ShomaraPathGraphLogic.colorsFor(target.nodeState)
+            // N08R-06: node colours are chapter-aware now; the jump rows keep their neutral
+            // row chrome (Line border) and take only the state text colour.
+            val nodeColors = ShomaraPathGraphLogic.colorsFor(target.nodeState, target.meta.chapter)
             val label = "${target.meta.workingTitle} — ${ShomaraPathGraphLogic.stateLabelFor(target.nodeState)}"
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = ShomaraTokens.ComponentTouchMin)
                     .background(if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
-                    .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusSm))
+                    .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusSm))
                     // R-21: one TalkBack stop per row — the title and state texts merge
                     // into the row's node («عنوان — وضعیت») instead of three stops.
                     .semantics(mergeDescendants = true) {
@@ -284,11 +286,11 @@ fun ShomaraJumpSheet(
                     contentAlignment = Alignment.Center,
                 ) {
                     if (selected) {
-                        Text(text = "✓", style = ShomaraTypography.Body, color = content, modifier = Modifier.clearAndSetSemantics {})
+                        Text(text = "✓", style = ShomaraTypography.Body, color = nodeColors.content, modifier = Modifier.clearAndSetSemantics {})
                     }
                 }
                 Column {
-                    Text(text = target.meta.workingTitle, style = ShomaraTypography.Body, color = content)
+                    Text(text = target.meta.workingTitle, style = ShomaraTypography.Body, color = nodeColors.content)
                     Text(text = ShomaraPathGraphLogic.stateLabelFor(target.nodeState), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
                 }
             }

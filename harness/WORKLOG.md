@@ -665,3 +665,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - حفرهٔ motion برطرف شد: `Modifier.shomaraPressScale` با spring توکن‌مشتق (dampingRatio c/2√(k·m)≈0.47، stiffness=220، target=0.96) روی `ShomaraButton` و گرهٔ مسیر؛ reduced-motion = snap؛ کامنت N08-04 صادقانه به‌روز شد (تعاملی ≠ تزئینی).
 - گیت‌ها: `android:gate` PASS (484 تست JVM شامل ۵ تازه) · vitest 564/564 · static 90/90 · harness:validate PASS.
 - Visual regression محافظت‌شده: recapture Profile Setup با APK U0 (sha256 7936a148…) → pixel-diff ناحیهٔ اپ vs baseline = **0.0000٪**؛ Splash هیچ مصرف‌کنندهٔ تغییرکرده‌ای ندارد.
+
+## 2026-11-07 — N08R-06 (Home — مسیر یادگیری دولینگویی) — branch native/n08r-ui-polish
+
+- اجرای مستقیم directive مالک (Priority Zero: بازطراحی Home): هندسهٔ زیگزاگ deterministic جای سینوس (`zigzagOffsetDp/AmplitudeDp` — تناوب چپ/راست هر ردیف، ریتم بزرگی [1, .55, 1, .55]، clamp دامنه بر عرض واقعی محتوا)، connector منحنی پیوسته پشت گره‌ها (swoop ورودی + دُم خروجی در همهٔ گره‌ها، زنجیره بین آیتم‌ها، mask رنگ-بوم پشت لیبل‌ها)، رنگ‌های chapter-aware (Completed/Current/Perfect = accent توپر + مارک سفید + لبهٔ تیرهٔ lerp(accent,ink,0.3)؛ Fresh = سفید + عدد accent؛ Locked = خنثی Line2/Ink2)، تیکِ کشیدهٔ Canvas جای «✓» متنی، حباب anchor «شروع/ادامه» (رشته‌های CTA کاننیکال موجود — هیچ متن تازه)، badge شمارهٔ فصل + لبهٔ سه‌بعدی روی بنر فصل (لایهٔ پیشرفت دوم اضافه نشد — قاعدهٔ تک‌لایه برقرار).
+- **دو باگ واقعی در حین device-pass رفع شد:** (۱) RTL — Canvas آینه نمی‌شود ولی Modifier.offset آینه می‌کند (دو-نگیشن ثبت‌شدهٔ page-06) → canvasX با یک نگیشن اضافه روی x بصری فرود می‌آید؛ (۲) انتهای منحنی به مرکز واقعی دایره لنگر شد (onGloballyPositioned) — مقاوم در برابر حباب/۸۴dp/فونت ۲۰۰٪؛ دُم خروجی برای ordinal=1 هم کشیده شد تا زنجیره از گرهٔ اول پیوسته باشد.
+- station start (jump rows) به colorsFor با chapter-aware مهاجرت کرد (کروم خنثی ردیف‌ها حفظ شد).
+- تست‌ها: تست سینوس با ۶ تست زیگزاگ/کانکتور/کنتراست جایگزین شد (تناوب، آینهٔ RTL، clamp عرض باریک، زنجیرهٔ connector، رنگ chapter-aware، white-on-accent ≥3:1 برای هر ۵ فصل + لبه تیره‌تر از روی). گیت: android:gate PASS — ۴۸۹+ تست JVM صفر خطا.
+- شواهد دستگاه (emulator-5554): before/after در 360dp (n08r-path-before/after…/final2)، اسکرول‌شده (خط پیوستهٔ ۲→۳→۴)، 412dp بدون برش افقی (برش پایین = نشانهٔ اسکرول C-03)؛ ضربه روی گرهٔ قفل ۲ → شیت شروع با توضیح گرم + تک-CTA (قرارداد F-01 سالم). APK نهایی sha256 a55d15f4…
+- jev_review در دسترس نبود (بدون API key در این محیط) — بازبینی patch با چک‌لیست دستی: صفر hex/dp خام، semantics دست‌نخورده، بدون داده/متن ساختگی، دامنه دست‌نخورده، صفحات محافظت‌شده لمس نشدند.
+- ترتیب اجرا با directive مالک جابه‌جا شد (Home قبل از nav)؛ N08R-05 (nav) همچنان TODO و بعدی طبق directive: Station Start (N08R-07).
