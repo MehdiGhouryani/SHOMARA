@@ -27,7 +27,7 @@ Common rules for every prompt below (negative rules, binding):
 
 - Page / family: 01 Welcome / Launch
 - Size / format: 12 transparent RGBA PNGs (owner-delivered 2026-11-05), composed in code in `ShomaraWelcomeScreen` (`ShomaraLaunchLayout`); the hero is a composition, not one 1440x1800 background. The original single-image prompt below is superseded by the delivered artwork and is kept for reference only.
-- Status: OWNER_DELIVERED — 12 files in `apps/android/core/designsystem/src/main/res/drawable-nodpi/` as `shomara_launch_*.png`, copied locally by the harness (binaries cannot be pushed by snapshot). Page 01-launch implements the composition on branch `page-01-launch` (staged; gates + device screenshot still outstanding).
+- Status: OWNER_DELIVERED — 12 files in `apps/android/core/designsystem/src/main/res/drawable-nodpi/` as `shomara_launch_*.png`, copied locally by the harness (binaries cannot be pushed by snapshot). Page 01-launch is merged to main (commit `df23d507`, 2026-11-06).
 - Files (zip name → drawable name, native size, sha256):
   - mascot_bow_character.png → shomara_launch_mascot_bow_character.png, 743x698, 8f2d03452fff9f730bcf4ff38f7ac60967d9ab5906ce6701236c2f202f9175b6
   - number_1.png → shomara_launch_number_1.png, 236x304, bb661138e5ff7acf4acb7231514a28d90b9026487ea0d3c906c5b76403b8a780
@@ -153,6 +153,18 @@ Common rules for every prompt below (negative rules, binding):
 - Note: Each icon must depict exactly its own template's manipulative — a wrong manipulative teaches the wrong thing, so the owner/designer checks each icon against the template spec before approval. No icon is shipped until its template's manipulative is defined in the approved content (today only ST07's templates are specced; the other stations' templates are not). Until then this row stays PENDING_OWNER and the path keeps the chapter band (Phase A) as its visual identity.
 - Generation: candidate (character-free, simple shapes), with the per-template check above — generation is not shipping; the owner reviews each icon against the negative rules and its template spec before the row moves to APPROVED.
 
+## P9 — Shared onboarding kit: profile hero + bottom hills (owner-delivered as 1 WebP + 16 SVGs)
+
+- Page / family: 02 Profile (hero + bottom layer); the kit is shared with later onboarding pages (same mascot, clouds, leaves, hills — a shared onboarding kit, not page-02-only)
+- Size / format: 1 transparent WebP (mascot, peeking pose, 1536x1024) + 16 single-path SVGs (4 clouds, 4 leaf clusters, rays, 2 back hills, front curve, 5-band bottom hills, 3 icons). The SVGs were transcribed to Compose paths (`ShomaraProfileShapes.kt`, feature:onboarding) by a local generator script — no vector files are shipped; the WebP is the only binary.
+- Status: OWNER_DELIVERED — WebP in `apps/android/core/designsystem/src/main/res/drawable-nodpi/` as `shomara_profile_mascot_with_bow.webp`, copied locally by the harness (binaries cannot be pushed by snapshot). Page 02-profile stages the composition on branch `page-02-profile` (staged; NOT pushed, NOT tested).
+- Files (zip name → drawable name, native size, sha256):
+  - 01-mascot-with-bow.webp → shomara_profile_mascot_with_bow.webp, 1536x1024, 666d0d3a08c27eda91d5c8f06539a73138f1ad1543b2328805f9c2a160d9f08b
+  - 02-mascot-without-bow.webp → NOT shipped, 1536x1024, e87fe40f2484d2555c1df60176ce00b416e1ee4b59ef5e4b04b4b7ac41a8c498 — no use; the with-bow file is used as-is
+  - 03-bow.webp → NOT shipped, 1536x1024, c4a3d801a562e0729107c6bfb52a96bde61efc9240c595955ed310928b995e43 — separate files are not necessarily aligned; never layer it on the mascot
+  - 01–16 SVGs → Compose paths in `ShomaraProfileShapes.kt` (see `ASSET_PLACEMENT_PAGE02_FA.md` for the full SVG→path map); the SVG hex colours are approximate and were NOT used — every fill comes from v2 tokens at the call site
+- Note: The purple mascot is owner-supplied artwork for the onboarding pages — NOT the approved cast (no ShomaraCharacter pose), never reused as a guide or avatar elsewhere. The same character in its standing pose (page 01) is `shomara_launch_mascot_bow_character` (row P1); this row is the peeking pose. The rays are amber (attention only); the check/arrow/user icons are drawn from the same transcription. The splash file stays untouched.
+
 ## S1 — Settings / guardian calm image: NOT NEEDED
 
 - Page / family: 15 Avatar / Settings / Guardian
@@ -181,7 +193,8 @@ Candidates for high-quality generation, because they are
 character-free scenes with simple shapes and the negative rules
 above are easy to check visually: P2, P3, P5, P7, P8 (with the
 per-template manipulative check in the P8 row). P1 is no longer a
-candidate — owner-delivered 2026-11-05 (see the P1 row).
+candidate — owner-delivered 2026-11-05 (see the P1 row). P9 is no
+longer a candidate — owner-delivered 2026-11-06 (see the P9 row).
 NOT candidates (owner must deliver from approved artwork):
 P4 (celebration — a generated character would be off-model, and a
 generated celebration easily drifts into reward motifs) and P6

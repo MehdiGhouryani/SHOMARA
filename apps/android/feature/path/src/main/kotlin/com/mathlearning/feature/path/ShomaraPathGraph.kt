@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,14 +36,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
@@ -55,10 +64,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.LayoutDirection
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
+import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
@@ -68,11 +79,11 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraStateSurface
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
+import com.mathlearning.core.designsystem.shomaraPressScale
 import com.mathlearning.core.model.ShomaraChapterCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.core.model.StationNodeMeta
 import kotlinx.coroutines.launch
-import kotlin.math.sin
 
 /** Path node states (family 06): fresh/current/completed/perfect/locked + offline/error surfaces. */
 enum class ShomaraPathNodeState { Fresh, Current, Completed, Perfect, Locked }
@@ -99,25 +110,55 @@ data class ShomaraPathProgress(
  */
 private val PathNodeColumnWidth: Dp = ShomaraTokens.Space40 * 4
 
+/** Chapter-aware node colours for the N08R-06 path redesign (container / mark / 3D edge). */
+data class ShomaraNodeColors(val container: Color, val content: Color, val edge: Color)
+
 /** Pure node-state mapping; exactly ONE Current node can exist at a time (single featured). */
 object ShomaraPathGraphLogic {
-    // Sine geometry — mirrors apps/mobile/src/path/layout.ts buildPathLayout:
-    // x = width / 2 + amplitude * sin(g * frequency + phase), g = global node index.
-    // The ui.path block of packages/design-system/src/tokens.json is not emitted by the
-    // generated ShomaraTokens (v2 block only), so the amplitude is derived from generated
-    // v2 tokens and equals the ui.path.x.amplitude value, and frequency / phase are the
-    // ui.path.x values. A later token-codegen step should emit ui.path and ui.chapter so
-    // these derivations can be replaced by generated tokens.
-    private val PathSineAmplitude: Dp = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
-    private const val PathSineFrequency: Double = 0.9
-    private const val PathSinePhase: Double = 3.4
+    // N08R-06 zigzag geometry (owner directive: Duolingo-style winding learning path).
+    // Nodes alternate sides of the centre axis on EVERY row — never a vertical line, never a
+    // checkerboard — with a deterministic magnitude rhythm so the path reads organic but is
+    // fully reproducible and testable. The maximum amplitude stays the token-derived path
+    // amplitude (nodeSize − space8, the value the ui.path tokens encoded), and
+    // [zigzagAmplitudeDp] clamps it on narrow content widths so a node (and its label column)
+    // can never be cut by the screen edge.
+    private val PathZigzagMaxAmplitude: Dp = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
 
-    /** Horizontal sine offset for the node with global index [globalIndex] (0-based). */
-    fun sineOffsetDp(globalIndex: Int, isRtl: Boolean): Dp {
-        val wave = PathSineAmplitude * sin(globalIndex * PathSineFrequency + PathSinePhase).toFloat()
-        // RTL mirrors the wave so the path begins top-right and winds left.
-        return if (isRtl) -wave else wave
+    /** Deterministic magnitude rhythm of the zigzag (index 0-based), in 0..1 of amplitude. */
+    fun zigzagMagnitude(globalIndex: Int): Float = when (globalIndex % 4) {
+        0 -> 1f
+        1 -> 0.55f
+        2 -> 1f
+        else -> 0.55f
     }
+
+    /**
+     * Responsive amplitude: the token maximum, clamped so the offset label column stays fully
+     * inside [contentWidth] (the lazy-list content width after the 24 dp edge insets).
+     */
+    fun zigzagAmplitudeDp(contentWidth: Dp): Dp {
+        val reachable = (contentWidth - PathNodeColumnWidth) / 2f
+        val cap = if (reachable.value > 0f) reachable else Dp(0f)
+        return minOf(PathZigzagMaxAmplitude, cap)
+    }
+
+    /** Horizontal zigzag offset for the node with global index [globalIndex] (0-based). */
+    fun zigzagOffsetDp(globalIndex: Int, isRtl: Boolean, contentWidth: Dp): Dp {
+        val sign = if (globalIndex % 2 == 0) 1f else -1f
+        val offset = zigzagAmplitudeDp(contentWidth) * sign * zigzagMagnitude(globalIndex)
+        // RTL mirrors the path so it begins top-right and winds left.
+        return if (isRtl) -offset else offset
+    }
+
+    /**
+     * X where the curved connector ENTERS this node's item = the previous node's offset, so
+     * consecutive items chain: item N exits at its own offset at the bottom edge and item
+     * N+1 enters at exactly that x at its top edge — one continuous winding line behind the
+     * nodes. The first node (ordinal 1) has no incoming connector.
+     */
+    fun connectorEnterOffsetDp(globalIndex: Int, isRtl: Boolean, contentWidth: Dp): Dp =
+        if (globalIndex <= 0) zigzagOffsetDp(globalIndex, isRtl, contentWidth)
+        else zigzagOffsetDp(globalIndex - 1, isRtl, contentWidth)
 
     /**
      * First station the child has not completed yet, when no current station is placed.
@@ -150,17 +191,40 @@ object ShomaraPathGraphLogic {
         ShomaraPathNodeState.Locked -> "هنوز قفل؛ با ترتیب مسیر باز می‌شود"
     }
 
-    fun stateMarkFor(state: ShomaraPathNodeState): String = when (state) {
-        ShomaraPathNodeState.Completed, ShomaraPathNodeState.Perfect -> "✓"
-        else -> ""
-    }
+    /**
+     * Owner page-06: the locked reason reads as a 2-3 line wall when repeated
+     * on every locked node, so the VISIBLE third line shows this short label
+     * while the merged semantics keep the full warm reason (stateDescription
+     * is unchanged — TalkBack truth is not shortened).
+     */
+    val lockedShortLabel: String = "هنوز قفل"
 
-    fun colorsFor(state: ShomaraPathNodeState): Triple<Color, Color, Color> = when (state) {
-        ShomaraPathNodeState.Current -> Triple(ShomaraTokens.ColorAmberSoft, ShomaraTokens.ColorAmber, ShomaraTokens.ColorAmberInk)
-        ShomaraPathNodeState.Completed -> Triple(ShomaraTokens.ColorPrimarySoft, ShomaraTokens.ColorPrimary, ShomaraTokens.ColorPrimaryDark)
-        ShomaraPathNodeState.Perfect -> Triple(ShomaraTokens.ColorPrimarySoft, ShomaraTokens.ColorPrimaryDark, ShomaraTokens.ColorPrimaryDark)
-        ShomaraPathNodeState.Locked -> Triple(ShomaraTokens.ColorSurfaceAlt, ShomaraTokens.ColorLine2, ShomaraTokens.ColorMuted)
-        ShomaraPathNodeState.Fresh -> Triple(ShomaraTokens.ColorSurface, ShomaraTokens.ColorLine, ShomaraTokens.ColorInk)
+    /**
+     * N08R-06 owner amendment (Duolingo unit evidence): node colours follow the CHAPTER.
+     * Completed / Perfect / Current render as the solid chapter accent with a white mark and
+     * a darkened-accent 3D bottom edge (Duolingo tints its nodes with the unit colour);
+     * Fresh and Locked stay neutral so "not yours yet" never looks like an achievement.
+     * Chapter 3's accent is amberInk (N08R-01 audit) and chapter 5's is ink2 — white marks
+     * stay ≥ 3:1 on every accent (guarded by a test).
+     */
+    fun accentFor(chapter: Int): Color = chapterBandColors(chapter).second
+
+    /** The 3D bottom edge colour: the accent blended toward ink (token-only lerp, no raw hex). */
+    fun edgeFor(accent: Color): Color = lerp(accent, ShomaraTokens.ColorInk, 0.3f)
+
+    fun colorsFor(state: ShomaraPathNodeState, chapter: Int): ShomaraNodeColors {
+        val accent = accentFor(chapter)
+        return when (state) {
+            ShomaraPathNodeState.Current -> ShomaraNodeColors(accent, ShomaraTokens.ColorWhite, edgeFor(accent))
+            ShomaraPathNodeState.Completed -> ShomaraNodeColors(accent, ShomaraTokens.ColorWhite, edgeFor(accent))
+            ShomaraPathNodeState.Perfect -> ShomaraNodeColors(accent, ShomaraTokens.ColorWhite, lerp(edgeFor(accent), ShomaraTokens.ColorInk, 0.3f))
+            // N08R-06 device pass: the fresh node is THE next step — white face with the
+            // chapter accent numeral + accent lip (distinct from locked), while locked stays
+            // fully neutral (warm gray face, ink2 numeral) so "not yours yet" never reads
+            // as an achievement. All numerals keep ≥ 4.5:1 on their faces (guarded by test).
+            ShomaraPathNodeState.Fresh -> ShomaraNodeColors(ShomaraTokens.ColorSurface, accent, edgeFor(accent))
+            ShomaraPathNodeState.Locked -> ShomaraNodeColors(ShomaraTokens.ColorLine2, ShomaraTokens.ColorInk2, lerp(ShomaraTokens.ColorLine2, ShomaraTokens.ColorInk, 0.35f))
+        }
     }
 
     /** Locked nodes stay tappable: tapping opens the locked explanation, never a disabled dead end. */
@@ -240,7 +304,10 @@ object ShomaraPathGraphLogic {
     fun chapterBandColors(chapter: Int): Pair<Color, Color> = when (chapter) {
         1 -> ShomaraTokens.ColorPrimarySoft to ShomaraTokens.ColorPrimary
         2 -> ShomaraTokens.ColorSkySoft to ShomaraTokens.ColorSky
-        3 -> ShomaraTokens.ColorAmberSoft to ShomaraTokens.ColorAmber
+        // N08R-01 contrast audit: amber on amberSoft was 1.64:1 — washed out next to the other
+        // chapter accents (all ≥3:1). The amber family's own ink token carries the chapter's
+        // accent identity instead (11.18:1), matching chapter 5's dark-accent precedent (ink2).
+        3 -> ShomaraTokens.ColorAmberSoft to ShomaraTokens.ColorAmberInk
         4 -> ShomaraTokens.ColorBerrySoft to ShomaraTokens.ColorBerry
         else -> ShomaraTokens.ColorSurfaceAlt to ShomaraTokens.ColorInk2
     }
@@ -346,7 +413,7 @@ fun ShomaraPathScreen(
     )
     val scope = rememberCoroutineScope()
     val anchorIndex = nextStep?.let { ShomaraPathGraphLogic.itemIndexForStation(it) }
-    val anchorLabel = if (progress.currentStationId != null) "بازگشت به ایستگاه فعلی" else "بازگشت به نقطه شروع"
+    val anchorLabel = if (progress.currentStationId != null) "بازگشت به ایستگاه فعلی" else "بازگشت به نقطهٔ شروع"
     // The floating button only appears once the anchor node has scrolled off-screen, and
     // the jump is instant (no animation), so it stays safe under reduced motion.
     val showBackToAnchor by remember(anchorIndex) {
@@ -358,14 +425,22 @@ fun ShomaraPathScreen(
         }
     }
 
-    Box(modifier = modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        // N08R-06: the zigzag amplitude clamps to the REAL content width (the lazy list is
+        // inset by 24 dp per side), so nodes and labels never touch the screen edge.
+        val contentWidth = maxWidth - ShomaraTokens.Space24 * 2
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxWidth().padding(ShomaraTokens.Space24),
-            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+            // Spacing is explicit inside each item so the connector Canvas can span the FULL
+            // item height — the winding line stays continuous across item boundaries.
+            verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
             item(key = "path-header") {
-                Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+                    modifier = Modifier.padding(bottom = ShomaraTokens.Space16),
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
                         verticalAlignment = Alignment.CenterVertically,
@@ -423,7 +498,9 @@ fun ShomaraPathScreen(
             }
             for (chapter in ShomaraChapterCatalog.All) {
                 stickyHeader(key = "chapter-$chapter") {
-                    ChapterBand(chapter = chapter, progress = progress)
+                    Box(modifier = Modifier.padding(bottom = ShomaraTokens.Space16)) {
+                        ChapterBand(chapter = chapter, progress = progress)
+                    }
                 }
                 for (meta in ShomaraStationCatalog.stationsInChapter(chapter)) {
                     item(key = meta.id) {
@@ -432,6 +509,7 @@ fun ShomaraPathScreen(
                             meta = meta,
                             state = nodeState,
                             isRtl = isRtl,
+                            contentWidth = contentWidth,
                             onStationTap = onStationTap,
                             ringFraction = if (nodeState == ShomaraPathNodeState.Current) ShomaraPathGraphLogic.ringFractionFor(meta, progress) else null,
                         )
@@ -444,7 +522,12 @@ fun ShomaraPathScreen(
                 if (chapter < ShomaraChapterCatalog.All.size) {
                     item(key = "chapter-divider-$chapter") {
                         Row(
-                            modifier = Modifier.fillMaxWidth().clearAndSetSemantics {},
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                // E-02 + N08R-06: the node above carries its own bottom spacer,
+                                // so the divider only pads below before the next sticky band.
+                                .padding(bottom = ShomaraTokens.Space16)
+                                .clearAndSetSemantics {},
                             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -490,12 +573,10 @@ fun ShomaraPathScreen(
     }
 }
 
-/** Unit banner (Duolingo screenshot evidence, 2026-11-05): one rounded card in the
- * chapter's token tint — small chapter label, big station-span title, per-chapter
- * count. The guidebook cell from the screenshots is intentionally absent: the
- * guidebook has no content yet (Phase B), and a button with no destination would
- * be a dead affordance. The chapter's accent edge stays as its colour identity
- * until the P2 ribbon arrives. */
+/** Unit banner (N08R-06, Duolingo unit-header evidence): the chapter's token tint card gains
+ * a 3D bottom lip (darkened tint behind the card) and a chapter-number badge in the accent —
+ * identity, not a second progress layer (the one-progress-layer rule stands; the count stays
+ * in words). The guidebook cell stays absent: no content yet (Phase B), no dead affordance. */
 @Composable
 private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
     val (bandBackground, bandAccent) = ShomaraPathGraphLogic.chapterBandColors(chapter)
@@ -504,22 +585,39 @@ private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            // Batch 2: the unit banner is a card, so it carries the Soft clay
-            // depth (the Duolingo unit banner is a raised coloured card, and
-            // a flat band reads as a background strip, not a card). The
-            // elevation comes from the clay spec, never the raw token.
+            .drawBehind {
+                // N08R-06: the Duolingo band's darker bottom edge — the card rect repeated
+                // one edge-token down in the tint blended toward the accent, drawn before
+                // the card itself so only the lip shows. Tokens only, no raw colour.
+                val edge = ShomaraTokens.ComponentEdge.toPx()
+                drawRoundRect(
+                    color = lerp(bandBackground, bandAccent, 0.45f),
+                    topLeft = Offset(0f, edge),
+                    size = size,
+                    cornerRadius = CornerRadius(ShomaraTokens.RadiusLg.toPx()),
+                )
+            }
             .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(bandBackground, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .padding(ShomaraTokens.Space16),
         horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Chapter badge: the number identity of the unit, white on the accent (contrast
+        // guarded by a test). Decorative for TalkBack — the heading below already reads.
         Box(
             modifier = Modifier
-                .width(ShomaraTokens.Space4)
-                .height(ShomaraTokens.ComponentTouchMin)
-                .background(bandAccent, RoundedCornerShape(ShomaraTokens.RadiusSm)),
-        )
+                .size(ShomaraTokens.Space40)
+                .background(bandAccent, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                .clearAndSetSemantics {},
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = ShomaraDigits.toFa(chapter),
+                style = ShomaraTypography.Title,
+                color = ShomaraTokens.ColorWhite,
+            )
+        }
         Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4)) {
             Text(
                 text = ShomaraChapterCatalog.labelFor(chapter),
@@ -542,138 +640,297 @@ private fun ChapterBand(chapter: Int, progress: ShomaraPathProgress) {
 }
 
 /**
- * One winding-path node: the circle is the node (72 dp, 84 dp for the one current node)
- * and the title, station line and visible state label sit under it. The whole item is
- * offset by the sine wave, so the nodes snake across the screen instead of a flat list.
- * Triple encoding, never colour alone: node circle (shape + colour), visible state label,
- * and the TalkBack label on the merged node. ADR-0040: every node carries a 3D bottom edge
- * (Clay shadow — Soft for every node, Featured for the Current one); only the Current node
- * is Featured, so the one-Featured-per-viewport rule still holds.
+ * One winding-path node (N08R-06, Duolingo-home evidence): a full-width item whose connector
+ * Canvas spans the whole height — a cubic curve entering at the previous node's offset at the
+ * top edge and leaving at this node's offset at the bottom edge, so consecutive items chain
+ * into ONE continuous winding line drawn BEHIND the circles. The node column (circle + labels)
+ * is centred then zigzag-offset; the labels sit in a canvas-coloured mask so the line never
+ * strikes through text. Triple encoding, never colour alone: node circle (shape + colour),
+ * visible state label, and the TalkBack label on the merged node. ADR-0040: every node carries
+ * a 3D bottom edge; only the Current node is Featured (one-featured-per-viewport).
  */
 @Composable
 private fun ShomaraPathNodeItem(
     meta: StationNodeMeta,
     state: ShomaraPathNodeState,
     isRtl: Boolean,
+    contentWidth: Dp,
     onStationTap: (String) -> Unit,
     ringFraction: Float? = null,
 ) {
     val nodeSize = if (state == ShomaraPathNodeState.Current) ShomaraTokens.ComponentNodeCurrent else ShomaraTokens.ComponentNodeSize
-    val (container, border, content) = ShomaraPathGraphLogic.colorsFor(state)
+    val colors = ShomaraPathGraphLogic.colorsFor(state, meta.chapter)
+    val accent = ShomaraPathGraphLogic.accentFor(meta.chapter)
+    val ownOffset = ShomaraPathGraphLogic.zigzagOffsetDp(meta.ordinal - 1, isRtl, contentWidth)
+    val enterOffset = ShomaraPathGraphLogic.connectorEnterOffsetDp(meta.ordinal - 1, isRtl, contentWidth)
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     var focused by remember { mutableStateOf(false) }
-    val pressScale = if (pressed) ShomaraTokens.MotionPressScale.toFloat() else 1f
+    // N08R-06: the connector's end point is the REAL circle centre, measured from layout
+    // (bubble height, node size 72/84 and 200% font all shift it) — the curve always
+    // disappears exactly behind the node face.
+    var nodeCenterYpx by remember { mutableStateOf(0f) }
+    val trackNodeCenter: (LayoutCoordinates) -> Unit = {
+        nodeCenterYpx = it.positionInParent().y + it.size.height / 2f
+    }
     // Focus is a neutral ink ring around the whole item: never a filled colour, so it can
-    // never be mistaken for "open". Pressed shrinks the item slightly (tactile depth).
+    // never be mistaken for "open". Pressed compresses the node through the token spring
+    // (N08R-01 — tactile depth; reduced motion gets a hard cut instead of the spring).
     // mergeDescendants keeps TalkBack to one announcement (title + state) per node.
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .offset(x = ShomaraPathGraphLogic.sineOffsetDp(meta.ordinal - 1, isRtl))
-            .width(PathNodeColumnWidth)
-            .graphicsLayer { scaleX = pressScale; scaleY = pressScale }
-            .border(
-                width = ShomaraTokens.ClayFeaturedBorderWidth,
-                color = if (focused) ShomaraTokens.ColorInk else Color.Transparent,
-                shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
-            )
-            .semantics(mergeDescendants = true) {
-                role = Role.Button
-                contentDescription = meta.workingTitle
-                stateDescription = ShomaraPathGraphLogic.stateLabelFor(state)
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Canvas(modifier = Modifier.matchParentSize()) {
+            if (meta.ordinal > 1) {
+                // The winding line behind the nodes: enter at the previous node's x at the
+                // item top and swoop INTO this node's circle — the horizontal run happens
+                // in the upper quarter (free canvas above the circle), and the line ends
+                // behind the circle face, never striking through the labels below.
+                // RTL: Modifier.offset mirrors x, Canvas does NOT — and the logic offsets
+                // already mirror for RTL (the recorded page-06 double-negation), so the
+                // canvas must negate once more to land on the VISUAL node x.
+                fun canvasX(offset: Dp): Float {
+                    val visual = if (isRtl) -offset else offset
+                    return size.width / 2f + visual.toPx()
+                }
+                val startX = canvasX(enterOffset)
+                val endX = canvasX(ownOffset)
+                val endY = if (nodeCenterYpx > 0f) nodeCenterYpx else size.height * 0.5f
+                val bendY = endY * 0.6f
+                // Incoming swoop: every node EXCEPT the very first (which has no predecessor)
+                // receives the line from the previous node's x, ending behind its own face.
+                // EVERY node then draws the outgoing tail from its circle centre down its own
+                // x to the item edge — the next node's swoop picks it up there, so the path is
+                // ONE continuous line behind everything; the label mask hides it behind text.
+                drawPath(
+                    path = Path().apply {
+                        if (meta.ordinal > 1) {
+                            moveTo(startX, 0f)
+                            cubicTo(startX, bendY, endX, bendY, endX, endY)
+                        } else {
+                            moveTo(endX, endY)
+                        }
+                        lineTo(endX, size.height)
+                    },
+                    color = accent,
+                    style = Stroke(
+                        width = ShomaraTokens.Space8.toPx(),
+                        cap = StrokeCap.Round,
+                    ),
+                )
             }
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                role = Role.Button,
-            ) { onStationTap(meta.id) }
-            .onFocusChanged { focused = it.isFocused }
-            .padding(ShomaraTokens.Space8),
-    ) {
-        if (ringFraction != null) {
-            // Screenshot evidence (2026-11-05): the Current node wears a segmented
-            // progress ring around it. The fraction is the chapter completion from
-            // the same caller-provided set (ringFractionFor) — never an invented
-            // lesson value — and the ring is static, so it needs no reduced-motion
-            // gate. The ring adds no TalkBack layer: the chapter band already
-            // announces the same count in words.
-            Box(
-                modifier = Modifier.size(nodeSize + ShomaraTokens.Space12),
-                contentAlignment = Alignment.Center,
-            ) {
-                ShomaraCurrentNodeRing(fraction = ringFraction, modifier = Modifier.fillMaxSize())
-                ShomaraPathNodeCircle(meta = meta, state = state, nodeSize = nodeSize, container = container, border = border, content = content)
-            }
-        } else {
-            ShomaraPathNodeCircle(meta = meta, state = state, nodeSize = nodeSize, container = container, border = border, content = content)
         }
-        Text(
-            text = meta.workingTitle,
-            style = ShomaraTypography.Body,
-            color = content,
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = "ایستگاه ${ShomaraDigits.toFa(meta.ordinal)}",
-            style = ShomaraTypography.Caption,
-            color = ShomaraTokens.ColorMuted,
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = ShomaraPathGraphLogic.stateLabelFor(state),
-            style = ShomaraTypography.Caption,
-            color = ShomaraTokens.ColorMuted,
-            textAlign = TextAlign.Center,
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(x = ownOffset)
+                .width(PathNodeColumnWidth)
+                .shomaraPressScale(
+                    pressed = pressed,
+                    reducedMotion = LocalShomaraReducedMotion.current,
+                )
+                .border(
+                    width = ShomaraTokens.ClayFeaturedBorderWidth,
+                    color = if (focused) ShomaraTokens.ColorInk else Color.Transparent,
+                    shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
+                )
+                .semantics(mergeDescendants = true) {
+                    role = Role.Button
+                    contentDescription = meta.workingTitle
+                    stateDescription = ShomaraPathGraphLogic.stateLabelFor(state)
+                }
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    role = Role.Button,
+                ) { onStationTap(meta.id) }
+                .onFocusChanged { focused = it.isFocused }
+                .padding(ShomaraTokens.Space8),
+        ) {
+            // Anchor cue (Duolingo START evidence): one bubble on the one node the child
+            // acts on next — Current («ادامه», the sheet's resume CTA) or Fresh («شروع»).
+            // Both strings are existing canonical CTA labels; nothing new is invented, and
+            // the bubble is decorative for TalkBack (the node state is already announced).
+            if (state == ShomaraPathNodeState.Current || state == ShomaraPathNodeState.Fresh) {
+                ShomaraAnchorBubble(
+                    text = if (state == ShomaraPathNodeState.Current) "ادامه" else "شروع",
+                    accent = accent,
+                )
+            }
+            if (ringFraction != null) {
+                // Screenshot evidence (2026-11-05): the Current node wears a segmented
+                // progress ring around it. The fraction is the chapter completion from
+                // the same caller-provided set (ringFractionFor) — never an invented
+                // lesson value — and the ring is static, so it needs no reduced-motion
+                // gate. The ring adds no TalkBack layer: the chapter band already
+                // announces the same count in words.
+                Box(
+                    modifier = Modifier
+                        .size(nodeSize + ShomaraTokens.Space12)
+                        .onGloballyPositioned(trackNodeCenter),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    ShomaraCurrentNodeRing(fraction = ringFraction, accent = accent, modifier = Modifier.fillMaxSize())
+                    ShomaraPathNodeCircle(meta = meta, state = state, nodeSize = nodeSize, colors = colors)
+                }
+            } else {
+                Box(
+                    modifier = Modifier.onGloballyPositioned(trackNodeCenter),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    ShomaraPathNodeCircle(meta = meta, state = state, nodeSize = nodeSize, colors = colors)
+                }
+            }
+            // The labels sit in a canvas-coloured mask: the winding line runs behind them
+            // without ever striking through the text (the mask is the background colour
+            // itself — no extra card, no contrast change).
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .background(ShomaraTokens.ColorCanvas, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                    .padding(horizontal = ShomaraTokens.Space4, vertical = ShomaraTokens.Space4),
+            ) {
+                Text(
+                    text = meta.workingTitle,
+                    style = ShomaraTypography.Body,
+                    color = ShomaraTokens.ColorInk,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "ایستگاه ${ShomaraDigits.toFa(meta.ordinal)}",
+                    style = ShomaraTypography.Caption,
+                    color = ShomaraTokens.ColorMuted,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    // Owner page-06: locked nodes show the short visual label — the
+                    // full warm reason stays in stateDescription for TalkBack.
+                    text = if (state == ShomaraPathNodeState.Locked) {
+                        ShomaraPathGraphLogic.lockedShortLabel
+                    } else {
+                        ShomaraPathGraphLogic.stateLabelFor(state)
+                    },
+                    style = ShomaraTypography.Caption,
+                    color = ShomaraTokens.ColorMuted,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            Spacer(modifier = Modifier.height(ShomaraTokens.Space16))
+        }
     }
 }
 
-/** The node circle itself (72 dp, 84 dp for the one Current node). ADR-0040: every node
- * carries the 3D bottom edge (Clay shadow) — Soft elevation for every node, Featured
- * elevation for the Current node; no node is flat. */
+/**
+ * The one-node speech bubble over the anchor node (N08R-06). Accent fill, white canonical
+ * CTA word, small tail pointing at the circle. Decorative for TalkBack: clear semantics —
+ * the merged node already announces its state; the bubble adds no second reading.
+ */
+@Composable
+private fun ShomaraAnchorBubble(text: String, accent: Color) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clearAndSetSemantics {},
+    ) {
+        Box(
+            modifier = Modifier
+                .background(accent, RoundedCornerShape(ShomaraTokens.RadiusPill))
+                .padding(horizontal = ShomaraTokens.Space12, vertical = ShomaraTokens.Space4),
+        ) {
+            Text(text = text, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorWhite)
+        }
+        Canvas(modifier = Modifier.size(width = ShomaraTokens.Space12, height = ShomaraTokens.Space8)) {
+            drawPath(
+                path = Path().apply {
+                    moveTo(0f, 0f)
+                    lineTo(size.width, 0f)
+                    lineTo(size.width / 2f, size.height)
+                    close()
+                },
+                color = accent,
+            )
+        }
+    }
+}
+
+/**
+ * The node circle itself (72 dp, 84 dp for the one Current node) — N08R-06 Duolingo-style
+ * solid node: 3D bottom edge (darkened accent offset one edge-token down), the top circle,
+ * and a soft top-left sheen, all drawn behind the bounds. Completed/Perfect draw a crisp
+ * white checkmark path; Fresh/Locked/Current show the Persian ordinal. No node is flat.
+ */
 @Composable
 private fun ShomaraPathNodeCircle(
     meta: StationNodeMeta,
     state: ShomaraPathNodeState,
     nodeSize: Dp,
-    container: Color,
-    border: Color,
-    content: Color,
+    colors: ShomaraNodeColors,
 ) {
     val depth = if (state == ShomaraPathNodeState.Current) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft
+    val showCheck = state == ShomaraPathNodeState.Completed || state == ShomaraPathNodeState.Perfect
+    // The sheen only reads on the saturated chapter faces; on white/gray faces it is an
+    // invisible wash (device pass finding) — skip it there.
+    val showSheen = state == ShomaraPathNodeState.Current || showCheck
     Box(
         modifier = Modifier
             .shadow(ShomaraClay.specFor(depth).elevation, CircleShape)
             .size(nodeSize)
-            .background(container, CircleShape)
-            .border(
-                if (depth == ShomaraClayDepth.Featured) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
-                border,
-                CircleShape,
-            ),
+            .drawBehind {
+                val radius = size.minDimension / 2f
+                val edge = ShomaraTokens.ComponentEdge.toPx()
+                // 1) the darkened-accent base circle, one edge-token down (the tactile lip)
+                drawCircle(color = colors.edge, radius = radius, center = Offset(center.x, center.y + edge))
+                // 2) the node face
+                drawCircle(color = colors.container, radius = radius)
+                // 3) the soft top sheen (Clay highlight, token widths only)
+                if (showSheen) {
+                    drawArc(
+                        color = ShomaraTokens.ColorWhite.copy(alpha = 0.22f),
+                        startAngle = 150f,
+                        sweepAngle = 110f,
+                        useCenter = false,
+                        topLeft = Offset(ShomaraTokens.Space8.toPx(), ShomaraTokens.Space8.toPx()),
+                        size = Size(size.width - ShomaraTokens.Space16.toPx(), size.height - ShomaraTokens.Space16.toPx()),
+                        style = Stroke(width = ShomaraTokens.Space4.toPx(), cap = StrokeCap.Round),
+                    )
+                }
+                if (showCheck) {
+                    // Crisp drawn checkmark (Duolingo evidence): round-capped white stroke,
+                    // sized by the circle radius so it scales with 72/84 dp nodes.
+                    val stroke = ShomaraTokens.Space8.toPx()
+                    val path = Path().apply {
+                        moveTo(center.x - radius * 0.34f, center.y + radius * 0.02f)
+                        lineTo(center.x - radius * 0.08f, center.y + radius * 0.28f)
+                        lineTo(center.x + radius * 0.36f, center.y - radius * 0.24f)
+                    }
+                    drawPath(
+                        path = path,
+                        color = ShomaraTokens.ColorWhite,
+                        style = Stroke(width = stroke, cap = StrokeCap.Round, join = StrokeJoin.Round),
+                    )
+                }
+            },
         contentAlignment = Alignment.Center,
     ) {
-        val mark = ShomaraPathGraphLogic.stateMarkFor(state)
-        Text(
-            text = if (mark.isNotEmpty()) mark else ShomaraDigits.toFa(meta.ordinal),
-            style = ShomaraTypography.Body,
-            color = content,
-        )
+        if (!showCheck) {
+            Text(
+                text = ShomaraDigits.toFa(meta.ordinal),
+                style = ShomaraTypography.Title,
+                color = colors.content,
+            )
+        }
     }
 }
 
 /**
  * Segmented progress ring around the Current node (Duolingo screenshot evidence,
- * 2026-11-05: the ring is broken into short arcs — green segments on a grey
- * track — not a continuous circle). Static by construction: no animation, no
- * pulse, so it is safe under reduced motion without a special case. At
- * fraction 0 only the track is visible, never an invisible ring.
+ * 2026-11-05: the ring is broken into short arcs on a grey track — not a continuous
+ * circle). N08R-06: the fill follows the CHAPTER accent, like the node itself. Static
+ * by construction: no animation, no pulse, so it is safe under reduced motion without
+ * a special case. At fraction 0 only the track is visible, never an invisible ring.
  */
 @Composable
-private fun ShomaraCurrentNodeRing(fraction: Float, modifier: Modifier = Modifier) {
+private fun ShomaraCurrentNodeRing(fraction: Float, accent: Color, modifier: Modifier = Modifier) {
     val trackColor = ShomaraTokens.ColorLine2
-    val fillColor = ShomaraTokens.ColorPrimary
+    val fillColor = accent
     val stroke = ShomaraTokens.Space4
     Canvas(modifier = modifier) {
         val strokePx = stroke.toPx()

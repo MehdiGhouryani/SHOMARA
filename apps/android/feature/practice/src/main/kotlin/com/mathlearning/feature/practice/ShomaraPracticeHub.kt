@@ -132,7 +132,14 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
             .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .semantics(mergeDescendants = true) {
                 if (tappable) role = Role.Button
-                contentDescription = if (historical) "$description — انجام شده" else description
+                // A11y fix: the description must carry the row TITLE too — the
+                // old locked branch read only the lock reason and TalkBack
+                // users never heard which practice row they were on.
+                contentDescription = when {
+                    historical -> "$description — انجام شده"
+                    locked -> "${item.title} — $description"
+                    else -> description
+                }
             }
             .then(if (tappable) Modifier.clickable(role = Role.Button) { onItemTap(item.id) } else Modifier)
             .padding(ShomaraTokens.Space12),
@@ -147,7 +154,10 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
         Column {
             Text(text = item.title, style = ShomaraTypography.Body, color = content)
             if (locked) {
-                Text(text = ShomaraPracticeHubLogic.lockedLabel(item), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+                // Owner page-12: the full reason repeated on every locked row
+                // read as a wall; the visible line is the short «قفل» while
+                // the merged contentDescription keeps the full warm reason.
+                Text(text = "قفل", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
             }
         }
     }

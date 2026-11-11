@@ -645,3 +645,58 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
   - instrumented Compose assertion for the splash semantics;
   - `SCREEN_LEDGER.csv` / `NATIVE_IMPLEMENTATION_BACKLOG.csv` / `START_HERE.md` updates.
 - task status: N08-15 stays IN_PROGRESS. No harness task status was flipped.
+
+## 2026-11-07 — N08R-00 (فاز موازی N08R شروع شد) — branch native/n08r-ui-polish (از page-17-nav)
+
+- ثبت فاز موازی `N08R — Native UI/UX Visual Refinement` طبق دستور مالک (mission: `design/playbook/N08R_MISSION_FA.md`، در canonicalDocs/file-ledger ثبت شد): ۱۸ task، allowedPaths محدود، gates از allowlist. `roadmap.schema.json` برای id فاز با پسوند R همگام شد (`^N\d{2}R?$`).
+- `npm run harness:validate` → HARNESS_VALID (118 tasks, 12 phases) exit 0؛ `npm run verify:repository` → PASS (118 tasks, 60 ledger entries, 1880 edges).
+- Baseline صادقانه **قبل از** رفع drift: `npx vitest run` → 563 passed / **1 failed** (`codegen.drift.test` — `ComponentGradeCardH` دست‌نویس در ShomaraTokens.kt خارج از منبع canonical). `npm run verify:static:all` → **PASS (90/90)**. `npm run android:gate` → **PASS** (BUILD SUCCESSFUL, gate.json).
+- رفع drift توکن: `gradeCardH: 56` به `v2.component` در `packages/design-system/src/tokens.json` افزوده شد و codegen رسمی اجرا شد → TOKEN_DRIFT: PASS؛ diff خروجی Kotlin فقط حذف کامنت دست‌نویس است (مقدار 56.dp ثابت → صفر تغییر بصری). `npx vitest run` → **564/564 PASS**.
+- Baseline بصری صفحات محافظت‌شده روی emulator-5554 (AVD Pixel_6a): ۱۰ PNG + `SHA256SUMS.txt` در `build-reports/android/device-check/n08r-baseline/` (خارج از Git طبق قرارداد repo؛ sha256 ثبت شد): اسپلش سیستم، اسپلش اپ (artwork+وردمارک+نوار پیشرفت) در 360/412، Welcome در 360/390، Profile Setup در 360/390/412 و فونت 200٪.
+- **یافته P1 (صفحهٔ محافظت‌شده — تصمیم مالک):** Profile Setup در 360dp + فونت 200٪ سرریز دارد — ردیف سوم گرید پایه (پایه پنجم/ششم) زیر CTA گم می‌شود و «پایه چهارم» دوخطی می‌شود (`n08r-profile-360dp-200font.png`). چون صفحه قفل است، اصلاح فقط با تأیید مالک. همچنین Welcome در 200٪ عنوان دوروخط دارد (مورد ثبت‌شدهٔ page-01).
+- debug APK: `apps/android/app/build/outputs/apk/debug/app-debug.apk` — sha256 `e0a4cc944a1c7bbb70c0ae4e19cdc91773d52cdb88572585c334e554b7f1e2e1`.
+- N08-06..N08-12 دست‌نخورده ماندند؛ N08-08 همچنان OWNER_DECISION_PENDING است و N08R از آن عبور نمی‌کند.
+
+## 2026-11-07 — N08R-01 (U0 — Design Foundation) — branch native/n08r-ui-polish
+
+- ممیزی کنتراست WCAG روی ۳۱ جفت مصرفی v2 (اسکریپت تحلیل بیرون-repo، جدول در `design/playbook/N08R_U0_AUDIT_FA.md`): ۱۸ جفت متنی همه PASS؛ تطبیق hex MASTER.md↔tokens.json بدون مغایرت؛ **هیچ مقدار توکن تغییر نکرد** (نتیجهٔ انتقادی: پالت سالم است).
+- ۵ مورد زیر-۳:۱ غیرمتنی: ۴ مورد معاف تزئینی/جداکننده؛ **accent بنر فصل ۳** amber→amberInk (1.64→11.18) + تست رگرسیون WCAG≥3 برای هر ۵ فصل.
+- تصمیم C-16 (هایلایت مورب دولینگو): REJECT — ثبت در چک‌لیست و سند audit §2.
+- حفرهٔ motion برطرف شد: `Modifier.shomaraPressScale` با spring توکن‌مشتق (dampingRatio c/2√(k·m)≈0.47، stiffness=220، target=0.96) روی `ShomaraButton` و گرهٔ مسیر؛ reduced-motion = snap؛ کامنت N08-04 صادقانه به‌روز شد (تعاملی ≠ تزئینی).
+- گیت‌ها: `android:gate` PASS (484 تست JVM شامل ۵ تازه) · vitest 564/564 · static 90/90 · harness:validate PASS.
+- Visual regression محافظت‌شده: recapture Profile Setup با APK U0 (sha256 7936a148…) → pixel-diff ناحیهٔ اپ vs baseline = **0.0000٪**؛ Splash هیچ مصرف‌کنندهٔ تغییرکرده‌ای ندارد.
+
+## 2026-11-07 — N08R-06 (Home — مسیر یادگیری دولینگویی) — branch native/n08r-ui-polish
+
+- اجرای مستقیم directive مالک (Priority Zero: بازطراحی Home): هندسهٔ زیگزاگ deterministic جای سینوس (`zigzagOffsetDp/AmplitudeDp` — تناوب چپ/راست هر ردیف، ریتم بزرگی [1, .55, 1, .55]، clamp دامنه بر عرض واقعی محتوا)، connector منحنی پیوسته پشت گره‌ها (swoop ورودی + دُم خروجی در همهٔ گره‌ها، زنجیره بین آیتم‌ها، mask رنگ-بوم پشت لیبل‌ها)، رنگ‌های chapter-aware (Completed/Current/Perfect = accent توپر + مارک سفید + لبهٔ تیرهٔ lerp(accent,ink,0.3)؛ Fresh = سفید + عدد accent؛ Locked = خنثی Line2/Ink2)، تیکِ کشیدهٔ Canvas جای «✓» متنی، حباب anchor «شروع/ادامه» (رشته‌های CTA کاننیکال موجود — هیچ متن تازه)، badge شمارهٔ فصل + لبهٔ سه‌بعدی روی بنر فصل (لایهٔ پیشرفت دوم اضافه نشد — قاعدهٔ تک‌لایه برقرار).
+- **دو باگ واقعی در حین device-pass رفع شد:** (۱) RTL — Canvas آینه نمی‌شود ولی Modifier.offset آینه می‌کند (دو-نگیشن ثبت‌شدهٔ page-06) → canvasX با یک نگیشن اضافه روی x بصری فرود می‌آید؛ (۲) انتهای منحنی به مرکز واقعی دایره لنگر شد (onGloballyPositioned) — مقاوم در برابر حباب/۸۴dp/فونت ۲۰۰٪؛ دُم خروجی برای ordinal=1 هم کشیده شد تا زنجیره از گرهٔ اول پیوسته باشد.
+- station start (jump rows) به colorsFor با chapter-aware مهاجرت کرد (کروم خنثی ردیف‌ها حفظ شد).
+- تست‌ها: تست سینوس با ۶ تست زیگزاگ/کانکتور/کنتراست جایگزین شد (تناوب، آینهٔ RTL، clamp عرض باریک، زنجیرهٔ connector، رنگ chapter-aware، white-on-accent ≥3:1 برای هر ۵ فصل + لبه تیره‌تر از روی). گیت: android:gate PASS — ۴۸۹+ تست JVM صفر خطا.
+- شواهد دستگاه (emulator-5554): before/after در 360dp (n08r-path-before/after…/final2)، اسکرول‌شده (خط پیوستهٔ ۲→۳→۴)، 412dp بدون برش افقی (برش پایین = نشانهٔ اسکرول C-03)؛ ضربه روی گرهٔ قفل ۲ → شیت شروع با توضیح گرم + تک-CTA (قرارداد F-01 سالم). APK نهایی sha256 a55d15f4…
+- jev_review در دسترس نبود (بدون API key در این محیط) — بازبینی patch با چک‌لیست دستی: صفر hex/dp خام، semantics دست‌نخورده، بدون داده/متن ساختگی، دامنه دست‌نخورده، صفحات محافظت‌شده لمس نشدند.
+- ترتیب اجرا با directive مالک جابه‌جا شد (Home قبل از nav)؛ N08R-05 (nav) همچنان TODO و بعدی طبق directive: Station Start (N08R-07).
+
+## 2026-11-07 — N08R-07 (Station Start دولینگویی) — branch native/n08r-ui-polish
+
+- بازطراحی `ShomaraStationStartSheet`: بلوک هیروی فصل (تینت+accent از همان `chapterBandColors` مسیر/بنر — یک سیستم)، لبهٔ سه‌بعدی lip (دستور N08R-06)، کاراکتر Main در دایرهٔ سفید با قاب accent (جای قاب مربعی کرم)، badge شمارهٔ فصل (سفید روی accent، TalkBack-decorative)، CTA تمام‌عرض (Primary/Ghost طبق state) و «بستن» تمام‌عرض. متن‌های pinشدهٔ تست («شروع/ادامه/تمرین دوباره/متوجه شدم»، lockedExplanation، metadataLine) و wiring شل (Back/deep-link/CTA→lesson) عیناً حفظ شد — منطق `ShomaraStationStartLogic` و `ShomaraJumpSheet` دست نخورد.
+- تست تازه: `sheet hero keeps chapter identity and readable marks for every chapter` (۵ فصل: تینت مشخص + white-on-accent ≥3:1). `android:gate` PASS.
+- شواهد دستگاه (emulator-5554، APK sha256 b88ad996…): BEFORE (`n08r-sheet-before-locked-open.png`) در برابر AFTER: Locked 360 (`after2-locked`)، Ready 360 (hero+CTA تمام‌عرض سبز «شروع»+بستن)، 412dp، فونت ۲۰۰٪ (هیرو دوخطی بدون بریدگی، اسکرول سالم)؛ Back → مسیر با حفظ موقعیت (`after2-back`)؛ CTA «شروع» گرهٔ ۱ → ورود واقعی به درس (P1 کشف، اسکلت صادقانه + بنر «گزینه‌ها نیامده»، «بررسی» غیرفعال) (`after2-lesson-entered3`).
+- صادقانه: androidTest (`ShomaraStationSheetTest`) در gate اجرا نمی‌شود (connectedCheck خارج از gate) — پوشش رفتار با تعامل واقعی دستگاه انجام شد؛ Replay/Resume روی دستگاه بدون progress واقعی دست‌نیافتنی‌اند (منطق تست‌پوشیده)؛ N08R-05 و sweep فونت ۲۰۰٪ مسیر Home همچنان pending.
+
+## 2026-11-07 — N08R-08 (Teach/Discover — تجربهٔ کشف محتوامحور) — branch native/n08r-ui-polish
+
+- **محور ۱ (Clay):** press feedback کامل شد — فرورفتن ۲dp (نصف توکن ComponentEdge) هم‌زمان با مقیاس 0.96 و فروپاشی سایه، بازگشت با همان spring توکن؛ reduced-motion = snap. تست تازه: `pressed surface sinks half the clay edge`.
+- **محور ۲ (ممیزی محتوا):** P1 پایلوت ST07 کامل خوانده شد (s00/s01/s02/s03 با کارت‌ها/برچسب‌های صوتی/reveal GLYPH.1-2/idle-replay 8s) و نقشهٔ محتوایی مستند شد: `design/playbook/N08R_ST07_P1_CONTENT_MAP_FA.md` (هدف/تعامل/ارزیابی=ندارد/بازخورد/صوت/asset/پیشرفت + ۶ Gap صادقانه: O1/O2، ۴۱ asset، صوت صفر باینری، CONTENT-006/004).
+- **محور ۳ (رندر):** مدل projection کودک-امن `ShomaraDiscoverStep/Card` + منطق `ShomaraDiscoverLogic` + کامپوزبل `ShomaraDiscoverStage` — انیمیشن خودِ مفهوم است: لمس کاشی → نشان شمارش (۱/۲)؛ با لمس همه → reveal عدد در Featured کهربایی؛ «ادامه» بین گام‌ها؛ پایان = بنر صادقانه. `ShomaraLessonHost(discoverSteps=…)` — release خالی (fail-closed)، debug ساختار DRAFT ST07 را برای بازبینی طراحی نشان می‌دهد (`LessonContentWiring` دو-واریانتی، الگوی simulatedAuth).
+- **گارد مرز CONTENT-008:** تست `projection carries identifiers and interaction config only - no evaluation fields` (بازتابی: answer/correct/threshold/nextAction/mastery ممنوع). ۵ تست تازه؛ android:gate PASS — **۴۹۶ تست JVM، صفر خطا**.
+- شواهد دستگاه (APK sha256 1024c185…): ورود از شیت → P1 کشف با سه کاشی ۸۰dp RTL (`n08r-discover-1-entry`)، لمس‌ها + reveal «۱» + ادامه (`…-3-revealed`)، گام ۲ جفت‌ها + reveal «۲» + پایان صادقانه (`…-4-step2-revealed`)، reduced-motion (animator scale=0) ظهور ایستا (`…-5-reduced-motion`).
+- صادقانه: reveal «نوشتن» منتظر GLYPH.1/2 (پیش‌نویس: تایپوگرافی+scale)؛ صدا ساکت (CONTENT-017)؛ advance واقعی P1→P2 به ارزیاب محلی (O1/فاز ۱) وابسته است؛ N08R-05 و sweep ۲۰۰٪ مسیر همچنان pending.
+
+## 2026-11-11 — N08R-09 (Guided Practice — حلقهٔ تمرین هدایت‌شده) — branch native/n08r-ui-polish
+
+- **محور ۲:** P2 پایلوت ST07 کامل خوانده شد (۸ آیتم: i01/i02 عددی T15، i03/i04 ردگیری T13، i05/i06 تصویری T15، i07/i08 جای‌گذاری T01) + متن‌های DRAFT صوت (pr/ok/retry/h1-h3) از manifestها. Gapها صادقانه: T13 ردگیری و T01 سینی به ارزیاب trace/tray نیاز دارند (خارج از preview)، متن‌ها DRAFT تا O2.
+- **محور ۳:** `ShomaraGuidedItem/Option/Display` (projection کودک-امن — نمایش گزینه‌ها بدون پاسخ) + **لایهٔ evaluator** (`ShomaraGuidedEvaluator` interface در main؛ پاسخ‌ها فقط در impl دیباگ — الگوی simulatedAuth) + `ShomaraGuidedStage` (پرامپت، صحنهٔ محرک، کاشی‌های گزینهٔ ۸۰dp، انتخاب سه‌گانه، «بررسی» gated، بنر ✓ درست / ↺ retry گرم + نردبان hint از ShomaraHintLadder، retry انتخاب را پاک می‌کند تا کودک دوباره بشمارد).
+- wiring دو-واریانتی گسترش یافت (guidedItems + guidedEvaluator؛ release خالی/null) + پرچم `lessonPreviewAdvance` (فقط وقتی wiring دیباگ محتوا داده؛ در فاز ۱ ارزیاب مالک advance است) تا پایان کشف در پیش‌نمایش به P2 برسد.
+- تست‌ها: ۵ تست تازه (gate submit، انتخاب idempotent، نردبان hint شامل نبودِ slot خالی، گارد مرز projection، advance) — android:gate PASS، **۵۰۱ تست JVM صفر خطا**.
+- **سناریوی کامل دستگاه (APK sha256 b383d400…):** کشف→(پیشروی preview)→i01: پاسخ غلط (عدد ۲) → بنر ↺ «یک بار دیگر امتحان کنیم.» + بررسی قفل (`n08r-guided-3-wrong-retry`) → پاسخ درست (عدد ۱) → بنر ✓ «همین‌طور است؛ یک توپ.» (`…-4-correct2`) → i02 درست → i05 تصویری (کارت ۲شکلی، «دقیق بود؛ دو گل.») (`…-6-end`) → i06 («خوب فکر کردی؛ یک ماهی.») → **بنر پایان صادقانه** (`…-8-end`).
+- صادقانه: تمرین واقعی منتظر O1/O2 (ارزیاب محلی + بسته)؛ T13/T01 خارج preview؛ androidTest خارج gate؛ hint نمایشی روی دستگاه فقط retry بود (attempt1) — نردبان کامل JVM-test پوشیده؛ N08R-05 و sweep ۲۰۰٪ مسیر pending.

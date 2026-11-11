@@ -88,6 +88,7 @@ object ShomaraTokens {
   val ComponentTrayBead = 48.dp
   val ComponentProgressH = 14.dp
   val ComponentRowH = 72.dp
+  val ComponentGradeCardH = 56.dp
   val ComponentTopBarH = 56.dp
   val ComponentCharacterHero = 180.dp
   val ComponentCharacterCompactWidth = 360.dp

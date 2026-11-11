@@ -117,4 +117,27 @@ class ShomaraStationStartTest {
         // And a locked target never becomes confirmable by re-selecting it either.
         assertFalse(ShomaraJumpSheetLogic.select(state, "ST05").canConfirm)
     }
+
+    // ---- N08R-07: the sheet wears its chapter (hero tint + white badge/accent marks) ----
+
+    @Test
+    fun `sheet hero keeps chapter identity and readable marks for every chapter`() {
+        for (chapter in 1..5) {
+            val (tint, accent) = ShomaraPathGraphLogic.chapterBandColors(chapter)
+            // The five chapters must remain visually distinct in the sheet hero too.
+            assertTrue(tint != androidx.compose.ui.graphics.Color.White)
+            // White numerals (badge / character frame border) sit on the accent — the WCAG
+            // non-text floor is 3:1 (same guard the path nodes carry).
+            fun lum(c: androidx.compose.ui.graphics.Color): Double {
+                fun ch(v: Float): Double {
+                    val x = v.toDouble()
+                    return if (x <= 0.04045) x / 12.92 else Math.pow((x + 0.055) / 1.055, 2.4)
+                }
+                return 0.2126 * ch(c.red) + 0.7152 * ch(c.green) + 0.0722 * ch(c.blue)
+            }
+            val ratio = (maxOf(lum(androidx.compose.ui.graphics.Color.White), lum(accent)) + 0.05) /
+                (minOf(lum(androidx.compose.ui.graphics.Color.White), lum(accent)) + 0.05)
+            assertTrue("chapter $chapter white-on-accent $ratio must be >= 3.0", ratio >= 3.0)
+        }
+    }
 }

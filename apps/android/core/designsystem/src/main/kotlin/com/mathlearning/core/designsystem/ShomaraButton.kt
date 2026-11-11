@@ -183,6 +183,12 @@ fun ShomaraButton(
     val depthElevation = ShomaraClay.specFor(depth).elevation
     Box(
         modifier = modifier
+            // N08R-01: tactile press feedback — the token spring compresses the surface while
+            // pressed (interaction response, not decoration); reduced motion gets a hard cut.
+            .shomaraPressScale(
+                pressed = state == ShomaraButtonState.Pressed,
+                reducedMotion = reducedMotion,
+            )
             .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget, minHeight = ShomaraButtonLogic.minHeight())
             .shadow(depthElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))

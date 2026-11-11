@@ -25,13 +25,26 @@ class ProfilePlacementTest {
     }
 
     @Test
-    fun `grade ids are canonical - unknown grades rejected at construction`() {
+    fun `all six grades are selectable - unknown grades rejected at construction`() {
+        // Owner decision 2026-11-06 (page 02-profile): every grade is selectable;
+        // availability no longer gates selection or draft construction. The catalog
+        // still records which grades have curriculum content (only G1 today), as
+        // content truth — the `available` flags and lockedReason are untouched.
+        assertEquals(listOf("G1", "G2", "G3", "G4", "G5", "G6"), ShomaraGradeCatalog.Options.map { it.id })
         assertEquals(listOf("G1"), ShomaraGradeCatalog.Options.filter { it.available }.map { it.id })
+        for (gradeId in listOf("G1", "G2", "G3", "G4", "G5", "G6")) {
+            assertEquals(gradeId, ShomaraProfileDraft(name = "آریا", gradeId = gradeId).gradeId)
+        }
         assertEquals(ShomaraProfileStrings.GradeOne, ShomaraProfileDraft.gradeLabel("G1"))
+        assertEquals("G1", ShomaraProfileDraft().gradeId)
         assertThrows(IllegalArgumentException::class.java) { ShomaraProfileDraft(name = "آریا", gradeId = "G9") }
-        // Locked future grades are explained warmly and never selectable.
-        assertThrows(IllegalArgumentException::class.java) { ShomaraProfileDraft(name = "آریا", gradeId = "G2") }
-        assertTrue(ShomaraGradeCatalog.lockedReason("G2").contains("به‌زودی"))
+    }
+
+    @Test
+    fun `owner-supplied page 02 strings are pinned`() {
+        assertEquals("نام کودک را وارد کنید", ShomaraProfileStrings.ProfileTitle)
+        assertEquals("پایه تحصیلی را انتخاب کنید", ShomaraProfileStrings.GradeSectionTitle)
+        assertEquals("ادامه", ShomaraProfileStrings.Continue)
     }
 
     @Test

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-04T02:20:00.000Z",
-  "currentPhase": "N08",
-  "currentTask": "N08-06",
+  "updatedAt": "2026-11-07T00:00:00.000Z",
+  "currentPhase": "N08R",
+  "currentTask": "N08R-10",
   "statusValues": [
     "TODO",
     "READY",
@@ -45,7 +45,8 @@
     "harness/roadmap.json",
     "harness/file-ledger.json",
     "harness/dependency-map.json",
-    "harness/WORKLOG.md"
+    "harness/WORKLOG.md",
+    "design/playbook/N08R_MISSION_FA.md"
   ],
   "commandAllowlist": [
     "git status",
@@ -2005,6 +2006,335 @@
             "Gates: vitest 562/562, static 88/88, repository PASS, content PASS, typecheck web clean (both commits)"
           ],
           "blocker": "Production persistence: in-memory repository fails closed in production (AUDIO_ADMIN_BACKEND_NOT_CONFIGURED) until the Supabase-backed implementation is wired (migration 0074 schema ready). Binary BYTES still need an object-storage decision before they flow to children; TTS generation stays owner-gated (voice + credentials)."
+        }
+      ]
+    },
+    {
+      "id": "N08R",
+      "title": "Native UI/UX Visual Refinement — Duolingo-level, Clay (فاز موازی مستقل)",
+      "status": "IN_PROGRESS",
+      "branch": "native/n08r-ui-polish",
+      "goal": "تحول UI/UX کودک به سطح دولینگو طبق design/playbook/N08R_MISSION_FA.md: کپی ساختار دولینگو + Claymorphism خوددار، صفحه‌به‌صفحه با چرخهٔ DISCOVER..LEDGER، حفظ مطلق دو صفحهٔ محافظت‌شده (Splash + Profile Setup)، بدون ورود به منطق دامنه، بدون دورزدن N08-08 و بدون asset/متن تازه بدون تصویب مالک.",
+      "allowedPaths": [
+        "apps/android/**",
+        "packages/design-system/**",
+        "design/playbook/**",
+        "design/MASTER.md",
+        "docs/adr/**",
+        "harness/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "npm run android:gate",
+        "npm run verify:static:all",
+        "npx vitest run",
+        "npm run harness:validate",
+        "git diff --check"
+      ],
+      "tasks": [
+        {
+          "id": "N08R-00",
+          "title": "ثبت فاز، baseline گیت‌ها، رفع drift توکن، baseline بصری صفحات محافظت‌شده",
+          "status": "DONE",
+          "dependsOn": [],
+          "acceptance": [
+            "N08R در roadmap.json + roadmap.schema.json + START_HERE.md همگام ثبت شود و harness:validate سبز باشد",
+            "baseline گیت‌ها با exit code واقعی ثبت شود (verify:static:all / vitest / android:gate) — وضعیت قرمز احتمالی drift توکن صادقانه ثبت شود",
+            "drift فعال ComponentGradeCardH از طریق افزودن gradeCardH به v2.component در tokens.json + codegen رسمی حل شود؛ drift test سبز؛ صفر تغییر بصری در صفحات محافظت‌شده (مقدار 56.dp ثابت)",
+            "baseline بصری Splash + Profile Setup در 360/390/412dp و فونت 200٪ روی emulator با sha256 در build-reports/android/device-check/n08r-baseline/ ثبت شود به‌عنوان مرجع visual regression"
+          ],
+          "evidence": [
+            "harness:validate HARNESS_VALID (118 tasks, 12 phases) exit 0; verify:repository PASS (118 tasks, 60 ledger entries, 1880 edges)",
+            "Baseline قبل از رفع drift: vitest 563 passed / 1 failed (codegen.drift.test — ComponentGradeCardH دست‌نویس)؛ static 90/90 PASS؛ android:gate PASS — وضعیت قرمز صادقانه ثبت شد",
+            "رفع drift: gradeCardH:56 به v2.component اضافه شد؛ codegen رسمی TOKEN_DRIFT: PASS؛ diff Kotlin فقط حذف کامنت دست‌نویس (56.dp ثابت، صفر تغییر بصری)؛ vitest 564/564 PASS",
+            "Baseline بصری روی emulator-5554 (Pixel_6a): 10 PNG + SHA256SUMS در build-reports/android/device-check/n08r-baseline/ (gitignored طبق قرارداد؛ sha256 ثبت) — اسپلش اپ 360/412، Welcome 360/390، Profile 360/390/412 + فونت 200٪",
+            "یافته P1 در صفحهٔ محافظت‌شده: Profile در 360dp+فونت200٪ سرریز گرید پایه‌ها (ردیف سوم زیر CTA، پایه چهارم دوخطی) — n08r-profile-360dp-200font.png؛ اصلاح فقط با تأیید مالک (صفحه قفل است)",
+            "debug APK sha256 e0a4cc944a1c7bbb70c0ae4e19cdc91773d52cdb88572585c334e554b7f1e2e1؛ N08-08 دست‌نخورده و OWNER_DECISION_PENDING"
+          ]
+        },
+        {
+          "id": "N08R-01",
+          "title": "U0 — تثبیت Design System: ممیزی کنتراست پالت، پالایش Clay، توکن‌های motion",
+          "status": "DONE",
+          "dependsOn": [
+            "N08R-00"
+          ],
+          "acceptance": [
+            "جدول کنتراست WCAG تمام جفت‌های مصرفی v2 تولید شود؛ رفع failها فقط روی توکن‌هایی که صفحات محافظت‌شده مصرف نمی‌کنند (یا variant کنترل‌شده با مجوز مأموریت §5)",
+            "پالایش ShomaraClay در محدودهٔ ۴ سطح + قاعدهٔ یک Featured؛ تصمیم هایلایت مورب C-16 ثبت شود",
+            "سیستم motion بازبینی شود؛ reduced-motion همیشه non-optional؛ هیچ انیمیشن تزئینی بی‌هدف",
+            "visual regression صفحات محافظت‌شده سبز"
+          ],
+          "evidence": [
+            "ممیزی ۳۱ جفت مصرفی (سند: design/playbook/N08R_U0_AUDIT_FA.md): ۱۸ جفت متنی همه PASS (اکثر >5:1)؛ تطبیق hex بین MASTER.md و tokens.json تأیید شد (بدون مغایرت)؛ هیچ مقدار توکن تغییر نکرد",
+            "۵ مورد زیر-۳:۱ غیرمتنی قضاوت شد: ۴ مورد معاف تزئینی/جداکننده (WCAG 1.4.11)؛ accent فصل ۳ از amber (1.64) به amberInk (11.18) تغییر کرد + تست رگرسیون WCAG≥3 برای هر ۵ فصل در ShomaraPathGraphTest",
+            "C-16 (هایلایت مورب) رسماً REJECT شد و در چک‌لیست دولینگو ثبت شد؛ ۴ سطح Clay + قاعدهٔ یک Featured دست‌نخورده",
+            "حفرهٔ motion: press feedback hard-cut بود → Modifier.shomaraPressScale با spring کاملاً توکن‌مشتق (damping c/2√(k·m)≈0.47، stiffness 220، target 0.96) روی ShomaraButton و گرهٔ مسیر اعمال شد؛ reduced-motion = snap (برش آنی)؛ ۳ تست تازه در ShomaraMotionTest",
+            "گیت‌ها: android:gate PASS (484 تست JVM، failures=0 شامل ۵ تست تازه)؛ vitest 564/564؛ static 90/90؛ harness:validate PASS",
+            "Visual regression محافظت‌شده: recapture Profile Setup با APK جدید (sha256 7936a148…) → pixel-diff ناحیهٔ اپ vs baseline = 0.0000٪ (ن08r-profile-360dp-U0-regression.png)؛ Splash از کد مسیر تغییر نمی‌کند (مصرف‌کنندهٔ هیچ کامپوننت تغییرکرده‌ای نیست)"
+          ]
+        },
+        {
+          "id": "N08R-02",
+          "title": "U1 — خانوادهٔ ۰۲ آنبوردینگ (ساختار premium؛ بدون متن تازه)",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-01"
+          ],
+          "acceptance": [
+            "چرخهٔ ۱۰ مرحله‌ای صفحه با اسکرین‌شات قبل/بعد 360/390/412 + فونت 200٪",
+            "هیچ متن کاننیکال تازه‌ای بدون تصویب مالک وارد نشود",
+            "P0/P1 = صفر؛ SCREEN_LEDGER + چک‌لیست دولینگو در همان commit به‌روز"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-03",
+          "title": "U1 — خانوادهٔ ۰۳ تلفن/OTP (تصمیم مالک: فقط اصلاح حداقلی)",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-01"
+          ],
+          "acceptance": [
+            "محدودهٔ حداقلی رعایت شود: هم‌راستایی توکن/a11y و رفع باگ — بدون بازطراحی بصری",
+            "semantics و IME بررسی و ثبت شود",
+            "ledger به‌روز؛ حذف آینده در فاز ۲ (ADR-0039) در ledger یادآوری شود"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-04",
+          "title": "U1 — خانوادهٔ ۰۵ Grade/Placement (فقط stateهای واقعی)",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-03"
+          ],
+          "acceptance": [
+            "فقط stateهای واقعی موجود طراحی/پولیش شود؛ بدون محتوای تعیین‌سطح (مسدود O1/O2) و بدون بن‌بست جدید",
+            "locked/unavailable با توضیح گرم و TalkBack «قفل»",
+            "ledger + وضعیت BLOCKED محتوایی صادقانه ثبت شود"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-05",
+          "title": "U2 — خانوادهٔ ۱۷ ناوبری/تب‌بار",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-01"
+          ],
+          "acceptance": [
+            "sweep دستگاهی + پولیش Clay/motion تب‌بار و pill فعال",
+            "Back/deep-link/restoration و TalkBack stateها تأیید شود",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-06",
+          "title": "U2 — خانوادهٔ ۰۶ مسیر یادگیری",
+          "status": "DONE",
+          "dependsOn": [
+            "N08R-05"
+          ],
+          "acceptance": [
+            "معیارهای C-03 (۵-۶ گره در نما، گرهٔ آخر بریده) و C-04 (لغزش بنر چسبان) با اسکرین‌شات دستگاهی بسته شود",
+            "پولیش Clay گره‌ها/بنر فصل در محدودهٔ ADR-0040؛ بدون asset تازه (P8 همچنان PENDING_OWNER — عدد interim می‌ماند)",
+            "وضعیت‌های Fresh/Current/Completed/Perfect/Locked روی دستگاه با TalkBack چک شود"
+          ],
+          "evidence": [
+            "Owner directive reordered execution: Home (N08R-06) before nav (N08R-05 still TODO)",
+            "Deterministic zigzag geometry (alternating sides, [1,.55,1,.55] rhythm, responsive amplitude clamp) replacing sine; connector continuous behind nodes (swoop-in + tail for every node, label mask, onGloballyPositioned circle-centre anchor); RTL canvas mirroring fixed (recorded double-negation handled on canvas side)",
+            "Chapter-aware node colours (solid accent + white mark + lerp edge; Fresh = white + accent numeral; Locked neutral Line2/Ink2), drawn checkmark, anchor bubble reusing existing canonical CTA strings, chapter badge + 3D band lip (no second progress layer)",
+            "android:gate PASS (489+ JVM tests, 0 failures) incl. 6 new zigzag/connector/contrast tests replacing the sine test",
+            "Device evidence (emulator-5554): before/after 360dp, scrolled 2->3->4 continuous line, 412dp no horizontal cut, locked-node tap opens sheet with warm explanation + single CTA; APK sha256 a55d15f4202947bc9b010813a1278fd300d2e5173e821e18a9914fd6f3ee7650",
+            "jev_review unavailable (no API key) — manual patch-review checklist applied (no raw hex/dp, semantics intact, no fabricated data/text, domain untouched, protected screens untouched)",
+            "Honest limits: Completed/Perfect/Current solid-state visuals verified on device only via logic tests + Fresh/Locked on screen (live app has no progress data — F-02); 200% font sweep for the new path still pending (next device pass)"
+          ]
+        },
+        {
+          "id": "N08R-07",
+          "title": "U2 — خانوادهٔ ۰۷ شروع ایستگاه",
+          "status": "DONE",
+          "dependsOn": [
+            "N08R-06"
+          ],
+          "acceptance": [
+            "شیت شروع در ۳۶۰dp بدون hero مزاحم؛ دقیقاً یک CTA",
+            "jump sheet همچنان بدون فراخوانندهٔ تولیدی می‌ماند تا wiring فاز B (هیچ دکمهٔ بی‌عمل)",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": [
+            "Station-start sheet redesigned to the chapter hero block (tint+accent from chapterBandColors, 3D lip, character in accent-bordered white circle, chapter badge, full-width CTA) — logic/wiring/pinned texts untouched; jump sheet (dead code, Phase B) untouched",
+            "android:gate PASS incl. new test 'sheet hero keeps chapter identity and readable marks for every chapter' (white-on-accent >= 3:1 for 5 chapters)",
+            "Device evidence (emulator-5554, APK sha256 b88ad996...): before/after locked+ready sheets at 360dp, 412dp, 200% font (hero wraps, no clipping); Back returns to path with position; START CTA enters lesson P1 (honest skeleton + disabled submit)",
+            "Honest limits: androidTest not run (outside gate); Replay/Resume states unreachable on device without real progress (logic-covered); N08R-05 + Home 200% sweep remain pending"
+          ]
+        },
+        {
+          "id": "N08R-08",
+          "title": "U3 — خانوادهٔ ۰۸ Teach/Discover (فقط chrome)",
+          "status": "DONE",
+          "dependsOn": [
+            "N08R-07"
+          ],
+          "acceptance": [
+            "فقط chrome/CTA/بنر/motion پولیش شود؛ قضاوت پاسخ و محتوا مسدود O1/O2 می‌ماند و صادقانه BLOCKED ثبت می‌شود",
+            "بدون ساخت prompt/گزینهٔ ساختگی",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": [
+            "Content map for ST07.P1 recorded (design/playbook/N08R_ST07_P1_CONTENT_MAP_FA.md) from the DRAFT pilot + 6 honest gaps (O1/O2, 41 assets, zero audio binaries, CONTENT-004/006)",
+            "Child-safe discover projection (ShomaraDiscoverStep/Card — NO answer/correct/threshold fields, reflection-guarded test) + pure ShomaraDiscoverLogic + ShomaraDiscoverStage renderer (count-mark-on-touch concept animation, amber Featured reveal, honest end banner)",
+            "Wiring: ShomaraLessonHost(discoverSteps) <- ShomaraApp <- AppContainer.lessonDiscoverSteps <- LessonContentWiring debug/release variants (debug = DRAFT ST07 P1 structure for design review; release = empty, fail-closed)",
+            "Clay press upgraded: press sinks ComponentEdge/2 (token-derived) with the token spring; reduced-motion snap; new test",
+            "android:gate PASS — 496 JVM tests, 0 failures (5 discover + 1 sink tests new)",
+            "Device evidence (emulator-5554, APK sha256 1024c185...): sheet->lesson P1 with 3 RTL tiles, touch->count marks, reveal 1, advance, pairs reveal 2, honest end banner, reduced-motion static reveal",
+            "Honest limits: write-in glyph animation awaits GLYPH.1/2; audio silent (CONTENT-017); real P1->P2 advance blocked on the local evaluator (O1/Phase 1); N08R-05 + Home 200% sweep pending"
+          ]
+        },
+        {
+          "id": "N08R-09",
+          "title": "U3 — خانوادهٔ ۰۹ Guided Practice (فقط chrome)",
+          "status": "DONE",
+          "dependsOn": [
+            "N08R-08"
+          ],
+          "acceptance": [
+            "حلقهٔ «بررسی←ادامه» و اسلات بازخورد پولیش شود؛ آیتم/هینت مسدود O1/O2",
+            "single-submit و حفظ layout هنگام بازخورد تأیید شود",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": [
+            "ST07.P2 mapped (8 items: 4 T15 choice, 2 T13 trace, 2 T01 tray) — trace/tray recorded as evaluator gaps; DRAFT texts debug-only",
+            "Child-safe guided projection (no answer fields, reflection-guarded) + evaluator LAYER interface (main) with debug-only draft impl — release fail-closed skeleton",
+            "ShomaraGuidedStage: prompt/stimulus/option tiles/selection/review-gate/warm correct + retry banners via ShomaraHintLadder; retry clears the pick for re-counting",
+            "android:gate PASS — 501 JVM tests, 0 failures (5 new)",
+            "Device evidence (emulator-5554, APK sha256 b383d400...): discover->guided preview advance, i01 wrong->retry banner, correct->ok banner, i02/i05/i06 through honest end banner",
+            "Honest limits: real practice awaits O1/O2 local evaluator + package; T13/T01 out of preview; androidTest outside gate; N08R-05 + Home 200% sweep pending"
+          ]
+        },
+        {
+          "id": "N08R-10",
+          "title": "U3 — خانوادهٔ ۱۰ Assessment (فقط chrome آرام)",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-09"
+          ],
+          "acceptance": [
+            "dial آرام‌تر (۲/۲/۳) حفظ شود؛ بدون شخصیت/hint/جشن",
+            "اسلات‌های حالت idle/selected/submitting/result بدون جعل محتوا",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-11",
+          "title": "U3 — خانوادهٔ ۱۱ Recovery/Result",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-10"
+          ],
+          "acceptance": [
+            "سطح نتیجه با یک CTA و رد شدن با یک ضربه؛ بدون XP/درصد/رتبه",
+            "«چه چیزی تمرین شد» بدون متن کاننیکال ساخته نمی‌شود — مسدود ثبت شود",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-12",
+          "title": "U4 — خانوادهٔ ۱۲ تب تمرین (سیم‌کشی stateهای دست‌نیافتنی)",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-05"
+          ],
+          "acceptance": [
+            "loading/offline/error از شِل واقعاً سیم‌کشی شود (کد موجود، مسیر از شِل بسته است)",
+            "ردیف‌ها بدون دادهٔ ساختگی؛ locked با دلیل گرم",
+            "empty state بدون تصویر P7 (PENDING_OWNER) قابل قبول است",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-13",
+          "title": "U4 — خانوادهٔ ۱۳ چالش",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-11"
+          ],
+          "acceptance": [
+            "اینترودُ و اسلات round پولیش شود؛ محتوای round مسدود فاز B/CONTENT-016",
+            "تایمر فقط در round و تحت reduced-motion پنهان (قرارداد موجود حفظ)",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-14",
+          "title": "U5 — خانوادهٔ ۱۴ من (Profile/Me)",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-05"
+          ],
+          "acceptance": [
+            "F-02 (facts همیشه Empty) بدون منبع پیشرفت محلی حل نمی‌شود — ساختاری پولیش و مسدودی صادقانه ثبت شود",
+            "بدون badge/streak/دادهٔ ساختگی",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-15",
+          "title": "U5 — خانوادهٔ ۱۵ آواتار/تنظیمات/والدین",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-14"
+          ],
+          "acceptance": [
+            "F-03 (در صورت زنده بودن) رفع و تست شود؛ fail-closed گیت والد حفظ",
+            "grid آواتار در فونت 200٪ و انتخاب سه‌طریقه تأیید شود",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-16",
+          "title": "U6 — خانوادهٔ ۱۶ حالت‌های سیستمی + FoundationScreen",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-01"
+          ],
+          "acceptance": [
+            "pending-sync رد (ADR-0039)؛ error = بستهٔ خراب؛ آفلاین حالت عادی — فقط ساختاری، بدون متن تازه",
+            "FoundationScreen از placeholder دو-متنه به StateSurface واقعی با اتصال state صحیح",
+            "اسکرین‌شات قبل/بعد + ledger"
+          ],
+          "evidence": []
+        },
+        {
+          "id": "N08R-17",
+          "title": "U6 — سراسری: QA journeys، regression محافظت‌شده، بستن gateهای معلق چک‌لیست",
+          "status": "TODO",
+          "dependsOn": [
+            "N08R-02",
+            "N08R-04",
+            "N08R-07",
+            "N08R-11",
+            "N08R-12",
+            "N08R-13",
+            "N08R-14",
+            "N08R-15",
+            "N08R-16"
+          ],
+          "acceptance": [
+            "۱۱ مسیر QA_JOURNEYS اجرا و ثبت شود (مسیرهای وابسته به محتوا صادقانه BLOCKED)",
+            "visual regression Splash + Profile Setup در برابر baseline ن08r سبز",
+            "TalkBack/200٪/predictive-back/process-death جمع‌بندی شود",
+            "START_HERE.md و WORKLOG با evidence نهایی فاز به‌روز شود"
+          ],
+          "evidence": []
         }
       ]
     },

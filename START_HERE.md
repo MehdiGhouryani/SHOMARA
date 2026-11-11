@@ -16,20 +16,20 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 57
-last_updated: 2026-11-04
-snapshot_id: SNAP-20261104-N08-02-TALKBACK-CLOSED
+file_version: 58
+last_updated: 2026-11-07
+snapshot_id: SNAP-20261107-N08R-00-START
 baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
-working_branch: native/n08-ux-completion
-working_branch_pushed: true
+working_branch: native/n08r-ui-polish
+working_branch_pushed: false
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
-current_phase: N08
-current_task: N08-06
-phase_status: N08_7_OF_13_DONE__N08_06_REMAINDER_BLOCKED_ON_OWNER_CONTENT_DECISIONS
+current_phase: N08R
+current_task: N08R-10
+phase_status: N08R_GUIDED_DONE__NEXT_ASSESSMENT_PER_OWNER_ORDER
 apk_status: DEBUG_APK_BUILT_INSTALLED__LAUNCH_AND_DEEPLINK_VERIFIED
-blocked_note: N02-07 DONE so it is no longer a blocker; N08-06..12 wait on N08-08 which holds OWNER_DECISION_PENDING for CONTENT-005/006/007/016. harness next reports no executable task.
+blocked_note: N08-06..12 remain blocked on N08-08 (OWNER_DECISION_PENDING for CONTENT-005/006/007/016). Parallel owner-authorized phase N08R (Duolingo-level UI/UX refinement, mission: design/playbook/N08R_MISSION_FA.md) registered on branch native/n08r-ui-polish from page-17-nav; it must not bypass N08-08 or touch protected screens (Splash, Profile Setup).
 ```
 
 ## 0. تصمیم مالک و مرز کار
