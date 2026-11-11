@@ -19,6 +19,8 @@ import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.core.network.ShomaraOtpApi
 import com.mathlearning.feature.lesson.ShomaraDiscoverStep
+import com.mathlearning.feature.lesson.ShomaraGuidedEvaluator
+import com.mathlearning.feature.lesson.ShomaraGuidedItem
 import com.mathlearning.core.network.ShomaraOtpEndpoints
 import com.mathlearning.core.network.ShomaraOtpProvider
 import com.mathlearning.feature.onboarding.ShomaraAuthSession
@@ -36,6 +38,13 @@ interface AppContainer {
 
     /** N08R-08: discover preview steps (debug wiring only; release empty). */
     val lessonDiscoverSteps: List<ShomaraDiscoverStep>
+
+    /** N08R-09: guided items + debug-only evaluator (release: empty + null). */
+    val lessonGuidedItems: List<ShomaraGuidedItem>
+    val lessonGuidedEvaluator: ShomaraGuidedEvaluator?
+
+    /** N08R-09: preview stage-advance — true ONLY when the debug wiring supplied content. */
+    val lessonPreviewAdvance: Boolean
     val lessonGateway: LessonGateway
     val localDatabase: LocalLearningDatabase
     val outboxSyncEngine: OutboxSyncEngine
@@ -77,6 +86,9 @@ class DefaultAppContainer(
     private val debugOtpProvider: ((ShomaraOtpApi) -> ShomaraOtpProvider)? = null,
     /** N08R-08: discover preview steps — non-empty ONLY from the debug variant wiring. */
     private val discoverSteps: List<ShomaraDiscoverStep> = emptyList(),
+    /** N08R-09: guided preview items + debug evaluator — non-null ONLY in the debug variant. */
+    private val guidedItems: List<ShomaraGuidedItem> = emptyList(),
+    private val guidedEvaluator: ShomaraGuidedEvaluator? = null,
 ) : AppContainer {
     override val logger: AppLogger = SafeAppLogger(AndroidLogSink)
 
@@ -116,6 +128,11 @@ class DefaultAppContainer(
 
     // N08R-08: debug-only discover preview (ST07 P1 DRAFT structure); release is empty.
     override val lessonDiscoverSteps: List<ShomaraDiscoverStep> = discoverSteps
+
+    // N08R-09: guided preview items + the debug-only draft evaluator (release empty/null).
+    override val lessonGuidedItems: List<ShomaraGuidedItem> = guidedItems
+    override val lessonGuidedEvaluator: ShomaraGuidedEvaluator? = guidedEvaluator
+    override val lessonPreviewAdvance: Boolean = discoverSteps.isNotEmpty() || guidedItems.isNotEmpty()
 
     override val settingsStore: ShomaraSettingsStore = PreferencesSettingsStore(dataStore)
 

@@ -1,6 +1,8 @@
 package com.mathlearning.app.di
 
 import com.mathlearning.feature.lesson.ShomaraDiscoverStep
+import com.mathlearning.feature.lesson.ShomaraGuidedEvaluator
+import com.mathlearning.feature.lesson.ShomaraGuidedItem
 
 /**
  * Release counterpart of `src/debug/.../LessonContentWiring.kt` (N08R-08): NO discover
@@ -11,4 +13,9 @@ object LessonContentWiring {
     const val IsDebugBuild: Boolean = false
 
     val discoverSteps: List<ShomaraDiscoverStep> = emptyList()
+
+    /** Release: no guided items, no evaluator — the guided skeleton stays fail-closed. */
+    val guidedItems: List<ShomaraGuidedItem> = emptyList()
+
+    val guidedEvaluator: ShomaraGuidedEvaluator? = null
 }

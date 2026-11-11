@@ -70,6 +70,14 @@ fun ShomaraLessonHost(
     // release until the local content package exists (Phase 1, O1/O2-gated). The debug
     // build wires the DRAFT-pilot structure for design review; the renderer never judges.
     discoverSteps: List<ShomaraDiscoverStep> = emptyList(),
+    // N08R-09: the guided-practice projection + the debug-only evaluator. Release keeps
+    // both empty/null (fail-closed skeleton); correctness never enters the projection.
+    guidedItems: List<ShomaraGuidedItem> = emptyList(),
+    guidedEvaluator: ShomaraGuidedEvaluator? = null,
+    // N08R-09: TRUE only in the debug preview (no evaluator can advance stages there), so
+    // finishing discover walks to the guided preview. With the Phase-1 local evaluator this
+    // stays false — the EVALUATOR owns stage advance, never the UI.
+    previewAdvanceToNextStage: Boolean = false,
 ) {
     val scope = rememberCoroutineScope()
     var closeState by remember { mutableStateOf<ShomaraCloseConfirmState>(ShomaraCloseConfirmState.NotRequested) }
@@ -179,12 +187,22 @@ fun ShomaraLessonHost(
                     surface = resultSurface!!,
                     onExitToShell = onExitToShell,
                 )
+            } else if (macroStage == MacroStage.P2_GUIDED && guidedItems.isNotEmpty() && guidedEvaluator != null) {
+                // N08R-09: the guided loop renders its real projected items; the evaluator
+                // layer (debug draft / future local evaluator) judges, never this UI.
+                ShomaraGuidedStage(
+                    items = guidedItems,
+                    evaluator = guidedEvaluator,
+                    onAllItemsComplete = { /* evaluator wiring lands with the local package (Phase 1) */ },
+                )
             } else if (macroStage == MacroStage.P1_DISCOVER && discoverSteps.isNotEmpty()) {
                 // N08R-08: the discover stage renders its real (projected) steps — the
                 // concept animation IS the lesson; no answer/evaluator fields exist here.
                 ShomaraDiscoverStage(
                     steps = discoverSteps,
-                    onAllStepsComplete = { /* evaluator wiring lands with the local package (Phase 1) */ },
+                    onAllStepsComplete = {
+                        if (previewAdvanceToNextStage) macroStage = MacroStage.P2_GUIDED
+                    },
                 )
             } else if (activeJourney != null && !awaitingServerStage && choiceId == null) {
                 // B2: no option to render means the honest surface is the current stage's

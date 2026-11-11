@@ -59,6 +59,9 @@ fun ShomaraApp(
     lessonCheckpoints: LessonCheckpointStore,
     // N08R-08: debug-only discover preview steps (release keeps this empty, fail-closed).
     lessonDiscoverSteps: List<com.mathlearning.feature.lesson.ShomaraDiscoverStep> = emptyList(),
+    lessonGuidedItems: List<com.mathlearning.feature.lesson.ShomaraGuidedItem> = emptyList(),
+    lessonGuidedEvaluator: com.mathlearning.feature.lesson.ShomaraGuidedEvaluator? = null,
+    lessonPreviewAdvance: Boolean = false,
     settingsStore: ShomaraSettingsStore,
     simulatedAuth: Boolean = false,
     backendConfigured: Boolean = false,
@@ -150,6 +153,9 @@ fun ShomaraApp(
                     gateway = lessonGateway,
                     checkpointStore = lessonCheckpoints,
                     discoverSteps = lessonDiscoverSteps,
+                    guidedItems = lessonGuidedItems,
+                    guidedEvaluator = lessonGuidedEvaluator,
+                    previewAdvanceToNextStage = lessonPreviewAdvance,
                     replay = lessonReplay,
                     onExitToShell = {
                         lessonEnteredViaSheet = false

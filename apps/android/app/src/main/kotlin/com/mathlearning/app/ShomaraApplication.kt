@@ -20,6 +20,8 @@ class ShomaraApplication : Application() {
             debugBuild = AuthProviderWiring.IsDebugBuild,
             debugOtpProvider = AuthProviderWiring.simulatedProviderFactory,
             discoverSteps = LessonContentWiring.discoverSteps,
+            guidedItems = LessonContentWiring.guidedItems,
+            guidedEvaluator = LessonContentWiring.guidedEvaluator,
         )
     }
 }

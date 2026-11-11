@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-07T00:00:00.000Z",
   "currentPhase": "N08R",
-  "currentTask": "N08R-09",
+  "currentTask": "N08R-10",
   "statusValues": [
     "TODO",
     "READY",
@@ -2196,7 +2196,7 @@
         {
           "id": "N08R-09",
           "title": "U3 — خانوادهٔ ۰۹ Guided Practice (فقط chrome)",
-          "status": "TODO",
+          "status": "DONE",
           "dependsOn": [
             "N08R-08"
           ],
@@ -2205,7 +2205,14 @@
             "single-submit و حفظ layout هنگام بازخورد تأیید شود",
             "اسکرین‌شات قبل/بعد + ledger"
           ],
-          "evidence": []
+          "evidence": [
+            "ST07.P2 mapped (8 items: 4 T15 choice, 2 T13 trace, 2 T01 tray) — trace/tray recorded as evaluator gaps; DRAFT texts debug-only",
+            "Child-safe guided projection (no answer fields, reflection-guarded) + evaluator LAYER interface (main) with debug-only draft impl — release fail-closed skeleton",
+            "ShomaraGuidedStage: prompt/stimulus/option tiles/selection/review-gate/warm correct + retry banners via ShomaraHintLadder; retry clears the pick for re-counting",
+            "android:gate PASS — 501 JVM tests, 0 failures (5 new)",
+            "Device evidence (emulator-5554, APK sha256 b383d400...): discover->guided preview advance, i01 wrong->retry banner, correct->ok banner, i02/i05/i06 through honest end banner",
+            "Honest limits: real practice awaits O1/O2 local evaluator + package; T13/T01 out of preview; androidTest outside gate; N08R-05 + Home 200% sweep pending"
+          ]
         },
         {
           "id": "N08R-10",
