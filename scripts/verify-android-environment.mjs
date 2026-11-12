@@ -56,25 +56,44 @@ export function validPlatformJar(platformJar) {
 }
 
 /**
- * Platform directories that satisfy the compileSdk requirement. Upstream publishes API 37 as
- * `android-37.0`/`android-37.1`/`android-37.2` (the bare `platforms;android-37` package no longer
- * exists in the SDK index, which is why CI could never install it); older local installs may keep
- * the bare `android-37` directory. Both layouts are accepted; a valid android.jar is required in
- * either case.
+ * Pinned compile platform (P1 hardening, 2026-11-12): the exact upstream package ID, verified
+ * live via `sdkmanager --list --channel=0` — the bare `platforms;android-37` package no longer
+ * exists in the stable index; API 37 is published as `android-37.0` (rev 2 at the baseline date).
+ * The installed Package ID must be EXACTLY this everywhere; `compileSdk` stays the integer 37.
  */
-export function compileSdkPlatformDirs(platformsRoot, compileSdk = 37) {
-  if (!platformsRoot || !fs.existsSync(platformsRoot) || !fs.statSync(platformsRoot).isDirectory()) return [];
-  const prefix = `android-${compileSdk}`;
-  const minorPattern = new RegExp(`^${prefix}\\.[0-9]+$`);
-  return fs.readdirSync(platformsRoot)
-    .filter((name) => name === prefix || minorPattern.test(name))
-    .map((name) => path.join(platformsRoot, name, 'android.jar'))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+export const PINNED_PLATFORM_PACKAGE = 'platforms;android-37.0';
+
+function dirDeclaresPinnedPackage(dir, pinnedPackage) {
+  // package.xml is written by sdkmanager and declares the real installed package ID — the
+  // authoritative identity check. A directory named like the platform but containing a
+  // different (or missing) package manifest is rejected.
+  const manifest = path.join(dir, 'package.xml');
+  if (!fs.existsSync(manifest) || !fs.statSync(manifest).isFile()) return false;
+  return fs.readFileSync(manifest, 'utf8').includes(`path="${pinnedPackage}"`);
 }
 
-export function resolveSdk(candidates, compileSdk = 37) {
+/**
+ * android.jar candidates that provably install the PINNED package. `sdkmanager` warns about
+ * "inconsistent location" when a package lives under the legacy bare dir (`android-37` instead
+ * of `android-37.0`); the dir name alone is NOT the identity — package.xml is. Canonical dir
+ * first, legacy bare dir second; both must declare the pinned package ID.
+ */
+export function pinnedPlatformJars(platformsRoot, pinnedPackage = PINNED_PLATFORM_PACKAGE) {
+  if (!platformsRoot || !fs.existsSync(platformsRoot) || !fs.statSync(platformsRoot).isDirectory()) return [];
+  const canonicalDir = pinnedPackage.replace('platforms;', '');
+  const legacyDir = canonicalDir.replace(/\.\d+$/, '');
+  const present = fs.readdirSync(platformsRoot);
+  return [canonicalDir, legacyDir]
+    .filter((name) => present.includes(name))
+    .map((name) => path.join(platformsRoot, name))
+    .filter((dir) => dirDeclaresPinnedPackage(dir, pinnedPackage))
+    .map((dir) => path.join(dir, 'android.jar'))
+    .filter(validPlatformJar);
+}
+
+export function resolveSdk(candidates) {
   const existing = candidates.filter((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isDirectory());
-  return existing.find((candidate) => compileSdkPlatformDirs(path.join(candidate, 'platforms'), compileSdk).some(validPlatformJar))
+  return existing.find((candidate) => pinnedPlatformJars(path.join(candidate, 'platforms')).length > 0)
     ?? existing[0] ?? null;
 }
 
@@ -84,7 +103,7 @@ const javaText = java.output;
 const javaMajor = Number(javaText.match(/version "(\d+)/)?.[1] ?? Number.NaN);
 const candidates = sdkCandidates();
 const sdkRoot = resolveSdk(candidates);
-const platformJar = sdkRoot ? (compileSdkPlatformDirs(path.join(sdkRoot, 'platforms'), 37).find(validPlatformJar) ?? null) : null;
+const platformJar = sdkRoot ? (pinnedPlatformJars(path.join(sdkRoot, 'platforms'))[0] ?? null) : null;
 const platformReady = platformJar != null;
 
 const checks = [
@@ -104,7 +123,7 @@ const checks = [
     id: 'compile-sdk-37',
     required: true,
     status: platformReady ? 'PASS' : 'FAIL',
-    detail: platformReady ? platformJar : 'no valid platforms/android-37[.x]/android.jar found (android-37 or android-37.<minor> with a readable JAR)',
+    detail: platformReady ? `${platformJar} (package.xml must declare ${PINNED_PLATFORM_PACKAGE})` : `pinned package ${PINNED_PLATFORM_PACKAGE} not installed: no platforms/android-37.0/android.jar whose package.xml declares it`,
   },
 ];
 

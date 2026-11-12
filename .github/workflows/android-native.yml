@@ -34,6 +34,12 @@ jobs:
   verify:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
+    env:
+      # The pinned compile platform: exact upstream Package ID (verified live with
+      # `sdkmanager --list --channel=0` on 2026-11-12 — bare platforms;android-37 no longer
+      # exists in the stable index). compileSdk stays the integer 37.
+      PINNED_SDK_PACKAGE: "platforms;android-37.0"
+      PINNED_SDK_PLATFORM_DIR: "/usr/local/lib/android/sdk/platforms/android-37.0"
     steps:
       - uses: actions/checkout@v4
       - uses: gradle/actions/wrapper-validation@v4
@@ -44,15 +50,29 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
-      - uses: gradle/actions/setup-gradle@v4
-      - name: Install compile SDK 37
+      # P1 hardening: explicit, invalidatable caches. Keys cover OS, toolchain pins and the
+      # lockfile/dependency manifests; restore keys let a toolchain bump reuse the bulk of the
+      # cache while the exact key keeps determinism.
+      - name: Cache Android platform package
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/lib/android/sdk/platforms/android-37.0
+          key: android-sdk-${{ runner.os }}-platform-android-37.0-v1
+      - name: Install compile SDK 37 (pinned package)
         shell: bash
-        # Upstream publishes API 37 as android-37.0/37.1/37.2 — the bare `platforms;android-37`
-        # package no longer exists in the SDK index (root cause of the 2026-10..11 CI failures).
-        # compileSdk stays the integer 37; the preflight accepts android-37 and android-37.<minor> dirs.
+        # Idempotent: a cache hit restores the platform dir; sdkmanager verifies it against the
+        # live index and either confirms, upgrades a stale revision, or installs from scratch.
         run: |
-          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --channel=0 "platforms;android-37.0"
+          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --channel=0 --install "$PINNED_SDK_PACKAGE"
+      - name: Cache Gradle (caches + wrapper distributions)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-jdk17-${{ hashFiles('apps/android/gradle/wrapper/gradle-wrapper.properties', 'apps/android/gradle/libs.versions.toml', 'apps/android/gradle.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-jdk17-
       - name: Verify build harness contract
         run: npm run verify:android-build-harness
       - name: Test build failure and environment handling
@@ -60,8 +80,9 @@ jobs:
       - name: Unit, lint and compile gate
         run: npm run android:gate
       - name: Upload diagnostics (reports only — never packages)
-        # Diagnostic evidence only: lint/unit reports and the machine-readable gate.json.
-        # No APK/AAB, no signing output (enforced by verify-android-foundation).
+        # Diagnostic evidence only: lint/unit reports, raw test-result XML and the
+        # machine-readable gate.json. No APK/AAB, no signing output (enforced by
+        # verify-android-foundation).
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -72,3 +93,4 @@ jobs:
             build-reports/android/*.json
             apps/android/**/build/reports/**/*.html
             apps/android/**/build/reports/**/*.xml
+            apps/android/**/build/test-results/**/*.xml

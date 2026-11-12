@@ -4,10 +4,17 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   core:
     # Required checks: install from the lockfile, typecheck all workspaces, unit tests.
+    # Node is pinned to .nvmrc (22.22.0) by setup-node — a local Node outside the pin is a
+    # documented, loudly-warned deviation (see verify:repository), never a silent one.
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

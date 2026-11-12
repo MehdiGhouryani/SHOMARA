@@ -5,7 +5,15 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import { parseArgs } from '../../scripts/android-build.mjs';
-import { javaCommand, resolveSdk, validPlatformJar, compileSdkPlatformDirs } from '../../scripts/verify-android-environment.mjs';
+import { javaCommand, resolveSdk, validPlatformJar, pinnedPlatformJars, PINNED_PLATFORM_PACKAGE } from '../../scripts/verify-android-environment.mjs';
+
+function writePlatform(root, platformDir, packageId, jarBytes = Buffer.from([0x50, 0x4b, 0x03, 0x04])) {
+  const dir = path.join(root, 'platforms', platformDir);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'android.jar'), jarBytes);
+  fs.writeFileSync(path.join(dir, 'package.xml'), `<?xml version="1.0" encoding="utf-8"?><localPackage path="${packageId}" version="2"/>`);
+  return dir;
+}
 
 test('rejects unknown flags and blocker bypass for gate/APK', () => {
   for (const mode of ['gate', 'assemble-debug']) {
@@ -32,39 +40,49 @@ test('SDK discovery skips incomplete fallback installations and rejects director
   try {
     const empty = path.join(temporary, 'empty');
     const complete = path.join(temporary, 'complete');
-    const jar = path.join(complete, 'platforms', 'android-37', 'android.jar');
     fs.mkdirSync(empty);
-    fs.mkdirSync(path.dirname(jar), { recursive: true });
-    fs.writeFileSync(jar, Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+    // sdkmanager's inconsistent-location case: package 37.0 living under the legacy bare dir.
+    writePlatform(complete, 'android-37', PINNED_PLATFORM_PACKAGE);
     assert.equal(resolveSdk([empty, complete]), complete);
     assert.equal(validPlatformJar(empty), false);
+    const jar = path.join(complete, 'platforms', 'android-37', 'android.jar');
     fs.writeFileSync(jar, 'invalid');
     assert.equal(validPlatformJar(jar), false);
   } finally { fs.rmSync(temporary, { recursive: true }); }
 });
 
-// P1 (2026-11-12): upstream stopped publishing a bare `platforms;android-37` package — CI must
-// install android-37.0, so the preflight contract accepts android-37 AND android-37.<minor>.
-test('SDK discovery accepts the upstream android-37.<minor> layout and never a wrong API level', () => {
-  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'shomara-sdk-minor-test-'));
+// P1 hardening (2026-11-12): platform identity is the Package ID in package.xml, verified live
+// via `sdkmanager --list --channel=0` — bare `platforms;android-37` no longer exists upstream;
+// `platforms;android-37.0` is the pinned package. Dir names alone are NOT accepted.
+test('platform pin requires package.xml to declare platforms;android-37.0 exactly', () => {
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'shomara-sdk-pin-test-'));
   try {
-    const minor = path.join(temporary, 'minor');
-    const jar37_0 = path.join(minor, 'platforms', 'android-37.0', 'android.jar');
-    fs.mkdirSync(path.dirname(jar37_0), { recursive: true });
-    fs.writeFileSync(jar37_0, Buffer.from([0x50, 0x4b, 0x03, 0x04]));
-    assert.deepEqual(compileSdkPlatformDirs(path.join(minor, 'platforms')), [jar37_0]);
-    assert.equal(resolveSdk([minor]), minor);
+    const canonical = path.join(temporary, 'canonical');
+    const jar37_0 = path.join(writePlatform(canonical, 'android-37.0', PINNED_PLATFORM_PACKAGE), 'android.jar');
+    assert.deepEqual(pinnedPlatformJars(path.join(canonical, 'platforms')), [jar37_0]);
+    assert.equal(resolveSdk([canonical]), canonical);
 
-    const wrongApi = path.join(temporary, 'wrong');
-    const jar36 = path.join(wrongApi, 'platforms', 'android-36', 'android.jar');
-    fs.mkdirSync(path.dirname(jar36), { recursive: true });
-    fs.writeFileSync(jar36, Buffer.from([0x50, 0x4b, 0x03, 0x04]));
-    assert.deepEqual(compileSdkPlatformDirs(path.join(wrongApi, 'platforms')), [], 'android-36 must never satisfy compileSdk 37');
+    // Wrong minor version installed under the canonical dir name: rejected.
+    const wrongMinor = path.join(temporary, 'wrongMinor');
+    writePlatform(wrongMinor, 'android-37.0', 'platforms;android-37.1');
+    assert.deepEqual(pinnedPlatformJars(path.join(wrongMinor, 'platforms')), [], 'package platforms;android-37.1 must never satisfy the 37.0 pin');
 
-    const corrupt = path.join(temporary, 'corrupt', 'platforms', 'android-37.1', 'android.jar');
-    fs.mkdirSync(path.dirname(corrupt), { recursive: true });
-    fs.writeFileSync(corrupt, 'invalid');
-    assert.equal(compileSdkPlatformDirs(path.join(temporary, 'corrupt', 'platforms')).filter(validPlatformJar).length, 0, 'a corrupt android-37.x jar must not count as READY');
+    // Legacy bare dir WITH the pinned package declared: accepted (inconsistent-location case).
+    const legacy = path.join(temporary, 'legacy');
+    writePlatform(legacy, 'android-37', PINNED_PLATFORM_PACKAGE);
+    assert.equal(pinnedPlatformJars(path.join(legacy, 'platforms')).length, 1);
+
+    // Wrong API level under the legacy dir: rejected.
+    const wrongApi = path.join(temporary, 'wrongApi');
+    writePlatform(wrongApi, 'android-37', 'platforms;android-36');
+    assert.deepEqual(pinnedPlatformJars(path.join(wrongApi, 'platforms')), [], 'android-36 must never satisfy compileSdk 37');
+
+    // Hand-copied dir without a package manifest: rejected.
+    const noManifest = path.join(temporary, 'noManifest');
+    const bare = path.join(noManifest, 'platforms', 'android-37.0');
+    fs.mkdirSync(bare, { recursive: true });
+    fs.writeFileSync(path.join(bare, 'android.jar'), Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+    assert.deepEqual(pinnedPlatformJars(path.join(noManifest, 'platforms')), [], 'a dir without package.xml must not count as READY');
   } finally { fs.rmSync(temporary, { recursive: true }); }
 });
 

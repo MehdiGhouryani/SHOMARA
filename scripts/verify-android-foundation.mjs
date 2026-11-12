@@ -97,10 +97,11 @@ assert.equal((workflow.match(/"scripts\/android-build\.mjs"/g) ?? []).length, 2,
 
 const preflight = read('scripts/verify-android-environment.mjs');
 assert.match(preflight, /status: ready \? 'READY' : 'BLOCKED_ENV'/);
-// P1 (2026-11-12): the compile-SDK contract accepts android-37 and android-37.<minor> dirs,
-// always requiring a valid android.jar — see ANDROID_BUILD_ENVIRONMENT.md.
-assert.match(preflight, /compileSdkPlatformDirs\(/);
-assert.match(preflight, /android-37\[\.x\]\/android\.jar/);
+// P1 hardening (2026-11-12): platform identity is the Package ID pinned in code and proven by
+// package.xml — dir names alone are never accepted. See ANDROID_BUILD_ENVIRONMENT.md.
+assert.match(preflight, /PINNED_PLATFORM_PACKAGE = 'platforms;android-37\.0'/);
+assert.match(preflight, /pinnedPlatformJars\(/);
+assert.match(preflight, /path="\$\{pinnedPackage\}"/);
 assert.match(preflight, /javaMajor === 17/);
 
 const buildHarness = read('scripts/android-build.mjs');

@@ -65,6 +65,19 @@ assert.equal(lock.packages[''].engines.node, pkg.engines.node);
 assert.equal(pkg.scripts['harness:resume'], 'node tools/harness.mjs resume');
 assert.equal(pkg.scripts['android:gate'], 'node scripts/android-build.mjs gate');
 
+// P1 hardening (2026-11-12): a running Node outside the repo pin must never be silent.
+// CI enforces the pin exactly (setup-node node-version-file: .nvmrc); locally the mismatch is
+// surfaced LOUDLY here so no one mistakes gate results from an unpinned runtime for aligned
+// ones. It stays a warning, not a failure, so a shared machine without nvm is not bricked —
+// the fix is documented in ANDROID_BUILD_ENVIRONMENT.md (Node alignment row).
+if (process.versions.node !== nvm) {
+  console.log('==================================================================');
+  console.log(`NODE_VERSION_MISMATCH: running Node ${process.versions.node}, repository pin (.nvmrc) is ${nvm}.`);
+  console.log('CI always runs the pinned version; results from this local run are NOT version-aligned evidence.');
+  console.log(`Fix locally: run Node ${nvm} (nvm use ${nvm} / install from nodejs.org) — never hide or downgrade this warning.`);
+  console.log('==================================================================');
+}
+
 const start = fs.readFileSync(path.join(root, 'START_HERE.md'), 'utf8');
 assert.match(start, new RegExp(`current_phase: ${roadmap.currentPhase}`));
 assert.match(start, new RegExp(`current_task: ${roadmap.currentTask}`));
