@@ -23,5 +23,8 @@ class ShomaraApplication : Application() {
             guidedItems = LessonContentWiring.guidedItems,
             guidedEvaluator = LessonContentWiring.guidedEvaluator,
         )
+        // P3 (ADR-0041): ordered startup — essential steps only; no content/audio/CMS work at
+        // launch, deferred steps execute lazily on first real use.
+        container.startup.onApplicationCreate(container)
     }
 }

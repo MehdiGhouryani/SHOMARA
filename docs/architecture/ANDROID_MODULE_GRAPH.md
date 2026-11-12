@@ -1,4 +1,4 @@
-# Android Native module graph — N07 offline content foundation
+# Android Native module graph — N07 offline content foundation · به‌روزرسانی P3 (ADR-0041, 2026-11-13)
 
 ```text
 app
@@ -21,15 +21,28 @@ core:testing
  └─ core:model
 ```
 
-No feature-to-feature imports exist; `:feature:onboarding` is the only feature so far and depends
-only on public core APIs (AGENTS §5). `:app` is the composition root and wires every module.
+No feature-to-feature imports exist; `:app` is the composition root (`AppGraph`, ADR-0041) and
+wires every module. These rules are machine-checked by `scripts/verify-android-module-graph.mjs`
+(part of `verify:static:all`): no `GlobalScope` in main sources; `Dispatchers.Main` banned outside
+`:app`; features must not import `okhttp3`/`androidx.datastore`/`core:database`/`:sync`; `:sync`
+importable only by `:app`/`:sync`; no feature-to-feature imports; feature imports of
+`core:network`/`core:datastore` are limited to a dated, shrink-only allowlist (6 entries).
+
+## Scope ownership (ADR-0041)
+
+| Scope | Owner | Lifecycle | Notes |
+|---|---|---|---|
+| Application | `AppGraph.applicationScope` (SupervisorJob + Default) | process | the ONLY app-lifetime async scope; never cancelled by hand |
+| DataStore | `AppGraph` private `dataStoreScope` (SupervisorJob + IO) | process | preference-store I/O pool |
+| Screen | `rememberCoroutineScope()` | composition | cancelled with the UI; no feature global scopes |
+| I/O dispatchers | injected | call site | `Dispatchers.Main` outside `:app` main sources is verifier-banned |
 
 ## Responsibilities
 
 | Module | Owns | Must not own |
 |---|---|---|
-| `app` | Application, Activity, composition root, top-level navigation (NavHost, launch route) | learning rules, repositories, DTOs, answer evaluation |
-| `core:common` | safe error taxonomy, logging contracts, platform-neutral utilities | UI, child data, network clients |
+| `app` | Application, Activity, composition root (`AppGraph` + `ShomaraAppStartup`), top-level navigation (NavHost, launch route) | learning rules, repositories, DTOs, answer evaluation |
+| `core:common` | error taxonomy (`AppError` leaf + `ShomaraErrorModel` Domain/Data/Presentation + `ShomaraRetryPolicy`), logging contracts, `ShomaraStateHolder`/`SingleFlightExecutor`, `ShomaraScopes` | UI, child data, network clients |
 | `core:model` | validated stable identifiers, shared domain value types (launch states, grade/avatar catalogs) | API payloads, storage entities, UI state |
 | `core:designsystem` | generated tokens (ShomaraTokens), theme, canonical component families | feature logic, network, storage |
 | `core:network` | HTTP auth gateway (OkHttp OTP API), network error taxonomy, client-side throttle | token persistence, UI, business rules |

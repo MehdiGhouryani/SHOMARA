@@ -16,6 +16,9 @@ import com.mathlearning.core.datastore.PreferencesSettingsStore
 import com.mathlearning.core.datastore.PreferencesTokenStore
 import com.mathlearning.core.datastore.ShomaraProfileDraftStore
 import com.mathlearning.core.datastore.ShomaraSettingsStore
+import com.mathlearning.app.startup.ShomaraAppStartup
+import com.mathlearning.app.startup.ShomaraStartupStep
+import com.mathlearning.core.common.scope.ShomaraScopes
 import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.core.network.ShomaraOtpApi
 import com.mathlearning.feature.lesson.ShomaraDiscoverStep
@@ -27,7 +30,6 @@ import com.mathlearning.feature.onboarding.ShomaraAuthSession
 import com.mathlearning.feature.onboarding.ShomaraRealOtpProvider
 import com.mathlearning.sync.OutboxSyncEngine
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import java.io.File
 
 interface AppContainer {
@@ -89,11 +91,40 @@ class DefaultAppContainer(
     /** N08R-09: guided preview items + debug evaluator — non-null ONLY in the debug variant. */
     private val guidedItems: List<ShomaraGuidedItem> = emptyList(),
     private val guidedEvaluator: ShomaraGuidedEvaluator? = null,
-) : AppContainer {
+) : AppGraph {
     override val logger: AppLogger = SafeAppLogger(AndroidLogSink)
 
+    // P3 (ADR-0041): the ONE application-lifetime scope — SupervisorJob, process-owned, never
+    // cancelled by hand. Feature/screen scopes are NOT owned here.
+    override val applicationScope: CoroutineScope = ShomaraScopes.applicationScope()
+
+    // P3 (ADR-0041): a dedicated, owned scope for the preference stores (SupervisorJob + IO) so
+    // store I/O has its own pool instead of the previous anonymous `CoroutineScope(Dispatchers.IO)`.
+    private val dataStoreScope: CoroutineScope = ShomaraScopes.dataStoreScope()
+
+    override val startup: ShomaraAppStartup = ShomaraAppStartup(
+        essential = listOf(
+            ShomaraStartupStep(id = "log-runtime-mode") { graph ->
+                graph.logger.log(
+                    LogLevel.INFO,
+                    AppLogEvent(
+                        name = "startup.runtime-mode",
+                        attributes = mapOf(
+                            "variant" to if (graph.simulatedAuthEnabled) "debug-preview" else "release",
+                            "backend" to if (graph.isBackendConfigured()) "configured" else "offline",
+                        ),
+                    ),
+                )
+            },
+        ),
+        // No deferred steps exist yet — content package/audio/CMS work is Phase 4+ and
+        // owner-decision-gated (O2); startup never waits on it (ADR-0041).
+        deferred = emptyList(),
+        logger = SafeAppLogger(AndroidLogSink),
+    )
+
     private val dataStore = PreferenceDataStoreFactory.create(
-        scope = CoroutineScope(Dispatchers.IO),
+        scope = dataStoreScope,
         produceFile = { File(context.filesDir, "shomara_auth.preferences_pb") },
     )
 
