@@ -1,6 +1,6 @@
 # شمارا — SHOMARA
 
-SHOMARA یک محصول یادگیری ریاضی فارسی و RTL برای کودک است؛ Android-first و server-authoritative.
+SHOMARA یک محصول یادگیری ریاضی فارسی و RTL برای کودک است؛ Android-first و کاملاً آفلاین — محتوای bundle‌شده + ارزیاب محلی نسخه‌دار، بدون سرور در مسیر کودک (ADR-0039).
 
 ## وضعیت فعلی
 

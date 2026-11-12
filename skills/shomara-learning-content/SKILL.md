@@ -29,7 +29,7 @@ Treat research as evidence and authoring input, never as enabled production cont
 
 ## Hard boundaries
 
-- Keep correctness, evaluator configuration, next step, mastery and pass decisions server-authoritative; authoring answers never enter the child client.
+- Keep correctness, evaluator configuration, next step, mastery and pass decisions owned by the authoritative local evaluator layer over the versioned package (ADR-0039; the server-side authoring stack’s fate is owner decision O6); authoring answers never enter the child client.
 - Maintain separate authoring, published-package and child-projection models; snapshot-test answer/evaluator/threshold stripping for every adapter.
 - Preserve stable station/audio IDs and source provenance. Renaming is a reviewed contract migration.
 - Audio CSV rows are draft metadata, not audio files. Only `approved` assets with checksum, duration and rights may ship.

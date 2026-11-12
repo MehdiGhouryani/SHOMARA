@@ -24,7 +24,7 @@ Build a Persian, Android-first mathematics learning product. Filter every extern
 - Record the page's outcome, focal object, design dials, anti-patterns and reason for every depth tier before decoration.
 - Keep one primary action per decision state and preserve loading, offline, empty, error, disabled, correct, retry, back and resume states where relevant.
 - Use canonical tokens from `packages/design-system/src/tokens.json`; do not add page-local hex, spacing or radius values.
-- Keep progression, evaluation, mastery and Station Pass server-authoritative. Never ship answer keys in the child client.
+- Keep progression, evaluation, mastery and Station Pass owned by the authoritative local source (bundled content package + versioned local evaluator, ADR-0039) — the UI renders, never decides. Never ship answer keys in the child client.
 - RTL controls interface flow; mathematical direction and geometry keep their semantic direction.
 - Require 48dp minimum touch targets; prefer 72–80dp for early-grade manipulatives.
 - Do not mark Native as tested without a real Android build/device or emulator run.

@@ -23,7 +23,7 @@ feature:A -X-> feature:B implementation
 ```
 
 - DTO، entity و domain model سه مفهوم جدا هستند.
-- repository تنها مرز هماهنگی local/remote است.
+- repository تنها مرز هماهنگی داده است؛ در مدل آفلاین (ADR-0039) بین local (Room/DataStore) و پکیج محتوای bundle — بدون remote در مسیر کودک.
 - ViewModel state immutable و eventها explicit هستند.
 - navigation argument فقط ID پایدار است، نه object بزرگ یا answer key.
 - tokenهای Kotlin و TypeScript از یک JSON canonical تولید می‌شوند.

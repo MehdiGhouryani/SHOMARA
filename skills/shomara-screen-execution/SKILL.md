@@ -18,7 +18,7 @@ Implement a Persian, Android-first mathematics product—not a concept mockup. E
 
 ## Precedence
 
-Safety, approved product decisions, backend/domain contracts and server truth > `design/MASTER.md` and canonical tokens > this execution process > page-family layout guidance > content drafts > examples.
+Safety, approved product decisions, domain contracts and the authoritative local source (bundled package + local evaluator, ADR-0039) > `design/MASTER.md` and canonical tokens > this execution process > page-family layout guidance > content drafts > examples.
 
 If binding sources conflict, record exact paths and resolve safely. Never silently invent a requirement or weaken a verifier.
 
@@ -38,7 +38,7 @@ If binding sources conflict, record exact paths and resolve safely. Never silent
 - Never claim Native QA without an Android build and device/emulator evidence.
 - Never create fake audio/art assets, fabricate screenshots or infer PASS from source text.
 - Use `packages/design-system/src/tokens.json`; no random page-local visual constants.
-- Preserve server-authoritative answers, progression, mastery and Station Pass.
+- Preserve authoritative answers, progression, mastery and Station Pass produced only by the local evaluator layer (ADR-0039).
 - Keep answer keys/evaluators out of the child client.
 - No lives, punitive streaks, currency, loot boxes, store or leaderboard.
 - V1/V2 and historical goldens remain until zero consumers and replacement gates exist.

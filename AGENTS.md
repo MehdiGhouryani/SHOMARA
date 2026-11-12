@@ -27,8 +27,8 @@
 2. تغییر موجود کاربر را حفظ کن؛ reset/force-push ممنوع است.
 3. `PASS` فقط با فرمان اجراشده، exit code و evidence ثبت‌شده مجاز است.
 4. verifier، assertion، threshold و golden برای سبزشدن ظاهری ضعیف نمی‌شود.
-5. منطق پاسخ، پیشرفت، mastery و Station Pass فقط server-authoritative می‌ماند.
-6. answer key و evaluator وارد کلاینت کودک نمی‌شود.
+5. منطق پاسخ، پیشرفت، mastery و Station Pass فقط از منبع حقیقت محصول (پکیج bundle + ارزیاب محلی نسخه‌دار — ADR-0039) تولید می‌شود؛ UI هرگز mastery را تصمیم نمی‌گیرد و فقط خروجی را رندر می‌کند.
+6. answer key هرگز وارد پروجکشن کودک، دیتابیس، لاگ یا telemetry نمی‌شود؛ در مدل آفلاین کلید فقط در لایهٔ ارزیاب محلی نسخه‌دار می‌ماند (CONTENT-008/018).
 7. محصول فارسی و RTL است؛ جهت رابط با جهت ریاضی یکی فرض نمی‌شود.
 8. UI کودک ستاره، جان، streak تنبیهی، سکه/الماس، loot box، فروشگاه یا leaderboard ندارد.
 9. پاسخ غلط ترسناک یا تنبیهی نیست؛ بازخورد گرم، قابل‌اقدام و بدون تحقیر است.
@@ -50,7 +50,7 @@
 
 - Kotlin + Jetpack Compose، single-activity، UDF، ViewModel و state immutable.
 - لایه‌های UI / domain / data؛ UI مستقیماً به network/database دسترسی ندارد.
-- local source برای خواندن‌های حیاتی، repository برای هماهنگی local/remote، sync قابل retry و idempotent.
+- local source برای خواندن‌های حیاتی، repository برای هماهنگی local/packaged (Room/DataStore ↔ پکیج محتوای bundle)؛ مسیر کودک هیچ وابستگی شبکه‌ای ندارد (ADR-0039).
 - ماژول feature فقط از API عمومی `core` و domain وابستگی می‌گیرد؛ import مستقیم بین implementation دو feature ممنوع است.
 - Design System واحد است و خروجی Kotlin/TypeScript از یک token source تولید می‌شود.
 - تست واحد، screenshot، navigation، accessibility و device gate جزو تعریف انجام است؛ browser-only معادل Native نیست.

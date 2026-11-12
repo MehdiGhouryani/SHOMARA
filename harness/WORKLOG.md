@@ -724,3 +724,15 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **سند:** `ANDROID_BUILD_ENVIRONMENT.md` بازنویسی شد — بخش پین پلتفرم، سیاست target API، جدول هم‌راستایی CI/Local (Node = تنها انحراف ثبت‌شده)، یادداشت منقضی‌شدن وضعیت N02-07.
 - **شواهد (همه exit 0):** test:android-build 7/7 · preflight READY (`android-37.0/android.jar` + note package.xml) · harness PASS · foundation PASS (assertion پین جدید) · build:packages · typecheck:all · vitest 74/565 · static:core 85/85 · static:all 91/91 · repository PASS (+1 banner) · android:gate BUILD SUCCESSFUL (14s) · doctor READY · git diff --check 0 · YAML پارس OK.
 - **صادقانه:** اجرای واقعی GitHub Actions و Run URL از این نشست ممکن نیست (gh CLI نصب نیست و شاخه push نشده) — معیار «CI اندروید مرحله نصب SDK را می‌گذراند» تا push مالک و یک اجرا اثبات‌ناپذیر می‌ماند (BLOCKED، جایگزین نشده با static).
+
+## 2026-11-13 — IPA-P2 (ADR Reconciliation + Owner Decision Pack) — branch infra/p2-adr-reconciliation
+
+- **ورودی‌ها تأیید شد (بدون تکرار ممیزی):** commit `f0b6823` ancestor of HEAD است و هر ۵ سند Phase 0 در clone فعال حاضرند.
+- **Reconciliation Map (ADR_RECONCILIATION_P2_FA.md §1):** ۲۲ اثر/سند با وضعیت GOVERNING/AMENDED/STATUS-NOTE/ALREADY-RECONCILED/FROZEN-PENDING/HISTORICAL-KEEP/COMPATIBLE — پایه: ADR-0039 GOVERNING؛ ADR-0003 یادداشت SUPERSEDED-IN-PART گرفت (متن تاریخی حفظ)؛ design/MASTER.md قبلاً هم‌راستا بود؛ سطر Duolingo در AGENTS §6 و INSPIRATION_GUARDRAILS به ledger فاز بصری N08R موکول شد تا با فاز موازی مالک تصادم نکند.
+- **اصلاح حداقلی قانون (۱۲ سایت در ۹ فایل، همه با ارجاع ADR-0039):** README.md:3 · AGENTS.md ق5/ق6/§5 · START_HERE.md §7 · PACKAGE_BOUNDARIES_FA.md:26 · skills/product-design:27 · screen-execution:21+41 · learning-content:32. متن‌های تاریخی roadmap N05/N06/N07 حفظ شدند؛ N08-06..12/N09/N10 و ADR-0037-backend و learning-content:15/45 قفل اجرا تا O6/O13/O11.
+- **Owner Decision Register v2 (INFRASTRUCTURE_OWNER_DECISIONS_FA.md بازنویسی شد):** O1–O13 همگی **OPEN** با گزینه‌ها/trade-off/ریسک چهارگانه (🔒🛠🚢🧒)/پیشنهاد مهندسی غیرمصوب/وابستگی باز-بسته + حکمرانی تغییر وضعیت (فقط با بیانیهٔ مالک) + جدول CONTENT-001…018 (16 OPEN + 2 GUARDED) + اولویت پیشنهادی O1→O2→O4→O3→O7→O5→O6→O11/O12→O8/O9→O13.
+- **Diagram به‌روز:** as-built پس از P1 (پین پکیج، بدون INTERNET permission، DB in-memory با مسیر O4) + هدف شرطی با برچسب [O?] — هیچ شاخه‌ای بدون تصویب پیاده نمی‌شود.
+- **Phase Gate Matrix:** P0 DONE / P1 DONE_WITH_CI_PENDING / P2 = این Decision Pack / P3..P11 همه BLOCKED با مسدودکنندهٔ صریح (O4/O2/O1/O11-O12/O8-O9/O5/O6/HG-05+O13).
+- **Forbidden Assumptions (۱۶ بند):** از جمله: هیچ O مصوب فرض نشود؛ نه Room قبل از O4، نه پکیج قبل از O2، نه ارزیابی قبل از O1، نه حذف backend قبل از O6، نه parity قبل از O13، نه threshold اختراقی، نه اجرای متن‌های FROZEN، نه بازطراحی UI در برنامهٔ زیرساخت.
+- **گیت‌های فاز (exit code):** verify:static:all = PASS (91/91) · verify:repository = PASS (+1 بنر NODE_VERSION_MISMATCH طبق طراحی) · harness validate = HARNESS_VALID (118 tasks, 12 phases) · git diff --check = 0 · نقشهٔ وابستگی بازتولید (550 فایل/1883 یال).
+- **توقف:** هیچ فاز 3–6 اجرا نشد؛ این فاز به‌عنوان Decision Pack تحویل شد و برنامه منتظر پاسخ مالک به Register است.
