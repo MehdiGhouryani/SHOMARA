@@ -17,6 +17,12 @@ android {
     testOptions {
         unitTests { isIncludeAndroidResources = true }
     }
+
+    sourceSets {
+        // Exported Room schemas are test assets so MigrationTestHelper can validate migrations
+        // against the exact compiled schema of every supported version.
+        getByName("test") { assets.srcDir("$projectDir/schemas") }
+    }
 }
 
 ksp {
@@ -36,5 +42,6 @@ dependencies {
     testImplementation(libs.junit4)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.robolectric)
+    testImplementation(libs.room.testing)
     testImplementation(libs.androidx.test.core)
 }

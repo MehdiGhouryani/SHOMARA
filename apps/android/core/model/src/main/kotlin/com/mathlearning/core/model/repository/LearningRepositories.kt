@@ -97,3 +97,22 @@ interface AudioAssetRepository {
     suspend fun byId(audioId: String): AudioAssetRecord?
     fun allFlow(): Flow<List<AudioAssetRecord>>
 }
+
+/** Installed content package registry row (P5 engine; engine plumbing pending O2-final fields). */
+data class InstalledContentPackage(
+    val packageId: String,
+    val version: Int,
+    val schemaVersion: Int,
+    val minAppVersion: String,
+    val manifestSha256: String,
+    val state: String, // ACTIVE | ROLLED_BACK | FAILED
+    val activatedAtMs: Long,
+)
+
+interface ContentPackageRegistryRepository {
+    /** Atomic: previous ACTIVE package (if any) -> ROLLED_BACK, new package -> ACTIVE. */
+    suspend fun commitActivation(active: InstalledContentPackage, previousPackageId: String?)
+    suspend fun setState(packageId: String, state: String)
+    suspend fun activePackage(): InstalledContentPackage?
+    suspend fun byId(packageId: String): InstalledContentPackage?
+}

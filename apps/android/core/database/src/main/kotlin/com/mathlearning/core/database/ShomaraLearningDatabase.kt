@@ -3,13 +3,17 @@ package com.mathlearning.core.database
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
+import androidx.room.migration.Migration
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.mathlearning.core.database.dao.AudioAssetDao
 import com.mathlearning.core.database.dao.MigrationMetadataDao
 import com.mathlearning.core.database.dao.OutboxOperationDao
 import com.mathlearning.core.database.dao.ProgressProjectionDao
 import com.mathlearning.core.database.dao.StationPackageDao
 import com.mathlearning.core.database.entity.AudioAssetEntity
+import com.mathlearning.core.database.dao.ContentPackageDao
+import com.mathlearning.core.database.entity.ContentPackageEntity
 import com.mathlearning.core.database.entity.MigrationMetadataEntity
 import com.mathlearning.core.database.entity.OutboxOperationEntity
 import com.mathlearning.core.database.entity.ProgressProjectionEntity
@@ -26,8 +30,25 @@ import com.mathlearning.core.database.entity.StationPackageEntity
  *  - a corrupt file fails the open (never silently recreated — tested);
  *  - every future schema version ships with its migration + exported schema JSON in `schemas/`.
  */
+/** First REAL schema migration: adds the content-package registry (P5 engine). Row-preserving. */
+object ShomaraMigrations {
+    val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `content_packages` (`packageId` TEXT NOT NULL, " +
+                    "`version` INTEGER NOT NULL, `schemaVersion` INTEGER NOT NULL, `minAppVersion` TEXT NOT NULL, " +
+                    "`manifestSha256` TEXT NOT NULL, `state` TEXT NOT NULL, `activatedAtMs` INTEGER NOT NULL, " +
+                    "PRIMARY KEY(`packageId`))",
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_content_packages_state ON content_packages (state)")
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2)
+}
+
 @Database(
-    version = 1,
+    version = 2,
     exportSchema = true,
     entities = [
         StationPackageEntity::class,
@@ -35,6 +56,7 @@ import com.mathlearning.core.database.entity.StationPackageEntity
         OutboxOperationEntity::class,
         AudioAssetEntity::class,
         MigrationMetadataEntity::class,
+        ContentPackageEntity::class,
     ],
 )
 abstract class ShomaraLearningDatabase : RoomDatabase() {
@@ -43,6 +65,7 @@ abstract class ShomaraLearningDatabase : RoomDatabase() {
     abstract fun outboxOperationDao(): OutboxOperationDao
     abstract fun audioAssetDao(): AudioAssetDao
     abstract fun migrationMetadataDao(): MigrationMetadataDao
+    abstract fun contentPackageDao(): ContentPackageDao
 
     companion object {
         const val DATABASE_NAME: String = "shomara_learning.db"
@@ -59,6 +82,7 @@ abstract class ShomaraLearningDatabase : RoomDatabase() {
             journalMode: androidx.room.RoomDatabase.JournalMode? = null,
         ): ShomaraLearningDatabase {
             val builder = Room.databaseBuilder(context.applicationContext, ShomaraLearningDatabase::class.java, fileName)
+                .addMigrations(*ShomaraMigrations.ALL)
             journalMode?.let { builder.setJournalMode(it) }
             return builder.build()
         }

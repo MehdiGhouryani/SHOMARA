@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.mathlearning.core.database.entity.AudioAssetEntity
+import com.mathlearning.core.database.entity.ContentPackageEntity
 import com.mathlearning.core.database.entity.MigrationMetadataEntity
 import com.mathlearning.core.database.entity.OutboxOperationEntity
 import com.mathlearning.core.database.entity.ProgressProjectionEntity
@@ -81,4 +82,19 @@ interface MigrationMetadataDao {
 
     @Query("SELECT * FROM migration_metadata ORDER BY appliedAtEpochMs ASC")
     suspend fun history(): List<MigrationMetadataEntity>
+}
+
+@Dao
+interface ContentPackageDao {
+    @Upsert
+    suspend fun upsert(entity: ContentPackageEntity)
+
+    @Query("SELECT * FROM content_packages WHERE state = 'ACTIVE' LIMIT 1")
+    suspend fun activePackage(): ContentPackageEntity?
+
+    @Query("SELECT * FROM content_packages WHERE packageId = :packageId LIMIT 1")
+    suspend fun byId(packageId: String): ContentPackageEntity?
+
+    @Query("UPDATE content_packages SET state = :state WHERE packageId = :packageId")
+    suspend fun setState(packageId: String, state: String)
 }

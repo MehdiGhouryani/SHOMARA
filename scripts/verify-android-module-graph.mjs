@@ -18,6 +18,9 @@
  *  R7  Persistence fail-closed (O4/ADR-0042): fallbackToDestructiveMigration is forbidden
  *      anywhere in apps/android, and Room.databaseBuilder may appear only inside
  *      :core:database's single ShomaraLearningDatabase factory.
+ *  R8  Package engine (P5/ADR-0043): :core:contentpackage is network-free (no java.net/okhttp/
+ *      javax.net imports — airplane mode is the normal state) and only :app may import it until
+ *      the wiring phase lands.
  *
  * Existing boundary exceptions are an explicit ALLOWLIST with a reason and a review date; the
  * list may only shrink. Any violation not in the allowlist exits 1.
@@ -131,6 +134,12 @@ for (const file of files) {
   }
   if (!isTest(relPath) && /Room.databaseBuilder/.test(text) && relPath !== 'core/database/src/main/kotlin/com/mathlearning/core/database/ShomaraLearningDatabase.kt') {
     violations.push({ rule: 'R7-single-room-builder', file: relPath, detail: 'Room.databaseBuilder outside the single factory is forbidden' });
+  }
+  if (!isTest(relPath) && relPath.startsWith('core/contentpackage/') && /import (java.net|okhttp3|javax.net|retrofit2)/.test(text)) {
+    violations.push({ rule: 'R8-contentpackage-network-free', file: relPath, detail: 'network import inside the package engine (airplane-mode contract)' });
+  }
+  if (!isTest(relPath) && text.includes('import com.mathlearning.core.contentpackage') && !relPath.startsWith('core/contentpackage/') && moduleDir !== 'app') {
+    violations.push({ rule: 'R8-contentpackage-imports', file: relPath, detail: 'contentpackage import outside :app/:core:contentpackage' });
   }
 }
 

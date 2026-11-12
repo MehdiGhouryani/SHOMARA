@@ -171,7 +171,7 @@ class ShomaraLearningDatabaseTest {
         database.close()
 
         SQLiteDatabase.openOrCreateDatabase(dbFile("downgrade.db").absolutePath, null).use { raw ->
-            raw.execSQL("PRAGMA user_version = 2")
+            raw.execSQL("PRAGMA user_version = 3")
         }
 
         // RoomOpenHelper.onDowngrade fails the open (message names the versions) — fail-closed.
@@ -179,7 +179,7 @@ class ShomaraLearningDatabaseTest {
             val reopened = build("downgrade.db")
             reopened.openHelper.readableDatabase
         }
-        assertTrue(thrown.message!!.contains("2"))
+        assertTrue(thrown.message!!.contains("3"))
         // Fail-closed: the file was not reset or wiped.
         assertTrue(dbFile("downgrade.db").exists())
     }
