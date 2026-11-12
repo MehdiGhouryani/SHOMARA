@@ -1,0 +1,27 @@
+name: dependency-audit
+
+# P1 (2026-11-12): scheduled dependency security audit. Runs weekly and on demand — never on
+# pull_request, so it cannot block merges; but it has NO continue-on-error: a red scheduled run
+# is a loud red dot on the Actions tab (unlike ci.yml's declared-informational job). Critical
+# vulnerabilities in production dependencies fail the run.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # Audit against the lockfile without reinstalling node_modules (audit reads the tree from
+      # the lockfile; a full npm ci is unnecessary for this gate and keeps the job fast).
+      - run: npm audit --omit=dev --audit-level=critical

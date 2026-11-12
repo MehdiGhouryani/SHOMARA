@@ -76,6 +76,7 @@
     "verify:p03": "node scripts/verify-phase3-game-feel.mjs",
     "typecheck:all": "npm --workspace @math/contracts run typecheck && npm --workspace @math/design-system run typecheck && npm --workspace @math/learning-runtime run typecheck && npm --workspace @math/challenge-runtime run typecheck && npm --workspace @math/assignment-runtime run typecheck && npm --workspace @math/adult-projections run typecheck && npm --workspace @math/offline-sync run typecheck && npm --workspace @math/web run typecheck && npm --workspace @math/mobile run typecheck",
     "verify:static:all": "node scripts/verify-static-all.mjs",
+    "verify:static:core": "node scripts/verify-static-all.mjs --core",
     "mobile:deps:check": "npm --workspace @math/mobile run deps:check",
     "test:challenge-runtime": "node scripts/test-challenge-runtime.mjs",
     "verify:phase4:runtime": "npm run test:challenge-runtime && node scripts/verify-phase4-challenge-foundation.mjs",

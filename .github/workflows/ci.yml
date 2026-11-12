@@ -19,10 +19,29 @@ jobs:
       - run: npm run typecheck:all
       - run: npx vitest run
 
+  static-core:
+    # P1 (2026-11-12): REQUIRED gate. Every environment-independent static verifier runs here —
+    # including the security-relevant ones (answer-key boundary, content-library byte-protection,
+    # migration guards, Android foundation). No continue-on-error: a red static core is a red run.
+    # Only the browser-gated verifiers (flows/parity/phase10, pinned list in verify-static-all.mjs)
+    # are out of scope here; they run in visual-and-static below.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build:packages
+      - run: npm run verify:static:core
+
   visual-and-static:
-    # Runs every verifier plus pixel parity and the browser flows. The design goldens were rendered with one
-    # Chromium build; another build may differ by font anti-aliasing, so this job is informational until it has
-    # been confirmed green on GitHub (it is green in a clean local clone: 71/71).
+    # Informational: the FULL suite (including the browser flows and pixel parity) plus Chromium.
+    # The design goldens were rendered with one Chromium build; another build may differ by font
+    # anti-aliasing, so this job stays informational until it has been confirmed green on GitHub.
+    # A failure inside it is surfaced loudly below — it is never a release approval.
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:

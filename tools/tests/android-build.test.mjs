@@ -5,7 +5,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import { parseArgs } from '../../scripts/android-build.mjs';
-import { javaCommand, resolveSdk, validPlatformJar } from '../../scripts/verify-android-environment.mjs';
+import { javaCommand, resolveSdk, validPlatformJar, compileSdkPlatformDirs } from '../../scripts/verify-android-environment.mjs';
 
 test('rejects unknown flags and blocker bypass for gate/APK', () => {
   for (const mode of ['gate', 'assemble-debug']) {
@@ -40,6 +40,31 @@ test('SDK discovery skips incomplete fallback installations and rejects director
     assert.equal(validPlatformJar(empty), false);
     fs.writeFileSync(jar, 'invalid');
     assert.equal(validPlatformJar(jar), false);
+  } finally { fs.rmSync(temporary, { recursive: true }); }
+});
+
+// P1 (2026-11-12): upstream stopped publishing a bare `platforms;android-37` package — CI must
+// install android-37.0, so the preflight contract accepts android-37 AND android-37.<minor>.
+test('SDK discovery accepts the upstream android-37.<minor> layout and never a wrong API level', () => {
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'shomara-sdk-minor-test-'));
+  try {
+    const minor = path.join(temporary, 'minor');
+    const jar37_0 = path.join(minor, 'platforms', 'android-37.0', 'android.jar');
+    fs.mkdirSync(path.dirname(jar37_0), { recursive: true });
+    fs.writeFileSync(jar37_0, Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+    assert.deepEqual(compileSdkPlatformDirs(path.join(minor, 'platforms')), [jar37_0]);
+    assert.equal(resolveSdk([minor]), minor);
+
+    const wrongApi = path.join(temporary, 'wrong');
+    const jar36 = path.join(wrongApi, 'platforms', 'android-36', 'android.jar');
+    fs.mkdirSync(path.dirname(jar36), { recursive: true });
+    fs.writeFileSync(jar36, Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+    assert.deepEqual(compileSdkPlatformDirs(path.join(wrongApi, 'platforms')), [], 'android-36 must never satisfy compileSdk 37');
+
+    const corrupt = path.join(temporary, 'corrupt', 'platforms', 'android-37.1', 'android.jar');
+    fs.mkdirSync(path.dirname(corrupt), { recursive: true });
+    fs.writeFileSync(corrupt, 'invalid');
+    assert.equal(compileSdkPlatformDirs(path.join(temporary, 'corrupt', 'platforms')).filter(validPlatformJar).length, 0, 'a corrupt android-37.x jar must not count as READY');
   } finally { fs.rmSync(temporary, { recursive: true }); }
 });
 

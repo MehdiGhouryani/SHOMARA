@@ -15,7 +15,7 @@ export default defineConfig({
       'packages/challenge-runtime/src/**/*.test.ts',
       'packages/design-system/src/**/*.test.ts',
       'packages/content-delivery/src/**/*.test.ts',
-      'apps/mobile/src/**/*.test.ts',
+      'apps/mobile/src/**/*.test.{ts,tsx}',
       'apps/web/lib/**/*.test.ts',
     ],
     exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],

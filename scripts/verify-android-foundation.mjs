@@ -84,18 +84,23 @@ const walk = (target) => {
 for (const sourceRoot of sourceRoots) walk(path.join(root, sourceRoot));
 
 const workflow = read('.github/workflows/android-native.yml');
-assert.ok(!/sign|keystore|artifact/i.test(workflow), 'N02 CI must not sign or publish artifacts');
+// P1 (2026-11-12): diagnostic report uploads are allowed; signing or publishing a package
+// (APK/AAB) is still forbidden — the ban is now precise instead of banning the word "artifact".
+assert.ok(!/keystore|signingConfig|assembleRelease|bundleRelease|\.apk\b|\.aab\b|apksigner|zipalign/i.test(workflow), 'Native CI must not sign or publish a package; diagnostics uploads are reports only');
 assert.match(workflow, /npm run android:gate/);
 assert.match(workflow, /runs-on: ubuntu-24\.04/);
 assert.match(workflow, /node-version-file: "\.nvmrc"/);
-assert.match(workflow, /platforms;android-37/);
+assert.match(workflow, /platforms;android-37\.0/, 'CI must install the upstream platform package name (android-37.0; bare android-37 no longer exists in the SDK index)');
 assert.match(workflow, /verify-android-environment\.mjs/);
 assert.equal((workflow.match(/"scripts\/verify-android-environment\.mjs"/g) ?? []).length, 2, 'preflight changes must trigger pull_request and push CI');
 assert.equal((workflow.match(/"scripts\/android-build\.mjs"/g) ?? []).length, 2, 'build harness changes must trigger pull_request and push CI');
 
 const preflight = read('scripts/verify-android-environment.mjs');
 assert.match(preflight, /status: ready \? 'READY' : 'BLOCKED_ENV'/);
-assert.match(preflight, /platforms', 'android-37', 'android\.jar'/);
+// P1 (2026-11-12): the compile-SDK contract accepts android-37 and android-37.<minor> dirs,
+// always requiring a valid android.jar — see ANDROID_BUILD_ENVIRONMENT.md.
+assert.match(preflight, /compileSdkPlatformDirs\(/);
+assert.match(preflight, /android-37\[\.x\]\/android\.jar/);
 assert.match(preflight, /javaMajor === 17/);
 
 const buildHarness = read('scripts/android-build.mjs');

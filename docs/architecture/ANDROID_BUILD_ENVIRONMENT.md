@@ -8,9 +8,11 @@
 |---|---:|---|
 | JDK | 17 | `java -version` |
 | Android SDK root | `ANDROID_SDK_ROOT` یا `ANDROID_HOME` | مسیر موجود |
-| Compile platform | `platforms;android-37` | `platforms/android-37/android.jar` با signature معتبر ZIP/JAR |
+| Compile platform | `platforms;android-37.0` (نام پکیج upstream) | `platforms/android-37/android.jar` یا `platforms/android-37.<minor>/android.jar` با signature معتبر ZIP/JAR |
 | Gradle | wrapper 9.6.0 با checksum پین‌شده | فقط `apps/android/gradlew` |
 | Repository access | Google Maven، Maven Central و Gradle distribution | resolve واقعی dependency |
+
+> **P1 (2026-11-12):** اندیس رسمی SDK گوگل دیگر پکیج `platforms;android-37` را منتشر نمی‌کند — پکیج‌های API 37 به‌صورت `android-37.0`/`37.1`/`37.2` هستند؛ همین ناهماهنگی نام، gate کاتلین در CI را unreachable کرده بود (ثبت شکاف G-01). قرارداد preflight هر دو چیدمان `android-37` و `android-37.<minor>` را می‌پذیرد و همیشه یک `android.jar` معتبر (ZIP/JAR) لازم دارد؛ `compileSdk = 37` عددی با AGP 9.4 مجاز است.
 
 تمام buildهای Native از root و از harness واحد اجرا می‌شوند:
 
@@ -30,7 +32,7 @@ npm run android:doctor -- --allow-blocked
 
 ## نصب compile platform در CI
 
-workflow ابتدا Android CLI جدید را امتحان می‌کند و برای runnerهای فعلی GitHub به `sdkmanager` رسمی fallback می‌کند. فقط stable channel و package دقیق `platforms;android-37` نصب می‌شود؛ NDK، emulator، signing و artifact publication در N02 نصب/اجرا نمی‌شوند.
+workflow مستقیماً `sdkmanager` رسمی را روی stable channel فرمان می‌دهد و package دقیق `platforms;android-37.0` را نصب می‌کند (P1 2026-11-12؛ نام قدیمی `platforms;android-37` در اندیس upstream وجود ندارد). NDK و emulator در این gate نصب نمی‌شوند؛ signing هرگز؛ و تنها upload مجاز، گزارش‌های diagnostic (lint/unit/gate.json) است — هیچ APK/AAB یا خروجی امضاشده منتشر نمی‌شود (assertion در `verify-android-foundation.mjs`).
 
 ## gate بستن N02
 
