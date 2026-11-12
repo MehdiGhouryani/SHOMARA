@@ -29,13 +29,13 @@
 - **باز می‌کند:** M1 در معماری هدف · **بسته:** حذف کد دورهٔ سرور (همراه O5 در Phase 2).
 - **سابقهٔ وضعیت:** OPEN از Phase 0.
 
-## O4 — مسئولیت Room/DataStore — **STATE: OPEN** (مسدودکنندهٔ P3)
+## O4 — مسئولیت Room/DataStore — **STATE: APPROVED** (2026-11-13، متن مأموریت مالک: «Room/SQLite برای داده‌های ساختاریافته؛ DataStore برای تنظیمات سبک؛ فایل‌های Media در فضای خصوصی اپ؛ Keystore فقط برای کلید/secret لازم» — پیاده‌سازی در ADR-0042 و evidence در WORKLOG IPA-P4)
 - **گزینه‌ها:** (a) Room برای progress/packages/attempts/sessions + DataStore فقط settings/checkpoint سبک؛ (b) همه‌چیز در DataStore؛ (c) File-based JSON.
 - **Trade-off:** (a) query/transaction/migration واقعی، کنش هم‌زمان امن؛ (b) ساده ولی برای تاریخچهٔ attempt و queryهای unlock نامناسب؛ (c) بدون concurrency و migration حرفه‌ای.
 - **ریسک:** 🛠 (a) migration واقعی روی دیسک باید preserving تست شود؛ 🔒 گارد FORBIDDEN_KEYS موجود باید به Room منتقل و تست شود · 🚢 پروسهٔ اول release به migration-on-upgrade وابسته است · 🧒 از دست رفتن پیشرفت = بدترین تجربه؛ فقط (a) این را می‌بندد.
 - **پیشنهاد مهندسی (غیرمصوب):** (a) — همان پیشنهاد ADR-0039 §8؛ تست روی SQLite واقعی (Robolectric/instrumented).
-- **باز می‌کند:** P3، unlock engine واقعی، رجیستری پکیج P4 · **بسته:** G-10/G-11.
-- **سابقهٔ وضعیت:** OPEN از Phase 0.
+- **باز می‌کند:** unlock engine واقعی، رجیستری پکیج P4 · **بسته:** G-10/G-11 (بسته شد — Room v1 پایدار با تست‌های Robolectric واقعی).
+- **سابقهٔ وضعیت:** OPEN از Phase 0 → **APPROVED 2026-11-13** (مأموریت مالک P4).
 
 ## O5 — هویت محلی: تک/چند پروفایل — **STATE: OPEN** (مسدودکنندهٔ P8)
 - **گزینه‌ها:** (a) تک‌پروفایل — ساده، کافی برای خانه؛ (b) چندپروفایل با انتخاب در launch — مدرسه/هم‌خانواده.

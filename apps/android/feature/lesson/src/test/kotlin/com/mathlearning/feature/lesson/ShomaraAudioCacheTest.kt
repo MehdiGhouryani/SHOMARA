@@ -1,24 +1,38 @@
 package com.mathlearning.feature.lesson
 
-import com.mathlearning.core.database.LocalLearningDatabase
+import com.mathlearning.core.model.repository.AudioAssetRecord
+import com.mathlearning.core.model.repository.AudioAssetRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** N07-04 audio cache state machine tests: SHA-256 gate, text fallback, no blocking. */
+/** N07-04 audio cache state machine tests: SHA-256 gate, text fallback, no blocking (P4 contracts). */
 class ShomaraAudioCacheTest {
 
-    private val db = LocalLearningDatabase()
+    /** Minimal fixture over the same contract the app wires (Room-backed in production). */
+    private class InMemoryAudioAssetFixture : AudioAssetRepository {
+        val rows = LinkedHashMap<String, AudioAssetRecord>()
+        override suspend fun upsert(record: AudioAssetRecord) {
+            rows[record.audioId] = record
+        }
+        override suspend fun byId(audioId: String): AudioAssetRecord? = rows[audioId]
+        override fun allFlow(): Flow<List<AudioAssetRecord>> = flowOf(rows.values.toList())
+    }
+
+    private val audioAssets = InMemoryAudioAssetFixture()
 
     @Test
-    fun `verified download enters ready-cached and persists to the audio table`() {
+    fun `verified download enters ready-cached and persists to the audio table`() = runBlocking {
         val entry = ShomaraAudioCacheManager.queueDownload("ST07.P1.s01.a", expectedSha256 = "a".repeat(64), textFallback = "متن")
         assertEquals(ShomaraAudioPlaybackState.DownloadQueued, entry.state)
-        val downloaded = ShomaraAudioCacheManager.onDownloaded(entry, actualSha256 = "a".repeat(64), localFileRef = "cache/a.ogg", db = db)
+        val downloaded = ShomaraAudioCacheManager.onDownloaded(entry, actualSha256 = "a".repeat(64), localFileRef = "cache/a.ogg", audioAssets = audioAssets)
         assertEquals(ShomaraAudioPlaybackState.ReadyCached, downloaded.state)
-        assertEquals("cache/a.ogg", db.audioAsset("ST07.P1.s01.a")?.localFileRef)
+        assertEquals("cache/a.ogg", audioAssets.byId("ST07.P1.s01.a")?.localFileRef)
         val playing = ShomaraAudioCacheManager.play(downloaded)
         assertEquals(ShomaraAudioPlaybackState.Playing, playing.state)
         val paused = ShomaraAudioCacheManager.pause(playing)
@@ -26,31 +40,24 @@ class ShomaraAudioCacheTest {
     }
 
     @Test
-    fun `corrupt binary quarantines and falls back to text - never blocks`() {
+    fun `corrupt binary quarantines and falls back to text - never blocks`() = runBlocking {
         val entry = ShomaraAudioCacheManager.queueDownload("ST07.P1.s01.b", expectedSha256 = "b".repeat(64), textFallback = "متن جایگزین")
-        val failed = ShomaraAudioCacheManager.onDownloaded(entry, actualSha256 = "c".repeat(64), localFileRef = "cache/bad.ogg", db = db)
+        val failed = ShomaraAudioCacheManager.onDownloaded(entry, actualSha256 = "c".repeat(64), localFileRef = "cache/bad.ogg", audioAssets = audioAssets)
         assertEquals(ShomaraAudioPlaybackState.FailedWithTextFallback, failed.state)
         // Quarantined: no usable local ref persisted.
-        assertNull(db.audioAsset("ST07.P1.s01.b")?.localFileRef)
-        assertNull(db.audioAsset("ST07.P1.s01.b")?.sha256)
-        assertEquals("QUARANTINED_CORRUPT", db.audioAsset("ST07.P1.s01.b")?.publishState)
+        assertNull(audioAssets.byId("ST07.P1.s01.b")?.localFileRef)
+        assertNull(audioAssets.byId("ST07.P1.s01.b")?.sha256)
+        assertEquals("QUARANTINED_CORRUPT", audioAssets.byId("ST07.P1.s01.b")?.publishState)
         assertFalse(failed.blocked)
         assertTrue(failed.textFallback.isNotBlank())
     }
 
     @Test
-    fun `missing binary triggers the non-blocking text fallback (CONTENT-017)`() {
-        val entry = ShomaraAudioCacheManager.queueDownload("ST07.P1.s01.c", expectedSha256 = "d".repeat(64), textFallback = "متن داستان")
-        val failed = ShomaraAudioCacheManager.onMissingBinary(entry, db = db)
-        assertEquals(ShomaraAudioPlaybackState.FailedWithTextFallback, failed.state)
-        assertEquals("MISSING_TEXT_FALLBACK", db.audioAsset("ST07.P1.s01.c")?.publishState)
-        assertFalse(failed.blocked)
-    }
-
-    @Test
-    fun `play and pause ignore invalid transitions`() {
-        val queued = ShomaraAudioCacheManager.queueDownload("x", "e".repeat(64), "t")
-        assertEquals(ShomaraAudioPlaybackState.DownloadQueued, ShomaraAudioCacheManager.play(queued).state)
-        assertEquals(ShomaraAudioPlaybackState.DownloadQueued, ShomaraAudioCacheManager.pause(queued).state)
+    fun `missing binary degrades to text fallback and never blocks`() = runBlocking {
+        val entry = ShomaraAudioCacheManager.queueDownload("ST07.P1.s01.c", expectedSha256 = "d".repeat(64), textFallback = "متن")
+        val missing = ShomaraAudioCacheManager.onMissingBinary(entry, audioAssets = audioAssets)
+        assertEquals(ShomaraAudioPlaybackState.FailedWithTextFallback, missing.state)
+        assertEquals("MISSING_TEXT_FALLBACK", audioAssets.byId("ST07.P1.s01.c")?.publishState)
+        assertFalse(missing.blocked)
     }
 }

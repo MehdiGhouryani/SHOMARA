@@ -1,7 +1,7 @@
 package com.mathlearning.feature.lesson
 
-import com.mathlearning.core.database.LocalAudioAssetEntity
-import com.mathlearning.core.database.LocalLearningDatabase
+import com.mathlearning.core.model.repository.AudioAssetRecord
+import com.mathlearning.core.model.repository.AudioAssetRepository
 
 /**
  * N07-04 — audio playback state machine (fail-safe): DownloadQueued → Downloading →
@@ -32,12 +32,14 @@ object ShomaraAudioCacheManager {
     fun queueDownload(audioId: String, expectedSha256: String, textFallback: String): ShomaraAudioCacheEntry =
         ShomaraAudioCacheEntry(audioId, ShomaraAudioPlaybackState.DownloadQueued, expectedSha256, textFallback = textFallback)
 
-    fun onDownloaded(entry: ShomaraAudioCacheEntry, actualSha256: String, localFileRef: String, db: LocalLearningDatabase): ShomaraAudioCacheEntry {
+    suspend fun onDownloaded(entry: ShomaraAudioCacheEntry, actualSha256: String, localFileRef: String, audioAssets: AudioAssetRepository): ShomaraAudioCacheEntry {
         if (entry.actualSha256 != null) return entry // already finalized
         val verified = actualSha256 == entry.expectedSha256
         val state = if (verified) ShomaraAudioPlaybackState.ReadyCached else ShomaraAudioPlaybackState.FailedWithTextFallback
-        db.upsertAudioAsset(
-            LocalAudioAssetEntity(
+        // P4 (ADR-0042): metadata is persisted durably (Room); the binary itself stays in
+        // app-private storage and is referenced by localFileRef — never copied into the DB.
+        audioAssets.upsert(
+            AudioAssetRecord(
                 audioId = entry.audioId,
                 localFileRef = if (verified) localFileRef else null,
                 sha256 = if (verified) actualSha256 else null,
@@ -48,9 +50,9 @@ object ShomaraAudioCacheManager {
         return entry.copy(state = state, actualSha256 = actualSha256)
     }
 
-    fun onMissingBinary(entry: ShomaraAudioCacheEntry, db: LocalLearningDatabase): ShomaraAudioCacheEntry {
-        db.upsertAudioAsset(
-            LocalAudioAssetEntity(
+    suspend fun onMissingBinary(entry: ShomaraAudioCacheEntry, audioAssets: AudioAssetRepository): ShomaraAudioCacheEntry {
+        audioAssets.upsert(
+            AudioAssetRecord(
                 audioId = entry.audioId,
                 localFileRef = null,
                 sha256 = null,

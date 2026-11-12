@@ -64,8 +64,9 @@ const forbidden = [/answerKey/i, /correctAnswer/i, /google-services\.json/i, /si
 // N06 boundary-guard files legitimately NAME the banned keys inside their denylists — that is
 // the enforcement itself (CONTENT-008). They are audited by the projection guard tests instead.
 const boundaryGuardFiles = new Set([
-  'apps\\android\\core\\model\\src\\main\\kotlin\\com\\mathlearning\\core\\model\\ContentProjection.kt',
-  'apps\\android\\core\\database\\src\\main\\kotlin\\com\\mathlearning\\core\\database\\LocalLearningDatabase.kt',
+  // Built with path.sep so Windows/POSIX separators always match path.relative output.
+  ['apps', 'android', 'core', 'model', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'model', 'ContentProjection.kt'].join(path.sep),
+  ['apps', 'android', 'core', 'common', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'common', 'error', 'ForbiddenFieldGuard.kt'].join(path.sep),
 ]);
 const walk = (target) => {
   for (const entry of fs.readdirSync(target, { withFileTypes: true })) {

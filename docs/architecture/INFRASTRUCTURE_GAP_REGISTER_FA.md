@@ -78,14 +78,14 @@
 
 ## C. زیرساخت دادهٔ پایدار (Android)
 
-### G-10 · P1 · «دیتابیس» محلی در حافظه است؛ هیچ چیز بعد از process death نمی‌ماند
+### G-10 · P1 · «دیتابیس» محلی در حافظه است؛ هیچ چیز بعد از process death نمی‌ماند — **CLOSED 2026-11-13** (O4 APPROVED؛ Room v1 واقعی + تست‌های Robolectric روی SQLite؛ ADR-0042)
 - **شواهد:** `apps/android/core/database/src/main/kotlin/com/mathlearning/core/database/LocalLearningDatabase.kt:77-80` — چهار `MutableList` ساده (`stationPackages`, `progressProjections`, `outboxOperations`, `audioAssets`)؛ هیچ وابستگی Room/SQLite در ماژول نیست (`core/database/build.gradle.kts` فقط coroutines+JUnit). «migration engine» فقط روی آبجکت in-memory کار می‌کند. تنها ذخیرهٔ پایدار واقعی: یک فایل Preferences DataStore (`shomara_auth.preferences_pb`, `AppContainer.kt:95-98`) برای token/profile-draft/checkpoint/settings.
 - **اثر:** پیشرفت کودک، رجیستری پکیج، outbox و اندیس صوت با مرگ پروسه از بین می‌رود؛ مستقیماً با تعهد ADR-0039 («Local progress is persisted on device») ناسازگار است؛ ادعای N07-01 «مهاجرت با حفظ ردیف‌ها» فقط روی fake معنا دارد — تست Room/SQLite واقعی صفر.
 - **ریشه:** N07-01 سیاست migration را طراحی کرد ولی فروشگاه واقعی به فاز بعد موکول شد؛ با چرخش ADR-0039 این تبدیل به P1 شد چون local store حالا trust boundary کل محصول است.
 - **راه‌حل:** O4 → Room برای progress/packages/attempts/sessions + DataStore فقط settings؛ تست integration روی SQLite واقعی (Robolectric/instrumented)؛ سیاست downgrade/corrupt همان fail-closed فعلی ولی روی دیسک.
 - **تصمیم مالک لازم:** بله — O4 (پیشنهاد ثبت‌شده در ADR-0039 §8: Room برای progress/packages + DataStore برای settings). **وضعیت:** OPEN.
 
-### G-11 · P2 · مدل دادهٔ هدف ناقص است
+### G-11 · P2 · مدل دادهٔ هدف ناقص است — **PARTIALLY CLOSED 2026-11-13** (۵ جدول real-need در Room v1؛ Profile منتظر O5، Mastery/Session/Attempt منتظر O1/P5 — مسیر migration در ADR-0042)
 - **شواهد:** امروز فقط ۴ entity in-memory داریم (station package / progress projection / outbox / audio asset). برای هدف آفلاین این‌ها لازم‌اند ولی وجود ندارند: ChildProfile+preferences محلی (امروز profile-draft در DataStore، بدون مدل نهایی O5)، LessonSession/AttemptHistory، SkillMastery، رجیستری نسخه‌های ContentPackage با وضعیت lifecycle، LocalEvaluatorVersion، MigrationMetadata. فیلدهای ممنوعه (CONTENT-008) با `LocalSchema.FORBIDDEN_KEYS` قبل از persistence رد می‌شوند (`LocalLearningDatabase.kt:21-26,87-96`) — این مرز حفظ شود.
 - **راه‌حل:** اسکیمای normalized در سند معماری هدف پیشنهاد شده؛ نام جدول‌ها مقیّد نیست. **تصمیم مالک:** O4/O5 غیرمستقیم. **وضعیت:** OPEN.
 

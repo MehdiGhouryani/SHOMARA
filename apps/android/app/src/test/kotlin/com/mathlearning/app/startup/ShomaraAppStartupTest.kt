@@ -5,7 +5,10 @@ import com.mathlearning.core.common.logging.AppLogEvent
 import com.mathlearning.core.common.logging.AppLogger
 import com.mathlearning.core.common.logging.LogLevel
 import com.mathlearning.core.common.scope.ShomaraScopes
-import com.mathlearning.core.database.LocalLearningDatabase
+import com.mathlearning.core.model.repository.AudioAssetRepository
+import com.mathlearning.core.model.repository.OutboxRepository
+import com.mathlearning.core.model.repository.ProgressRepository
+import com.mathlearning.core.model.repository.StationPackageRepository
 import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.ShomaraProfileDraftStore
 import com.mathlearning.core.datastore.ShomaraSettingsStore
@@ -45,7 +48,10 @@ class ShomaraAppStartupTest {
         override val lessonGuidedEvaluator: ShomaraGuidedEvaluator? get() = throw AssertionError("startup touched the evaluator")
         override val lessonPreviewAdvance: Boolean get() = throw AssertionError("startup touched lesson wiring")
         override val lessonGateway: LessonGateway get() = throw AssertionError("startup touched the gateway")
-        override val localDatabase: LocalLearningDatabase get() = throw AssertionError("startup touched the database")
+        override val stationPackages: StationPackageRepository get() = throw AssertionError("startup touched packages")
+        override val progress: ProgressRepository get() = throw AssertionError("startup touched progress")
+        override val outbox: OutboxRepository get() = throw AssertionError("startup touched the outbox")
+        override val audioAssets: AudioAssetRepository get() = throw AssertionError("startup touched audio assets")
         override val outboxSyncEngine: OutboxSyncEngine get() = throw AssertionError("startup touched sync")
         override val settingsStore: ShomaraSettingsStore get() = throw AssertionError("startup touched settings")
         override val simulatedAuthEnabled: Boolean get() = throw AssertionError("startup touched auth wiring")

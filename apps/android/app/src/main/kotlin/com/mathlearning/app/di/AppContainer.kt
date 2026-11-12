@@ -8,7 +8,11 @@ import com.mathlearning.core.common.logging.AppLogger
 import com.mathlearning.core.common.logging.LogLevel
 import com.mathlearning.core.common.logging.LogSink
 import com.mathlearning.core.common.logging.SafeAppLogger
-import com.mathlearning.core.database.LocalLearningDatabase
+import com.mathlearning.core.database.ShomaraLearningDatabase
+import com.mathlearning.core.database.repo.RoomAudioAssetRepository
+import com.mathlearning.core.database.repo.RoomOutboxRepository
+import com.mathlearning.core.database.repo.RoomProgressRepository
+import com.mathlearning.core.database.repo.RoomStationPackageRepository
 import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.PreferencesLessonCheckpointStore
 import com.mathlearning.core.datastore.PreferencesProfileDraftStore
@@ -19,6 +23,10 @@ import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.app.startup.ShomaraAppStartup
 import com.mathlearning.app.startup.ShomaraStartupStep
 import com.mathlearning.core.common.scope.ShomaraScopes
+import com.mathlearning.core.model.repository.AudioAssetRepository
+import com.mathlearning.core.model.repository.OutboxRepository
+import com.mathlearning.core.model.repository.ProgressRepository
+import com.mathlearning.core.model.repository.StationPackageRepository
 import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.core.network.ShomaraOtpApi
 import com.mathlearning.feature.lesson.ShomaraDiscoverStep
@@ -48,7 +56,12 @@ interface AppContainer {
     /** N08R-09: preview stage-advance — true ONLY when the debug wiring supplied content. */
     val lessonPreviewAdvance: Boolean
     val lessonGateway: LessonGateway
-    val localDatabase: LocalLearningDatabase
+
+    /** P4 (ADR-0042): durable Room-backed learning stores — the ONLY persistence. */
+    val stationPackages: StationPackageRepository
+    val progress: ProgressRepository
+    val outbox: OutboxRepository
+    val audioAssets: AudioAssetRepository
     val outboxSyncEngine: OutboxSyncEngine
 
     /** Persisted child preferences (N08-04): avatar + reduced motion, real DataStore. */
@@ -172,10 +185,17 @@ class DefaultAppContainer(
         submitUrl = { ShomaraRuntimeConfig.lessonSubmitUrl },
     )
 
-    override val localDatabase: LocalLearningDatabase = LocalLearningDatabase()
+    // P4 (ADR-0042): the real durable database. No destructive fallback: missing migrations fail
+    // the open (honest recovery surface), downgrades are rejected, corruption fails closed.
+    private val learningDatabase: ShomaraLearningDatabase = ShomaraLearningDatabase.build(context)
+
+    override val stationPackages: StationPackageRepository = RoomStationPackageRepository(learningDatabase)
+    override val progress: ProgressRepository = RoomProgressRepository(learningDatabase)
+    override val audioAssets: AudioAssetRepository = RoomAudioAssetRepository(learningDatabase)
+    override val outbox: OutboxRepository = RoomOutboxRepository(learningDatabase)
 
     override val outboxSyncEngine: OutboxSyncEngine = OutboxSyncEngine(
-        db = localDatabase,
+        outbox = outbox,
         transport = { _, _ ->
             // Wire the real HTTP transport when the backend lands (I2); until then every send
             // is retriable so operations stay queued and are never lost.

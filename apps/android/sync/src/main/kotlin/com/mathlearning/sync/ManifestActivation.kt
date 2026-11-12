@@ -1,21 +1,17 @@
 package com.mathlearning.sync
 
-import com.mathlearning.core.database.LocalLearningDatabase
-import java.security.MessageDigest
+import com.mathlearning.core.model.repository.StationPackageRepository
 
 /**
- * N07-03 — versioned content manifest with ATOMIC package activation.
+ * N07-03 — versioned content manifest with ATOMIC package activation (P4: durable store).
  *
  * Activation contract: a new package version is staged, verified against its SHA-256 checksum
  * AND supported schema version, and only then activated — replacing the previously active
- * version in a single swap. Any verification failure aborts and the previously active valid
- * version remains untouched (automatic rollback).
+ * version in a single transaction (deactivate-previous + insert-new is atomic in the repository).
+ * Any verification failure aborts and the previously active valid version remains untouched
+ * (automatic rollback). The payload guard (CONTENT-008) lives inside the repository: a payload
+ * carrying forbidden keys never reaches SQLite and is reported as a rollback.
  */
-object ContentManifestVerifier {
-    fun sha256Hex(bytes: ByteArray): String =
-        MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
-}
-
 data class VersionedContentManifest(
     val schemaVersion: Int,
     val packageVersion: Int,
@@ -41,22 +37,21 @@ sealed class ManifestActivation {
     data class RolledBack(val reason: String, val previousVersion: Int?) : ManifestActivation()
 }
 
-class ManifestActivationEngine(private val db: LocalLearningDatabase) {
+class ManifestActivationEngine(private val stationPackages: StationPackageRepository) {
 
-    fun activeVersion(stationId: String): Int? =
-        db.activeStationPackage(stationId)?.version
+    suspend fun activeVersion(stationId: String): Int? = stationPackages.activeVersion(stationId)
 
     /**
      * Atomic activate-or-rollback. The staged bytes are checksum-verified and schema-checked
      * BEFORE any local state changes; on failure nothing is written.
      */
-    fun activate(
+    suspend fun activate(
         manifest: VersionedContentManifest,
         stagedBytes: ByteArray,
         payload: Map<String, String>,
     ): ManifestActivation {
-        // 1. Checksum verification.
-        val actual = ContentManifestVerifier.sha256Hex(stagedBytes)
+        // 1. Checksum verification (SHA-256 over the exact staged bytes).
+        val actual = com.mathlearning.core.common.error.ContentChecksums.sha256Hex(stagedBytes)
         if (actual != manifest.contentSha256) {
             return ManifestActivation.RolledBack(
                 reason = "SHA-256 mismatch: expected ${manifest.contentSha256.take(12)}…, got ${actual.take(12)}…",
@@ -70,17 +65,14 @@ class ManifestActivationEngine(private val db: LocalLearningDatabase) {
                 previousVersion = activeVersion(manifest.stationId),
             )
         }
-        // 3. Payload contamination gate (CONTENT-008) — rejected before persistence.
+        // 3. Payload contamination gate (CONTENT-008) + atomic swap — rejected before persistence.
         return try {
             val previous = activeVersion(manifest.stationId)
-            db.upsertStationPackage(
-                com.mathlearning.core.database.LocalStationPackageEntity(
-                    stationId = manifest.stationId,
-                    version = manifest.packageVersion,
-                    sha256 = manifest.contentSha256,
-                    isActive = true,
-                    payload = payload, // provenance stays on the manifest; payload passes the CONTENT-008 guard
-                ),
+            stationPackages.activatePackage(
+                stationId = manifest.stationId,
+                version = manifest.packageVersion,
+                sha256 = manifest.contentSha256,
+                payload = payload,
             )
             ManifestActivation.Activated(manifest)
         } catch (e: Exception) {

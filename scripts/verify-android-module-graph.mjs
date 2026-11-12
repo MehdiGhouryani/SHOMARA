@@ -15,6 +15,9 @@
  *  R6  feature/* imports of the data/network modules (core:network, core:datastore) are limited
  *      to the dated allowlist below — new violations fail the verifier, so the boundary can only
  *      shrink, never grow silently.
+ *  R7  Persistence fail-closed (O4/ADR-0042): fallbackToDestructiveMigration is forbidden
+ *      anywhere in apps/android, and Room.databaseBuilder may appear only inside
+ *      :core:database's single ShomaraLearningDatabase factory.
  *
  * Existing boundary exceptions are an explicit ALLOWLIST with a reason and a review date; the
  * list may only shrink. Any violation not in the allowlist exits 1.
@@ -26,12 +29,6 @@ const root = process.cwd();
 const androidRoot = path.join(root, 'apps', 'android');
 
 const ALLOWLIST = [
-  {
-    rule: 'R3-feature-imports-database',
-    file: 'feature/lesson/src/main/kotlin/com/mathlearning/feature/lesson/ShomaraAudioCache.kt',
-    reason: 'N07-04 audio cache state machine over LocalLearningDatabase; moves behind a data boundary when owner decision O4 lands',
-    added: '2026-11-13',
-  },
   {
     rule: 'R6-feature-imports-data-network',
     file: 'feature/lesson/src/main/kotlin/com/mathlearning/feature/lesson/ShomaraLessonHost.kt',
@@ -128,6 +125,12 @@ for (const file of files) {
   }
   if (!isTest(relPath) && text.includes('import com.mathlearning.sync') && moduleDir !== 'app' && moduleDir !== 'sync') {
     violations.push({ rule: 'R4-sync-only-in-app', file: relPath, detail: 'sync import outside :app/:sync' });
+  }
+  if (!isTest(relPath) && /fallbackToDestructiveMigration/.test(text)) {
+    violations.push({ rule: 'R7-no-destructive-fallback', file: relPath, detail: 'fallbackToDestructiveMigration is forbidden (ADR-0042)' });
+  }
+  if (!isTest(relPath) && /Room.databaseBuilder/.test(text) && relPath !== 'core/database/src/main/kotlin/com/mathlearning/core/database/ShomaraLearningDatabase.kt') {
+    violations.push({ rule: 'R7-single-room-builder', file: relPath, detail: 'Room.databaseBuilder outside the single factory is forbidden' });
   }
 }
 

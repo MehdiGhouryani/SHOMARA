@@ -1,10 +1,14 @@
 package com.mathlearning.core.database
 
+import com.mathlearning.core.model.repository.AudioAssetRecord
+import com.mathlearning.core.model.repository.AudioAssetRepository
+
 /**
  * N07-08 — Kotlin mirror of the draft audio script importer (packages/content-delivery/cms-audio.ts).
  * Idempotent: same CSV rows in → identical registry out. Every row is locked to
  * scriptStatus=DRAFT / publishState=UNPUBLISHED_NO_BINARY; the provider voice survives only as a
  * non-authoritative hint (CONTENT-006/013). Zero binary claims, zero auto-approval.
+ * P4: the registry is now the durable AudioAssetRepository (Room) — no in-memory store.
  */
 const val DRAFT_STATUS: String = "DRAFT"
 const val UNPUBLISHED_NO_BINARY: String = "UNPUBLISHED_NO_BINARY"
@@ -36,11 +40,11 @@ object DraftAudioImporter {
     }
 
     /** Idempotent import keyed by audioId; the registry is then persisted to the audio table. */
-    fun importAll(rows: List<Map<String, String>>, db: LocalLearningDatabase): Int {
+    suspend fun importAll(rows: List<Map<String, String>>, audioAssets: AudioAssetRepository): Int {
         for (row in rows) {
             val draft = fromCsvRow(row)
-            db.upsertAudioAsset(
-                LocalAudioAssetEntity(
+            audioAssets.upsert(
+                AudioAssetRecord(
                     audioId = draft.audioId,
                     localFileRef = null, // no binary exists — never claim one
                     sha256 = null,

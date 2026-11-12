@@ -1,7 +1,8 @@
 package com.mathlearning.sync
 
-import com.mathlearning.core.database.LocalLearningDatabase
-import com.mathlearning.core.database.OutboxSyncOperationEntity
+import com.mathlearning.core.model.repository.OutboxOperation
+import com.mathlearning.core.model.repository.OutboxRepository
+import com.mathlearning.core.model.repository.ProgressProjection
 import kotlin.random.Random
 
 /** Submission outcome handed back by the transport adapter. */
@@ -14,13 +15,14 @@ sealed class SyncTransportResult {
 /**
  * Transport adapter contract: the app wires the real HTTP client; tests use fakes.
  * The adapter receives the DETERMINISTIC idempotency key so the server can deduplicate retries.
+ * P4: operations live in the durable outbox (Room) — not an in-memory store.
  */
 fun interface SyncTransport {
-    fun send(operation: OutboxSyncOperationEntity, idempotencyKey: String): SyncTransportResult
+    fun send(operation: OutboxOperation, idempotencyKey: String): SyncTransportResult
 }
 
 /**
- * N07-02 — idempotent outbox sync engine.
+ * N07-02 — idempotent outbox sync engine (P4: now over the durable repository contracts).
  *
  * Semantics (mirroring packages/offline-sync):
  *  - FIFO ordering per session/station, idempotency key PRESERVED across retries and restarts;
@@ -28,9 +30,11 @@ fun interface SyncTransport {
  *  - immediate stop + QUARANTINE on Rejected (4xx schema/auth);
  *  - Server-Wins conflict policy: a successful send reconciles the local progress projection to
  *    the server response — local optimistic values never override server-authoritative state.
+ *  - the accepted-send epilogue (progress upsert + operation removal) is ONE transaction in the
+ *    repository, so a crash can never re-drain an accepted send or lose its progress row.
  */
 class OutboxSyncEngine(
-    private val db: LocalLearningDatabase,
+    private val outbox: OutboxRepository,
     private val transport: SyncTransport,
     private val backoffBaseMs: Long = 750L,
     private val backoffMaxMs: Long = 300_000L,
@@ -39,11 +43,13 @@ class OutboxSyncEngine(
     private val nowMs: () -> Long = { 0L },
 ) {
 
-    fun enqueue(kind: String, idempotencyKey: String, payload: Map<String, String>) {
-        db.enqueueOutbox(OutboxSyncOperationEntity(idempotencyKey, kind, payload))
+    suspend fun enqueue(kind: String, idempotencyKey: String, payload: Map<String, String>) {
+        outbox.enqueue(OutboxOperation(idempotencyKey, kind, payload, 0, 0L, "PENDING"))
     }
 
-    fun pendingCount(): Int = db.outboxOperations.count { it.status == "PENDING" }
+    suspend fun pendingCount(): Int = outbox.pendingCount()
+
+    suspend fun quarantinedCount(): Int = outbox.quarantinedCount()
 
     fun backoffMsFor(attemptCount: Int): Long {
         val exponent = attemptCount.coerceIn(0, 9)
@@ -51,25 +57,22 @@ class OutboxSyncEngine(
     }
 
     /** Drains due operations FIFO; returns how many were accepted. */
-    fun drain(): Int {
+    suspend fun drain(): Int {
         var accepted = 0
         val now = nowMs()
-        for (operation in db.outboxOperations.filter { it.status == "PENDING" }.sortedBy { it.backoffUntilEpochMs }) {
+        for (operation in outbox.pending()) {
             if (operation.backoffUntilEpochMs > now) continue
             when (val result = transport.send(operation, operation.idempotencyKey)) {
                 is SyncTransportResult.Accepted -> {
                     accepted += 1
-                    db.updateOutbox(operation.copy(status = "PENDING"))
-                    reconcileServerProgress(operation, result.serverProgress)
-                    // Accepted operations leave the outbox.
-                    db.outboxOperations.removeIf { it.idempotencyKey == operation.idempotencyKey }
+                    outbox.completeAccepted(reconcileProjection(operation, result.serverProgress), operation.idempotencyKey)
                 }
                 is SyncTransportResult.Retriable -> {
                     val attempts = operation.attemptCount + 1
                     if (attempts >= maxAttempts) {
-                        db.updateOutbox(operation.copy(attemptCount = attempts, status = "QUARANTINED"))
+                        outbox.update(operation.copy(attemptCount = attempts, status = "QUARANTINED"))
                     } else {
-                        db.updateOutbox(
+                        outbox.update(
                             operation.copy(
                                 attemptCount = attempts,
                                 backoffUntilEpochMs = nowMs() + backoffMsFor(attempts),
@@ -79,32 +82,28 @@ class OutboxSyncEngine(
                     return accepted // stop the drain on first retriable failure (network lost again)
                 }
                 is SyncTransportResult.Rejected -> {
-                    db.updateOutbox(operation.copy(status = "QUARANTINED", attemptCount = operation.attemptCount + 1))
+                    outbox.update(operation.copy(attemptCount = operation.attemptCount + 1, status = "QUARANTINED"))
                 }
             }
         }
         return accepted
     }
 
-    fun quarantinedCount(): Int = db.outboxOperations.count { it.status == "QUARANTINED" }
-
     /**
      * Server-Wins: only SERVER-VERIFIED values enter the local progress projection. Local
      * optimistic rows are replaced (never merged over) by the server response after reconnection.
      */
-    private fun reconcileServerProgress(operation: OutboxSyncOperationEntity, serverProgress: Map<String, String>) {
-        val identity = serverProgress["learningIdentityId"] ?: return
-        val stationId = serverProgress["stationId"] ?: operation.payload["stationId"] ?: return
+    private fun reconcileProjection(operation: OutboxOperation, serverProgress: Map<String, String>): ProgressProjection? {
+        val identity = serverProgress["learningIdentityId"] ?: return null
+        val stationId = serverProgress["stationId"] ?: operation.payload["stationId"] ?: return null
         val chapter = serverProgress["chapter"]?.toIntOrNull() ?: 0
         val status = serverProgress["status"] ?: "SERVER_VERIFIED"
-        db.upsertProgress(
-            com.mathlearning.core.database.LocalProgressProjectionEntity(
-                learningIdentityId = identity,
-                stationId = stationId,
-                chapter = chapter,
-                status = status,
-                verifiedAtMs = nowMs(),
-            ),
+        return ProgressProjection(
+            learningIdentityId = identity,
+            stationId = stationId,
+            chapter = chapter,
+            status = status,
+            verifiedAtMs = nowMs(),
         )
     }
 }
