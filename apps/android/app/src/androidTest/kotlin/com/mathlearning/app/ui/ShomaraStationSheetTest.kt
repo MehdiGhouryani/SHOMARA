@@ -1,9 +1,10 @@
 package com.mathlearning.app.ui
 
-import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -86,7 +87,7 @@ class ShomaraStationSheetTest {
         composeRule.runOnIdle { assertTrue(started.isEmpty()) }
         // The path is still the live surface: the node is present and no lesson header exists.
         composeRule.onNodeWithContentDescription(st07Title).assertExists()
-        composeRule.onNodeWithText("ایستگاه ۷ — $st07Title — مرحلهٔ کشف").assertDoesNotExist()
+        composeRule.onAllNodesWithText("ایستگاه ۷ — $st07Title — مرحلهٔ کشف").assertCountEquals(0)
 
         // Only the sheet CTA navigates to the lesson.
         composeRule.onNodeWithText("شروع").performClick()
@@ -109,13 +110,13 @@ class ShomaraStationSheetTest {
         composeRule.onNodeWithText(ShomaraStationStartLogic.lockedExplanation()).assertIsDisplayed()
         composeRule.onNodeWithText("متوجه شدم").assertIsDisplayed()
         composeRule.runOnIdle { assertTrue(started.isEmpty()) }
-        composeRule.onNodeWithText("ایستگاه ۷ — $st07Title — مرحلهٔ کشف").assertDoesNotExist()
+        composeRule.onAllNodesWithText("ایستگاه ۷ — $st07Title — مرحلهٔ کشف").assertCountEquals(0)
 
         // Dismissing the Locked sheet still navigates nowhere.
         composeRule.onNodeWithText("متوجه شدم").performClick()
         composeRule.waitForIdle()
         composeRule.runOnIdle { assertTrue(started.isEmpty()) }
-        composeRule.onNodeWithText(ShomaraStationStartLogic.lockedExplanation()).assertDoesNotExist()
+        composeRule.onAllNodesWithText(ShomaraStationStartLogic.lockedExplanation()).assertCountEquals(0)
     }
 
     // ---- R-05: the shell opens the sheet for a deep-linked station ----

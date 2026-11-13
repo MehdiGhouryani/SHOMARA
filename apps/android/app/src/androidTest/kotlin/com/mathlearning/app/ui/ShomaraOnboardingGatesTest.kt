@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.mathlearning.app.ui
 
-import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.mathlearning.feature.onboarding.ShomaraPlacementScreen
@@ -43,7 +44,7 @@ class ShomaraOnboardingGatesTest {
             )
         }
 
-        composeRule.onNodeWithText("فعلاً رد می‌کنم").assertDoesNotExist()
+        composeRule.onAllNodesWithText("فعلاً رد می‌کنم").assertCountEquals(0)
     }
 
     @Test
@@ -88,7 +89,7 @@ class ShomaraOnboardingGatesTest {
             )
         }
 
-        composeRule.onNodeWithText("ذخیره شد").assertDoesNotExist()
+        composeRule.onAllNodesWithText("ذخیره شد").assertCountEquals(0)
     }
 
     @Test

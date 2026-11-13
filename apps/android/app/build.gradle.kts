@@ -55,6 +55,8 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:datastore"))
     implementation(project(":core:database"))
+    implementation(project(":core:contentpackage"))
+    implementation(project(":core:learning"))
     implementation(project(":sync"))
     implementation(project(":core:model"))
 
@@ -73,11 +75,17 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     testImplementation(libs.junit4)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.room.runtime)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.kotlinx.coroutines.test)
     // N08-15: the launch controller is a coroutine state producer, so its unit tests need a test
     // dispatcher (TestScope/advanceUntilIdle). Test-only dependency; no runtime impact.
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.room.runtime)
     androidTestImplementation(libs.androidx.test.ext.junit)
 }

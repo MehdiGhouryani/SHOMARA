@@ -153,7 +153,7 @@ class ShomaraInteractiveSemanticsTest {
         compose.setContent {
             ShomaraTextField(value = "09123456789", onValueChange = {}, label = "شمارهٔ همراه")
         }
-        compose.onNode(hasErrorMessage("شماره باید ۱۱ رقم باشد")).assertDoesNotExist()
+        compose.onNode(hasErrorMessage("شماره باید ۱۱ رقم باشد")).assertCountEquals(0)
     }
 
     private companion object {

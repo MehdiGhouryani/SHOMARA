@@ -1,0 +1,38 @@
+{
+  "stationId": "ST07",
+  "draft": true,
+  "draftSource": "originals/shomara-stage7-pilot-ST07.md (byte-protected; sections 2-6)",
+  "macroStages": ["P1_DISCOVER", "P2_GUIDED", "P3_GAME", "P4_ASSESSMENT", "P5_TRANSFER"],
+  "discoverSteps": [
+    { "stepId": "ST07.P1.s01", "cards": [
+      { "assetId": "OBJ.sun", "labelAudioId": "ST07.P1.s01.a", "count": 1 },
+      { "assetId": "OBJ.house", "labelAudioId": "ST07.P1.s01.b", "count": 1 },
+      { "assetId": "OBJ.tree", "labelAudioId": "ST07.P1.s01.c", "count": 1 }
+    ], "revealGlyph": "GLYPH.1", "promptAudioId": "ST07.P1.s01.pr", "doneAudioId": "ST07.P1.s01.done" },
+    { "stepId": "ST07.P1.s02", "cards": [
+      { "assetId": "OBJ.eyes", "labelAudioId": "ST07.P1.s02.a", "count": 2 },
+      { "assetId": "OBJ.shoes", "labelAudioId": "ST07.P1.s02.b", "count": 2 },
+      { "assetId": "OBJ.wheels", "labelAudioId": "ST07.P1.s02.c", "count": 2 }
+    ], "revealGlyph": "GLYPH.2", "promptAudioId": "ST07.P1.s02.pr", "doneAudioId": "ST07.P1.s02.done" }
+  ],
+  "guidedItems": [
+    { "id": "ST07.P2.i01", "template": "T15", "prompt": "چند توپ می‌بینی؟ جواب را انتخاب کن.", "options": [ { "id": "i01.opt1", "display": "۱" }, { "id": "i01.opt2", "display": "۲" } ], "okText": "همین‌طور است؛ یک توپ.", "retryText": "یک بار دیگر امتحان کنیم.", "hintLadder": ["به شکل‌ها نگاه کن و مقایسه کن.", "یکی از گزینه‌ها کنار رفت.", "ببین؛ این گزینه درست است."], "answer": { "kind": "numeral", "value": 1 }, "correctOptionId": "i01.opt1" },
+    { "id": "ST07.P2.i02", "template": "T15", "prompt": "چند کفش می‌بینی؟ جواب را انتخاب کن.", "options": [ { "id": "i02.opt1", "display": "۱" }, { "id": "i02.opt2", "display": "۲" } ], "okText": "همین‌طور است؛ دو کفش.", "retryText": "بیا دوباره نگاه کنیم.", "hintLadder": ["به شکل‌ها نگاه کن و مقایسه کن.", "یکی از گزینه‌ها کنار رفت.", "ببین؛ این گزینه درست است."], "answer": { "kind": "numeral", "value": 2 }, "correctOptionId": "i02.opt2" },
+    { "id": "ST07.P2.i03", "template": "T13", "prompt": "عدد ۱ را بنویس.", "options": [], "okText": "", "retryText": "", "hintLadder": [], "interactionNotImplemented": "stroke evaluation requires the O1 decision (recorded gap N08R-09)" },
+    { "id": "ST07.P2.i04", "template": "T13", "prompt": "عدد ۲ را بنویس.", "options": [], "okText": "", "retryText": "", "hintLadder": [], "interactionNotImplemented": "stroke evaluation requires the O1 decision (recorded gap N08R-09)" },
+    { "id": "ST07.P2.i05", "template": "T15", "prompt": "کدام کارت دو گل دارد؟", "options": [ { "id": "i05.opt1", "display": "تصویر: یک گل" }, { "id": "i05.opt2", "display": "تصویر: دو گل" }, { "id": "i05.opt3", "display": "تصویر: سه گل" } ], "okText": "دقیق بود؛ دو گل.", "retryText": "کمی دقیق‌تر نگاه کن.", "hintLadder": ["به شکل‌ها نگاه کن و مقایسه کن.", "یکی از گزینه‌ها کنار رفت.", "ببین؛ این گزینه درست است."], "answer": { "kind": "picture-count", "value": 2 }, "correctOptionId": "i05.opt2" },
+    { "id": "ST07.P2.i06", "template": "T15", "prompt": "کدام کارت یک ماهی دارد؟", "options": [ { "id": "i06.opt1", "display": "تصویر: دو ماهی" }, { "id": "i06.opt2", "display": "تصویر: یک ماهی" }, { "id": "i06.opt3", "display": "تصویر: سه ماهی" } ], "okText": "خوب فکر کردی؛ یک ماهی.", "retryText": "یک بار دیگر امتحان کنیم.", "hintLadder": ["به شکل‌ها نگاه کن و مقایسه کن.", "یکی از گزینه‌ها کنار رفت.", "ببین؛ این گزینه درست است."], "answer": { "kind": "picture-count", "value": 1 }, "correctOptionId": "i06.opt2" },
+    { "id": "ST07.P2.i07", "template": "T01", "prompt": "توپ‌ها را در سینی عدد ۱ بگذار.", "options": [], "okText": "", "retryText": "", "hintLadder": [], "interactionNotImplemented": "tray placement evaluation requires the O1 decision (recorded gap N08R-09)" },
+    { "id": "ST07.P2.i08", "template": "T01", "prompt": "توپ‌ها را در سینی عدد ۲ بگذار.", "options": [], "okText": "", "retryText": "", "hintLadder": [], "interactionNotImplemented": "tray placement evaluation requires the O1 decision (recorded gap N08R-09)" }
+  ],
+  "game": {
+    "template": "T05",
+    "title": "تزیین کیک",
+    "rounds": [ { "roundId": "ST07.P3.r01", "patternUnits": ["cake-ring", "candle"], "acceptsRule": "ShomaraPatternRule.accepts (deterministic pattern order)" } ],
+    "evaluation": "deterministic pattern acceptance (ShomaraPatternRule) — no O1 secret needed"
+  },
+  "stagesNotTranscribed": ["P4_ASSESSMENT", "P5_TRANSFER"],
+  "stagesNotTranscribedNote": "pilot sections 5/6 exist in the byte-protected source but are not yet transcribed into the draft projection — the slice surfaces this honestly",
+  "audioPolicy": "EXPECTED_NEVER_BLOCKING",
+  "audioIndexRef": "audio/ST07-audio-index.json"
+}

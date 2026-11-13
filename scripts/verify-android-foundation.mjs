@@ -34,7 +34,7 @@ for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), `mi
 
 const settings = read('apps/android/settings.gradle.kts');
 // N03-02: :core:designsystem is a required compiled module (ShomaraTokens/ShomaraTheme).
-for (const module of [':app', ':core:common', ':core:designsystem', ':core:datastore', ':core:model', ':core:network', ':core:testing', ':feature:onboarding']) {
+for (const module of [':app', ':core:common', ':core:designsystem', ':core:contentpackage', ':core:learning', ':core:datastore', ':core:model', ':core:network', ':core:testing', ':feature:onboarding']) {
   assert.ok(settings.includes(`include("${module}")`), `module not included: ${module}`);
 }
 assert.match(settings, /RepositoriesMode\.FAIL_ON_PROJECT_REPOS/);
@@ -114,4 +114,4 @@ const staticOrchestrator = read('scripts/verify-static-all.mjs');
 assert.match(staticOrchestrator, /'verify-android-environment\.mjs'/, 'host preflight must not be misreported as a static verifier');
 assert.match(staticOrchestrator, /'android-build\.mjs'/, 'host build harness must not be misreported as a static verifier');
 
-console.log('ANDROID_FOUNDATION: PASS (16 modules, pinned wrapper/toolchain, no signing or answer-key content)');
+console.log('ANDROID_FOUNDATION: PASS (18 modules, pinned wrapper/toolchain, no signing or answer-key content)');

@@ -6,6 +6,7 @@ import com.mathlearning.core.common.logging.AppLogger
 import com.mathlearning.core.common.logging.LogLevel
 import com.mathlearning.core.common.scope.ShomaraScopes
 import com.mathlearning.core.model.repository.AudioAssetRepository
+import com.mathlearning.core.model.repository.LessonRecordRepository
 import com.mathlearning.core.model.repository.OutboxRepository
 import com.mathlearning.core.model.repository.ProgressRepository
 import com.mathlearning.core.model.repository.StationPackageRepository
@@ -52,6 +53,7 @@ class ShomaraAppStartupTest {
         override val progress: ProgressRepository get() = throw AssertionError("startup touched progress")
         override val outbox: OutboxRepository get() = throw AssertionError("startup touched the outbox")
         override val audioAssets: AudioAssetRepository get() = throw AssertionError("startup touched audio assets")
+        override val lessonRecords: LessonRecordRepository get() = throw AssertionError("startup touched lesson records")
         override val outboxSyncEngine: OutboxSyncEngine get() = throw AssertionError("startup touched sync")
         override val settingsStore: ShomaraSettingsStore get() = throw AssertionError("startup touched settings")
         override val simulatedAuthEnabled: Boolean get() = throw AssertionError("startup touched auth wiring")

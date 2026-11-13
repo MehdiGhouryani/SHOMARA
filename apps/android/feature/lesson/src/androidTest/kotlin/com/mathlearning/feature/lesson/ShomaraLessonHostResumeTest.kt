@@ -1,8 +1,9 @@
 package com.mathlearning.feature.lesson
 
-import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import com.mathlearning.core.datastore.LessonCheckpoint
 import com.mathlearning.core.datastore.LessonCheckpointStore
@@ -70,7 +71,7 @@ class ShomaraLessonHostResumeTest {
         val p3Header = "ایستگاه ۷ — $st07Title — مرحلهٔ ${ShomaraLessonStageLabels.labelFor(MacroStage.P3_GAME)}"
         val p1Header = "ایستگاه ۷ — $st07Title — مرحلهٔ ${ShomaraLessonStageLabels.labelFor(MacroStage.P1_DISCOVER)}"
         composeRule.onNodeWithText(p3Header).assertIsDisplayed()
-        composeRule.onNodeWithText(p1Header).assertDoesNotExist()
+        composeRule.onAllNodesWithText(p1Header).assertCountEquals(0)
         // And the resume banner is shown for the stage that was actually resumed.
         composeRule.onNodeWithText("از همون‌جا ادامه می‌دهیم.").assertIsDisplayed()
     }

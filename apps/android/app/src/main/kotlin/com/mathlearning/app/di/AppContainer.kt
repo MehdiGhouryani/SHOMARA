@@ -10,6 +10,7 @@ import com.mathlearning.core.common.logging.LogSink
 import com.mathlearning.core.common.logging.SafeAppLogger
 import com.mathlearning.core.database.ShomaraLearningDatabase
 import com.mathlearning.core.database.repo.RoomAudioAssetRepository
+import com.mathlearning.core.database.repo.RoomLessonRecordRepository
 import com.mathlearning.core.database.repo.RoomOutboxRepository
 import com.mathlearning.core.database.repo.RoomProgressRepository
 import com.mathlearning.core.database.repo.RoomStationPackageRepository
@@ -24,6 +25,7 @@ import com.mathlearning.app.startup.ShomaraAppStartup
 import com.mathlearning.app.startup.ShomaraStartupStep
 import com.mathlearning.core.common.scope.ShomaraScopes
 import com.mathlearning.core.model.repository.AudioAssetRepository
+import com.mathlearning.core.model.repository.LessonRecordRepository
 import com.mathlearning.core.model.repository.OutboxRepository
 import com.mathlearning.core.model.repository.ProgressRepository
 import com.mathlearning.core.model.repository.StationPackageRepository
@@ -62,6 +64,7 @@ interface AppContainer {
     val progress: ProgressRepository
     val outbox: OutboxRepository
     val audioAssets: AudioAssetRepository
+    val lessonRecords: LessonRecordRepository
     val outboxSyncEngine: OutboxSyncEngine
 
     /** Persisted child preferences (N08-04): avatar + reduced motion, real DataStore. */
@@ -192,6 +195,7 @@ class DefaultAppContainer(
     override val stationPackages: StationPackageRepository = RoomStationPackageRepository(learningDatabase)
     override val progress: ProgressRepository = RoomProgressRepository(learningDatabase)
     override val audioAssets: AudioAssetRepository = RoomAudioAssetRepository(learningDatabase)
+    override val lessonRecords: LessonRecordRepository = RoomLessonRecordRepository(learningDatabase)
     override val outbox: OutboxRepository = RoomOutboxRepository(learningDatabase)
 
     override val outboxSyncEngine: OutboxSyncEngine = OutboxSyncEngine(

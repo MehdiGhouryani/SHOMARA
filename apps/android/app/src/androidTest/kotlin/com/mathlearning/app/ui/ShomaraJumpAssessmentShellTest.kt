@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.mathlearning.app.ui
 
-import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import com.mathlearning.feature.path.ShomaraJumpAssessment
 import com.mathlearning.feature.path.ShomaraJumpAssessmentShell
@@ -39,11 +40,11 @@ class ShomaraJumpAssessmentShellTest {
         }
 
         // None of the forbidden surfaces may appear — no feedback text, no guide, no reward.
-        composeRule.onNodeWithText("آفرین!").assertDoesNotExist()
-        composeRule.onNodeWithText("دوباره تلاش کن").assertDoesNotExist()
-        composeRule.onNodeWithText("راهنما").assertDoesNotExist()
-        composeRule.onNodeWithText("جایزه").assertDoesNotExist()
-        composeRule.onNodeWithText("ستاره").assertDoesNotExist()
+        composeRule.onAllNodesWithText("آفرین!").assertCountEquals(0)
+        composeRule.onAllNodesWithText("دوباره تلاش کن").assertCountEquals(0)
+        composeRule.onAllNodesWithText("راهنما").assertCountEquals(0)
+        composeRule.onAllNodesWithText("جایزه").assertCountEquals(0)
+        composeRule.onAllNodesWithText("ستاره").assertCountEquals(0)
     }
 
     @Test
