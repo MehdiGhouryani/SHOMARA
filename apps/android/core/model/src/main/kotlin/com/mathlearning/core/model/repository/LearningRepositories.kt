@@ -116,3 +116,36 @@ interface ContentPackageRegistryRepository {
     suspend fun activePackage(): InstalledContentPackage?
     suspend fun byId(packageId: String): InstalledContentPackage?
 }
+
+/** Recorded attempt (P6): IDs + outcome only — CONTENT-018. */
+data class RecordedAttempt(
+    val sessionId: String,
+    val encounterId: String,
+    val stage: String,
+    val attemptKey: String,
+    val interactionId: String,
+    val outcome: String, // CORRECT | INCORRECT | UNSET
+    val evaluatorVersion: String,
+    val recordedAtMs: Long,
+)
+
+data class LessonSessionRecord(
+    val sessionId: String,
+    val stationId: String,
+    val stageCursor: Int,
+    val lifecycle: String,
+    val engineRuleVersion: String,
+    val contentPackageVersion: Int,
+    val startedAtMs: Long,
+    val updatedAtMs: Long,
+)
+
+interface LessonRecordRepository {
+    /**
+     * Records session (upsert-if-absent) + attempt in ONE transaction (owner P6 mission).
+     * Idempotent by attemptKey: a replayed key is a no-op and returns false.
+     */
+    suspend fun recordAttempt(session: LessonSessionRecord, attempt: RecordedAttempt): Boolean
+    suspend fun session(sessionId: String): LessonSessionRecord?
+    suspend fun attemptsFor(sessionId: String): List<RecordedAttempt>
+}

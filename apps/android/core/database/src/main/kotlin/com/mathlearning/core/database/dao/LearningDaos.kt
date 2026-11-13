@@ -1,11 +1,14 @@
 package com.mathlearning.core.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.mathlearning.core.database.entity.AudioAssetEntity
 import com.mathlearning.core.database.entity.ContentPackageEntity
+import com.mathlearning.core.database.entity.LessonAttemptEntity
+import com.mathlearning.core.database.entity.LessonSessionEntity
 import com.mathlearning.core.database.entity.MigrationMetadataEntity
 import com.mathlearning.core.database.entity.OutboxOperationEntity
 import com.mathlearning.core.database.entity.ProgressProjectionEntity
@@ -97,4 +100,28 @@ interface ContentPackageDao {
 
     @Query("UPDATE content_packages SET state = :state WHERE packageId = :packageId")
     suspend fun setState(packageId: String, state: String)
+}
+
+@Dao
+interface LessonSessionDao {
+    @Upsert
+    suspend fun upsert(entity: LessonSessionEntity)
+
+    @Query(StringQueries.LESSON_SESSION_BY_ID)
+    suspend fun byId(sessionId: String): LessonSessionEntity?
+
+    @Query(StringQueries.LESSON_SESSION_SET_LIFECYCLE)
+    suspend fun setLifecycle(sessionId: String, lifecycle: String, updatedAtMs: Long)
+}
+
+@Dao
+interface LessonAttemptDao {
+    @Query(StringQueries.LESSON_ATTEMPT_BY_KEY)
+    suspend fun byAttemptKey(attemptKey: String): LessonAttemptEntity?
+
+    @Insert
+    suspend fun insert(entity: LessonAttemptEntity): Long
+
+    @Query(StringQueries.LESSON_ATTEMPTS_FOR_SESSION)
+    suspend fun forSession(sessionId: String): List<LessonAttemptEntity>
 }

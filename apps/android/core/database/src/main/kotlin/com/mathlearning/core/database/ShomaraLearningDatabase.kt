@@ -13,7 +13,11 @@ import com.mathlearning.core.database.dao.ProgressProjectionDao
 import com.mathlearning.core.database.dao.StationPackageDao
 import com.mathlearning.core.database.entity.AudioAssetEntity
 import com.mathlearning.core.database.dao.ContentPackageDao
+import com.mathlearning.core.database.dao.LessonAttemptDao
+import com.mathlearning.core.database.dao.LessonSessionDao
 import com.mathlearning.core.database.entity.ContentPackageEntity
+import com.mathlearning.core.database.entity.LessonAttemptEntity
+import com.mathlearning.core.database.entity.LessonSessionEntity
 import com.mathlearning.core.database.entity.MigrationMetadataEntity
 import com.mathlearning.core.database.entity.OutboxOperationEntity
 import com.mathlearning.core.database.entity.ProgressProjectionEntity
@@ -44,11 +48,31 @@ object ShomaraMigrations {
         }
     }
 
-    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2)
+    val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `lesson_sessions` (`sessionId` TEXT NOT NULL, " +
+                    "`stationId` TEXT NOT NULL, `stageCursor` INTEGER NOT NULL, `lifecycle` TEXT NOT NULL, " +
+                    "`engineRuleVersion` TEXT NOT NULL, `contentPackageVersion` INTEGER NOT NULL, " +
+                    "`startedAtMs` INTEGER NOT NULL, `updatedAtMs` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_lesson_sessions_stationId ON lesson_sessions (stationId)")
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `lesson_attempts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`sessionId` TEXT NOT NULL, `encounterId` TEXT NOT NULL, `stage` TEXT NOT NULL, " +
+                    "`attemptKey` TEXT NOT NULL, `interactionId` TEXT NOT NULL, `outcome` TEXT NOT NULL, " +
+                    "`evaluatorVersion` TEXT NOT NULL, `recordedAtMs` INTEGER NOT NULL)",
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_lesson_attempts_sessionId ON lesson_attempts (sessionId)")
+            db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_lesson_attempts_attemptKey ON lesson_attempts (attemptKey)")
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
 }
 
 @Database(
-    version = 2,
+    version = 3,
     exportSchema = true,
     entities = [
         StationPackageEntity::class,
@@ -57,6 +81,8 @@ object ShomaraMigrations {
         AudioAssetEntity::class,
         MigrationMetadataEntity::class,
         ContentPackageEntity::class,
+        LessonSessionEntity::class,
+        LessonAttemptEntity::class,
     ],
 )
 abstract class ShomaraLearningDatabase : RoomDatabase() {
@@ -66,6 +92,8 @@ abstract class ShomaraLearningDatabase : RoomDatabase() {
     abstract fun audioAssetDao(): AudioAssetDao
     abstract fun migrationMetadataDao(): MigrationMetadataDao
     abstract fun contentPackageDao(): ContentPackageDao
+    abstract fun lessonSessionDao(): LessonSessionDao
+    abstract fun lessonAttemptDao(): LessonAttemptDao
 
     companion object {
         const val DATABASE_NAME: String = "shomara_learning.db"
