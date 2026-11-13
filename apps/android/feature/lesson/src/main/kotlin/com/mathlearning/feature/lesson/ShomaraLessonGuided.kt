@@ -135,6 +135,8 @@ fun ShomaraGuidedStage(
     evaluator: ShomaraGuidedEvaluator,
     onAllItemsComplete: () -> Unit,
     modifier: Modifier = Modifier,
+    /** P14: fired after EACH evaluator decision (encounterId, attemptIndex, outcome) — persistence hook. */
+    onAttemptEvaluated: ((String, Int, String) -> Unit)? = null,
 ) {
     require(items.isNotEmpty()) { "guided stage needs items; empty content stays on the skeleton" }
     var itemIndex by remember { mutableIntStateOf(0) }
@@ -221,11 +223,13 @@ fun ShomaraGuidedStage(
                         is ShomaraGuidedEvaluator.Outcome.Correct -> {
                             itemDone = true
                             bannerState = GuidedBanner.Correct(item.okText)
+                            onAttemptEvaluated?.invoke(item.itemId, attempts + 1, "CORRECT")
                         }
                         is ShomaraGuidedEvaluator.Outcome.Retry -> {
                             attempts += 1
                             selectedId = null
                             bannerState = GuidedBanner.Retry(item.retryText)
+                            onAttemptEvaluated?.invoke(item.itemId, attempts, "INCORRECT")
                             // B5 ladder: attempt 2 -> h1, 3 -> h2, 4+ -> h3 — only when the
                             // item really carries that slot; never a fabricated hint.
                             val hintIndex = ShomaraGuidedLogic.hintFor(attempts, item)

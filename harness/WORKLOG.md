@@ -872,3 +872,17 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **Gallery:** DesignSystemGalleryActivity (debug-only) با RTL toggle؛ device screenshots: artifacts/p13-device/gallery-ltr.png + gallery-rtl.png.
 - **شواهد (exit code):** android:gate PASS · NATIVE_DESIGN_GUARD PASS (81 فایل، raw=0) · static:all 94/94 · repository PASS (553/1896) · ClayContractTest 6/6 سبز.
 - **صادقانه:** Paparazzi در این محیط نیست — screenshot regression با gallery activity + device captures ارائه شد؛ gate CI برای screenshots gap ثبت؛ Home دست‌نخورده (handoff BLOCKED)؛ PathGraph feature:path هنوز از rendering خودش استفاده می‌کند (migration به PathKit = debt ثبت‌شده)؛ OptionCard به‌عنوان wrapper روی ChoiceTile (سازگار با answerTile tokens).
+
+## 2026-11-14 — IPA-P14 (Lesson Experiences — engine→UI wiring واقعی) — branch infra/p14-lesson-experiences
+
+- **وصل‌کردن engine به UI واقعی (gap #1 از P12):**
+  - `ShomaraGuidedStage` حالا callback `onAttemptEvaluated(encounterId, attemptIndex, outcome)` دارد — بعد از هر ارزیابی واقعی evaluator صدا می‌خورد.
+  - `ShomaraLessonHost` param جدید `lessonRecords: LessonRecordRepository?` — debug wiring از ShomaraApp می‌گذرد؛ release null (fail-closed).
+  - `ShomaraApp` param جدید `lessonRecordRepository` از container می‌گیرد؛ debug wiring آن را به host می‌دهد.
+  - **نتیجه: هر «بررسی» tap → evaluator → outcome → Room v3 attempt (فقط IDs + outcome — CONTENT-018)**.
+- **T15:** فعال و واقعی — select→check→evaluator→correct/retry→hint ladder→advance؛ روی دستگاه کار می‌کند (02-lesson-ST07.png).
+- **T05:** ShomaraPatternRule.accepts قطعی — بدون O1 secret؛ round structure موجود.
+- **T13/T01:** render + AWAIT_POLICY صادقانه (بدون ارزیابی جعلی — O1 باز).
+- **P4/P5:** honest not-transcribed (بدون جعل محتوا).
+- **شواهد (exit code):** android:gate PASS · verify:static:all 94/94 · verify:repository PASS (553/1896) · APK debug SHA-256 ade6a6e7… · device screenshot artifacts/p14-device/lesson-ST07.png.
+- **صادقانه:** Home visual BLOCKED؛ P4/P5 محتوا transcribe نشده؛ T13/T01 ارزیاب ندارند؛ engine→UI wiring هنوز فقط در guided stage فعال است (discover/game/result از renderers موجود می‌آیند)؛ multi-profile منتظر O5.

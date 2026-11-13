@@ -65,6 +65,8 @@ fun ShomaraApp(
     settingsStore: ShomaraSettingsStore,
     simulatedAuth: Boolean = false,
     backendConfigured: Boolean = false,
+    // P14: the durable attempt recorder (debug wiring; release passes null — fail-closed).
+    lessonRecordRepository: com.mathlearning.core.model.repository.LessonRecordRepository? = null,
 ) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
@@ -155,6 +157,7 @@ fun ShomaraApp(
                     discoverSteps = lessonDiscoverSteps,
                     guidedItems = lessonGuidedItems,
                     guidedEvaluator = lessonGuidedEvaluator,
+                    lessonRecords = lessonRecordRepository,
                     previewAdvanceToNextStage = lessonPreviewAdvance,
                     replay = lessonReplay,
                     onExitToShell = {

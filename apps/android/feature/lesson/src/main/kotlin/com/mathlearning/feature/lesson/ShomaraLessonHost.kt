@@ -74,6 +74,8 @@ fun ShomaraLessonHost(
     // both empty/null (fail-closed skeleton); correctness never enters the projection.
     guidedItems: List<ShomaraGuidedItem> = emptyList(),
     guidedEvaluator: ShomaraGuidedEvaluator? = null,
+    // P14: the durable attempt recorder (null in release = fail-closed no-persist)
+    lessonRecords: com.mathlearning.core.model.repository.LessonRecordRepository? = null,
     // N08R-09: TRUE only in the debug preview (no evaluator can advance stages there), so
     // finishing discover walks to the guided preview. With the Phase-1 local evaluator this
     // stays false — the EVALUATOR owns stage advance, never the UI.
@@ -194,6 +196,31 @@ fun ShomaraLessonHost(
                     items = guidedItems,
                     evaluator = guidedEvaluator,
                     onAllItemsComplete = { /* evaluator wiring lands with the local package (Phase 1) */ },
+                    // P14: the durable attempt recorder — null in release (fail-closed no-persist).
+                    onAttemptEvaluated = lessonRecords?.let { repo ->
+                        { encounterId: String, attemptIndex: Int, outcome: String ->
+                            scope.launch {
+                                repo.recordAttempt(
+                                    com.mathlearning.core.model.repository.LessonSessionRecord(
+                                        sessionId = "preview-st07", stationId = "ST07",
+                                        stageCursor = 0, lifecycle = "ACTIVE",
+                                        engineRuleVersion = "learning-engine:v1",
+                                        contentPackageVersion = 1,
+                                        startedAtMs = System.currentTimeMillis(),
+                                        updatedAtMs = System.currentTimeMillis(),
+                                    ),
+                                    com.mathlearning.core.model.repository.RecordedAttempt(
+                                        sessionId = "preview-st07", encounterId = encounterId,
+                                        stage = "P2_GUIDED",
+                                        attemptKey = "attempt|preview-st07|" + encounterId + "|" + attemptIndex + "|guided",
+                                        interactionId = encounterId, outcome = outcome,
+                                        evaluatorVersion = "debug-draft-v1",
+                                        recordedAtMs = System.currentTimeMillis(),
+                                    ),
+                                )
+                            }
+                        }
+                    },
                 )
             } else if (macroStage == MacroStage.P1_DISCOVER && discoverSteps.isNotEmpty()) {
                 // N08R-08: the discover stage renders its real (projected) steps — the
