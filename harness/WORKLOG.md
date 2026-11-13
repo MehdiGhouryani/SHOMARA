@@ -886,3 +886,12 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **P4/P5:** honest not-transcribed (بدون جعل محتوا).
 - **شواهد (exit code):** android:gate PASS · verify:static:all 94/94 · verify:repository PASS (553/1896) · APK debug SHA-256 ade6a6e7… · device screenshot artifacts/p14-device/lesson-ST07.png.
 - **صادقانه:** Home visual BLOCKED؛ P4/P5 محتوا transcribe نشده؛ T13/T01 ارزیاب ندارند؛ engine→UI wiring هنوز فقط در guided stage فعال است (discover/game/result از renderers موجود می‌آیند)؛ multi-profile منتظر O5.
+
+## 2026-11-14 — IPA-P15 (Production Readiness Assessment — BLOCKED) — branch infra/p14-lesson-experiences
+
+- **Release compile:** compileReleaseKotlin PASS — R8/minify فعال؛ ui-tooling-preview به implementation اضافه شد (@Preview compile-time only)؛ debug isolation compile-time اثبات.
+- **Emulator timing (labeled — نه production claim):** cold start 2741ms؛ warm 2574ms؛ PSS 91MB؛ APK debug 17.8MB — physical device benchmark بعد از HG-05.
+- **Release criteria audit:** targetSdk=36 ✓ · compileSdk=37+37.0 ✓ · zero permissions ✓ · allowBackup=false ✓ · dataExtractionRules ✓ · R8=true ✓ · debug isolation ✓ · Room migrations ✓ · no-PII logging ✓.
+- **Security closure:** PBKDF2 PIN (210k) · ForbiddenFieldGuard · projectionViolations · R10 debug isolation · signed package (ECDSA P-256) · no network — همه تست‌شده.
+- **Accessibility static audit:** contentDescription، mergeDescendants، Role، LiveRegion، touchMin=48dp، manipulative 72-80dp، RTL root، reduced-motion CompositionLocal، typography token-driven. TalkBack real gesture = BLOCKED (دستگاه فیزیکی).
+- **Production Readiness Report:** BLOCKED — ۷ P0 + ۷ P1 + ۳ P2 فهرست دقیق در PRODUCTION_READINESS_REPORT_FA.md. مسیر رسیدن به PASS: O1/O2/O5/O6/O7/HG-05 → authoring ۲۴ ایستگاه → media واقعی → signing → device benchmarks.
