@@ -44,6 +44,19 @@ async function main() {
       console.log(JSON.stringify({ stationId, stage: currentState(loadLedger(), stationId) }, null, 2));
       return;
     }
+    case 'report-media': {
+      const { report } = await import('./lib/report-missing.mjs');
+      console.log(JSON.stringify(report(process.argv[3] ? path.resolve(process.argv[3]) : undefined), null, 2));
+      return;
+    }
+    case 'curriculum-matrix': {
+      const { buildMatrix } = await import('./lib/curriculum-matrix.mjs');
+      const matrix = buildMatrix();
+      fs.mkdirSync('content-library/authoring/matrix', { recursive: true });
+      fs.writeFileSync('content-library/authoring/matrix/curriculum-matrix.json', JSON.stringify(matrix, null, 2) + String.fromCharCode(10));
+      console.log('CURRICULUM_MATRIX: WROTE (25 stations, honest status, batches A-E)');
+      return;
+    }
     default: {
       console.log('commands: validate | promote <STAGE> | build-package | status');
       console.log('(fs check) authoring dir exists:', fs.existsSync(AUTHORING));

@@ -27,10 +27,14 @@ const nonReview = real.violations.filter((v) => v.rule !== 'review-roles');
 expect(nonReview.length === 0, 'st07-validate', JSON.stringify(real.violations));
 expect(real.violations.filter((v) => v.rule === 'review-roles').length === 4, 'st07-review-roles-pending', 'expected exactly the 4 role gaps');
 
-// 2. Ledger well-formed + honest state.
+// 2. Ledger well-formed + the state must be a legitimate machine-reachable stage
+//    (P9 promoted ST07 to VALIDATED via the real gates — the verifier follows the LEDGER,
+//    never a hardcoded stage).
 const ledger = loadLedger();
 expect(ledger.schemaVersion === 1, 'ledger-schema', 'schemaVersion must be 1');
-expect(currentState(ledger, 'ST07') === 'MAPPED_TO_REPO', 'st07-state', `ST07 is ${currentState(ledger, 'ST07')}`);
+const MACHINE_STAGES = new Set(['SOURCE_ONLY', 'MAPPED_TO_REPO', 'STAGED', 'VALIDATED']);
+const st07State = currentState(ledger, 'ST07');
+expect(MACHINE_STAGES.has(st07State), 'st07-state', `ST07 is ${st07State} (must remain machine-reachable until human review)`);
 for (const t of ledger.transitions) {
   expect(typeof t.at === 'string' && typeof t.actor === 'string' && !!t.evidence, 'ledger-evidence', `${t.stationId} ${t.from}->${t.to}`);
 }
@@ -39,23 +43,27 @@ for (const t of ledger.transitions) {
 const tempLedger = { schemaVersion: 1, transitions: structuredClone(ledger.transitions) };
 const tempFile = path.join(ROOT, 'tools/content-pipeline/fixtures/temp-ledger.json');
 fs.writeFileSync(tempFile, JSON.stringify(tempLedger, null, 2));
-// The simulation uses an injected TEMP ledger file — the real ledger is never touched.
+// The simulation uses an injected TEMP ledger seeded FROM the real state — the real ledger is
+// never touched. The NEXT stage is simulated dynamically (P9 promoted ST07 to VALIDATED via the
+// real gates; the verifier follows the ledger, never a hardcoded stage). HUMAN gates must refuse;
+// two-step skips must refuse.
 const ledgerOptions = { actor: 'verifier', evidence: { kind: 'verifier-run' }, ledgerFile: tempFile };
+const NEXT = { SOURCE_ONLY: 'MAPPED_TO_REPO', MAPPED_TO_REPO: 'STAGED', STAGED: 'VALIDATED', VALIDATED: 'HUMAN_REVIEWED' };
 try {
-  const staged = await promote('ST07', 'STAGED', { ...ledgerOptions });
-  expect(staged.ok, 'gate-staged', staged.reason ?? '');
-  const validated = await promote('ST07', 'VALIDATED', { ...ledgerOptions });
-  expect(validated.ok, 'gate-validated', validated.reason ?? '');
+  const nextStage = NEXT[st07State];
+  if (nextStage && nextStage !== 'HUMAN_REVIEWED') {
+    const advanced = await promote('ST07', nextStage, { ...ledgerOptions });
+    expect(advanced.ok, 'gate-next-machine', advanced.reason ?? '');
+  }
   const human = await promote('ST07', 'HUMAN_REVIEWED', { actor: 'verifier', ledgerFile: tempFile });
   expect(!human.ok && /HUMAN_REVIEWED requires/.test(human.reason ?? ''), 'gate-human-refused', human.reason ?? '');
-  // ENABLED from STAGED must refuse as a stage-skip (HUMAN gates were never satisfied).
   const enabled = await promote('ST07', 'ENABLED', { actor: 'verifier', ledgerFile: tempFile });
-  expect(!enabled.ok && /skips stages/.test(enabled.reason ?? ''), 'gate-enabled-skip-refused', enabled.reason ?? '');
+  expect(!enabled.ok && (/skips stages/.test(enabled.reason ?? '') || /signed/.test(enabled.reason ?? '')), 'gate-enabled-refused', enabled.reason ?? '');
 } finally {
   fs.rmSync(tempFile, { force: true });
 }
-// The REAL ledger state must be untouched by the simulation.
-expect(currentState(loadLedger(), 'ST07') === 'MAPPED_TO_REPO', 'ledger-untouched', 'simulation leaked into the real ledger');
+// The REAL ledger state must be untouched by the simulation (whatever stage it honestly holds).
+expect(currentState(loadLedger(), 'ST07') === st07State, 'ledger-untouched', 'simulation leaked into the real ledger');
 
 // 4. Negative fixtures.
 const negativesDir = path.join(ROOT, 'tools/content-pipeline/fixtures/negative');

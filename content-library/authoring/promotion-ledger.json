@@ -12,6 +12,26 @@
         "artifact": "content-library/authoring/stations/ST07.json",
         "sourceHashVerified": true
       }
+    },
+    {
+      "stationId": "ST07",
+      "from": "MAPPED_TO_REPO",
+      "to": "STAGED",
+      "at": "2026-11-13T21:06:20.829Z",
+      "actor": "cli",
+      "evidence": {
+        "kind": "tool-run"
+      }
+    },
+    {
+      "stationId": "ST07",
+      "from": "STAGED",
+      "to": "VALIDATED",
+      "at": "2026-11-13T21:06:21.325Z",
+      "actor": "cli",
+      "evidence": {
+        "kind": "tool-run"
+      }
     }
   ]
 }

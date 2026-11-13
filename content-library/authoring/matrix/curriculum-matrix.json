@@ -1,0 +1,652 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-13T21:02:09.939Z",
+  "matrixVersion": "curriculum-matrix:v1 (honest status, pre-authoring)",
+  "totalStations": 25,
+  "authoredStations": 1,
+  "notAuthoredStations": 24,
+  "fields": [
+    "learningGoalAndPrereq",
+    "skillMapping",
+    "progressionP1P5",
+    "teachingMethod",
+    "guidedPractice",
+    "appliedGame",
+    "assessment",
+    "transferSpiralReview",
+    "hintRecoveryPolicy",
+    "canonicalTextAudioIds",
+    "assetIdsDescription",
+    "accessibilityCopy",
+    "validatorEvidence",
+    "contentVersion"
+  ],
+  "batches": {
+    "A": {
+      "stations": [
+        "ST01",
+        "ST02",
+        "ST03",
+        "ST04",
+        "ST05",
+        "ST06"
+      ],
+      "status": "PLANNED",
+      "reviewRoles": [
+        "curriculum",
+        "persian_pronunciation",
+        "accessibility",
+        "rights_moderation"
+      ]
+    },
+    "B": {
+      "stations": [
+        "ST08",
+        "ST09",
+        "ST10",
+        "ST11",
+        "ST12"
+      ],
+      "status": "PLANNED",
+      "reviewRoles": [
+        "curriculum",
+        "persian_pronunciation",
+        "accessibility",
+        "rights_moderation"
+      ]
+    },
+    "C": {
+      "stations": [
+        "ST13",
+        "ST14",
+        "ST15",
+        "ST16",
+        "ST17"
+      ],
+      "status": "PLANNED",
+      "reviewRoles": [
+        "curriculum",
+        "persian_pronunciation",
+        "accessibility",
+        "rights_moderation"
+      ]
+    },
+    "D": {
+      "stations": [
+        "ST18",
+        "ST19",
+        "ST20",
+        "ST21",
+        "ST22"
+      ],
+      "status": "PLANNED",
+      "reviewRoles": [
+        "curriculum",
+        "persian_pronunciation",
+        "accessibility",
+        "rights_moderation"
+      ]
+    },
+    "E": {
+      "stations": [
+        "ST23",
+        "ST24",
+        "ST25"
+      ],
+      "status": "PLANNED",
+      "reviewRoles": [
+        "curriculum",
+        "persian_pronunciation",
+        "accessibility",
+        "rights_moderation"
+      ]
+    }
+  },
+  "stations": [
+    {
+      "stationId": "ST01",
+      "workingTitle": "شمارش و الگو",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST02",
+      "workingTitle": "جایگاه و جهت",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST03",
+      "workingTitle": "عدد و جمع",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST04",
+      "workingTitle": "شکل‌ها و ویژگی‌ها",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST05",
+      "workingTitle": "جمع و تفریق",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST06",
+      "workingTitle": "جمع با مهره‌ها",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST07",
+      "workingTitle": "عددهای ۱ و ۲",
+      "lifecycle": "MAPPED_TO_REPO",
+      "fields": {
+        "learningGoalAndPrereq": "PROTOTYPE_DRAFT",
+        "skillMapping": "PROTOTYPE_DRAFT",
+        "progressionP1P5": "PROTOTYPE_DRAFT",
+        "teachingMethod": "PROTOTYPE_DRAFT",
+        "guidedPractice": "PROTOTYPE_DRAFT",
+        "appliedGame": "PROTOTYPE_DRAFT",
+        "assessment": "PROTOTYPE_DRAFT",
+        "transferSpiralReview": "PROTOTYPE_DRAFT",
+        "hintRecoveryPolicy": "PROTOTYPE_DRAFT",
+        "canonicalTextAudioIds": "PROTOTYPE_DRAFT",
+        "assetIdsDescription": "PROTOTYPE_DRAFT",
+        "accessibilityCopy": "PROTOTYPE_DRAFT",
+        "validatorEvidence": "PROTOTYPE_DRAFT",
+        "contentVersion": "PROTOTYPE_DRAFT"
+      },
+      "prototypeNotes": {
+        "structurallyTranscribed": "content-library/authoring/stations/ST07.json",
+        "transcribedFields": [
+          "prerequisites",
+          "evaluatorConfig.items (P2 anchors)",
+          "taughtNumerals",
+          "declaredItemCounts",
+          "audioManifest",
+          "assetPolicy",
+          "rightsModeration"
+        ],
+        "gaps": [
+          "O1 evaluator model",
+          "O2 final schema",
+          "O7 budget",
+          "CONTENT-009/010 assets",
+          "CONTENT-014 policy",
+          "stage-mapping confirmation"
+        ]
+      }
+    },
+    {
+      "stationId": "ST08",
+      "workingTitle": "عددهای ۳ و ۴",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST09",
+      "workingTitle": "صفر و ۵",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST10",
+      "workingTitle": "عددهای ۶ و ۷",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST11",
+      "workingTitle": "برابری و عدد ۸",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST12",
+      "workingTitle": "مقایسه و عدد ۹",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST13",
+      "workingTitle": "نشانهٔ جمع",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST14",
+      "workingTitle": "تفریق و طول",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST15",
+      "workingTitle": "گروه‌بندی",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST16",
+      "workingTitle": "ساعت و عددها",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST17",
+      "workingTitle": "جمع چندبخشی",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST18",
+      "workingTitle": "الگو و زمان",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST19",
+      "workingTitle": "ده‌تایی‌ها و خرید",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST20",
+      "workingTitle": "عددهای دو رقمی",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST21",
+      "workingTitle": "عددهای ۱ تا ۱۰۰",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST22",
+      "workingTitle": "تقویم و شمارش",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST23",
+      "workingTitle": "شمارش گروهی",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST24",
+      "workingTitle": "مسئله‌های چندمرحله‌ای",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    },
+    {
+      "stationId": "ST25",
+      "workingTitle": "عدد ۱۰۰",
+      "lifecycle": "SOURCE_ONLY",
+      "fields": {
+        "learningGoalAndPrereq": "NOT_AUTHORED",
+        "skillMapping": "NOT_AUTHORED",
+        "progressionP1P5": "NOT_AUTHORED",
+        "teachingMethod": "NOT_AUTHORED",
+        "guidedPractice": "NOT_AUTHORED",
+        "appliedGame": "NOT_AUTHORED",
+        "assessment": "NOT_AUTHORED",
+        "transferSpiralReview": "NOT_AUTHORED",
+        "hintRecoveryPolicy": "NOT_AUTHORED",
+        "canonicalTextAudioIds": "NOT_AUTHORED",
+        "assetIdsDescription": "NOT_AUTHORED",
+        "accessibilityCopy": "NOT_AUTHORED",
+        "validatorEvidence": "NOT_AUTHORED",
+        "contentVersion": "NOT_AUTHORED"
+      }
+    }
+  ]
+}
