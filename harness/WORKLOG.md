@@ -846,3 +846,18 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **قانون اجرا پس از تصمیم:** هر گزینه فاز مستقل خودش؛ verifier R11 (archive-import ban) با اولین commit گزینه.
 - **شواهد (exit code):** verify:static:all = PASS (94/94) · verify:repository = PASS (553/1896) · android:gate = PASS · inventory committed.
 - **صادقانه:** هیچ گزینه‌ای اجرا نشد؛ این فاز فقط بستهٔ تصمیم است؛ child runtime در هر سه گزینه بدون Backend می‌ماند.
+
+## 2026-11-14 — IPA-P12 (UX Architecture & Journey Contracts — بدون بازطراحی Home) — branch infra/p12-ux-architecture
+
+- **بررسی کامل:** PAGE_UIUX_BLUEPRINT (۱۷ خانواده با outcome/focal/CTA/depth/states/rejects) · SCREEN_LEDGER (۲۳ ردیف Expo/V2، همه NATIVE_PENDING) · NATIVE_IMPLEMENTATION_BACKLOG (UI-001..013+) · ROUTE_REGISTRY (۱۵ مسیر Expo→Native destination) · ADR-0039 §6/§7 + ADR-0040.
+- **وضعیت Home صادقانه:** فایل handoff نهایی Home در repo موجود نیست → **Home visual = BLOCKED**؛ فقط قرارداد داده/Interaction/State (§6 سند) تعریف شد؛ هیچ طرح جایگزینی ساخته نشد.
+- **تحویل ADR-0048 (`design/playbook/UX_ARCHITECTURE_MAP_FA.md`):**
+  - **UX Architecture Map**: shell سه‌تب + سه جریان (ورود 01–05، درس 07→08–11+13، من 14–15) + System states 16.
+  - **Journey diagram**: onboarding→profile→placement(calibration)→first lesson→Path→Station→P1..P5→Result/Recovery→Mistake Review→Path؛ Practice→درس→Path؛ Me→Avatar/Settings/Guardian.
+  - **Screen contract matrix ۱۷×۱۰ فیلد**: entry/exit، هدف، CTA per state، ۶+ state الزامی، Back/Resume، دادهٔ لازم، ViewModel UiState/Events، a11y focus order، motion intent — همه مطابق قراردادهای موجود blueprint (هیچ تخلفی از ۱۷ خانواده اضافه نشد).
+  - **State/event catalog درس**: LessonUiState + ۹ Event + ۶ Effect با قواعد single-flight/hint-ban/manual-advance.
+  - **Navigation/Back/Resume contract**: ۸ سطح (Tab/Path/Start/درس/Assessment/Guardian/DeepLink/ProcessDeath) — Back درس = دوگام confirm؛ Assessment صریح‌تر؛ Guardian fail-closed.
+  - **قرارداد Home**: فقط data/interaction/state؛ ممنوعیت‌های ADR-0039 §6 در متن.
+- **Gap list (۹ مورد):** engine→UI wiring صفر؛ Home BLOCKED؛ Family 03 حذف = Phase 2؛ P3 evaluator جز T05 وابسته O1؛ P4/P5 projection transcribe نشده؛ Practice review از engine؛ Guardian→PIN محلی (O3/O5)؛ missions legacy؛ TalkBack/predictive-back device evidence.
+- **بدون تغییر کد:** این فاز docs-only است؛ هیچ ViewModel/کدی نوشته نشد (contracts برای U3/U4 آینده).
+- **شواهد:** static:all 94/94 (بدون تغییر)، verify:repository PASS، ledger/START_HERE به‌روز.
