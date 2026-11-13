@@ -115,4 +115,18 @@ object ShomaraTokens {
   val ClayFeaturedElevation = 4.dp
   val ClayAnswerTileMinHeight = 64.dp
   val ClayAnswerTileBorderWidth = 2.dp
+  val ClayFlatBorderWidth = 0.dp
+  val ClayFlatShadowOpacity = 0
+  val ClayFlatShadowRadius = 0.dp
+  val ClayFlatShadowOffsetY = 0.dp
+  val ClayFlatHighlightOpacity = 0
+  val ClayFlatHighlightThickness = 0.dp
+  val ClayFlatElevation = 0.dp
+  val ClayHintBorderWidth = 1.dp
+  val ClayHintShadowOpacity = 0.04
+  val ClayHintShadowRadius = 6.dp
+  val ClayHintShadowOffsetY = 2.dp
+  val ClayHintHighlightOpacity = 0.5
+  val ClayHintHighlightThickness = 1.dp
+  val ClayHintElevation = 1.dp
 }

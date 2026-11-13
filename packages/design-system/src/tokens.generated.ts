@@ -146,6 +146,24 @@ export const V2_TOKENS =
       "answerTile": {
         "minHeight": 64,
         "borderWidth": 2
+      },
+      "flat": {
+        "borderWidth": 0,
+        "shadowOpacity": 0,
+        "shadowRadius": 0,
+        "shadowOffsetY": 0,
+        "highlightOpacity": 0,
+        "highlightThickness": 0,
+        "elevation": 0
+      },
+      "hint": {
+        "borderWidth": 1,
+        "shadowOpacity": 0.04,
+        "shadowRadius": 6,
+        "shadowOffsetY": 2,
+        "highlightOpacity": 0.5,
+        "highlightThickness": 1,
+        "elevation": 1
       }
     }
   } as const;
