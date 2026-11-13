@@ -833,3 +833,16 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **تست‌ها (۱۲ سبز):** PIN hashed-never-plaintext؛ correct/wrong؛ **lockout با persist در store** (process death نمی‌تواند دور بزند)؛ correct-during-lockout reject؛ طول مرزی؛ deletion همهٔ storeها+دایرکتوری‌ها؛ fail-safe wipe (store خراب مانع بقیه نمی‌شود)؛ backup policy v1؛ no-PII value scan؛ diagnostics key scan.
 - **شواهد (exit code):** android:gate PASS · verify-android-foundation PASS (18 modules + manifest privacy) · module-graph R10 PASS (232 فایل) · verify:static:all = **PASS (94/94)** · verify:repository = PASS (553/1896) · ADR-0047 committed.
 - **صادقانه:** PIN UI روی parent surface wire نشد (component+tests؛ wiring = فاز محصول) · Keystore استفاده نشد (ارزیابی ثبت) · assembleRelease همچنان ممنوع (HG-05) — بررسی Release APK با manifest assertions + compile-time debug isolation + R10 پوشش داده شد؛ multi-profile integration test با ساخت ممکن نبود (O5 gate عمداً throw می‌کند).
+
+## 2026-11-14 — IPA-P11 (O6 Decision Pack — بدون اجرا) — branch infra/p10-identity-privacy
+
+- **وضعیت O6 صادقانه:** OPEN → طبق مأموریت صریح مالک، **فقط Decision Pack** تهیه شد؛ **هیچ حذف، هیچ گسترش production، هیچ تغییری در runtime کودک** انجام نشد.
+- **Inventory ماشین‌خوان از وضعیت واقعی repo** (`node tools/o6-inventory.mjs` → `docs/architecture/o6-pack/inventory.json`): **۴۹ API route** (فهرست کامل endpoint-by-endpoint با dynamic segmentها) · **۷۴ migration** · **۸ فایل InMemory repo** · child runtime coupling = NONE (اثبات P5/P6/P8).
+- **Decision Pack** (`docs/architecture/O6_DECISION_PACK_FA.md`): سه مسیر اجرایی با کارهای گام‌به‌گام —
+  **A** Retain as authoring service: persistent repos ×۸، Object Storage + signed URLs + checksum، RBAC/RLS/session/CSRF/rate-limit/audit، ۷۴ migration روی Local Supabase + Integration test چهار نقش، backup/restore، deploy separation — بزرگ‌ترین برنامه.
+  **B** ⭐ توصیهٔ فنی (غیرمصوب): authoring محلی + export پکیج امضاشده؛ زیرساختش از P7 آماده (pipeline + validator + gate + builder)؛ باقی‌مانده: sign CLI مالک + archive/deprecation + verifier R11؛ retire ترتیبی auth→learning→sync→missions→teacher→admin با consumer-proof؛ ۷۴ migration archive و نگه‌داشت (هیچ SQL پاک نمی‌شود).
+  **C** Retire کامل با archive (بازگشت‌ناپذیرترین).
+- **ماتریس تصمیم** بر ۵ معیار (هم‌راستایی ADR-0039/هزینه/نگه‌داری/ابزار authoring/امنیت) — توصیه: B.
+- **قانون اجرا پس از تصمیم:** هر گزینه فاز مستقل خودش؛ verifier R11 (archive-import ban) با اولین commit گزینه.
+- **شواهد (exit code):** verify:static:all = PASS (94/94) · verify:repository = PASS (553/1896) · android:gate = PASS · inventory committed.
+- **صادقانه:** هیچ گزینه‌ای اجرا نشد؛ این فاز فقط بستهٔ تصمیم است؛ child runtime در هر سه گزینه بدون Backend می‌ماند.
