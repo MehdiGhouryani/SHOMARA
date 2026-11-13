@@ -32,6 +32,13 @@ const required = [
 
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), `missing ${file}`);
 
+// P10 (ADR-0047): manifest privacy contract — no backups, no extraction, zero permissions.
+const appManifest = read('apps/android/app/src/main/AndroidManifest.xml');
+assert.ok(appManifest.includes('android:allowBackup="false"'), 'allowBackup must stay false (no child data in backups)');
+assert.ok(appManifest.includes('android:fullBackupContent="false"'), 'legacy full backup must stay off');
+assert.ok(appManifest.includes('android:dataExtractionRules="@xml/data_extraction_rules"'), 'API-31+ extraction rules must exclude everything');
+assert.ok(!appManifest.includes('<uses-permission'), 'the child app declares ZERO permissions (offline by construction)');
+
 const settings = read('apps/android/settings.gradle.kts');
 // N03-02: :core:designsystem is a required compiled module (ShomaraTokens/ShomaraTheme).
 for (const module of [':app', ':core:common', ':core:designsystem', ':core:contentpackage', ':core:learning', ':core:datastore', ':core:model', ':core:network', ':core:testing', ':feature:onboarding']) {

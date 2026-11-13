@@ -23,6 +23,9 @@
  *      the wiring phase lands.
  *  R9  Content pipeline (P7/ADR-0045): Kotlin modules must not import Node pipeline code and the
  *      pipeline lives ONLY in tools/content-pipeline (single canonical implementation).
+ *  R10 Identity/privacy (P10/ADR-0047): debug-only types (St07VerticalSlice, St07EphemeralKeys,
+ *      DebugSt07 preview wiring) must not appear outside src/debug source sets.
+ *      source sets (compile-time debug isolation); the child app manifest stays permission-free.
  *
  * Existing boundary exceptions are an explicit ALLOWLIST with a reason and a review date; the
  * list may only shrink. Any violation not in the allowlist exits 1.
@@ -142,6 +145,9 @@ for (const file of files) {
   }
   if (!isTest(relPath) && text.includes('import com.mathlearning.core.contentpackage') && !relPath.startsWith('core/contentpackage/') && moduleDir !== 'app') {
     violations.push({ rule: 'R8-contentpackage-imports', file: relPath, detail: 'contentpackage import outside :app/:core:contentpackage' });
+  }
+  if (!isTest(relPath) && !relPath.includes('/src/debug/') && /DebugSt07|St07VerticalSlice|St07EphemeralKeys/.test(text) && !relPath.startsWith('app/src/')) {
+    violations.push({ rule: 'R10-debug-types-in-release-scope', file: relPath, detail: 'debug-only types outside src/debug' });
   }
 }
 
