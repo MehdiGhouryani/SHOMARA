@@ -21,6 +21,8 @@
  *  R8  Package engine (P5/ADR-0043): :core:contentpackage is network-free (no java.net/okhttp/
  *      javax.net imports — airplane mode is the normal state) and only :app may import it until
  *      the wiring phase lands.
+ *  R9  Content pipeline (P7/ADR-0045): Kotlin modules must not import Node pipeline code and the
+ *      pipeline lives ONLY in tools/content-pipeline (single canonical implementation).
  *
  * Existing boundary exceptions are an explicit ALLOWLIST with a reason and a review date; the
  * list may only shrink. Any violation not in the allowlist exits 1.

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "transitions": [
+    {
+      "stationId": "ST07",
+      "from": "SOURCE_ONLY",
+      "to": "MAPPED_TO_REPO",
+      "at": "2026-11-13T00:00:00.000Z",
+      "actor": "content-pipeline-p7",
+      "evidence": {
+        "kind": "typed-artifact-transcription",
+        "artifact": "content-library/authoring/stations/ST07.json",
+        "sourceHashVerified": true
+      }
+    }
+  ]
+}

@@ -100,6 +100,7 @@
     "verify:android-build-harness": "node scripts/verify-android-build-harness.mjs",
     "test:android-build": "node --test tools/tests/android-build.test.mjs",
     "verify:content-library": "node scripts/verify-content-library.mjs",
+    "content:pipeline": "node tools/content-pipeline/cli.mjs",
     "verify:project-skills": "node scripts/verify-project-skills.mjs",
     "verify:design-governance": "node scripts/verify-design-governance.mjs",
     "verify:design-pack": "node design/playbook/quality/validate-pack.mjs",

@@ -1,0 +1,135 @@
+{
+  "stationId": "ST07",
+  "lifecycle": "MAPPED_TO_REPO",
+  "evaluatorConfig": {
+    "draft": true,
+    "draftSourceRef": "originals/shomara-stage7-pilot-ST07.md#section-3",
+    "ruleVersionRef": "runtime-policy:phase13-postgres-v1 (DRAFT reference only; CONTENT-014 OPEN)",
+    "items": [
+      {
+        "id": "ST07.P2.i01",
+        "template": "T15",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i01/answer",
+        "correctRef": {
+          "kind": "numeral",
+          "value": 1
+        }
+      },
+      {
+        "id": "ST07.P2.i02",
+        "template": "T15",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i02/answer",
+        "correctRef": {
+          "kind": "numeral",
+          "value": 2
+        }
+      },
+      {
+        "id": "ST07.P2.i03",
+        "template": "T13",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i03/answer",
+        "correctRef": {
+          "kind": "stroke-evaluation",
+          "value": null
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST07.P2.i04",
+        "template": "T13",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i04/answer",
+        "correctRef": {
+          "kind": "stroke-evaluation",
+          "value": null
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST07.P2.i05",
+        "template": "T15",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i05/answer",
+        "correctRef": {
+          "kind": "picture-count",
+          "value": 2
+        }
+      },
+      {
+        "id": "ST07.P2.i06",
+        "template": "T15",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i06/answer",
+        "correctRef": {
+          "kind": "picture-count",
+          "value": 1
+        }
+      },
+      {
+        "id": "ST07.P2.i07",
+        "template": "T01",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i07/answer",
+        "correctRef": {
+          "kind": "tray-placement",
+          "value": null
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST07.P2.i08",
+        "template": "T01",
+        "stage": "P2_GUIDED",
+        "pilotAnswerAnchor": "section-3/ST07.P2.i08/answer",
+        "correctRef": {
+          "kind": "tray-placement",
+          "value": null
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      }
+    ]
+  },
+  "passThreshold": "pilot section-10 (DRAFT — CONTENT-014/011 pending owner decision)",
+  "reviewEvidence": [],
+  "prerequisites": [],
+  "provenance": {
+    "sourceFile": "originals/shomara-stage7-pilot-ST07.md",
+    "sourceSha256File": "tools/content-pipeline/fixtures/negative/source-hash-drift.hashes.json",
+    "transcribedBy": "content-pipeline-p7",
+    "transcribedAt": "2026-11-13",
+    "taughtNumerals": [
+      1,
+      2
+    ],
+    "declaredItemCounts": {
+      "section2_P1_DISCOVER_steps": 4,
+      "section3_P2_GUIDED_items": 8,
+      "section4_P3_GAME_T05": 1,
+      "section5_P4_pool_items": 5,
+      "section6_P5_or_assessment_items": 5,
+      "section7_S13_S14": 2
+    },
+    "stageMappingStatus": "PROTOTYPE — stage names need owner confirmation (CONTENT-014 adjacent)",
+    "audioManifest": "originals/shomara-ST07-audio-manifest.csv",
+    "audioRowCount": 53,
+    "audioStatus": "ALL_DRAFT_NO_BINARIES",
+    "assetPolicy": "all fresh illustrations; no book photos; no text/numerals inside images except GLYPH.*/PAT.num* (pilot section-9)",
+    "assetDelivery": "NOT_DELIVERED (CONTENT-009)",
+    "rightsModeration": "PENDING_RIGHTS_REVIEW",
+    "gapsOpen": [
+      "O1",
+      "O2",
+      "O7",
+      "CONTENT-009",
+      "CONTENT-010",
+      "CONTENT-014",
+      "stage-mapping-confirmation"
+    ]
+  },
+  "advanceProse": "پیشروی دستی؛ هر بخش پس از تکمیل، بخش بعدی باز می‌شود (pilot section-0)",
+  "interactionProse": "یک کارت در هر لحظه؛ بازخورد گرم؛ بدون ستاره/سکه/جوایز تصادفی (pilot section-0/9)",
+  "behaviorId": "tap_select"
+}

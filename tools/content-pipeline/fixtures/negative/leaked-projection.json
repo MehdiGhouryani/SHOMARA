@@ -1,0 +1,20 @@
+{
+  "stationId": "ST07",
+  "packageVersion": 1,
+  "macroStages": [
+    "P1_DISCOVER",
+    "P2_GUIDED",
+    "P3_GAME",
+    "P4_ASSESSMENT",
+    "P5_TRANSFER"
+  ],
+  "prompt": "پاسخ درست عدد 1 است",
+  "visibleOptions": [
+    "opt-1"
+  ],
+  "interactionConfig": {},
+  "audioAssetIds": [],
+  "audioPolicy": "EXPECTED_NEVER_BLOCKING",
+  "accessibilityCopy": "جواب: correctIndex=0",
+  "correctIndex": 0
+}
