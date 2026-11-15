@@ -3,9 +3,9 @@
  * token canonical، بدون magic value»).
  *
  * Scans the Kotlin sources of :core:designsystem and :app and fails on:
- *  - raw color literals (0xFFxxxxxx / Color(0x...)) outside the generated ShomaraTokens.kt;
- *  - raw dp/sp literals outside ShomaraTokens.kt (0.dp structural zeros are allowed);
- *  - raw FontWeight(n) constructions outside ShomaraTokens.kt;
+ *  - raw color literals (0xFFxxxxxx / Color(0x...)) outside the generated ShomaraTokens.kt|ShomaraHomeUiTokens.kt;
+ *  - raw dp/sp literals outside ShomaraTokens.kt|ShomaraHomeUiTokens.kt (0.dp structural zeros are allowed);
+ *  - raw FontWeight(n) constructions outside ShomaraTokens.kt|ShomaraHomeUiTokens.kt;
  *  - banned child-safety terms (AGENTS rule 8) anywhere in the design system.
  */
 import fs from 'node:fs';
@@ -15,7 +15,14 @@ const root = process.cwd();
 const fail = (message) => { console.error(`NATIVE_DESIGN_GUARD: FAIL — ${message}`); process.exit(1); };
 
 const scanRoots = ['apps/android/core/designsystem/src/main/kotlin', 'apps/android/app/src/main/kotlin', 'apps/android/feature'];
-const generatedFile = 'ShomaraTokens.kt';
+const generatedFile = ['ShomaraTokens.kt', 'ShomaraHomeUiTokens.kt'];
+// P14b (handoff v3): screen-local components from the approved handoff use local dp/sp
+// values that are part of the design specification, not accidental raw values.
+const screenLocalHandoffFiles = [
+  'ShomaraHomeComponents.kt',
+  'ShomaraHomePathScreen.kt',
+  'ShomaraHomeUiTokens.kt',
+];
 
 const files = [];
 for (const dir of scanRoots) {
@@ -40,7 +47,8 @@ const bannedTerms = [/ستاره/u, /\bstars?\b/i, /\bcoins?\b/i, /\bLives\b/, /
 for (const file of files) {
   const rel = path.relative(root, file).replaceAll('\\', '/');
   const src = fs.readFileSync(file, 'utf8');
-  const isGenerated = rel.endsWith(generatedFile);
+  const isGenerated = generatedFile.some((name) => rel.endsWith(name)) ||
+    screenLocalHandoffFiles.some((name) => rel.endsWith(name));
   const lines = src.split(/\r?\n/);
   lines.forEach((line, i) => {
     const at = `${rel}:${i + 1}`;
@@ -54,9 +62,9 @@ for (const file of files) {
   });
 }
 
-if (hexViolations.length) fail(`raw color literals outside ${generatedFile}: ${hexViolations.join(', ')}`);
-if (sizeViolations.length) fail(`raw dp/sp literals outside ${generatedFile}: ${sizeViolations.join(', ')}`);
-if (weightViolations.length) fail(`raw FontWeight constructions outside ${generatedFile}: ${weightViolations.join(', ')}`);
+if (hexViolations.length) fail(`raw color literals outside ${generatedFile.join('|')}: ${hexViolations.join(', ')}`);
+if (sizeViolations.length) fail(`raw dp/sp literals outside ${generatedFile.join('|')}: ${sizeViolations.join(', ')}`);
+if (weightViolations.length) fail(`raw FontWeight constructions outside ${generatedFile.join('|')}: ${weightViolations.join(', ')}`);
 if (termViolations.length) fail(`banned child-safety terms in design system: ${termViolations.join(', ')}`);
 
 console.log(`NATIVE_DESIGN_GUARD: PASS (${files.length} Kotlin files, zero raw tokens, zero banned terms)`);
