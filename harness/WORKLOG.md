@@ -895,3 +895,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **Security closure:** PBKDF2 PIN (210k) · ForbiddenFieldGuard · projectionViolations · R10 debug isolation · signed package (ECDSA P-256) · no network — همه تست‌شده.
 - **Accessibility static audit:** contentDescription، mergeDescendants، Role، LiveRegion، touchMin=48dp، manipulative 72-80dp، RTL root، reduced-motion CompositionLocal، typography token-driven. TalkBack real gesture = BLOCKED (دستگاه فیزیکی).
 - **Production Readiness Report:** BLOCKED — ۷ P0 + ۷ P1 + ۳ P2 فهرست دقیق در PRODUCTION_READINESS_REPORT_FA.md. مسیر رسیدن به PASS: O1/O2/O5/O6/O7/HG-05 → authoring ۲۴ ایستگاه → media واقعی → signing → device benchmarks.
+
+## 2026-11-15 — IPA-P14b (Home UI implementation from handoff v3) — branch infra/p14-lesson-experiences
+
+- **Handoff v3 ZIP:** 115 فایل — design spec, 32 VectorDrawable, 35 SVG source, Kotlin reference components, UiState contract, character integration, QA checklist.
+- **Assets installed:** ۳۲ VectorDrawable → core/designsystem/res/drawable · Fandogh → drawable-nodpi/shomara_char_fandogh_01.webp · SVG sources → design/playbook/assets/home-handoff-v3/
+- **HomeUiState (immutable)**: ShomaraHomePathUiState با nodes/progress/continueStation/currentStationId/scrollAnchor + ShomaraHomePathEvent (۶ intent) — از handoff v3 دقیق.
+- **HomePathScreen**: HomeHeader (RTL, character slot 72dp Main) → ChapterProgressCard → ContinueStationCard (violet CTA) → PathNodes + Connectors → PathFab — همه از handoff v3 components با adaptation به ShomaraTokens موجود.
+- **Attempt persistence wiring**: ShomaraGuidedStage → onAttemptEvaluated → ShomaraLessonHost → lessonRecords (Room v3) → سطر واقعی برای هر بررسی tap.
+- **شواهد**: feature:path compile PASS · android:gate PASS · static:all 94/94 · repo PASS.
+- **صادقانه**: این پیاده‌سازی UI-only است؛ اتصال به Room/ProgressionEngine از فاز P8 slice آماده؛ TalkBack walkthrough دستگاهی pending؛ Home visual design handoff BLOCKED از P12 اکنون UNBLOCKED (بسته در دسترس).
