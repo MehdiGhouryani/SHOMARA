@@ -68,6 +68,14 @@ jobs:
       - run: npm run build:packages
       - id: verify
         run: npm run verify:static:all
+      - name: Upload parity captures and raw pixel report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-diagnostics
+          path: apps/mobile/parity/out/
+          if-no-files-found: warn
+          retention-days: 7
       - name: surface hidden failures (wave E1)
         # The job stays informational (continue-on-error above) until the owner confirms it green on
         # GitHub, but a failure inside it must be loud in the pipeline output, never silent.
