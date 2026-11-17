@@ -916,3 +916,15 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **VectorDrawable fix:** strokeColor="none" از shomara_ui_play.xml حذف شد (invalid AAPT attr).
 - **شواهد:** android:gate PASS · static:all 94/94 · repo PASS · APK b9191d94… نصب و اجرا · screenshot artifacts/p14c-home/home-integrated.png.
 - **صادقانه:** P4/P5 projection transcribe نشده؛ T13/T01 ارزیاب ندارند؛ TalkBack real walkthrough دستگاهی pending؛ Home visual handoff تایید نهایی می‌خواهد.
+
+## 2026-11-17 — Deep Transformation / DT-01 — branch work/shomara-deep-transformation
+
+- **Baseline:** exact fork point `infra/p14b-home-ui@6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c`; source branch and `main` remain untouched.
+- **Persistence P0:** `LessonAttemptDao.insert` now uses SQLite `IGNORE`; `RoomLessonRecordRepository.recordAttempt` checks session ownership and writes session + attempt in one Room transaction. A duplicate key for the same session is a no-op without session mutation; a cross-session key collision fails closed.
+- **Regression coverage authored:** normal write, duplicate replay without timestamp change, 12 concurrent same-key retries, cross-session collision, mismatched session IDs, close/reopen durability and CONTENT-018 projection. These tests are **written, not run** in this execution environment.
+- **Composition root:** actual `container.lessonRecords` is passed MainActivity → ShomaraApp → LessonHost; the root repository argument is required instead of silently defaulting to null. Release remains without draft content/evaluator, so this is not a production lesson claim.
+- **Home UX correction:** removed hardcoded grade/chapter and default-zero progress summary; removed the Continue card because it opened the same Station Start Sheet as the Current path node. Header, Path graph, station sheet and tab navigation remain. Do not restore summary until identity-backed UiState is available.
+- **Decision register:** `docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md` records KEEP/REVISE/OPEN/SUPERSEDED/BLOCKED, evidence, trade-offs and human gates.
+- **Unverified:** Gradle compile/lint/Robolectric, Android instrumentation, screenshot sweep, TalkBack and physical-device tests. No local project runtime/Android SDK is exposed in this session; no exit codes are fabricated.
+- **External/product blockers:** O1/O2/O3/O5/O6/O7 remain owner decisions; OTP vs offline-only contradiction remains open; 24 stations, ST07 media, human review/rights remain unfulfilled; P15 release status stays BLOCKED.
+- **Code commits:** `ab5bcba`, `6f3a8a9`, `261c6bd`, `d5c9af2`, `ea4a8ed`, `c0a65fb`, `dd91193`.
