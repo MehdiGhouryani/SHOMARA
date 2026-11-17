@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-07T00:00:00.000Z",
-  "currentPhase": "N08R",
-  "currentTask": "N08R-10",
+  "updatedAt": "2026-11-17",
+  "currentPhase": "N11",
+  "currentTask": "N11-02",
   "statusValues": [
     "TODO",
     "READY",
@@ -46,7 +46,8 @@
     "harness/file-ledger.json",
     "harness/dependency-map.json",
     "harness/WORKLOG.md",
-    "design/playbook/N08R_MISSION_FA.md"
+    "design/playbook/N08R_MISSION_FA.md",
+    "docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md"
   ],
   "commandAllowlist": [
     "git status",
@@ -2575,6 +2576,212 @@
             "install smoke test"
           ],
           "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "N11",
+      "title": "Deep Product & Engineering Transformation",
+      "status": "IN_PROGRESS",
+      "branch": "work/shomara-deep-transformation",
+      "goal": "بازنگری و تکمیل محصول SHOMARA از منبع حقیقت محصول/یادگیری تا معماری، persistence، محتوا، design system، Home، lesson، سایر صفحات، QA، cutover و release؛ بدون تغییر main یا branch مبنا و بدون جعل داده، تصمیم مالک یا شواهد.",
+      "allowedPaths": [
+        "apps/android/**",
+        "apps/mobile/**",
+        "apps/web/**",
+        "packages/**",
+        "content-library/authoring/**",
+        "tools/content-pipeline/**",
+        "design/**",
+        "docs/architecture/**",
+        "docs/adr/**",
+        "docs/delivery/**",
+        "harness/**",
+        "scripts/**",
+        ".github/workflows/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "node tools/harness.mjs validate",
+        "node tools/harness.mjs next",
+        "npm ci",
+        "npm run verify:repository",
+        "npm run verify:static:all",
+        "npx vitest run",
+        "npm run android:gate",
+        "git diff --check"
+      ],
+      "tasks": [
+        {
+          "id": "N11-00",
+          "title": "Repository audit, baseline, branch and decision register",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [],
+          "acceptance": [
+            "audit all product/runtime/architecture/content/design/release evidence from exact P14b SHA",
+            "create isolated work branch and preserve main + source branch",
+            "record KEEP/REVISE/RETIRE/OPEN/SUPERSEDED with source evidence, risks and migration effect",
+            "reconcile START_HERE and machine roadmap with the active transformation branch"
+          ],
+          "evidence": [
+            "work branch created at exact 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c; source branch and main were not modified",
+            "remote audit covered repository history, Android composition root, Room repositories, learning engine, Home, content pipeline and P15 release report",
+            "decision register created at docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md",
+            "local git worktree status and local command exit codes unavailable in this session; CI evidence remains pending"
+          ],
+          "blocker": "Remote source audit is complete, but local worktree/Gradle/device evidence is not available from this execution environment."
+        },
+        {
+          "id": "N11-01",
+          "title": "Product discovery, child learning model and owner decision reconciliation",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N11-00"
+          ],
+          "acceptance": [
+            "map child, parent and content-author journeys and identify source of truth per state",
+            "separate approved product policy from engineering proposals",
+            "record unresolved O1/O2/O3/O5/O6/O7 and offline/OTP conflict without silently deciding for the owner",
+            "document curriculum, evaluator and asset evidence gaps"
+          ],
+          "evidence": [
+            "O1/O2/O3/O5/O6/O7 remain OPEN or OPEN-PROPOSED exactly as the Owner Decision Register records",
+            "identified OTP production flow vs offline-only product conflict; no INTERNET permission or fake auth added",
+            "content pipeline baseline: 25 stations, ST07 draft/pilot, 24 NOT_AUTHORED, 53 missing audio binaries, 36 missing image tokens, zero registered real assets; human review/rights not evidenced"
+          ],
+          "blocker": "Owner decisions and external authored/reviewed/licensed curriculum/media are required before identity, evaluator, package schema or content can be finalized."
+        },
+        {
+          "id": "N11-02",
+          "title": "Architecture, composition root, persistence and lifecycle correctness",
+          "status": "IN_PROGRESS",
+          "dependsOn": [
+            "N11-01"
+          ],
+          "acceptance": [
+            "make lesson session + attempt persistence atomic and retry-safe under concurrent duplicate keys",
+            "wire real repositories through the app composition root; remove silent null wiring for required dependencies",
+            "introduce a real identity-backed Home progress read model only after profile/identity policy is approved",
+            "run Room Robolectric, unit, lint and Android compile gates; update evidence with actual exit codes"
+          ],
+          "evidence": [
+            "Room attempt DAO now uses INSERT OR IGNORE; repository now writes session and attempt in one transaction with key ownership validation",
+            "regression tests authored for concurrent retries, key collision, mismatched IDs, duplicate no-op and reopen durability; not yet run",
+            "container.lessonRecords now flows MainActivity -> ShomaraApp -> LessonHost; required root dependency replaces nullable default",
+            "Home placeholder summary/zero counter and redundant Continue CTA removed because no verified child identity is wired; path graph and Station Start Sheet retained"
+          ],
+          "blocker": "Gradle/CI execution is pending; identity-backed progress wiring remains blocked by O5 and absence of an approved local child identity source."
+        },
+        {
+          "id": "N11-03",
+          "title": "Content engineering, evaluator/package and curriculum production",
+          "status": "BLOCKED",
+          "dependsOn": [
+            "N11-02"
+          ],
+          "acceptance": [
+            "finalize O1/O2 only with owner approval and document the evaluator/package threat model",
+            "transcribe and validate every station using the authored content contracts and immutable source originals",
+            "deliver real audio/images with provenance, rights and human review evidence",
+            "promote content only through the seven-step promotion lifecycle"
+          ],
+          "blocker": "O1/O2 remain owner decisions; 24 stations are not authored; ST07 media and human review/rights evidence are missing. Originals are byte-protected."
+        },
+        {
+          "id": "N11-04",
+          "title": "Design system and shared interaction foundation",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-03"
+          ],
+          "acceptance": [
+            "reconcile canonical tokens/codegen/Compose components and retire duplicate overrides only after consumer proof",
+            "complete accessibility and responsive specs for typography, colors, motion, touch targets and RTL",
+            "run canonical design-system and generated-drift gates"
+          ]
+        },
+        {
+          "id": "N11-05",
+          "title": "Home and learning path — identity-backed, single-action experience",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-04"
+          ],
+          "acceptance": [
+            "build one immutable UiState and ViewModel/UseCase/Repository read path backed by approved local identity and verified progress",
+            "preserve path graph as primary journey; define exactly one primary action per state",
+            "restore summary/continue UI only when it represents real distinct data/action",
+            "test loading/empty/offline/error/current/locked/completed/resume plus RTL, TalkBack and 200% font"
+          ]
+        },
+        {
+          "id": "N11-06",
+          "title": "Lesson player — authoritative evaluator and complete learning loop",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-05"
+          ],
+          "acceptance": [
+            "converge duplicate guided and core evaluator paths after O1/O2 approval",
+            "wire P1-P5 state, session checkpoint/resume, attempt recording, feedback and result through immutable UI state",
+            "never infer correctness, mastery or Station Pass in Compose and never persist/expose answer keys",
+            "test all enabled interaction templates using real approved package content"
+          ]
+        },
+        {
+          "id": "N11-07",
+          "title": "Remaining child, parent, settings and system surfaces",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-06"
+          ],
+          "acceptance": [
+            "complete all registered child/parent/settings routes against the route and state contracts",
+            "wire Parent PIN and privacy deletion using real persisted dependencies without weakening fail-closed behavior",
+            "complete empty/loading/offline/error/back/resume/process-death and accessibility coverage"
+          ]
+        },
+        {
+          "id": "N11-08",
+          "title": "Integrated UX, accessibility, regression and real-device QA",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-07"
+          ],
+          "acceptance": [
+            "run all child/parent journeys and regression suite on 360/390/412dp and 200% font",
+            "verify TalkBack, RTL, keyboard/IME, reduced motion, process death, persistence and offline cold start",
+            "capture real emulator/physical-device screenshots and traces with APK/SHA/device metadata",
+            "update screen ledger and worklog with actual evidence and unresolved blockers"
+          ]
+        },
+        {
+          "id": "N11-09",
+          "title": "Legacy cleanup and route-by-route native cutover",
+          "status": "DEFERRED",
+          "dependsOn": [
+            "N11-08"
+          ],
+          "acceptance": [
+            "prove feature parity and real consumer absence for each legacy route before retirement",
+            "archive superseded documentation/assets safely and preserve protected source originals",
+            "remove V1/Expo and obsolete verifiers only after migration evidence and rollback path exist"
+          ]
+        },
+        {
+          "id": "N11-10",
+          "title": "Security, privacy, performance and release readiness",
+          "status": "BLOCKED",
+          "dependsOn": [
+            "N11-09"
+          ],
+          "acceptance": [
+            "complete privacy/data-safety review, dependency/security checks and real device performance budget",
+            "produce approved content package and verified signing setup outside source control",
+            "pass release compile, signed artifact verification, target API and store declarations",
+            "owner reviews and approves final release gate; no release publication without HG-05"
+          ],
+          "blocker": "Upstream phases, approved content, O1/O2/O5 and owner HG-05, signed external keystore, physical-device benchmark and TalkBack evidence are not complete."
         }
       ]
     }
