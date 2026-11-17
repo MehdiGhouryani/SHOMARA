@@ -49,14 +49,38 @@ class ShomaraThemeTest {
 
     @Test
     fun `clay specs mirror the generated tiers`() {
+        assertEquals(ShomaraTokens.ClayFlatBorderWidth, ShomaraClay.Flat.borderWidth)
+        assertEquals(ShomaraTokens.ClayFlatShadowOpacity.toFloat(), ShomaraClay.Flat.shadowOpacity)
+        assertEquals(ShomaraTokens.ClayFlatShadowRadius, ShomaraClay.Flat.shadowRadius)
+        assertEquals(ShomaraTokens.ClayFlatShadowOffsetY, ShomaraClay.Flat.shadowOffsetY)
+        assertEquals(ShomaraTokens.ClayFlatHighlightOpacity.toFloat(), ShomaraClay.Flat.highlightOpacity)
+        assertEquals(ShomaraTokens.ClayFlatHighlightThickness, ShomaraClay.Flat.highlightThickness)
+        assertEquals(ShomaraTokens.ClayFlatElevation, ShomaraClay.Flat.elevation)
+
+        assertEquals(ShomaraTokens.ClayHintBorderWidth, ShomaraClay.Hint.borderWidth)
+        assertEquals(ShomaraTokens.ClayHintShadowOpacity.toFloat(), ShomaraClay.Hint.shadowOpacity)
+        assertEquals(ShomaraTokens.ClayHintShadowRadius, ShomaraClay.Hint.shadowRadius)
+        assertEquals(ShomaraTokens.ClayHintShadowOffsetY, ShomaraClay.Hint.shadowOffsetY)
+        assertEquals(ShomaraTokens.ClayHintHighlightOpacity.toFloat(), ShomaraClay.Hint.highlightOpacity)
+        assertEquals(ShomaraTokens.ClayHintHighlightThickness, ShomaraClay.Hint.highlightThickness)
+        assertEquals(ShomaraTokens.ClayHintElevation, ShomaraClay.Hint.elevation)
+
         assertEquals(ShomaraTokens.ClaySoftBorderWidth, ShomaraClay.Soft.borderWidth)
         assertEquals(ShomaraTokens.ClaySoftShadowOpacity.toFloat(), ShomaraClay.Soft.shadowOpacity)
+        assertEquals(ShomaraTokens.ClaySoftShadowRadius, ShomaraClay.Soft.shadowRadius)
+        assertEquals(ShomaraTokens.ClaySoftShadowOffsetY, ShomaraClay.Soft.shadowOffsetY)
+        assertEquals(ShomaraTokens.ClaySoftHighlightOpacity.toFloat(), ShomaraClay.Soft.highlightOpacity)
+        assertEquals(ShomaraTokens.ClaySoftHighlightThickness, ShomaraClay.Soft.highlightThickness)
+        assertEquals(ShomaraTokens.ClaySoftElevation, ShomaraClay.Soft.elevation)
+
         assertEquals(ShomaraTokens.ClayFeaturedBorderWidth, ShomaraClay.Featured.borderWidth)
-        assertEquals(ShomaraTokens.ClayLevelFeatured.dp, ShomaraClay.Featured.elevation)
-        // Flat carries no depth; hint is flat depth with its level only.
-        assertEquals(0.dp, ShomaraClay.Flat.borderWidth)
-        assertEquals(0.dp, ShomaraClay.Hint.borderWidth)
-        assertNotEquals(ShomaraClay.Flat.elevation, ShomaraClay.Hint.elevation)
+        assertEquals(ShomaraTokens.ClayFeaturedShadowOpacity.toFloat(), ShomaraClay.Featured.shadowOpacity)
+        assertEquals(ShomaraTokens.ClayFeaturedShadowRadius, ShomaraClay.Featured.shadowRadius)
+        assertEquals(ShomaraTokens.ClayFeaturedShadowOffsetY, ShomaraClay.Featured.shadowOffsetY)
+        assertEquals(ShomaraTokens.ClayFeaturedHighlightOpacity.toFloat(), ShomaraClay.Featured.highlightOpacity)
+        assertEquals(ShomaraTokens.ClayFeaturedHighlightThickness, ShomaraClay.Featured.highlightThickness)
+        assertEquals(ShomaraTokens.ClayFeaturedElevation, ShomaraClay.Featured.elevation)
+        assertNotEquals(ShomaraClay.Flat, ShomaraClay.Hint)
         assertEquals(ShomaraClay.Soft, ShomaraClay.specFor(ShomaraClayDepth.Soft))
         assertEquals(ShomaraClay.Featured, ShomaraClay.specFor(ShomaraClayDepth.Featured))
     }
