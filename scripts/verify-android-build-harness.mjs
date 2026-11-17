@@ -33,6 +33,11 @@ assert.equal(pkg.scripts['android:doctor'], 'node scripts/android-build.mjs doct
 assert.equal(pkg.scripts['android:gate'], 'node scripts/android-build.mjs gate');
 assert.equal(pkg.scripts['android:assemble:debug'], 'node scripts/android-build.mjs assemble-debug');
 
+// POSIX CI invokes the wrapper directly; the executable mode is part of the build contract.
+if (process.platform !== 'win32') {
+  fs.accessSync(path.join(root, 'apps', 'android', 'gradlew'), fs.constants.X_OK);
+}
+
 const ignore = read('.gitignore');
 assert.match(ignore, /^build-reports\/$/m, 'generated build reports must be ignored');
 
