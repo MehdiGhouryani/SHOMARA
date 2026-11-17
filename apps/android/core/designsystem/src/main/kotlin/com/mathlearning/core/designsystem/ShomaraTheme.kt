@@ -54,13 +54,13 @@ object ShomaraClayColors {
 /** Semantic clay specs derived only from the generated clay tokens. */
 object ShomaraClay {
     val Flat: ShomaraClaySpec = ShomaraClaySpec(
-        borderWidth = 0.dp,
-        shadowOpacity = 0f,
-        shadowRadius = 0.dp,
-        shadowOffsetY = 0.dp,
-        highlightOpacity = 0f,
-        highlightThickness = 0.dp,
-        elevation = ShomaraTokens.ClayLevelFlat.dp,
+        borderWidth = ShomaraTokens.ClayFlatBorderWidth,
+        shadowOpacity = ShomaraTokens.ClayFlatShadowOpacity.toFloat(),
+        shadowRadius = ShomaraTokens.ClayFlatShadowRadius,
+        shadowOffsetY = ShomaraTokens.ClayFlatShadowOffsetY,
+        highlightOpacity = ShomaraTokens.ClayFlatHighlightOpacity.toFloat(),
+        highlightThickness = ShomaraTokens.ClayFlatHighlightThickness,
+        elevation = ShomaraTokens.ClayFlatElevation,
     )
     val Hint: ShomaraClaySpec = ShomaraClaySpec(
         borderWidth = ShomaraTokens.ClayHintBorderWidth,
@@ -78,7 +78,7 @@ object ShomaraClay {
         shadowOffsetY = ShomaraTokens.ClaySoftShadowOffsetY,
         highlightOpacity = ShomaraTokens.ClaySoftHighlightOpacity.toFloat(),
         highlightThickness = ShomaraTokens.ClaySoftHighlightThickness,
-        elevation = ShomaraTokens.ClayLevelSoft.dp,
+        elevation = ShomaraTokens.ClaySoftElevation,
     )
     val Featured: ShomaraClaySpec = ShomaraClaySpec(
         borderWidth = ShomaraTokens.ClayFeaturedBorderWidth,
@@ -87,7 +87,7 @@ object ShomaraClay {
         shadowOffsetY = ShomaraTokens.ClayFeaturedShadowOffsetY,
         highlightOpacity = ShomaraTokens.ClayFeaturedHighlightOpacity.toFloat(),
         highlightThickness = ShomaraTokens.ClayFeaturedHighlightThickness,
-        elevation = ShomaraTokens.ClayLevelFeatured.dp,
+        elevation = ShomaraTokens.ClayFeaturedElevation,
     )
 
     fun specFor(depth: ShomaraClayDepth): ShomaraClaySpec = when (depth) {
