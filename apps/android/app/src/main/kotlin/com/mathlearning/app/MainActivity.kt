@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                         settingsStore = container.settingsStore,
                         simulatedAuth = container.simulatedAuthEnabled,
                         backendConfigured = container.isBackendConfigured(),
+                        lessonRecordRepository = container.lessonRecords,
                     )
                 }
             }
