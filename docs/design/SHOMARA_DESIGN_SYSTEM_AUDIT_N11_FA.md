@@ -69,13 +69,13 @@
 
 ## 5. شواهد اجرا
 
-**Android Native run `44161892815` روی checkpoint code SHA `907a63e`:**
+**Android Native run `44188354588` روی checkpoint SHA `8ebfa084`:**
 - Environment: READY؛ JDK 17 و Android compile SDK 37.
-- فرمان: `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon`.
-- نتیجه: Gradle exitCode=0؛ `BUILD SUCCESSFUL` در 2m45s؛ Android lint و app debug Kotlin compile موفق.
-- diagnostics artifact: ID `14364890263`؛ فایل `build-reports/android/gate.json` PASS؛ ۸۱ XML suite و ۵۷۶ test، zero failure/error/skip.
+- فرمان: `./gradlew test lint :app:compileDebugKotlin :app:compileDebugAndroidTestKotlin --stacktrace --no-daemon`.
+- نتیجه: Gradle exitCode=0؛ `BUILD SUCCESSFUL` در 2m15s؛ lint، app debug compile و instrumentation-test source compile موفق.
+- diagnostics artifact: ID `14375682172`؛ `build-reports/android/gate.json` PASS. این artifact فقط gate.json داشت و count/suite XML را منتشر نکرد؛ test count در این checkpoint ادعا نمی‌شود.
 - `ci/core`: PASS. `ci/static-core`: PASS، شامل Harness و token drift CLI.
-- `verify:static:all`: 93/94؛ تنها parity-run باقی‌مانده است. همان مورد روی `main` در run `43088599553` مورخ 2026-11-11 نیز `practice diff 0.50%` و `PARITY: FAIL (8/29)` داشته؛ threshold/golden دستکاری نشده‌اند.
+- `verify:static:all`: آخرین failure در run `44186937373` فقط `practice` بود: 0.5040485829959515%، 1494/296400 pixels. Artifact `14374088460` بررسی شد و duplicate lock را نشان داد؛ اصلاح در `PracticeView.tsx` با commit `ca8067f0` اعمال شده است. Golden/threshold دست‌نخورده‌اند.
 
 **محدودیت:** این شواهد برای کد پیش از آخرین اصلاحات Button Border است. اجرای جدید CI پس از SHA `c4fc214` و تغییرات مستندات هنوز باید نتیجه بدهد؛ تا آن زمان کامپایل آخرین branch commit را PASS اعلام نمی‌کنیم.
 
@@ -97,5 +97,6 @@
 4. IME فارسی، focus/keyboard، process restore و reduced-motion باید روی device اجرا شوند.
 5. فایل TTF Vazirmatn باید از مالک/منبع تأییدشده برسد؛ fallback نباید Vazirmatn معرفی شود.
 6. Shadow renderer token-driven فقط با visual evidence تکمیل شود.
+7. CI کامل commit `ca8067f0` باید parity را دوباره اجرا کند؛ نتیجهٔ pending را پس از اتمام ثبت کنید.
 
 **نتیجه:** بنیاد token/codegen و shared components در source و JVM logic وجود دارد؛ Native visual validation هنوز انجام نشده و release/design mission کامل اعلام نمی‌شود.

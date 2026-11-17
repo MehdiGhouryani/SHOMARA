@@ -54,10 +54,10 @@
 **وضعیت:** REVISE → تغییر کد ثبت شده؛ UX/device UNVERIFIED.
 
 - **مسئله:** `ShomaraChildShellHost` برچسب پایه/عنوان فصل را ثابت نشان می‌داد و شمارش `completedStations` با مقدار پیش‌فرض صفر نمایش داده می‌شد؛ در همان صفحه Continue Card و Current node یک Station Start Sheet یکسان را باز می‌کردند.
-- **شواهد:** `apps/android/app/src/main/kotlin/com/mathlearning/app/shell/ShomaraChildShellHost.kt`؛ قرارداد `ShomaraHomeUiState.kt` هنوز یک UiState immutable می‌خواهد؛ ProgressRepository فقط دادهٔ server-verified را بر اساس learningIdentityId می‌خواند.
+- **شواهد:** `apps/android/app/src/main/kotlin/com/mathlearning/app/shell/ShomaraChildShellHost.kt`؛ قرارداد Home هنوز یک UiState immutable می‌خواهد؛ projection قبلی server-verified متعلق به معماری پیش از ADR-0039 است و منبع Home آفلاین فعلی نیست.
 - **تغییر:** کارت‌های summary و Continue از Host فعال حذف شدند؛ Header، مسیر زیگزاگی و Station Start Sheet حفظ شدند.
 - **دلیل:** identity معتبر و projection قابل‌مصرف در root وجود ندارد؛ AuthSession فقط token/session state دارد و افزودن raw token به‌عنوان identity ممنوع/نامعتبر است. O5 نیز OPEN است.
-- **ریسک/گام بعدی:** O5 تک/چندپروفایلی هنوز OPEN است؛ پس identity-backed progress wiring انجام نشده. علاوه بر summary حذف‌شده، ShomaraPathProgress() پیش‌فرض در graph، ST01 را Fresh می‌کند؛ بنابراین کاربر بازگشته هم ممکن است اشتباهاً در ST01 دیده شود. این یک P0 باقیمانده برای N11-05 است؛ تا هویت محلی و state واقعی، نه summary/Continue و نه Fresh بودن نباید به‌عنوان پیشرفت واقعی تلقی شود.
+- **اصلاح fail-closed:** ShomaraPathProgress به‌صورت unresolved پیش‌فرض می‌شود؛ فقط emptyResolved() پس از load هویت/پیشرفت اجازهٔ نمایش Fresh را می‌دهد. Home و Practice تا resolve شدن Loading هستند؛ deep link و Station Start Sheet هم تا همان زمان deferred می‌شوند. این guard جلوی state ساختگی را می‌گیرد، اما هویت محلی و Room progress هنوز پیاده نشده‌اند.
 
 ### DTR-004 — OTP در برابر محصول کاملاً آفلاین
 **وضعیت:** KEEP / OWNER-APPROVED + REVISE (MIGRATION DEBT) — نه OPEN دربارهٔ سیاست محصول.
@@ -79,10 +79,21 @@
 - **KEEP:** `packages/design-system/src/tokens.json` با v2 به‌عنوان منبع canonical و codegen دوخروجی‌ای؛ generated Kotlin دستی تغییر نمی‌کند. legacy v1 تا اثبات عدم مصرف وب/سایر پلتفرم retire نمی‌شود.
 - **REVISE / تغییر:** resolver موازی حذف شد؛ همهٔ source و debug consumerها به `ShomaraClayDepth` و `ShomaraClay.specFor` مهاجرت کردند. Flat/Hint/Soft/Featured تمام propertyهای خود را از generated v2 tokens می‌گیرند. Border Card از tier state resolve می‌شود. Ghost Button عمداً Flat می‌ماند ولی outline یک‌پیکسلی خود را از HintBorderWidth می‌گیرد، نه SoftBorderWidth.
 - **Regression tests:** property-by-property token mapping برای چهار tier؛ border mapping همهٔ Card states؛ border mapping Primary Disabled/Pressed/Default و Ghost. Token drift CLI به static-core PR CI اضافه شد.
-- **CI evidence:** run `44161892815` در 2026-11-17 موفق؛ gate JSON status PASS، Android SDK 37 + JDK 17 READY، `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon` exit 0 و `BUILD SUCCESSFUL`. Artifact diagnostics با ID `14364890263`؛ ۸۱ XML suite، ۵۷۶ test، صفر failure/error/skip در این checkpoint.
+- **CI evidence:** Android Native run `44188354588` روی commit `8ebfa084` در 2026-11-17 موفق؛ gate JSON status PASS، SDK 37 + JDK 17 READY؛ `./gradlew test lint :app:compileDebugKotlin :app:compileDebugAndroidTestKotlin --stacktrace --no-daemon` exit 0 و BUILD SUCCESSFUL. Gate artifact counts را منتشر نکرد؛ هیچ عدد تستی از این artifact قابل اثبات نیست.
 - **مرز rendering:** `ClaySurface` هنوز shadow opacity/radius/offset و highlight opacity را به rendering مستقل map نمی‌کند؛ Compose elevation renderer فعلی است. بدون screenshot compare روی 360/390/412dp و font scale 2.0، Canvas/gradient سفارشی اضافه نمی‌شود.
 - **ریسک/گام بعد:** lint/compile/JVM pass معادل screenshot، Compose semantics، TalkBack، IME یا physical device نیست. همهٔ کامپوننت‌ها تا ثبت evidence واقعی `NATIVE_PENDING` هستند. فایل TTF مجاز Vazirmatn هم هنوز ورودی مالک است.
 
+
+### DTR-006 — Home unresolved state و اصلاح parity صفحهٔ تمرین
+
+**وضعیت:** REVISE → source implemented؛ CI روی commit ca806 pending.
+
+- **Home:** isResolved پیش‌فرض false است؛ فقط snapshot محلی resolveشده یا emptyResolved() اجازهٔ Fresh می‌دهد. Home/Practice در حالت unresolved Loading هستند و deep link/Station Start Sheet تا resolve شدن متوقف می‌شود.
+- **تست:** JVM distinction برای unresolved/emptyResolved، Compose test برای deferred deep link و Compose test برای Practice Loading وجود دارند. Android Gate روی ancestor 8ebfa اجرا شد و Gradle test/lint/app compile/androidTest-source compile را با exit code صفر تمام کرد.
+- **Parity baseline:** artifact 14374088460 از run 44186937373 نشان می‌دهد practice diff = 0.5040485829959515% (1494 bad pixels از 296400؛ سقف 0.5%). تصویر actual در ردیف Locked دو قفل داشت؛ golden تنها یک قفل داخل badge داشت.
+- **ریشهٔ دقیق:** parity specimen در tabs.tsx icon='lock' را می‌داد؛ PracticeView هم همان badge icon را رندر می‌کرد و هم trailingIcon='lock' را به ListRow می‌داد. trailingIcon تکراری حذف شد؛ badge lock باقی است. Golden و threshold تغییر نکردند.
+- **CI جدید:** ca8067f0e36a27ff75733336a0ec83d25b8362c2؛ runهای 44189288523 و 44189288438 هنگام ثبت این سند pending بودند. تا تکمیل آن‌ها parity fix را verified اعلام نکنید.
+- **O5:** تصمیم همچنان OPEN است؛ بستهٔ تصمیم مالک در OWNER_DECISION_BRIEF_O5_LOCAL_PROFILE_FA.md. هیچ child_profiles table یا single/multi policy بدون رأی مالک اضافه نشده.
 ## 4. تغییرات ثبت‌شده در شاخهٔ اجرا
 
 | Commit | تغییر |
