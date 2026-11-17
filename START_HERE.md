@@ -35,9 +35,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 60
+file_version: 61
 last_updated: 2026-11-17
-snapshot_id: SNAP-20261117-DT-02-HARNESS-N11
+snapshot_id: SNAP-20261117-DT-03-ANDROID-GATE
 baseline_commit: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
 working_branch: work/shomara-deep-transformation
 working_branch_pushed: true
@@ -46,10 +46,10 @@ active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N11
-current_task: N11-02
-phase_status: IN_PROGRESS__ATOMIC_PERSISTENCE_AND_COMPOSITION_ROOT
+current_task: N11-04
+phase_status: N11_02_DONE_WITH_BLOCKER__N11_04_DESIGN_SYSTEM_ACTIVE
 apk_status: NOT_BUILT_ON_TRANSFORMATION_BRANCH
-blocked_note: Deep Product & Engineering Transformation is active on work/shomara-deep-transformation. N11-00 and N11-01 are DONE_WITH_BLOCKER based on remote repository evidence; N11-02 is IN_PROGRESS and its new tests/Gradle compile are not yet executed. O1/O2/O3/O5/O6/O7 remain owner decisions; no identity-backed Home progress may be fabricated. Content/media human review and rights, OTP/offline policy, device/TalkBack evidence and release HG-05 remain open.
+blocked_note: N11-02 DONE_WITH_BLOCKER: Android Native CI PASS (Gradle exit 0; 575 tests / 0 failures, Room 7/7; lint + app compile PASS). N11-04 Design System foundation active. O1/O2/O3/O5/O6/O7 remain owner decisions. ADR-0039 fully-offline/no-server is already owner-approved; legacy OTP/token/session retirement is Phase 2 after O5. Home P0 remains: empty default ShomaraPathProgress maps ST01 to Fresh for returning users until approved local identity + Room progress projection exist. Content/media human review/rights, TalkBack/device QA, APK and release HG-05 remain open.
 ```
 
 ## 0. تصمیم مالک و مرز کار
