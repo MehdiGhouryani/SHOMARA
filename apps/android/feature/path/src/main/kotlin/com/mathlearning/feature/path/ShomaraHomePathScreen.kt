@@ -108,7 +108,7 @@ private fun HomeReady(
             .verticalScroll(scrollState)
             .background(ShomaraHomeUiTokens.Canvas)
             .padding(horizontal = ShomaraHomeUiTokens.ScreenInset),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
         // A. Home header
         ShomaraHomeHeader(
@@ -145,7 +145,7 @@ private fun HomeReady(
                     Image(
                         painter = painterResource(R.drawable.shomara_ui_play),
                         contentDescription = null,
-                        modifier = Modifier.size(40.dp),
+                        modifier = Modifier.size(ShomaraTokens.Space40),
                     )
                 },
             )

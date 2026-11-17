@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
@@ -42,6 +41,7 @@ import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.R
 import com.mathlearning.core.designsystem.ShomaraTapGuard
 import com.mathlearning.core.designsystem.rememberShomaraTapGuard
+import com.mathlearning.core.designsystem.ShomaraTokens
 
 /** Compact header. The optional character slot is an approved static art asset, never a redraw. */
 @Composable
@@ -56,35 +56,35 @@ fun ShomaraHomeHeader(
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
     ) {
         // In RTL, the first child is at the right edge: title first, then mascot, then settings.
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-            Text(title, color = ShomaraHomeUiTokens.Ink, fontSize = 22.sp,
-                lineHeight = 30.sp, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.End)
-            Spacer(Modifier.height(2.dp))
-            Text(subtitle, color = ShomaraHomeUiTokens.Muted, fontSize = 13.sp,
-                lineHeight = 19.sp, textAlign = TextAlign.End)
+            Text(title, color = ShomaraHomeUiTokens.Ink, fontSize = ShomaraTokens.TypeTitleFontSize,
+                lineHeight = ShomaraTokens.TypeTitleLineHeight, fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
+            Spacer(Modifier.height(ShomaraTokens.Space4))
+            Text(subtitle, color = ShomaraHomeUiTokens.Muted, fontSize = ShomaraTokens.TypeBodyFontSize,
+                lineHeight = ShomaraTokens.TypeBodyLineHeight, textAlign = TextAlign.End)
         }
         if (characterSlot != null) {
-            Box(Modifier.size(72.dp), contentAlignment = Alignment.Center) { characterSlot() }
+            Box(Modifier.size(ShomaraTokens.ComponentNodeSize), contentAlignment = Alignment.Center) { characterSlot() }
         }
         if (onSettings != null) {
             Surface(
                 onClick = onSettings,
                 modifier = Modifier
-                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .defaultMinSize(minWidth = ShomaraTokens.ComponentTouchMin, minHeight = ShomaraTokens.ComponentTouchMin)
                     .semantics { contentDescription = settingsContentDescription },
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(ShomaraTokens.Space16),
                 color = ShomaraHomeUiTokens.Surface,
-                border = BorderStroke(1.dp, ShomaraHomeUiTokens.Border),
-                shadowElevation = 2.dp,
+                border = BorderStroke(ShomaraTokens.Space4, ShomaraHomeUiTokens.Border),
+                shadowElevation = ShomaraTokens.Space4,
             ) {
-                Box(Modifier.padding(11.dp), contentAlignment = Alignment.Center) {
+                Box(Modifier.padding(ShomaraTokens.Space12), contentAlignment = Alignment.Center) {
                     androidx.compose.foundation.Image(
                         painter = painterResource(R.drawable.shomara_ui_settings),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(ShomaraTokens.Space24),
                     )
                 }
             }
@@ -103,25 +103,25 @@ fun ShomaraChapterProgressCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = ShomaraHomeUiTokens.Surface,
-        shape = RoundedCornerShape(26.dp),
-        border = BorderStroke(1.dp, ShomaraHomeUiTokens.Border),
-        shadowElevation = 4.dp,
+        shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
+        border = BorderStroke(ShomaraTokens.Space4, ShomaraHomeUiTokens.Border),
+        shadowElevation = ShomaraTokens.Space4,
     ) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+        Column(Modifier.padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Box(
-                    Modifier.background(ShomaraHomeUiTokens.VioletSoft, RoundedCornerShape(14.dp))
-                        .padding(horizontal = 12.dp, vertical = 7.dp),
+                    Modifier.background(ShomaraHomeUiTokens.VioletSoft, RoundedCornerShape(ShomaraTokens.Space16))
+                        .padding(horizontal = ShomaraTokens.Space12, vertical = ShomaraTokens.Space8),
                 ) {
                     Text(gradeLabel, color = ShomaraHomeUiTokens.VioletDark,
-                        fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        fontSize = ShomaraTokens.TypeCaptionFontSize, fontWeight = FontWeight.Bold)
                 }
                 Text(chapterTitle, color = ShomaraHomeUiTokens.Ink,
-                    fontSize = 16.sp, lineHeight = 23.sp,
+                    fontSize = ShomaraTokens.TypeBodyFontSize, lineHeight = ShomaraTokens.TypeBodyLineHeight,
                     fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
             }
             if (progress == null || !progress.isDeterminate) {
@@ -129,8 +129,8 @@ fun ShomaraChapterProgressCard(
                     text = progress?.spokenLabel ?: "پیشرفت این فصل در دسترس نیست",
                     modifier = Modifier.fillMaxWidth(),
                     color = ShomaraHomeUiTokens.Muted,
-                    fontSize = 12.sp,
-                    lineHeight = 18.sp,
+                    fontSize = ShomaraTokens.TypeCaptionFontSize,
+                    lineHeight = ShomaraTokens.TypeBodyLineHeight,
                     textAlign = TextAlign.End,
                 )
             } else {
@@ -138,13 +138,13 @@ fun ShomaraChapterProgressCard(
                     text = progress.spokenLabel,
                     modifier = Modifier.fillMaxWidth(),
                     color = ShomaraHomeUiTokens.Muted,
-                    fontSize = 12.sp,
-                    lineHeight = 18.sp,
+                    fontSize = ShomaraTokens.TypeCaptionFontSize,
+                    lineHeight = ShomaraTokens.TypeBodyLineHeight,
                     textAlign = TextAlign.End,
                 )
                 LinearProgressIndicator(
                     progress = { progress.fraction },
-                    modifier = Modifier.fillMaxWidth().height(9.dp).clip(CircleShape).semantics {
+                    modifier = Modifier.fillMaxWidth().height(ShomaraTokens.Space8).clip(CircleShape).semantics {
                         progressBarRangeInfo = ProgressBarRangeInfo(progress.fraction, 0f..1f)
                         contentDescription = progress.spokenLabel
                     },
@@ -171,31 +171,31 @@ fun ShomaraContinueStationCard(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
         color = ShomaraHomeUiTokens.Violet,
-        shadowElevation = 5.dp,
+        shadowElevation = ShomaraTokens.Space4,
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(16.dp),
+            Modifier.fillMaxWidth().padding(ShomaraTokens.Space16),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
             // In an RTL Row, the first child is placed on the physical right.
             // Keep the text/CTA first so the optional Number/lesson art sits on the left,
             // matching the approved composition.
             Column(
                 Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
                 horizontalAlignment = Alignment.End,
             ) {
                 Text(eyebrow, color = ShomaraHomeUiTokens.OnViolet,
-                    fontSize = 12.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.End)
+                    fontSize = ShomaraTokens.TypeCaptionFontSize, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.End)
                 Text(title, color = ShomaraHomeUiTokens.OnViolet,
-                    fontSize = 18.sp, lineHeight = 26.sp,
-                    fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.End)
+                    fontSize = ShomaraTokens.TypeTitleFontSize, lineHeight = ShomaraTokens.TypeTitleLineHeight,
+                    fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
                 if (!supportingText.isNullOrBlank()) {
                     Text(supportingText, color = ShomaraHomeUiTokens.OnVioletMuted,
-                        fontSize = 12.sp, lineHeight = 18.sp, textAlign = TextAlign.End)
+                        fontSize = ShomaraTokens.TypeCaptionFontSize, lineHeight = ShomaraTokens.TypeBodyLineHeight, textAlign = TextAlign.End)
                 }
                 // This is an on-violet contrast treatment. The shared Button currently exposes
                 // canonical green variants only; keep the same touch/guard semantics locally
@@ -203,7 +203,7 @@ fun ShomaraContinueStationCard(
                 val actionModifier = if (loading) {
                     Modifier
                         .fillMaxWidth()
-                        .defaultMinSize(minHeight = 56.dp)
+                        .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
                         .semantics {
                             role = Role.Button
                             disabled()
@@ -212,7 +212,7 @@ fun ShomaraContinueStationCard(
                 } else {
                     Modifier
                         .fillMaxWidth()
-                        .defaultMinSize(minHeight = 56.dp)
+                        .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
                         .clickable(role = Role.Button, onClick = {
                             if (tapGuard.beginLatched()) {
                                 try { onContinue() } finally { tapGuard.end() }
@@ -221,39 +221,39 @@ fun ShomaraContinueStationCard(
                 }
                 Surface(
                     modifier = actionModifier,
-                    shape = RoundedCornerShape(16.dp),
-                    color = Color.White,
-                    border = BorderStroke(1.dp, ShomaraHomeUiTokens.VioletSoft),
+                    shape = RoundedCornerShape(ShomaraTokens.Space16),
+                    color = ShomaraTokens.ColorHomeOnViolet,
+                    border = BorderStroke(ShomaraTokens.Space4, ShomaraHomeUiTokens.VioletSoft),
                     shadowElevation = 0.dp,
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = ShomaraTokens.Space16, vertical = ShomaraTokens.Space12),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         if (loading) {
                             if (LocalShomaraReducedMotion.current) {
-                                Text("•", color = ShomaraHomeUiTokens.VioletDark, fontSize = 20.sp)
+                                Text("•", color = ShomaraHomeUiTokens.VioletDark, fontSize = ShomaraTokens.TypeTitleFontSize)
                             } else {
                                 CircularProgressIndicator(
-                                    modifier = Modifier.size(18.dp),
+                                    modifier = Modifier.size(ShomaraTokens.Space16),
                                     color = ShomaraHomeUiTokens.VioletDark,
-                                    strokeWidth = 2.dp,
+                                    strokeWidth = ShomaraTokens.Space4,
                                 )
                             }
-                            Spacer(Modifier.size(8.dp))
+                            Spacer(Modifier.size(ShomaraTokens.Space8))
                             Text("در حال انجام", color = ShomaraHomeUiTokens.VioletDark,
-                                fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                                fontSize = ShomaraTokens.TypeBodyFontSize, fontWeight = FontWeight.Bold)
                         } else {
                             Text(actionLabel, color = ShomaraHomeUiTokens.VioletDark,
-                                fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight.Bold,
+                                fontSize = ShomaraTokens.TypeBodyFontSize, lineHeight = ShomaraTokens.TypeBodyLineHeight, fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center)
                         }
                     }
                 }
             }
             if (leadingContent != null) {
-                Box(Modifier.size(68.dp), contentAlignment = Alignment.Center) { leadingContent() }
+                Box(Modifier.size(ShomaraTokens.ComponentNodeSize.minus(ShomaraTokens.Space4)), contentAlignment = Alignment.Center) { leadingContent() }
             }
         }
     }
@@ -291,24 +291,24 @@ fun ShomaraHomeNodeLabelCard(
             } else label
             if (state == ShomaraHomeNodeVisualState.Locked) contentDescription = "$title، $label، ${lockedReason.orEmpty()}"
         },
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
         color = ShomaraHomeUiTokens.Surface,
-        border = BorderStroke(1.dp, ShomaraHomeUiTokens.Border),
-        shadowElevation = if (state == ShomaraHomeNodeVisualState.Current) 4.dp else 1.dp,
+        border = BorderStroke(ShomaraTokens.Space4, ShomaraHomeUiTokens.Border),
+        shadowElevation = if (state == ShomaraHomeNodeVisualState.Current) ShomaraTokens.Space4 else ShomaraTokens.Space4,
     ) {
         Column(
-            Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
+            Modifier.padding(horizontal = ShomaraTokens.Space16, vertical = ShomaraTokens.Space12),
+            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
             horizontalAlignment = Alignment.End,
         ) {
-            Text(title, color = ShomaraHomeUiTokens.Ink, fontSize = 15.sp,
-                lineHeight = 22.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
+            Text(title, color = ShomaraHomeUiTokens.Ink, fontSize = ShomaraTokens.TypeBodyFontSize,
+                lineHeight = ShomaraTokens.TypeBodyLineHeight, fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
             if (!description.isNullOrBlank()) {
-                Text(description, color = ShomaraHomeUiTokens.Muted, fontSize = 12.sp,
-                    lineHeight = 18.sp, textAlign = TextAlign.End)
+                Text(description, color = ShomaraHomeUiTokens.Muted, fontSize = ShomaraTokens.TypeCaptionFontSize,
+                    lineHeight = ShomaraTokens.TypeBodyLineHeight, textAlign = TextAlign.End)
             }
-            Text(label, color = stateColor, fontSize = 11.sp,
-                lineHeight = 17.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.End)
+            Text(label, color = stateColor, fontSize = ShomaraTokens.TypeCaptionFontSize,
+                lineHeight = ShomaraTokens.TypeBodyLineHeight, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.End)
         }
     }
 }

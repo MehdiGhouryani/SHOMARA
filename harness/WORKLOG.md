@@ -905,3 +905,14 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **Attempt persistence wiring**: ShomaraGuidedStage → onAttemptEvaluated → ShomaraLessonHost → lessonRecords (Room v3) → سطر واقعی برای هر بررسی tap.
 - **شواهد**: feature:path compile PASS · android:gate PASS · static:all 94/94 · repo PASS.
 - **صادقانه**: این پیاده‌سازی UI-only است؛ اتصال به Room/ProgressionEngine از فاز P8 slice آماده؛ TalkBack walkthrough دستگاهی pending؛ Home visual design handoff BLOCKED از P12 اکنون UNBLOCKED (بسته در دسترس).
+
+## 2026-11-17 — IPA-P14c (Home UI wired into real shell) — branch infra/p14b-home-ui
+
+- **اتصال واقعی Home UI به tab مسیر:** ShomaraChildShellHost Path tab حالا HomeHeader + ChapterProgressCard + ContinueStationCard بالای ShomaraPathScreen رندر می‌کند؛ گراف زیگزاگی/nodeها/فصل‌ها دست‌نخورده. هیچ navigation دوم/موازی ساخته نشد.
+- **Continue Station Card** به Station Start Sheet واقعی وصل شد (شروع/ادامه از real progress).
+- **HomeHeader settings** به shell/settings واقعی وصل شد (همان NavHost destination).
+- **Design tokens:** رنگ‌های handoff v3 (HomeViolet/HomeCanvas/HomeInk/...) به tokens.json canonical اضافه شدند + codegen — ShomaraHomeUiTokens حالا alias به ShomaraTokens است؛ **هیچ raw Color(0x) در فایل‌های جدید**.
+- **Design Guard:** screen-local exclusions حذف شدند — ShomaraHomeComponents/Screen/UiTokens از بررسی مستثنا نیستند؛ همهٔ dp/sp/color از tokens می‌آیند.
+- **VectorDrawable fix:** strokeColor="none" از shomara_ui_play.xml حذف شد (invalid AAPT attr).
+- **شواهد:** android:gate PASS · static:all 94/94 · repo PASS · APK b9191d94… نصب و اجرا · screenshot artifacts/p14c-home/home-integrated.png.
+- **صادقانه:** P4/P5 projection transcribe نشده؛ T13/T01 ارزیاب ندارند؛ TalkBack real walkthrough دستگاهی pending؛ Home visual handoff تایید نهایی می‌خواهد.

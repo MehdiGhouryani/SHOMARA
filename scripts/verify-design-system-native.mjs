@@ -15,14 +15,9 @@ const root = process.cwd();
 const fail = (message) => { console.error(`NATIVE_DESIGN_GUARD: FAIL — ${message}`); process.exit(1); };
 
 const scanRoots = ['apps/android/core/designsystem/src/main/kotlin', 'apps/android/app/src/main/kotlin', 'apps/android/feature'];
-const generatedFile = ['ShomaraTokens.kt', 'ShomaraHomeUiTokens.kt'];
+const generatedFile = ['ShomaraTokens.kt'];
 // P14b (handoff v3): screen-local components from the approved handoff use local dp/sp
 // values that are part of the design specification, not accidental raw values.
-const screenLocalHandoffFiles = [
-  'ShomaraHomeComponents.kt',
-  'ShomaraHomePathScreen.kt',
-  'ShomaraHomeUiTokens.kt',
-];
 
 const files = [];
 for (const dir of scanRoots) {
@@ -47,8 +42,7 @@ const bannedTerms = [/ستاره/u, /\bstars?\b/i, /\bcoins?\b/i, /\bLives\b/, /
 for (const file of files) {
   const rel = path.relative(root, file).replaceAll('\\', '/');
   const src = fs.readFileSync(file, 'utf8');
-  const isGenerated = generatedFile.some((name) => rel.endsWith(name)) ||
-    screenLocalHandoffFiles.some((name) => rel.endsWith(name));
+  const isGenerated = generatedFile.some((name) => rel.endsWith(name));
   const lines = src.split(/\r?\n/);
   lines.forEach((line, i) => {
     const at = `${rel}:${i + 1}`;
