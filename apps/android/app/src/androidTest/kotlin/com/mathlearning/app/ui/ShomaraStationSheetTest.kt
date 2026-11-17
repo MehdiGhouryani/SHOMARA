@@ -90,6 +90,19 @@ class ShomaraStationSheetTest {
     }
 
     @Test
+    fun practiceTabWaitsForResolvedProgressInsteadOfShowingFalseLockedItems() {
+        val started = mutableListOf<String>()
+        setShell(progress = ShomaraPathProgress(), started = started)
+
+        composeRule.onNodeWithText("تمرین").performClick()
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText("در حال آماده‌سازی تمرین‌ها").assertIsDisplayed()
+        composeRule.onAllNodesWithText("شروع").assertCountEquals(0)
+        composeRule.runOnIdle { assertTrue(started.isEmpty()) }
+    }
+
+    @Test
     fun stationTapOpensTheStartSheetAndOnlyItsCtaNavigates() {
         val started = mutableListOf<String>()
         val readyProgress = ShomaraPathProgress(
