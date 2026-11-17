@@ -97,9 +97,19 @@ data class ShomaraPathProgress(
     val perfectStationIds: Set<String> = emptySet(),
     val currentStationId: String? = null,
     val offline: Boolean = false,
+    /** True only after the caller has loaded/created this child's local progress snapshot. */
+    val isResolved: Boolean = true,
 ) {
     init {
         require(perfectStationIds.all { it in completedStationIds }) { "perfect implies completed" }
+        require(isResolved || (completedStationIds.isEmpty() && perfectStationIds.isEmpty() && currentStationId == null)) {
+            "unresolved progress cannot carry fabricated or partial station state"
+        }
+    }
+
+    companion object {
+        /** Root placeholder while local identity and its Room progress have not been resolved. */
+        fun unresolved(): ShomaraPathProgress = ShomaraPathProgress(isResolved = false)
     }
 }
 
@@ -165,11 +175,12 @@ object ShomaraPathGraphLogic {
      * Null once a current station exists: a placed child never has a Fresh node.
      */
     fun freshStationId(progress: ShomaraPathProgress): String? {
-        if (progress.currentStationId != null) return null
+        if (!progress.isResolved || progress.currentStationId != null) return null
         return ShomaraStationCatalog.Stations.firstOrNull { it.id !in progress.completedStationIds }?.id
     }
 
     fun stateFor(meta: StationNodeMeta, progress: ShomaraPathProgress): ShomaraPathNodeState = when {
+        !progress.isResolved -> ShomaraPathNodeState.Locked // The screen itself is Loading; never imply Fresh.
         // F-40: offline no longer remaps every node to Locked — the nodes keep their real
         // state and the offline banner carries the message. A locked-looking path while
         // offline was a lie: the child's progress did not disappear with the network.
@@ -239,7 +250,7 @@ object ShomaraPathGraphLogic {
      * (the offline banner is the message there, not a next-step line).
      */
     fun nextStepStation(progress: ShomaraPathProgress): StationNodeMeta? {
-        if (progress.offline) return null
+        if (!progress.isResolved || progress.offline) return null
         val currentId = progress.currentStationId
         if (currentId != null) return ShomaraStationCatalog.Stations.firstOrNull { it.id == currentId }
         val freshId = freshStationId(progress) ?: return null
@@ -354,11 +365,15 @@ fun ShomaraPathScreen(
     onRetry: (() -> Unit)? = null,
     savedChapter: Int? = null,
 ) {
+    // Explicit caller state wins. Otherwise unresolved identity/progress defaults to Loading;
+    // a resolved empty snapshot is a legitimate new learner and may render ST01 as Fresh.
+    val resolvedEntryState = entryState ?: if (!progress.isResolved) ShomaraEntryState.Loading else null
+
     // Honest state surfaces (family 16): when the caller reports that the path data has
     // not arrived, the screen says so instead of rendering a fully locked path. Offline
     // is the normal state of this product, so it never replaces the list: the list renders
     // with the offline banner.
-    when (entryState) {
+    when (resolvedEntryState) {
         ShomaraEntryState.Loading -> {
             ShomaraStateSurface(
                 state = ShomaraEntryState.Loading,
