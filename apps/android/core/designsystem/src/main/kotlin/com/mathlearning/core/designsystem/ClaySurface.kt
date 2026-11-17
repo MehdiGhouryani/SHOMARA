@@ -46,8 +46,6 @@ import androidx.compose.ui.unit.dp
 fun Modifier.shomaraClay(
     depth: ShomaraClayDepth,
     shape: RoundedCornerShape,
-    pressed: Boolean,
-    reducedMotion: Boolean,
     containerColor: Color,
     borderColor: Color,
     pressScale: Float,
@@ -92,7 +90,7 @@ fun Modifier.shomaraClayAnimated(
         ),
         label = "clay-press-sink",
     )
-    return this.shomaraClay(depth, shape, pressed, reducedMotion, containerColor, borderColor, pressScale, sink)
+    return this.shomaraClay(depth, shape, containerColor, borderColor, pressScale, sink)
 }
 
 /** The reusable container: a ClaySurface box with optional semantics label. */
