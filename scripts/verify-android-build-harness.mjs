@@ -17,7 +17,7 @@ for (const file of [
 
 const build = read('scripts/android-build.mjs');
 for (const mode of ['doctor', 'gate', 'assemble-debug']) assert.ok(build.includes(`'${mode}'`), `missing mode ${mode}`);
-for (const task of ['test', 'lint', ':app:compileDebugKotlin', ':app:assembleDebug']) {
+for (const task of ['test', 'lint', ':app:compileDebugKotlin', ':app:compileDebugAndroidTestKotlin', ':app:assembleDebug']) {
   assert.ok(build.includes(`'${task}'`), `missing Gradle task ${task}`);
 }
 for (const contract of ['BLOCKED_ENV', 'sha256', 'signedForRelease: false', '--no-daemon']) {
