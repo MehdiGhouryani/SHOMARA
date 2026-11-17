@@ -17,6 +17,7 @@ class ShomaraPathGraphTest {
         completedStationIds = setOf("ST01", "ST02", "ST03"),
         perfectStationIds = setOf("ST02"),
         currentStationId = "ST04",
+        isResolved = true,
     )
 
     @Test
@@ -113,7 +114,7 @@ class ShomaraPathGraphTest {
         assertEquals("آمادهٔ شروع", ShomaraPathGraphLogic.stateLabelFor(ShomaraPathNodeState.Fresh))
 
         // An explicit, resolved empty snapshot remains a genuine first-run path.
-        val initializedNewLearner = ShomaraPathProgress(isResolved = true)
+        val initializedNewLearner = ShomaraPathProgress.emptyResolved()
         assertEquals("ST01", ShomaraPathGraphLogic.freshStationId(initializedNewLearner))
         assertEquals(
             ShomaraPathNodeState.Fresh,
@@ -123,7 +124,7 @@ class ShomaraPathGraphTest {
 
     @Test
     fun `fresh is reachable for ST01 when no current station is placed`() {
-        val unplaced = ShomaraPathProgress()
+        val unplaced = ShomaraPathProgress.emptyResolved()
         assertEquals(ShomaraPathNodeState.Fresh, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), unplaced))
         assertEquals(ShomaraPathNodeState.Locked, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST02"), unplaced))
         // Exactly one Fresh node, zero Current nodes: "no data arrived" never hides as "all locked".
@@ -135,7 +136,7 @@ class ShomaraPathGraphTest {
 
     @Test
     fun `fresh follows the first uncompleted station when current is missing`() {
-        val gap = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST02", "ST03"))
+        val gap = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST02", "ST03"), isResolved = true)
         assertEquals(ShomaraPathNodeState.Fresh, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST04"), gap))
         assertEquals(ShomaraPathNodeState.Locked, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST05"), gap))
         assertEquals("ST04", ShomaraPathGraphLogic.freshStationId(gap))
@@ -151,23 +152,24 @@ class ShomaraPathGraphTest {
     @Test
     fun `next step is the current station, otherwise the fresh station, otherwise none`() {
         assertEquals("ST04", ShomaraPathGraphLogic.nextStepStation(progress)?.id)
-        assertEquals("ST01", ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress())?.id)
+        assertEquals("ST01", ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress.emptyResolved())?.id)
         val allDone = ShomaraPathProgress(
             completedStationIds = (1..25).map { "ST%02d".format(it) }.toSet(),
+            isResolved = true,
         )
         assertEquals(null, ShomaraPathGraphLogic.nextStepStation(allDone))
     }
 
     @Test
     fun `offline freezes the anchor so no next-step line is derived`() {
-        assertEquals(null, ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress(offline = true)))
+        assertEquals(null, ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress(offline = true, isResolved = true)))
     }
 
     // ---- Phase A: honest counts (unknown ids never inflate progress) ----
 
     @Test
     fun `per-chapter counts and remaining count only known station ids`() {
-        val withUnknown = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST99"))
+        val withUnknown = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST99"), isResolved = true)
         assertEquals(24, ShomaraPathGraphLogic.remainingCount(withUnknown))
         assertEquals(1, ShomaraPathGraphLogic.completedInChapter(1, withUnknown))
         assertEquals(0, ShomaraPathGraphLogic.completedInChapter(2, withUnknown))
@@ -303,14 +305,15 @@ class ShomaraPathGraphTest {
     fun `current node ring fraction is the chapter completion from the same progress set`() {
         // Fixture progress: ST01-ST03 completed in chapter 1, ST04 current.
         assertEquals(0.6f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), progress), 0.001f)
-        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST01"), ShomaraPathProgress()), 0.001f)
+        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST01"), ShomaraPathProgress.emptyResolved()), 0.001f)
         val chapterDone = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05"),
             currentStationId = "ST06",
+            isResolved = true,
         )
         assertEquals(1f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST06"), chapterDone), 0.001f)
         // Unknown ids never inflate the ring: the ring is a chapter fraction, never a lesson value.
-        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), ShomaraPathProgress(completedStationIds = setOf("ST99"))), 0.001f)
+        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), ShomaraPathProgress(completedStationIds = setOf("ST99"), isResolved = true)), 0.001f)
     }
 
     @Test
