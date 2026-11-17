@@ -50,7 +50,9 @@ import kotlinx.coroutines.launch
  * returning never loses scroll or selection). Back is deterministic via [ShomaraShellLogic].
  *
  * Tab content renders the real feature surfaces (N05-02..N05-06). Progress-aware parameters are
- * wired from server truth in N06; the path renders the caller-provided progress verbatim.
+ * The path renders a caller-provided resolved snapshot. After ADR-0039, the intended source is the active
+ * local child profile + Room projection; O5/profile persistence is not wired yet, so the root currently
+ * supplies an unresolved snapshot and the path/practice surfaces remain in Loading instead of fabricating Fresh/Locked.
  */
 @Composable
 fun ShomaraChildShell(

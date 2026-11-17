@@ -6,8 +6,9 @@ import androidx.room.PrimaryKey
 
 /**
  * Room schema v1 (O4-approved, ADR-0042). Five registries with REAL producers/consumers today:
- * station packages (manifest activation), server-verified progress projections, outbox
- * operations, audio-asset metadata, migration history. Tables with no producer yet (profiles —
+ * station packages (manifest activation), legacy pre-ADR-0039 progress projections, outbox
+ * operations, audio-asset metadata, migration history. The legacy projection is not the live offline
+ * Home source. Tables with no producer yet (profiles —
  * O5; mastery — O1/CONTENT-014; lesson sessions/encounters/attempts — the local learning loop)
  * are deliberately NOT created: they arrive as versioned migrations when their owner decisions
  * land, never as speculative empty tables.
@@ -15,8 +16,8 @@ import androidx.room.PrimaryKey
  * Foreign keys are deliberately ABSENT in v1: these are independent registries keyed by
  * EXTERNAL identifiers (stationIds arrive from the content pipeline, audioIds from the CMS,
  * outbox keys from the lesson loop) whose referenced rows can legitimately exist before/without
- * the referencing row (draft audio metadata precedes any package; progress may be server-verified
- * for a station whose package is not locally cached). Forcing FKs would couple arrival order, not
+ * the referencing row (draft audio metadata precedes any package; the legacy progress projection
+ * could refer to a station whose package is not locally cached). Forcing FKs would couple arrival order, not
  * integrity. Transactions — not FKs — keep multi-row progression updates consistent.
  */
 

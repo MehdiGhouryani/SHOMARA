@@ -21,7 +21,7 @@ class ShomaraPathGraphTest {
     )
 
     @Test
-    fun `node states map from server-provided progress only`() {
+    fun `node states map from caller-provided resolved progress only`() {
         assertEquals(ShomaraPathNodeState.Completed, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), progress))
         assertEquals(ShomaraPathNodeState.Perfect, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST02"), progress))
         assertEquals(ShomaraPathNodeState.Current, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST04"), progress))

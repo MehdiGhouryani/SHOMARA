@@ -90,7 +90,8 @@ enum class ShomaraPathNodeState { Fresh, Current, Completed, Perfect, Locked }
 
 /**
  * Caller-provided progress — the path NEVER computes mastery itself (COMPONENT_READINESS
- * Progress policy). Null [currentStationId] means the caller has not placed the child yet.
+ * Progress policy). [isResolved] is true only after the active local child's persisted snapshot
+ * has loaded; a resolved empty snapshot is a new learner, while unresolved is not progress.
  */
 data class ShomaraPathProgress(
     val completedStationIds: Set<String> = emptySet(),
