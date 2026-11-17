@@ -1,4 +1,6 @@
-# Onboarding journey readiness — N04 (2026-10-31)
+# Onboarding journey readiness — N04 (2026-10-31; historical baseline)
+
+> **وضعیت تاریخی، قبل از ADR-0039:** این گزارش فقط شواهد پیاده‌سازی Native در 2026-10-31 را ثبت می‌کند. تصمیم مصوب مالک در 2026-11-05 محصول نهایی را کاملاً آفلاین و بدون سرور تعریف کرد؛ Phone/OTP جزو journey نهایی نیست و حذف OTP/token/session در Phase 2 پس از تصمیم O5 انجام می‌شود. بنابراین مسیر OTP این سند قرارداد هدف فعلی نیست.
 
 وضعیت صادقانهٔ سفر ورود (Launch → Welcome → Phone → OTP → Profile → Grade → ReadyForChildShell) در کلاینت Android Native. قرارداد مشترک: `design/playbook/COMPONENT_READINESS.md`؛ وضعیت‌ها فقط با شواهد نام‌برده تغییر می‌کنند.
 
