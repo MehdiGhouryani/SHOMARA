@@ -31,7 +31,7 @@ export function PracticeView(p: Props) {
         <GuideBubble pose="fandogh-portrait" cover portraitLabel={p.guideLabel} text={p.guideText} />
         <View style={styles.list} accessibilityLabel={p.listLabel}>
           {p.rows.map((row) => (
-            <ListRow key={row.id} icon={row.icon} title={row.title} kicker={row.kicker} tone={row.locked ? 'off' : 'plain'} trailingIcon={row.locked ? 'lock' : undefined}>
+            <ListRow key={row.id} icon={row.icon} title={row.title} kicker={row.kicker} tone={row.locked ? 'off' : 'plain'}>
               {!row.locked ? <Chip tone="violet" label={p.chipLabel} /> : null}
             </ListRow>
           ))}
