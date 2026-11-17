@@ -41,6 +41,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - name: Validate execution roadmap and active task
+        run: |
+          node tools/harness.mjs validate
+          node tools/harness.mjs next
       - run: npm run build:packages
       - run: npm run verify:static:core
 
