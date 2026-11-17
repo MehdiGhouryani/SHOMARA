@@ -51,10 +51,10 @@ object ShomaraPathNodeVisuals {
         ShomaraPathNodeVisualState.LOCKED -> "قفل"
     }
 
-    fun depthFor(state: ShomaraPathNodeVisualState): ClayDepth = when (state) {
-        ShomaraPathNodeVisualState.CURRENT -> ClayDepth.FEATURED
-        ShomaraPathNodeVisualState.LOCKED -> ClayDepth.FLAT
-        else -> ClayDepth.SOFT
+    fun depthFor(state: ShomaraPathNodeVisualState): ShomaraClayDepth = when (state) {
+        ShomaraPathNodeVisualState.CURRENT -> ShomaraClayDepth.Featured
+        ShomaraPathNodeVisualState.LOCKED -> ShomaraClayDepth.Flat
+        else -> ShomaraClayDepth.Soft
     }
 }
 
