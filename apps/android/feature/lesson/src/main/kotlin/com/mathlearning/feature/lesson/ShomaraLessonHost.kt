@@ -74,7 +74,7 @@ fun ShomaraLessonHost(
     // both empty/null (fail-closed skeleton); correctness never enters the projection.
     guidedItems: List<ShomaraGuidedItem> = emptyList(),
     guidedEvaluator: ShomaraGuidedEvaluator? = null,
-    // P14: the durable attempt recorder (null in release = fail-closed no-persist)
+    // P14/P6: the real Room-backed recorder is injected at the app root. Release has no draft guided items/evaluator, so this preview callback remains unreachable there.
     lessonRecords: com.mathlearning.core.model.repository.LessonRecordRepository? = null,
     // N08R-09: TRUE only in the debug preview (no evaluator can advance stages there), so
     // finishing discover walks to the guided preview. With the Phase-1 local evaluator this
@@ -196,7 +196,7 @@ fun ShomaraLessonHost(
                     items = guidedItems,
                     evaluator = guidedEvaluator,
                     onAllItemsComplete = { /* evaluator wiring lands with the local package (Phase 1) */ },
-                    // P14: the durable attempt recorder — null in release (fail-closed no-persist).
+                    // P14/P6: the recorder is durable Room storage; only the debug-gated pilot evaluator can call this preview callback.
                     onAttemptEvaluated = lessonRecords?.let { repo ->
                         { encounterId: String, attemptIndex: Int, outcome: String ->
                             scope.launch {
