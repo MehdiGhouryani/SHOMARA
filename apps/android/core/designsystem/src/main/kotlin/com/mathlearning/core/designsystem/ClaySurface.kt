@@ -13,9 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +30,7 @@ import androidx.compose.ui.unit.dp
  * ClaySurface (P13, ADR-0049) — the reusable Clay container over the canonical four depth tiers.
  *
  * Depth contract (token-driven, ADR-0040): Flat / Hint / Soft / Featured — border, shadow,
- * elevation and highlight all resolve through ShomaraTokens (never raw values here).
+ * elevation and highlight all resolve through the single ShomaraClay token resolver (never raw values here).
  * Press feedback: scale + sink + shadow transition from the shared spring spec; reduced-motion
  * collapses the animation (values jump, never animate).
  *
@@ -43,7 +41,7 @@ import androidx.compose.ui.unit.dp
  * @param depth clay tier (Flat/Hint/Soft/Featured)
  * @param pressed tactile press state (scale + sink + shadow transition)
  * @param reducedMotion collapses all animation (token spring spec unused)
- * @param radius corner radius (token-provided by caller; never a raw magic value)
+ * @param shape corner radius (token-provided by caller; never a raw magic value)
  */
 fun Modifier.shomaraClay(
     depth: ShomaraClayDepth,
@@ -78,7 +76,6 @@ fun Modifier.shomaraClayAnimated(
     containerColor: Color,
     borderColor: Color,
 ): Modifier {
-    val spec = ShomaraClay.specFor(depth)
     val pressScale by animateFloatAsState(
         targetValue = if (pressed) ShomaraPressFeedbackLogic.pressedScale() else 1f,
         animationSpec = if (reducedMotion) snap() else spring(
