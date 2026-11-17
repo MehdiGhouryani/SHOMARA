@@ -101,6 +101,27 @@ class ShomaraPathGraphTest {
     // ---- Phase A: Fresh is reachable, never a fake Current ----
 
     @Test
+    fun `unresolved progress is not confused with an initialized new learner`() {
+        val unresolved = ShomaraPathProgress.unresolved()
+        assertTrue(!unresolved.isResolved)
+        assertEquals(null, ShomaraPathGraphLogic.freshStationId(unresolved))
+        assertEquals(null, ShomaraPathGraphLogic.nextStepStation(unresolved))
+        assertEquals(
+            ShomaraPathNodeState.Locked,
+            ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), unresolved),
+        )
+        assertEquals("آمادهٔ شروع", ShomaraPathGraphLogic.stateLabelFor(ShomaraPathNodeState.Fresh))
+
+        // An explicit, resolved empty snapshot remains a genuine first-run path.
+        val initializedNewLearner = ShomaraPathProgress(isResolved = true)
+        assertEquals("ST01", ShomaraPathGraphLogic.freshStationId(initializedNewLearner))
+        assertEquals(
+            ShomaraPathNodeState.Fresh,
+            ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), initializedNewLearner),
+        )
+    }
+
+    @Test
     fun `fresh is reachable for ST01 when no current station is placed`() {
         val unplaced = ShomaraPathProgress()
         assertEquals(ShomaraPathNodeState.Fresh, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), unplaced))
