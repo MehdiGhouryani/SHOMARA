@@ -82,12 +82,14 @@ fun ShomaraChildShell(
     // opens the sheet for that station; only the sheet's «شروع/ادامه» CTA navigates to the
     // lesson. Before, the tap navigated straight to `lesson/$id` — the lock was bypassed
     // and the sheet had no caller at all.
-    var selectedStationId by rememberSaveable { mutableStateOf(initialStationId) }
+    // Queue the deep link through its route argument; do not pre-open hidden sheet state.
+    // While progress is unresolved, Back must not consume a sheet that is not visible yet.
+    var selectedStationId by rememberSaveable { mutableStateOf<String?>(null) }
     // R-05: a deep-linked station arrives after the first composition (the app sets the
     // pending id, then navigates here). The sheet opens for it exactly once; the pending
     // id is consumed so dismissing the sheet does not reopen it.
     LaunchedEffect(initialStationId, pathProgress.isResolved) {
-        if (initialStationId != null && pathProgress.isResolved) {
+        if (initialStationId != null && pathProgress.isResolved && selectedStationId == null) {
             selectedStationId = initialStationId
             onInitialStationConsumed()
         }
