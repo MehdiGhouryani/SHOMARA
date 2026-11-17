@@ -939,3 +939,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **Home residual P0:** hardcoded summary and duplicate Continue were removed, but root still passes `ShomaraPathProgress()`; graph currently resolves empty progress to ST01 `Fresh`. Returning children can therefore be shown at ST01 incorrectly until approved local identity + Room progress projection are connected. Explicitly tracked for N11-05; no synthetic progress is fabricated.
 - **Harness:** N11-02 = DONE_WITH_BLOCKER after real Android gate. N11-04 design-system foundation is now IN_PROGRESS and independent of N11-03 human-authored curriculum; content-specific manipulative design remains gated.
 - **Artifact:** `android-gate-diagnostics.zip` contains CI reports only; no APK was built or attached. Physical-device/TalkBack and screenshot gates remain UNVERIFIED.
+
+## 2026-11-18 — DT-03 — Home unresolved state and practice parity correction
+
+- Home progress now defaults unresolved; only a resolved local-child snapshot or explicit emptyResolved() can show Fresh. Deep-linked lesson entry and Station Start Sheet are deferred until resolution.
+- Practice tab remains Loading until local profile/progress resolve; it does not label all activities Locked. Compose tests cover deferred deep link and unresolved Practice.
+- Parity artifact 14374088460, run 44186937373: practice raw diff 0.5040485829959515%, 1494 bad pixels / 296400 total; maximum remains 0.5%. Actual screenshot had two locks on the unavailable row while golden had one.
+- Root cause: parity specimen tabs.tsx supplied icon='lock'; PracticeView.tsx rendered that badge icon and also passed trailingIcon='lock'. Removed the redundant trailingIcon. The badge lock remains; no golden or threshold changed.
+- Fix commit ca8067f0e36a27ff75733336a0ec83d25b8362c2. CI run 44189288523 and Android Native run 44189288438 were pending when this checkpoint was prepared.
+- Android evidence on ancestor 8ebfa084: Gate PASS; JDK 17, SDK 37, preflight exit 0, Gradle test/lint/app compile/androidTest-source compile exit 0; BUILD SUCCESSFUL. The published gate artifact did not expose a JUnit count. No APK or device test was produced.
+- Harness: N11-02 DONE_WITH_BLOCKER; N11-04 DONE_WITH_BLOCKER (Native visual validation pending); N11-05 IN_PROGRESS. O5 remains OPEN.

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-17",
+  "updatedAt": "2026-11-18",
   "currentPhase": "N11",
-  "currentTask": "N11-04",
+  "currentTask": "N11-05",
   "statusValues": [
     "TODO",
     "READY",
@@ -2670,9 +2670,11 @@
             "Home placeholder summary/zero counter and redundant Continue CTA removed because no verified child identity is wired; path graph and Station Start Sheet retained",
             "GitHub Android Native workflow run 44158203235: environment READY (JDK 17, Android compile SDK 37); `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon` exit code 0.",
             "CI XML aggregation: 81 suites, 575 tests, 0 failures, 0 errors, 0 skipped. New RoomLessonRecordRepositoryTest: 7/7 PASS.",
-            "Residual P0 moved to N11-05: O5 local identity/profile choice remains OPEN; no identity-backed progress projection exists. Empty default ShomaraPathProgress maps ST01 to Fresh, so returning users may be falsely shown at ST01. Do not invent progress."
+            "Residual P0 moved to N11-05: O5 local identity/profile choice remains OPEN; no identity-backed progress projection exists. Empty default ShomaraPathProgress maps ST01 to Fresh, so returning users may be falsely shown at ST01. Do not invent progress.",
+            "Home progress now defaults to unresolved; only an explicit resolved snapshot or emptyResolved() may render Fresh. Root deep links and the station sheet wait for resolution. Practice also remains Loading.",
+            "Android Native run 44188354588 on 8ebfa084ec32b4a3d8fb8333427c1aa140797e34: JDK 17 + SDK 37 READY; Gradle command including test, lint, app compile and Android-test-source compile exited 0; BUILD SUCCESSFUL. The artifact did not publish a test count."
           ],
-          "blocker": "O5 is still OPEN (single vs multi local profiles). Without an approved local identity and Room progress projection, the default path can misclassify returning users as ST01 Fresh; this remains a P0 for N11-05."
+          "blocker": "O5 remains OPEN. Local child identity and Room progress are not wired; however the path defaults to unresolved and remains Loading rather than falsely marking ST01 Fresh. No profile schema is added before the owner decision."
         },
         {
           "id": "N11-03",
@@ -2692,7 +2694,7 @@
         {
           "id": "N11-04",
           "title": "Design system and shared interaction foundation",
-          "status": "IN_PROGRESS",
+          "status": "DONE_WITH_BLOCKER",
           "dependsOn": [
             "N11-02"
           ],
@@ -2704,14 +2706,16 @@
           "evidence": [
             "Design-system baseline reviewed: canonical tokens remain packages/design-system/src/tokens.json.",
             "Read skills/shomara-design-system/SKILL.md, design/MASTER.md, design/INSPIRATION_GUARDRAILS.md, COMPONENT_READINESS.md and NATIVE_IMPLEMENTATION.md. No token/component implementation is claimed yet.",
-            "Base token, typography, primitive and accessibility work is independent of authoring the remaining curriculum; content-specific manipulatives remain gated by approved content."
+            "Base token, typography, primitive and accessibility work is independent of authoring the remaining curriculum; content-specific manipulatives remain gated by approved content.",
+            "Canonical Clay resolver and state-dependent Card/Button border changes are implemented with regression tests. Core CI and static-core passed on 8ebfa084; token-codegen --check, Harness validate/next, typecheck and Vitest passed.",
+            "Android Native run 44188354588 passed Gradle test, lint, :app:compileDebugKotlin and :app:compileDebugAndroidTestKotlin with exit code 0. Visual screenshot/TalkBack/device validation is still pending."
           ],
-          "blocker": "Content-specific manipulative components and curriculum visuals still require approved station contracts; base tokens and shared primitives can proceed."
+          "blocker": "NATIVE_PENDING: screenshot catalog at 360/390/412dp and 200% font; Compose semantics/TalkBack; Persian IME and real-device review. Approved Vazirmatn TTF still requires owner supply."
         },
         {
           "id": "N11-05",
           "title": "Home and learning path — identity-backed, single-action experience",
-          "status": "TODO",
+          "status": "IN_PROGRESS",
           "dependsOn": [
             "N11-04"
           ],
@@ -2720,7 +2724,14 @@
             "preserve path graph as primary journey; define exactly one primary action per state",
             "restore summary/continue UI only when it represents real distinct data/action",
             "test loading/empty/offline/error/current/locked/completed/resume plus RTL, TalkBack and 200% font"
-          ]
+          ],
+          "evidence": [
+            "Removed Home hardcoded grade/chapter, false zero-progress count and duplicate Continue CTA; winding path and Station Start Sheet remain primary.",
+            "Progress is unresolved by default; only a resolved local child snapshot can show Fresh/Current/Locked. Deep links and Station Start Sheet wait until resolution.",
+            "Practice tab shows Loading until progress resolves rather than marking every activity Locked. Compose tests cover unresolved practice and deferred deep links.",
+            "No identity-backed ViewModel/UseCase/Room progress pipeline exists yet because O5 is OPEN and no child_profiles table is approved."
+          ],
+          "blocker": "O5 remains OPEN and there is no durable local active-child identity/progress projection. Keep Home/Practice in Loading; do not fabricate Fresh, Current, Locked or progress."
         },
         {
           "id": "N11-06",
