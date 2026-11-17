@@ -31,10 +31,10 @@ fun ClaySurfacePreviews() {
     Wrap(LayoutDirection.Ltr) {
         Text("Clay tiers", style = ShomaraTypography.Caption)
         Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
-            ClaySurface(depth = ClayDepth.FLAT, modifier = Modifier.padding(ShomaraTokens.Space4)) { Text("Flat", Modifier.padding(ShomaraTokens.Space12)) }
-            ClaySurface(depth = ClayDepth.HINT, modifier = Modifier.padding(ShomaraTokens.Space4)) { Text("Hint", Modifier.padding(ShomaraTokens.Space12)) }
-            ClaySurface(depth = ClayDepth.SOFT, modifier = Modifier.padding(ShomaraTokens.Space4)) { Text("Soft", Modifier.padding(ShomaraTokens.Space12)) }
-            ClaySurface(depth = ClayDepth.FEATURED, modifier = Modifier.padding(ShomaraTokens.Space4), containerColor = ShomaraTokens.ColorAmberSoft) { Text("Featured", Modifier.padding(ShomaraTokens.Space12)) }
+            ClaySurface(depth = ShomaraClayDepth.Flat, modifier = Modifier.padding(ShomaraTokens.Space4)) { Text("Flat", Modifier.padding(ShomaraTokens.Space12)) }
+            ClaySurface(depth = ShomaraClayDepth.Hint, modifier = Modifier.padding(ShomaraTokens.Space4)) { Text("Hint", Modifier.padding(ShomaraTokens.Space12)) }
+            ClaySurface(depth = ShomaraClayDepth.Soft, modifier = Modifier.padding(ShomaraTokens.Space4)) { Text("Soft", Modifier.padding(ShomaraTokens.Space12)) }
+            ClaySurface(depth = ShomaraClayDepth.Featured, modifier = Modifier.padding(ShomaraTokens.Space4), containerColor = ShomaraTokens.ColorAmberSoft) { Text("Featured", Modifier.padding(ShomaraTokens.Space12)) }
         }
     }
 }
