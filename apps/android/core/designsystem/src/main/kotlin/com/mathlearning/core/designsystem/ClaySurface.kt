@@ -29,8 +29,9 @@ import androidx.compose.ui.unit.dp
 /**
  * ClaySurface (P13, ADR-0049) — the reusable Clay container over the canonical four depth tiers.
  *
- * Depth contract (token-driven, ADR-0040): Flat / Hint / Soft / Featured — border, shadow,
- * elevation and highlight all resolve through the single ShomaraClay token resolver (never raw values here).
+ * Depth contract (token-driven, ADR-0040): Flat / Hint / Soft / Featured resolve from one ShomaraClay token resolver.
+ * Renderer note: Compose elevation currently draws the shadow; shadow opacity/radius/offset and highlight opacity
+ * remain stored semantic tokens but are not yet rendered individually pending screenshot/device validation.
  * Press feedback: scale + sink + shadow transition from the shared spring spec; reduced-motion
  * collapses the animation (values jump, never animate).
  *
@@ -39,8 +40,8 @@ import androidx.compose.ui.unit.dp
  */
 /**
  * @param depth clay tier (Flat/Hint/Soft/Featured)
- * @param pressed tactile press state (scale + sink + shadow transition)
- * @param reducedMotion collapses all animation (token spring spec unused)
+ * The animated entry point owns pressed/reduced-motion state; this base modifier only applies
+ * resolved geometry, border, and platform elevation.
  * @param shape corner radius (token-provided by caller; never a raw magic value)
  */
 fun Modifier.shomaraClay(
