@@ -30,9 +30,6 @@ import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
 import com.mathlearning.feature.path.ShomaraPathProgress
 import com.mathlearning.feature.path.ShomaraHomeHeader
-import com.mathlearning.feature.path.ShomaraChapterProgressCard
-import com.mathlearning.feature.path.ShomaraContinueStationCard
-import com.mathlearning.feature.path.ShomaraHomeProgressUi
 import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.feature.path.ShomaraPathScreen
 import com.mathlearning.feature.path.ShomaraStationStartSheet
@@ -160,27 +157,13 @@ fun ShomaraChildShell(
                                 )
                             },
                         )
-                        // B. Chapter progress card (from real progress, Persian digits)
-                        ShomaraChapterProgressCard(
-                            gradeLabel = "پایهٔ اول",
-                            chapterTitle = "عددهای ۱ و ۲",
-                            progress = ShomaraHomeProgressUi(
-                                completed = completedStations,
-                                total = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT,
-                                spokenLabel = com.mathlearning.core.designsystem.ShomaraDigits.toFa(completedStations) +
-                                    " از " + com.mathlearning.core.designsystem.ShomaraDigits.toFa(com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT),
-                            ),
-                        )
-                        // C. Continue/current station card
-                        pathProgress.currentStationId?.let { currentId ->
-                            ShomaraContinueStationCard(
-                                eyebrow = "از آخرین نقطه ادامه بده",
-                                title = com.mathlearning.core.model.ShomaraStationCatalog.station(currentId).workingTitle,
-                                supportingText = null,
-                                actionLabel = "ادامه",
-                                onContinue = { selectedStationId = currentId },
-                            )
-                        }
+                        // Keep the learning path as the primary Home action. The former progress
+                        // card displayed a hardcoded grade/chapter and a default zero count because
+                        // this app has no approved child identity/progress projection wired yet.
+                        // The former Continue card opened the exact same station sheet as tapping
+                        // the Current node, creating a duplicate primary action and pushing the path
+                        // below the fold. Reintroduce summary/continue only with verified identity-
+                        // backed UiState and a genuinely distinct resume action.
                         // D. The REAL path graph — zigzag geometry, node states, chapter bands unchanged
                         ShomaraPathScreen(
                             progress = pathProgress,
