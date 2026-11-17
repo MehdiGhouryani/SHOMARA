@@ -127,7 +127,7 @@ export function main() {
     return;
   }
 
-  const gradleTasks = ['test', 'lint', ':app:compileDebugKotlin'];
+  const gradleTasks = ['test', 'lint', ':app:compileDebugKotlin', ':app:compileDebugAndroidTestKotlin'];
   if (options.mode === 'assemble-debug') gradleTasks.push(':app:assembleDebug');
   const gradleArgs = [...gradleTasks, '--stacktrace', '--no-daemon'];
   const gradleEnvironment = {
