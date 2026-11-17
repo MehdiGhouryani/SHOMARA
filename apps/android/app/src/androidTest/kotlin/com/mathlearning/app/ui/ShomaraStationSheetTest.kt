@@ -1,5 +1,6 @@
 package com.mathlearning.app.ui
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -71,21 +72,42 @@ class ShomaraStationSheetTest {
     }
 
     @Test
-    fun unresolvedProgressShowsLoadingAndDefersDeepLinkedStation() {
+    fun unresolvedProgressShowsLoadingAndOpensDeferredDeepLinkOnlyAfterResolution() {
         val started = mutableListOf<String>()
         val consumed = mutableListOf<String>()
-        setShell(
-            progress = ShomaraPathProgress.unresolved(),
-            started = started,
-            initialStationId = "ST07",
-            consumed = consumed,
-        )
+        val progress = mutableStateOf(ShomaraPathProgress.unresolved())
+
+        composeRule.setContent {
+            ShomaraChildShell(
+                onSignOut = {},
+                pathProgress = progress.value,
+                settingsStore = FakeSettingsStore(),
+                onStartStation = { started += it },
+                initialStationId = "ST07",
+                onInitialStationConsumed = { consumed += "ST07" },
+            )
+        }
 
         composeRule.onNodeWithText("در حال آماده‌سازی مسیر").assertIsDisplayed()
         composeRule.onAllNodesWithText("شروع").assertCountEquals(0)
         composeRule.runOnIdle {
             assertTrue("a lesson must not start before the local identity/progress snapshot exists", started.isEmpty())
             assertTrue("the deep link must remain pending until the snapshot resolves", consumed.isEmpty())
+        }
+
+        // Resolving a real local snapshot may open the queued station sheet exactly once.
+        composeRule.runOnIdle {
+            progress.value = ShomaraPathProgress(
+                completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
+                currentStationId = "ST07",
+                isResolved = true,
+            )
+        }
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText("شروع").assertIsDisplayed()
+        composeRule.runOnIdle {
+            assertTrue(started.isEmpty())
+            assertEquals(listOf("ST07"), consumed)
         }
     }
 
