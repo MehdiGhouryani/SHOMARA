@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 fun ShomaraChildShell(
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
-    pathProgress: ShomaraPathProgress = ShomaraPathProgress(),
+    pathProgress: ShomaraPathProgress = ShomaraPathProgress.unresolved(),
     childName: String? = null,
     completedStations: Int = 0,
     reducedMotion: Boolean = false,
@@ -82,8 +82,8 @@ fun ShomaraChildShell(
     // R-05: a deep-linked station arrives after the first composition (the app sets the
     // pending id, then navigates here). The sheet opens for it exactly once; the pending
     // id is consumed so dismissing the sheet does not reopen it.
-    LaunchedEffect(initialStationId) {
-        if (initialStationId != null) {
+    LaunchedEffect(initialStationId, pathProgress.isResolved) {
+        if (initialStationId != null && pathProgress.isResolved) {
             selectedStationId = initialStationId
             onInitialStationConsumed()
         }
@@ -330,7 +330,7 @@ fun ShomaraChildShell(
             // A locked station's CTA dismisses; only Ready/Resume navigate to the lesson, and
             // Replay navigates with the replay flag (R-08).
             val sheetStationId = selectedStationId
-            if (sheetStationId != null) {
+            if (sheetStationId != null && pathProgress.isResolved) {
                 ShomaraBottomSheet(
                     title = null,
                     onDismiss = { selectedStationId = null },
