@@ -13,7 +13,7 @@ function luminance(hex: string): number {
   }
   const [r, g, b] = [0, 2, 4].map((offset) =>
     linearChannel(Number.parseInt(normalized.slice(offset, offset + 2), 16)),
-  );
+  ) as [number, number, number];
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
@@ -52,6 +52,7 @@ describe('design token text contrast (WCAG AA)', () => {
     const background = colors[backgroundKey];
     expect(foreground, `missing foreground token: ${foregroundKey}`).toBeDefined();
     expect(background, `missing background token: ${backgroundKey}`).toBeDefined();
+    if (!foreground || !background) throw new Error(`Missing color token pair: ${foregroundKey}/${backgroundKey}`);
     expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(4.5);
   });
 });
