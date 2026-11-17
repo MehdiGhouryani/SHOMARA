@@ -1,6 +1,33 @@
 # Component readiness contract — Native Design System V3
 
-این سند ورودی اجرایی N03 است، نه evidence تکمیل N03. تا بسته‌شدن `N02-07` هیچ component این فهرست `IMPLEMENTED_NATIVE` محسوب نمی‌شود.
+این سند قرارداد state/API و acceptance خانواده‌های Native است؛ وضعیت implementation را با gate validation اشتباه نگیرید.
+
+## واژگان وضعیت
+
+- `SPECIFIED`: قرارداد/API/state matrix ثبت شده است.
+- `SOURCE_IMPLEMENTED`: کد Compose/logic مربوط در مخزن وجود دارد.
+- `LOGIC_TESTED`: تست JVM یا domain logic سبز است؛ به معنی Compose semantics یا device pass نیست.
+- `NATIVE_PENDING`: semantics/instrumentation، screenshot و device/TalkBack evidence هنوز ثبت نشده است.
+- `NATIVE_VALIDATED`: فقط پس از اجرای semantics + screenshot در 360/390/412dp و 200% font + device/TalkBack و ثبت artifact/SHA قابل استفاده است.
+
+**نکتهٔ جاری:** چند خانواده در کد و تست JVM پیاده‌سازی شده‌اند؛ هیچ‌کدام صرفاً با وجود کد یا preview، `NATIVE_VALIDATED` نمی‌شوند. گیت Android Native روی branch در حال حاضر فقط Unit + Lint + app debug compile است، نه instrumented/device UI validation.
+
+## وضعیت واقعی خانواده‌ها در baseline نیتیو (2026-11-17)
+
+| خانواده | Source | Logic tests | وضعیت Native | مسیرهای اصلی |
+|---|---|---|---|---|
+| Button | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraButton.kt`, `ShomaraPrimitives03Test.kt` |
+| TextField/OTP | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraTextField.kt`, `ShomaraOtp.kt`, `ShomaraPrimitives03Test.kt` |
+| Card/Choice | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraCard.kt`, `ShomaraPrimitives04Test.kt` |
+| Feedback | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraFeedback.kt`, `ShomaraPrimitives04Test.kt` |
+| Progress | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraProgress.kt`, `ShomaraPrimitives04Test.kt` |
+| TopBar/TabBar | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraNavigation.kt`, `ShomaraPrimitives05Test.kt` |
+| Dialog/Sheet | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraDialog.kt`, `ShomaraPrimitives05Test.kt` |
+| AudioControl | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraAudio.kt`, `ShomaraPrimitives05Test.kt` |
+| Manipulative | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraManipulative.kt`, `ShomaraManipulativeTest.kt` |
+| Theme / Clay | SOURCE_IMPLEMENTED | LOGIC_TESTED | NATIVE_PENDING | `ShomaraTheme.kt`, `ClaySurface.kt`, `ShomaraThemeTest.kt`, `ClayContractTest.kt` |
+
+این ماتریس وضعیت implementation و JVM test را ثبت می‌کند؛ تمام سلول‌های Native عمداً `NATIVE_PENDING` هستند تا شواهد دستگاهی واقعی ضمیمه شود.
 
 ## قرارداد مشترک هر component
 
@@ -52,4 +79,4 @@ pressed state باید depth را کاهش دهد و feedback لمسی بدهد�
 6. manipulativeهای content-aware؛
 7. screenshot catalog و owner gate.
 
-componentی که فقط preview یا source test دارد با `NATIVE_PENDING` ثبت می‌شود، نه `TESTED_NATIVE`.
+componentی که فقط preview یا source/JVM logic test دارد `NATIVE_PENDING` می‌ماند؛ `TESTED_NATIVE` یا `NATIVE_VALIDATED` بدون instrumentation, screenshot و device evidence ممنوع است.
