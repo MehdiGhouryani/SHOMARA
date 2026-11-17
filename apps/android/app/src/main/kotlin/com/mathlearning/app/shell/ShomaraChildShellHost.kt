@@ -24,6 +24,8 @@ import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.designsystem.ShomaraBottomSheet
 import com.mathlearning.core.designsystem.ShomaraTab
 import com.mathlearning.core.designsystem.ShomaraTabBar
+import com.mathlearning.core.designsystem.ShomaraEntryState
+import com.mathlearning.core.designsystem.ShomaraStateSurface
 import com.mathlearning.core.designsystem.shomaraBackHandler
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
@@ -176,26 +178,33 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Practice.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Practice.deepLink }),
                 ) {
-                    // N08 §4: this used to pass emptyList()/emptyList(), so the tab could ONLY ever
-                    // render the empty state. The list now derives from the canonical 25-station
-                    // catalog plus the child's real progress: reached stations are practiseable,
-                    // unreached ones appear LOCKED with a warm reason (never fabricated practice).
-                    val practiceItems = remember(pathProgress) {
-                        ShomaraPracticeCatalog.itemsFor(
-                            completedStationIds = pathProgress.completedStationIds,
-                            currentStationId = pathProgress.currentStationId,
+                    // Practice eligibility is a projection of this child's resolved local
+                    // progress. Do not render every item as LOCKED while identity/progress is
+                    // still loading: that would mislabel a returning child as a first-run learner.
+                    if (!pathProgress.isResolved) {
+                        ShomaraStateSurface(
+                            state = ShomaraEntryState.Loading,
+                            title = "در حال آماده‌سازی تمرین‌ها",
+                            body = "تمرین‌های مناسب تو پس از آماده‌شدن مسیر نمایش داده می‌شوند.",
+                        )
+                    } else {
+                        val practiceItems = remember(pathProgress) {
+                            ShomaraPracticeCatalog.itemsFor(
+                                completedStationIds = pathProgress.completedStationIds,
+                                currentStationId = pathProgress.currentStationId,
+                            )
+                        }
+                        val practiceRecent = remember(pathProgress) {
+                            ShomaraPracticeCatalog.recentFor(pathProgress.completedStationIds)
+                        }
+                        ShomaraPracticeHubScreen(
+                            items = practiceItems,
+                            recent = practiceRecent,
+                            // F-01: a practice tap opens the same station sheet as a path tap —
+                            // the sheet is the one door into a lesson, never a direct navigation.
+                            onItemTap = { selectedStationId = it },
                         )
                     }
-                    val practiceRecent = remember(pathProgress) {
-                        ShomaraPracticeCatalog.recentFor(pathProgress.completedStationIds)
-                    }
-                    ShomaraPracticeHubScreen(
-                        items = practiceItems,
-                        recent = practiceRecent,
-                        // F-01: a practice tap opens the same station sheet as a path tap —
-                        // the sheet is the one door into a lesson, never a direct navigation.
-                        onItemTap = { selectedStationId = it },
-                    )
                 }
                 composable(
                     route = ShomaraShellTab.Me.route,
