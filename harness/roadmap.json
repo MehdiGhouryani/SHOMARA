@@ -3,7 +3,7 @@
   "project": "SHOMARA",
   "updatedAt": "2026-11-17",
   "currentPhase": "N11",
-  "currentTask": "N11-02",
+  "currentTask": "N11-04",
   "statusValues": [
     "TODO",
     "READY",
@@ -2641,20 +2641,20 @@
           "acceptance": [
             "map child, parent and content-author journeys and identify source of truth per state",
             "separate approved product policy from engineering proposals",
-            "record unresolved O1/O2/O3/O5/O6/O7 and offline/OTP conflict without silently deciding for the owner",
+            "record the owner-approved fully-offline/no-server decision and classify Phone/OTP as Phase-2 migration debt; keep O3/O5/O6 unresolved without changing owner decisions",
             "document curriculum, evaluator and asset evidence gaps"
           ],
           "evidence": [
             "O1/O2/O3/O5/O6/O7 remain OPEN or OPEN-PROPOSED exactly as the Owner Decision Register records",
-            "identified OTP production flow vs offline-only product conflict; no INTERNET permission or fake auth added",
+            "ADR-0039 is accepted by owner (2026-11-05): no server, bundled local package + local evaluator, no Phone/OTP in final product; remove OTP/token/session in Phase 2 after O5. O3 gateway shape and O5 single-vs-multi local profile remain OPEN.",
             "content pipeline baseline: 25 stations, ST07 draft/pilot, 24 NOT_AUTHORED, 53 missing audio binaries, 36 missing image tokens, zero registered real assets; human review/rights not evidenced"
           ],
-          "blocker": "Owner decisions and external authored/reviewed/licensed curriculum/media are required before identity, evaluator, package schema or content can be finalized."
+          "blocker": "O1/O2/O3/O5/O6/O7 owner decisions and external authored/reviewed/licensed curriculum/media remain; offline-only product policy itself is already approved by ADR-0039."
         },
         {
           "id": "N11-02",
           "title": "Architecture, composition root, persistence and lifecycle correctness",
-          "status": "IN_PROGRESS",
+          "status": "DONE_WITH_BLOCKER",
           "dependsOn": [
             "N11-01"
           ],
@@ -2666,11 +2666,13 @@
           ],
           "evidence": [
             "Room attempt DAO now uses INSERT OR IGNORE; repository now writes session and attempt in one transaction with key ownership validation",
-            "regression tests authored for concurrent retries, key collision, mismatched IDs, duplicate no-op and reopen durability; not yet run",
             "container.lessonRecords now flows MainActivity -> ShomaraApp -> LessonHost; required root dependency replaces nullable default",
-            "Home placeholder summary/zero counter and redundant Continue CTA removed because no verified child identity is wired; path graph and Station Start Sheet retained"
+            "Home placeholder summary/zero counter and redundant Continue CTA removed because no verified child identity is wired; path graph and Station Start Sheet retained",
+            "GitHub Android Native workflow run 44158203235: environment READY (JDK 17, Android compile SDK 37); `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon` exit code 0.",
+            "CI XML aggregation: 81 suites, 575 tests, 0 failures, 0 errors, 0 skipped. New RoomLessonRecordRepositoryTest: 7/7 PASS.",
+            "Residual P0 moved to N11-05: O5 local identity/profile choice remains OPEN; no identity-backed progress projection exists. Empty default ShomaraPathProgress maps ST01 to Fresh, so returning users may be falsely shown at ST01. Do not invent progress."
           ],
-          "blocker": "Gradle/CI execution is pending; identity-backed progress wiring remains blocked by O5 and absence of an approved local child identity source."
+          "blocker": "O5 is still OPEN (single vs multi local profiles). Without an approved local identity and Room progress projection, the default path can misclassify returning users as ST01 Fresh; this remains a P0 for N11-05."
         },
         {
           "id": "N11-03",
@@ -2685,20 +2687,26 @@
             "deliver real audio/images with provenance, rights and human review evidence",
             "promote content only through the seven-step promotion lifecycle"
           ],
-          "blocker": "O1/O2 remain owner decisions; 24 stations are not authored; ST07 media and human review/rights evidence are missing. Originals are byte-protected."
+          "blocker": "O1/O2 remain owner decisions; 24 stations are not authored; ST07 media, human review and rights evidence are missing. Fully-offline/no-server product policy is already approved by ADR-0039 and is not a blocker."
         },
         {
           "id": "N11-04",
           "title": "Design system and shared interaction foundation",
-          "status": "TODO",
+          "status": "IN_PROGRESS",
           "dependsOn": [
-            "N11-03"
+            "N11-02"
           ],
           "acceptance": [
             "reconcile canonical tokens/codegen/Compose components and retire duplicate overrides only after consumer proof",
             "complete accessibility and responsive specs for typography, colors, motion, touch targets and RTL",
             "run canonical design-system and generated-drift gates"
-          ]
+          ],
+          "evidence": [
+            "Design-system baseline reviewed: canonical tokens remain packages/design-system/src/tokens.json.",
+            "Read skills/shomara-design-system/SKILL.md, design/MASTER.md, design/INSPIRATION_GUARDRAILS.md, COMPONENT_READINESS.md and NATIVE_IMPLEMENTATION.md. No token/component implementation is claimed yet.",
+            "Base token, typography, primitive and accessibility work is independent of authoring the remaining curriculum; content-specific manipulatives remain gated by approved content."
+          ],
+          "blocker": "Content-specific manipulative components and curriculum visuals still require approved station contracts; base tokens and shared primitives can proceed."
         },
         {
           "id": "N11-05",
