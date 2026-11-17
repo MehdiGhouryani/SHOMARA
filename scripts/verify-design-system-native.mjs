@@ -2,11 +2,14 @@
  * N03-07 zero-raw-token guard for the Native design system (COMPONENT_READINESS «geometry از
  * token canonical، بدون magic value»).
  *
- * Scans the Kotlin sources of :core:designsystem and :app and fails on:
- *  - raw color literals (0xFFxxxxxx / Color(0x...)) outside the generated ShomaraTokens.kt|ShomaraHomeUiTokens.kt;
- *  - raw dp/sp literals outside ShomaraTokens.kt|ShomaraHomeUiTokens.kt (0.dp structural zeros are allowed);
- *  - raw FontWeight(n) constructions outside ShomaraTokens.kt|ShomaraHomeUiTokens.kt;
- *  - banned child-safety terms (AGENTS rule 8) anywhere in the design system.
+ * Scans the Kotlin sources of :core:designsystem, :app and all feature modules and fails on:
+ *  - raw color literals (0xFFxxxxxx / Color(0x...)) outside the generated ShomaraTokens.kt;
+ *  - raw dp/sp literals outside ShomaraTokens.kt (0.dp structural zeros are allowed);
+ *  - raw FontWeight(n) constructions outside ShomaraTokens.kt;
+ *  - banned child-safety terms (AGENTS rule 8) anywhere in scanned Native UI sources.
+ *
+ * ShomaraTokens.kt is the ONLY generated Kotlin token target. Home handoff components are not
+ * exempt: their semantic values must resolve through this same canonical token object.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,8 +19,7 @@ const fail = (message) => { console.error(`NATIVE_DESIGN_GUARD: FAIL — ${messa
 
 const scanRoots = ['apps/android/core/designsystem/src/main/kotlin', 'apps/android/app/src/main/kotlin', 'apps/android/feature'];
 const generatedFile = ['ShomaraTokens.kt'];
-// P14b (handoff v3): screen-local components from the approved handoff use local dp/sp
-// values that are part of the design specification, not accidental raw values.
+// No feature- or screen-local exemptions: only the generated canonical token file is skipped.
 
 const files = [];
 for (const dir of scanRoots) {
