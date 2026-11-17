@@ -76,7 +76,7 @@ fun LessonActionBar(modifier: Modifier = Modifier, content: @Composable () -> Un
 @Composable
 fun HintCard(text: String, modifier: Modifier = Modifier) {
     ClaySurface(
-        depth = ClayDepth.HINT,
+        depth = ShomaraClayDepth.Hint,
         modifier = modifier.fillMaxWidth().heightIn(min = ShomaraTokens.ComponentTouchMin),
         containerColor = ShomaraTokens.ColorSurfaceAlt,
     ) {
@@ -88,7 +88,7 @@ fun HintCard(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun GuideBubble(text: String, modifier: Modifier = Modifier) {
     ClaySurface(
-        depth = ClayDepth.SOFT,
+        depth = ShomaraClayDepth.Soft,
         modifier = modifier.fillMaxWidth(),
         containerColor = ShomaraTokens.ColorSurface,
     ) {
@@ -100,7 +100,7 @@ fun GuideBubble(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun ResultSummary(passed: Boolean, title: String, detail: String, modifier: Modifier = Modifier) {
     ClaySurface(
-        depth = if (passed) ClayDepth.FEATURED else ClayDepth.SOFT,
+        depth = if (passed) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft,
         modifier = modifier.fillMaxWidth(),
         containerColor = if (passed) ShomaraTokens.ColorAmberSoft else ShomaraTokens.ColorSurface,
     ) {
@@ -115,7 +115,7 @@ fun ResultSummary(passed: Boolean, title: String, detail: String, modifier: Modi
 @Composable
 fun RecoveryCard(title: String, detail: String, modifier: Modifier = Modifier) {
     ClaySurface(
-        depth = ClayDepth.SOFT,
+        depth = ShomaraClayDepth.Soft,
         modifier = modifier.fillMaxWidth().heightIn(min = ShomaraTokens.ComponentRowH),
         containerColor = ShomaraTokens.ColorSurface,
     ) {
