@@ -87,6 +87,11 @@ class ShomaraPrimitives03Test {
         assertEquals(ShomaraClayDepth.Hint, ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, ShomaraButtonState.Pressed))
         assertEquals(ShomaraClayDepth.Flat, ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, ShomaraButtonState.Loading))
         assertEquals(ShomaraClayDepth.Flat, ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Ghost, ShomaraButtonState.Pressed))
+
+        assertEquals(ShomaraTokens.ClaySoftBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Primary, ShomaraButtonState.Default))
+        assertEquals(ShomaraTokens.ClayHintBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Primary, ShomaraButtonState.Pressed))
+        assertEquals(ShomaraTokens.ClayFlatBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Primary, ShomaraButtonState.Disabled))
+        assertEquals(ShomaraTokens.ClayHintBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Ghost, ShomaraButtonState.Default))
     }
 
     @Test
