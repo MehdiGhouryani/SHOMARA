@@ -2,6 +2,7 @@ package com.mathlearning.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
@@ -119,7 +120,11 @@ interface LessonAttemptDao {
     @Query(StringQueries.LESSON_ATTEMPT_BY_KEY)
     suspend fun byAttemptKey(attemptKey: String): LessonAttemptEntity?
 
-    @Insert
+    /**
+     * IGNORE is a final idempotency guard for a key inserted concurrently by another database
+     * writer. The repository verifies the conflicting row still belongs to the same session.
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: LessonAttemptEntity): Long
 
     @Query(StringQueries.LESSON_ATTEMPTS_FOR_SESSION)
