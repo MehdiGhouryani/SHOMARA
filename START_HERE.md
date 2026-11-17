@@ -35,20 +35,21 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 59
+file_version: 60
 last_updated: 2026-11-17
-snapshot_id: SNAP-20261117-DT-01-REAL-DATA-HOME
+snapshot_id: SNAP-20261117-DT-02-HARNESS-N11
 baseline_commit: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
 working_branch: work/shomara-deep-transformation
 working_branch_pushed: true
+working_branch_base_sha: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
-current_phase: N08R
-current_task: N08R-10
-phase_status: N08R_GUIDED_DONE__NEXT_ASSESSMENT_PER_OWNER_ORDER
-apk_status: DEBUG_APK_BUILT_INSTALLED__LAUNCH_AND_DEEPLINK_VERIFIED
-blocked_note: N08-06..12 remain blocked on N08-08 (OWNER_DECISION_PENDING for CONTENT-005/006/007/016). Parallel owner-authorized phase N08R (Duolingo-level UI/UX refinement, mission: design/playbook/N08R_MISSION_FA.md) registered on branch native/n08r-ui-polish from page-17-nav; it must not bypass N08-08 or touch protected screens (Splash, Profile Setup).
+current_phase: N11
+current_task: N11-02
+phase_status: IN_PROGRESS__ATOMIC_PERSISTENCE_AND_COMPOSITION_ROOT
+apk_status: NOT_BUILT_ON_TRANSFORMATION_BRANCH
+blocked_note: Deep Product & Engineering Transformation is active on work/shomara-deep-transformation. N11-00 and N11-01 are DONE_WITH_BLOCKER based on remote repository evidence; N11-02 is IN_PROGRESS and its new tests/Gradle compile are not yet executed. O1/O2/O3/O5/O6/O7 remain owner decisions; no identity-backed Home progress may be fabricated. Content/media human review and rights, OTP/offline policy, device/TalkBack evidence and release HG-05 remain open.
 ```
 
 ## 0. تصمیم مالک و مرز کار
