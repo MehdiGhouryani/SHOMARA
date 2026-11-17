@@ -26,9 +26,18 @@ class ClayContractTest {
 
     @Test
     fun `values come from generated tokens - no raw literals in the resolver`() {
-        assertEquals(ShomaraTokens.ClaySoftElevation, ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation)
-        assertEquals(ShomaraTokens.ClayFeaturedBorderWidth, ShomaraClay.specFor(ShomaraClayDepth.Featured).borderWidth)
+        val tokenPairs = listOf(
+            Triple(ShomaraClayDepth.Flat, ShomaraTokens.ClayFlatBorderWidth, ShomaraTokens.ClayFlatElevation),
+            Triple(ShomaraClayDepth.Hint, ShomaraTokens.ClayHintBorderWidth, ShomaraTokens.ClayHintElevation),
+            Triple(ShomaraClayDepth.Soft, ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ClaySoftElevation),
+            Triple(ShomaraClayDepth.Featured, ShomaraTokens.ClayFeaturedBorderWidth, ShomaraTokens.ClayFeaturedElevation),
+        )
+        tokenPairs.forEach { (depth, borderWidth, elevation) ->
+            assertEquals(borderWidth, ShomaraClay.specFor(depth).borderWidth)
+            assertEquals(elevation, ShomaraClay.specFor(depth).elevation)
+        }
         assertEquals(ShomaraTokens.ClayHintShadowRadius, ShomaraClay.specFor(ShomaraClayDepth.Hint).shadowRadius)
+        assertEquals(ShomaraTokens.ClaySoftShadowRadius, ShomaraClay.specFor(ShomaraClayDepth.Soft).shadowRadius)
     }
 
     @Test
