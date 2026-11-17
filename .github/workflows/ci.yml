@@ -45,6 +45,8 @@ jobs:
         run: |
           node tools/harness.mjs validate
           node tools/harness.mjs next
+      - name: Verify canonical token outputs are drift-free
+        run: node tools/token-codegen/generate.mjs --check
       - run: npm run build:packages
       - run: npm run verify:static:core
 
