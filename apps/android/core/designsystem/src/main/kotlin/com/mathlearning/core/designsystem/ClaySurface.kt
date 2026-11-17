@@ -39,27 +39,6 @@ import androidx.compose.ui.unit.dp
  * Rule: text NEVER carries a shadow — shadows apply to the surface layer only (mission).
  * One Featured surface per decision viewport (max-1 is enforced by the callers, ADR-0040).
  */
-enum class ClayDepth { FLAT, HINT, SOFT, FEATURED }
-
-data class ClaySpec(
-    val borderWidth: Dp,
-    val shadowOpacity: Float,
-    val shadowRadius: Dp,
-    val shadowOffsetY: Dp,
-    val highlightOpacity: Float,
-    val highlightThickness: Dp,
-    val elevation: Dp,
-)
-
-object ClaySpecResolver {
-    fun specFor(depth: ClayDepth): ClaySpec = when (depth) {
-        ClayDepth.FLAT -> ClaySpec(ShomaraTokens.ClayFlatBorderWidth, ShomaraTokens.ClayFlatShadowOpacity.toFloat(), ShomaraTokens.ClayFlatShadowRadius, ShomaraTokens.ClayFlatShadowOffsetY, ShomaraTokens.ClayFlatHighlightOpacity.toFloat(), ShomaraTokens.ClayFlatHighlightThickness, ShomaraTokens.ClayFlatElevation)
-        ClayDepth.HINT -> ClaySpec(ShomaraTokens.ClayHintBorderWidth, ShomaraTokens.ClayHintShadowOpacity.toFloat(), ShomaraTokens.ClayHintShadowRadius, ShomaraTokens.ClayHintShadowOffsetY, ShomaraTokens.ClayHintHighlightOpacity.toFloat(), ShomaraTokens.ClayHintHighlightThickness, ShomaraTokens.ClayHintElevation)
-        ClayDepth.SOFT -> ClaySpec(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ClaySoftShadowOpacity.toFloat(), ShomaraTokens.ClaySoftShadowRadius, ShomaraTokens.ClaySoftShadowOffsetY, ShomaraTokens.ClaySoftHighlightOpacity.toFloat(), ShomaraTokens.ClaySoftHighlightThickness, ShomaraTokens.ClaySoftElevation)
-        ClayDepth.FEATURED -> ClaySpec(ShomaraTokens.ClayFeaturedBorderWidth, ShomaraTokens.ClayFeaturedShadowOpacity.toFloat(), ShomaraTokens.ClayFeaturedShadowRadius, ShomaraTokens.ClayFeaturedShadowOffsetY, ShomaraTokens.ClayFeaturedHighlightOpacity.toFloat(), ShomaraTokens.ClayFeaturedHighlightThickness, ShomaraTokens.ClayFeaturedElevation)
-    }
-}
-
 /**
  * @param depth clay tier (Flat/Hint/Soft/Featured)
  * @param pressed tactile press state (scale + sink + shadow transition)
@@ -67,7 +46,7 @@ object ClaySpecResolver {
  * @param radius corner radius (token-provided by caller; never a raw magic value)
  */
 fun Modifier.shomaraClay(
-    depth: ClayDepth,
+    depth: ShomaraClayDepth,
     shape: RoundedCornerShape,
     pressed: Boolean,
     reducedMotion: Boolean,
@@ -76,8 +55,7 @@ fun Modifier.shomaraClay(
     pressScale: Float,
     sink: Dp,
 ): Modifier {
-    val spec = ClaySpecResolver.specFor(depth)
-    val shadowOpacity = if (pressed) spec.shadowOpacity * 0.6f else spec.shadowOpacity
+    val spec = ShomaraClay.specFor(depth)
     return this
         .graphicsLayer {
             scaleX = pressScale
@@ -93,14 +71,14 @@ fun Modifier.shomaraClay(
 /** Composable entry: computes the animated press values from the shared spring spec, then applies the static clay modifier. */
 @Composable
 fun Modifier.shomaraClayAnimated(
-    depth: ClayDepth,
+    depth: ShomaraClayDepth,
     shape: RoundedCornerShape,
     pressed: Boolean = false,
     reducedMotion: Boolean = LocalShomaraReducedMotion.current,
     containerColor: Color,
     borderColor: Color,
 ): Modifier {
-    val spec = ClaySpecResolver.specFor(depth)
+    val spec = ShomaraClay.specFor(depth)
     val pressScale by animateFloatAsState(
         targetValue = if (pressed) ShomaraPressFeedbackLogic.pressedScale() else 1f,
         animationSpec = if (reducedMotion) snap() else spring(
@@ -123,7 +101,7 @@ fun Modifier.shomaraClayAnimated(
 /** The reusable container: a ClaySurface box with optional semantics label. */
 @Composable
 fun ClaySurface(
-    depth: ClayDepth,
+    depth: ShomaraClayDepth,
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(ShomaraTokens.RadiusLg),
     pressed: Boolean = false,
@@ -143,7 +121,7 @@ fun ShomaraIconButton(
     iconText: String,
     contentDescription: String,
     modifier: Modifier = Modifier,
-    depth: ClayDepth = ClayDepth.SOFT,
+    depth: ShomaraClayDepth = ShomaraClayDepth.Soft,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {
