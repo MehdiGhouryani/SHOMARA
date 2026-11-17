@@ -71,6 +71,25 @@ class ShomaraStationSheetTest {
     }
 
     @Test
+    fun unresolvedProgressShowsLoadingAndDefersDeepLinkedStation() {
+        val started = mutableListOf<String>()
+        val consumed = mutableListOf<String>()
+        setShell(
+            progress = ShomaraPathProgress.unresolved(),
+            started = started,
+            initialStationId = "ST07",
+            consumed = consumed,
+        )
+
+        composeRule.onNodeWithText("در حال آماده‌سازی مسیر").assertIsDisplayed()
+        composeRule.onAllNodesWithText("شروع").assertCountEquals(0)
+        composeRule.runOnIdle {
+            assertTrue("a lesson must not start before the local identity/progress snapshot exists", started.isEmpty())
+            assertTrue("the deep link must remain pending until the snapshot resolves", consumed.isEmpty())
+        }
+    }
+
+    @Test
     fun stationTapOpensTheStartSheetAndOnlyItsCtaNavigates() {
         val started = mutableListOf<String>()
         val readyProgress = ShomaraPathProgress(
