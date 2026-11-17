@@ -29,6 +29,11 @@ import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
 import com.mathlearning.feature.path.ShomaraPathProgress
+import com.mathlearning.feature.path.ShomaraHomeHeader
+import com.mathlearning.feature.path.ShomaraChapterProgressCard
+import com.mathlearning.feature.path.ShomaraContinueStationCard
+import com.mathlearning.feature.path.ShomaraHomeProgressUi
+import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.feature.path.ShomaraPathScreen
 import com.mathlearning.feature.path.ShomaraStationStartSheet
 import com.mathlearning.feature.practice.ShomaraPracticeCatalog
@@ -138,7 +143,51 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Path.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Path.deepLink }),
                 ) {
-                    ShomaraPathScreen(progress = pathProgress, onStationTap = { selectedStationId = it })
+                    // P14b (handoff v3): the new Home header, progress card and continue card
+                    // sit ABOVE the existing path graph — the zigzag geometry, node states and
+                    // chapter bands are the existing ShomaraPathScreen, unchanged.
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // A. Home header (handoff v3: title + Main character + settings)
+                        ShomaraHomeHeader(
+                            title = "مسیر یادگیری",
+                            subtitle = "قدم‌به‌قدم جلو می‌ریم",
+                            onSettings = { navController.navigate("shell/settings") },
+                            characterSlot = {
+                                com.mathlearning.core.designsystem.ShomaraCharacterImage(
+                                    character = com.mathlearning.core.designsystem.ShomaraCharacter.Main,
+                                    poseId = 1,
+                                    slot = com.mathlearning.core.designsystem.ShomaraCharacterSlot.Inline,
+                                )
+                            },
+                        )
+                        // B. Chapter progress card (from real progress, Persian digits)
+                        ShomaraChapterProgressCard(
+                            gradeLabel = "پایهٔ اول",
+                            chapterTitle = "عددهای ۱ و ۲",
+                            progress = ShomaraHomeProgressUi(
+                                completed = completedStations,
+                                total = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT,
+                                spokenLabel = com.mathlearning.core.designsystem.ShomaraDigits.toFa(completedStations) +
+                                    " از " + com.mathlearning.core.designsystem.ShomaraDigits.toFa(com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT),
+                            ),
+                        )
+                        // C. Continue/current station card
+                        pathProgress.currentStationId?.let { currentId ->
+                            ShomaraContinueStationCard(
+                                eyebrow = "از آخرین نقطه ادامه بده",
+                                title = com.mathlearning.core.model.ShomaraStationCatalog.station(currentId).workingTitle,
+                                supportingText = null,
+                                actionLabel = "ادامه",
+                                onContinue = { selectedStationId = currentId },
+                            )
+                        }
+                        // D. The REAL path graph — zigzag geometry, node states, chapter bands unchanged
+                        ShomaraPathScreen(
+                            progress = pathProgress,
+                            onStationTap = { selectedStationId = it },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
                 }
                 composable(
                     route = ShomaraShellTab.Practice.route,
