@@ -12,10 +12,10 @@ class ClayContractTest {
 
     @Test
     fun `four depth tiers resolve in ascending visual weight`() {
-        val flat = ClaySpecResolver.specFor(ClayDepth.FLAT)
-        val hint = ClaySpecResolver.specFor(ClayDepth.HINT)
-        val soft = ClaySpecResolver.specFor(ClayDepth.SOFT)
-        val featured = ClaySpecResolver.specFor(ClayDepth.FEATURED)
+        val flat = ShomaraClay.specFor(ShomaraClayDepth.Flat)
+        val hint = ShomaraClay.specFor(ShomaraClayDepth.Hint)
+        val soft = ShomaraClay.specFor(ShomaraClayDepth.Soft)
+        val featured = ShomaraClay.specFor(ShomaraClayDepth.Featured)
         assertTrue(flat.elevation <= hint.elevation)
         assertTrue(hint.elevation <= soft.elevation)
         assertTrue(soft.elevation <= featured.elevation)
@@ -26,14 +26,14 @@ class ClayContractTest {
 
     @Test
     fun `values come from generated tokens - no raw literals in the resolver`() {
-        assertEquals(ShomaraTokens.ClaySoftElevation, ClaySpecResolver.specFor(ClayDepth.SOFT).elevation)
-        assertEquals(ShomaraTokens.ClayFeaturedBorderWidth, ClaySpecResolver.specFor(ClayDepth.FEATURED).borderWidth)
-        assertEquals(ShomaraTokens.ClayHintShadowRadius, ClaySpecResolver.specFor(ClayDepth.HINT).shadowRadius)
+        assertEquals(ShomaraTokens.ClaySoftElevation, ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation)
+        assertEquals(ShomaraTokens.ClayFeaturedBorderWidth, ShomaraClay.specFor(ShomaraClayDepth.Featured).borderWidth)
+        assertEquals(ShomaraTokens.ClayHintShadowRadius, ShomaraClay.specFor(ShomaraClayDepth.Hint).shadowRadius)
     }
 
     @Test
     fun `flat tier has no shadow or border - text surfaces stay flat`() {
-        val flat = ClaySpecResolver.specFor(ClayDepth.FLAT)
+        val flat = ShomaraClay.specFor(ShomaraClayDepth.Flat)
         assertEquals(0.0, flat.shadowOpacity.toDouble(), 0.0)
         assertEquals(0.0f, flat.borderWidth.value, 0.0f)
         assertEquals(0.0f, flat.elevation.value, 0.0f)
@@ -53,9 +53,9 @@ class ClayContractTest {
 
     @Test
     fun `current node is the only FEATURED depth - locked is FLAT`() {
-        assertEquals(ClayDepth.FEATURED, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.CURRENT))
-        assertEquals(ClayDepth.FLAT, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.LOCKED))
-        assertEquals(ClayDepth.SOFT, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.FRESH))
+        assertEquals(ShomaraClayDepth.Featured, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.CURRENT))
+        assertEquals(ShomaraClayDepth.Flat, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.LOCKED))
+        assertEquals(ShomaraClayDepth.Soft, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.FRESH))
     }
 
 }
