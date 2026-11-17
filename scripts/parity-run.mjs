@@ -59,12 +59,12 @@ for (const spec of manifest.filter((s) => only.length === 0 || only.includes(s.i
   fs.writeFileSync(path.join(OUT, `${spec.id}.actual.png`), PNG.sync.write(actual));
   fs.writeFileSync(path.join(OUT, `${spec.id}.golden.png`), PNG.sync.write(golden));
   fs.writeFileSync(path.join(OUT, `${spec.id}.diff.png`), PNG.sync.write(diff));
-  results.push({ id: spec.id, pct: +pct.toFixed(2), max: spec.maxDiffPercent, pass: pct <= spec.maxDiffPercent && errors.length === 0, errors });
+  results.push({ id: spec.id, pct, displayPct: +pct.toFixed(4), max: spec.maxDiffPercent, pass: pct <= spec.maxDiffPercent && errors.length === 0, errors, badPixels: bad, totalPixels: clip.width * clip.height });
 }
 await browser.close();
 
 for (const r of results) {
-  console.log(`${r.pass ? 'PASS' : 'FAIL'} ${r.id.padEnd(14)} diff ${r.pct.toFixed(2).padStart(6)}%  (max ${r.max}%)${r.errors.length ? '  errors: ' + r.errors.join(' | ') : ''}`);
+  console.log(`${r.pass ? 'PASS' : 'FAIL'} ${r.id.padEnd(14)} diff ${r.pct.toFixed(4).padStart(8)}%  (max ${r.max}%)${r.errors.length ? '  errors: ' + r.errors.join(' | ') : ''}`);
 }
 fs.writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(results, null, 2));
 const failed = results.filter((r) => !r.pass);
