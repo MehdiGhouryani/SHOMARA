@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.mathlearning.core.designsystem.ClayDepth
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ClaySurface
 import com.mathlearning.core.designsystem.GuideBubble
 import com.mathlearning.core.designsystem.HintCard
@@ -57,12 +57,12 @@ class DesignSystemGalleryActivity : ComponentActivity() {
                             UnitHeader(title = "ایستگاه ۷ — عددهای ۱ و ۲", chapterLabel = "فصل ۲")
                             LessonProgressHeader(done = 3, total = 8)
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                ClaySurface(depth = ClayDepth.FLAT, modifier = Modifier.padding(4.dp)) { Text("Flat") }
-                                ClaySurface(depth = ClayDepth.HINT, modifier = Modifier.padding(4.dp)) { Text("Hint") }
+                                ClaySurface(depth = ShomaraClayDepth.Flat, modifier = Modifier.padding(4.dp)) { Text("Flat") }
+                                ClaySurface(depth = ShomaraClayDepth.Hint, modifier = Modifier.padding(4.dp)) { Text("Hint") }
                             }
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                ClaySurface(depth = ClayDepth.SOFT, modifier = Modifier.padding(4.dp)) { Text("Soft") }
-                                ClaySurface(depth = ClayDepth.FEATURED, modifier = Modifier.padding(4.dp), containerColor = ShomaraTokens.ColorAmberSoft) { Text("Featured") }
+                                ClaySurface(depth = ShomaraClayDepth.Soft, modifier = Modifier.padding(4.dp)) { Text("Soft") }
+                                ClaySurface(depth = ShomaraClayDepth.Featured, modifier = Modifier.padding(4.dp), containerColor = ShomaraTokens.ColorAmberSoft) { Text("Featured") }
                             }
                             HintCard("به شکل‌ها نگاه کن و مقایسه کن.")
                             GuideBubble("با هم پیدا کنیم؛ هر بار یکی.")
