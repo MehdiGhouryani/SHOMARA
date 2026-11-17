@@ -98,7 +98,7 @@ data class ShomaraPathProgress(
     val currentStationId: String? = null,
     val offline: Boolean = false,
     /** True only after the caller has loaded/created this child's local progress snapshot. */
-    val isResolved: Boolean = true,
+    val isResolved: Boolean = false,
 ) {
     init {
         require(perfectStationIds.all { it in completedStationIds }) { "perfect implies completed" }
@@ -109,7 +109,10 @@ data class ShomaraPathProgress(
 
     companion object {
         /** Root placeholder while local identity and its Room progress have not been resolved. */
-        fun unresolved(): ShomaraPathProgress = ShomaraPathProgress(isResolved = false)
+        fun unresolved(): ShomaraPathProgress = ShomaraPathProgress()
+
+        /** Use only after a local identity has been resolved and its persisted progress was read. */
+        fun emptyResolved(): ShomaraPathProgress = ShomaraPathProgress(isResolved = true)
     }
 }
 
