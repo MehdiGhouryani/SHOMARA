@@ -74,7 +74,17 @@ export function Button({ label, onPress, variant = 'amber', disabled = false, lo
           <View style={[styles.content, compact ? styles.contentCompact : null]}>
             {loading ? <ActivityIndicator color={look.text} /> : null}
             {icon && !loading ? <Icon name={icon} size={B.icon} color={look.text} /> : null}
-            <Text style={[typeStyle('body'), compact ? { fontSize: 16, lineHeight: 25 } : null, { fontWeight: '600', color: look.text, textAlign: 'center' }]}>{label}</Text>
+            <Text
+              numberOfLines={compact ? 1 : undefined}
+              ellipsizeMode="clip"
+              style={[
+                typeStyle('body'),
+                compact ? { fontSize: 16, lineHeight: 25, flexShrink: 0 } : null,
+                { fontWeight: '600', color: look.text, textAlign: 'center' },
+              ]}
+            >
+              {label}
+            </Text>
           </View>
         </EdgeBox>
       )}
