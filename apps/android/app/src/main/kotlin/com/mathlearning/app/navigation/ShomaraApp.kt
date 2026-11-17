@@ -65,8 +65,9 @@ fun ShomaraApp(
     settingsStore: ShomaraSettingsStore,
     simulatedAuth: Boolean = false,
     backendConfigured: Boolean = false,
-    // P14: the durable attempt recorder (debug wiring; release passes null — fail-closed).
-    lessonRecordRepository: com.mathlearning.core.model.repository.LessonRecordRepository? = null,
+    // P14/P6: the real Room-backed attempt recorder is required at the composition root.
+    // Release still ships no draft lesson content/evaluator; debug preview taps use the same durable boundary.
+    lessonRecordRepository: com.mathlearning.core.model.repository.LessonRecordRepository,
 ) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
