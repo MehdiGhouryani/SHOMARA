@@ -100,6 +100,11 @@ object ShomaraButtonLogic {
         else -> if (variant == ShomaraButtonVariant.Ghost) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft
     }
 
+    /** Ghost intentionally stays flat but keeps a visible one-pixel outline as a touch affordance. */
+    fun borderWidthFor(variant: ShomaraButtonVariant, state: ShomaraButtonState) =
+        if (variant == ShomaraButtonVariant.Ghost) ShomaraTokens.ClayHintBorderWidth
+        else ShomaraClay.specFor(clayDepth(variant, state)).borderWidth
+
     /** (container, content) pairs resolve only through generated tokens. */
     fun colors(variant: ShomaraButtonVariant, state: ShomaraButtonState): Pair<Color, Color> {
         val quiet = state == ShomaraButtonState.Disabled || state == ShomaraButtonState.Loading
@@ -197,7 +202,7 @@ fun ShomaraButton(
             // against the canvas. The depth stays Flat (ADR-0040 R1).
             .then(
                 if (variant == ShomaraButtonVariant.Ghost) {
-                    Modifier.border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                    Modifier.border(ShomaraButtonLogic.borderWidthFor(variant, state), ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
                 } else Modifier
             )
             .semantics(mergeDescendants = true) {
