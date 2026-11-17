@@ -62,7 +62,15 @@ object ShomaraClay {
         highlightThickness = 0.dp,
         elevation = ShomaraTokens.ClayLevelFlat.dp,
     )
-    val Hint: ShomaraClaySpec = Flat.copy(elevation = ShomaraTokens.ClayLevelHint.dp)
+    val Hint: ShomaraClaySpec = ShomaraClaySpec(
+        borderWidth = ShomaraTokens.ClayHintBorderWidth,
+        shadowOpacity = ShomaraTokens.ClayHintShadowOpacity.toFloat(),
+        shadowRadius = ShomaraTokens.ClayHintShadowRadius,
+        shadowOffsetY = ShomaraTokens.ClayHintShadowOffsetY,
+        highlightOpacity = ShomaraTokens.ClayHintHighlightOpacity.toFloat(),
+        highlightThickness = ShomaraTokens.ClayHintHighlightThickness,
+        elevation = ShomaraTokens.ClayHintElevation,
+    )
     val Soft: ShomaraClaySpec = ShomaraClaySpec(
         borderWidth = ShomaraTokens.ClaySoftBorderWidth,
         shadowOpacity = ShomaraTokens.ClaySoftShadowOpacity.toFloat(),
