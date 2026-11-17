@@ -95,6 +95,7 @@ class ShomaraStationSheetTest {
         val readyProgress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
             currentStationId = "ST07",
+            isResolved = true,
         )
         setShell(readyProgress, started)
 
@@ -119,6 +120,7 @@ class ShomaraStationSheetTest {
         val lockedProgress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02"),
             currentStationId = "ST03",
+            isResolved = true,
         )
         setShell(lockedProgress, started)
 
@@ -147,6 +149,7 @@ class ShomaraStationSheetTest {
         val readyProgress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
             currentStationId = "ST07",
+            isResolved = true,
         )
         setShell(readyProgress, started, initialStationId = "ST07", consumed = consumed)
 
@@ -171,6 +174,7 @@ class ShomaraStationSheetTest {
         val progress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
             currentStationId = "ST07",
+            isResolved = true,
         )
         setShell(progress, started, replayed = replayed)
 
