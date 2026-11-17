@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { parseArgs } from '../../scripts/android-build.mjs';
 import { javaCommand, resolveSdk, validPlatformJar, pinnedPlatformJars, PINNED_PLATFORM_PACKAGE } from '../../scripts/verify-android-environment.mjs';
 
@@ -114,4 +115,10 @@ test('preflight crash replaces a stale PASS with a FAILED report', () => {
     assert.match(failure.error, /valid JSON/);
     assert.equal(failure.apk, null);
   } finally { fs.rmSync(temporary, { recursive: true }); }
+});
+
+test('POSIX Android Gradle wrapper is checked in executable', () => {
+  if (process.platform === 'win32') return;
+  const wrapper = fileURLToPath(new URL('../../apps/android/gradlew', import.meta.url));
+  assert.doesNotThrow(() => fs.accessSync(wrapper, fs.constants.X_OK));
 });
