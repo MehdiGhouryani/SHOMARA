@@ -69,6 +69,20 @@
 - **ریسک/اثر مهاجرت:** launch/onboarding routeها، session restoration، ParentGate، حذف داده، profile schema و deep links باید route-by-route مهاجرت و تست شوند. اسناد پیش از 2026-11-05 باید به‌عنوان baseline تاریخی برچسب بخورند، نه قرارداد جاری.
 
 
+
+### DTR-005 — یکپارچه‌سازی Clay و معنای tokenهای visual
+
+**وضعیت:** KEEP canonical token source + REVISE → SOURCE_IMPLEMENTED / LOGIC_TESTED؛ Native visual validation هنوز OPEN.
+
+- **مسئله:** دو مسیر resolver برای Clay وجود داشت: `ShomaraClayDepth/ShomaraClay` در Theme و `ClayDepth/ClaySpecResolver` در `ClaySurface.kt`. مقدار Hint در Theme تنها elevation را از token می‌گرفت و border/shadow/highlight آن از Flat به ارث می‌رسید؛ resolver دوم propertyهای کامل Hint را می‌خواند. همچنین Border در Card برای تمام stateها Soft بود، حتی وقتی state عمق Hint یا Flat داشت.
+- **شواهد:** `ShomaraTheme.kt`، `ClaySurface.kt`، `PathKit.kt`، `LessonKit.kt`، `Previews.kt`، Debug `DesignSystemGalleryActivity.kt`، `ShomaraCard.kt` و تست‌های `ClayContractTest` / `ShomaraThemeTest` / `ShomaraPrimitives04Test`.
+- **KEEP:** `packages/design-system/src/tokens.json` با v2 به‌عنوان منبع canonical و codegen دوخروجی‌ای؛ generated Kotlin دستی تغییر نمی‌کند. legacy v1 تا اثبات عدم مصرف وب/سایر پلتفرم retire نمی‌شود.
+- **REVISE / تغییر:** resolver موازی حذف شد؛ همهٔ source و debug consumerها به `ShomaraClayDepth` و `ShomaraClay.specFor` مهاجرت کردند. Flat/Hint/Soft/Featured تمام propertyهای خود را از generated v2 tokens می‌گیرند. Border Card از tier state resolve می‌شود. Ghost Button عمداً Flat می‌ماند ولی outline یک‌پیکسلی خود را از HintBorderWidth می‌گیرد، نه SoftBorderWidth.
+- **Regression tests:** property-by-property token mapping برای چهار tier؛ border mapping همهٔ Card states؛ border mapping Primary Disabled/Pressed/Default و Ghost. Token drift CLI به static-core PR CI اضافه شد.
+- **CI evidence:** run `44161892815` در 2026-11-17 موفق؛ gate JSON status PASS، Android SDK 37 + JDK 17 READY، `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon` exit 0 و `BUILD SUCCESSFUL`. Artifact diagnostics با ID `14364890263`؛ ۸۱ XML suite، ۵۷۶ test، صفر failure/error/skip در این checkpoint.
+- **مرز rendering:** `ClaySurface` هنوز shadow opacity/radius/offset و highlight opacity را به rendering مستقل map نمی‌کند؛ Compose elevation renderer فعلی است. بدون screenshot compare روی 360/390/412dp و font scale 2.0، Canvas/gradient سفارشی اضافه نمی‌شود.
+- **ریسک/گام بعد:** lint/compile/JVM pass معادل screenshot، Compose semantics، TalkBack، IME یا physical device نیست. همهٔ کامپوننت‌ها تا ثبت evidence واقعی `NATIVE_PENDING` هستند. فایل TTF مجاز Vazirmatn هم هنوز ورودی مالک است.
+
 ## 4. تغییرات ثبت‌شده در شاخهٔ اجرا
 
 | Commit | تغییر |
