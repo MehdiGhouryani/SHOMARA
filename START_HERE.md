@@ -1,4 +1,5 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-17 | SNAP-20261117-DT-01-REAL-DATA-HOME | Deep Transformation checkpoint 01 — روی شاخهٔ مستقل `work/shomara-deep-transformation` از SHA دقیق P14b: ثبت Attempt به یک Room transaction با idempotency مقاوم به retry منتقل شد؛ Repository واقعی lesson از MainActivity تزریق شد؛ در Home کارت پیشرفت با پایه/فصل ثابت و صفر غیرقابل‌اتکا و Continue تکراری حذف شد؛ Path و Station Start Sheet حفظ شدند. تصمیم‌ها و blockers: `docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md`. **گیت‌های Gradle/CI/device هنوز UNVERIFIED؛ هیچ PASS فنی ادعا نمی‌شود.** |
 | 2026-11-17 | SNAP-20261117-IPA-P14C-HOME-WIRED | برنامهٔ زیرساخت مالک — P14c بسته شد: **Home UI واقعاً به shell وصل شد** — ShomaraChildShellHost Path tab حالا HomeHeader + ChapterProgressCard + ContinueStationCard بالای ShomaraPathScreen رندر می‌کند (گراف زیگزاگی دست‌نخورده)؛ Continue Card به Station Start Sheet واقعی وصل شد؛ settings به shell/settings؛ رنگ‌های handoff به tokens.json canonical + codegen؛ Design Guard بدون استثنا (raw=0). شواهد: gate/static/repo PASS، screenshot روی device. |
 | 2026-11-15 | SNAP-20261115-IPA-P14B-HOME-UI | برنامهٔ زیرساخت مالک — P14b بسته شد: **Home Path UI از handoff v3** — ۳۲ VectorDrawable + Fandogh + SVG نصب شدند؛ ShomaraHomeUiState (immutable contract) + ShomaraHomeComponents (Header/ProgressCard/ContinueCard/NodeLabelCard) + ShomaraHomePathScreen از handoff v3؛ **Attempt recorder** → Room v3 (هر بررسی tap = یک سطر واقعی)؛ Home visual BLOCKED از P12 اکنون **UNBLOCKED** (بسته در دسترس). شواهد: gate/static/repo PASS. |
 | 2026-11-14 | SNAP-20261114-IPA-P15-RELEASE-READINESS | برنامهٔ زیرساخت مالک — P15 بسته شد: **Production Readiness = BLOCKED** (۷ P0 + ۷ P1 + ۳ P2). compileReleaseKotlin PASS (R8 واقعاً compile می‌شود)؛ emulator timing ثبت شد (labeled — نه production claim: cold 2741ms/warm 2574ms/PSS 91MB/APK 17.8MB debug)؛ Release criteria audit کامل (targetSdk=36، compileSdk=37، صفر permission، allowBackup=false، dataExtractionRules، debug isolation compile-time، no-PII، PBKDF2، signed package، migrations). ui-tooling-preview به implementation اضافه شد (release compile fix). ADR-0047 security closure. PRODUCTION_READINESS_REPORT_FA.md با فهرست دقیق P0/P1/P2 و مسیر رسیدن به PASS. |
@@ -34,12 +35,12 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 58
-last_updated: 2026-11-07
-snapshot_id: SNAP-20261107-N08R-00-START
-baseline_commit: ef35ce24fb8023ce0d247d1281cf0166bffb2140
-working_branch: native/n08r-ui-polish
-working_branch_pushed: false
+file_version: 59
+last_updated: 2026-11-17
+snapshot_id: SNAP-20261117-DT-01-REAL-DATA-HOME
+baseline_commit: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
+working_branch: work/shomara-deep-transformation
+working_branch_pushed: true
 active_product: SHOMARA
 closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
