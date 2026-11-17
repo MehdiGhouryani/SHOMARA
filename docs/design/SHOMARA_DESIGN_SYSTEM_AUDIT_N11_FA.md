@@ -69,15 +69,23 @@
 
 ## 5. شواهد اجرا
 
-**Android Native run `44188354588` روی checkpoint SHA `8ebfa084`:**
+**Android Native run `44191580216` روی branch head `7dd835a80f0cde920b34f24a6b06932f5d6942b9`:**
 - Environment: READY؛ JDK 17 و Android compile SDK 37.
 - فرمان: `./gradlew test lint :app:compileDebugKotlin :app:compileDebugAndroidTestKotlin --stacktrace --no-daemon`.
-- نتیجه: Gradle exitCode=0؛ `BUILD SUCCESSFUL` در 2m15s؛ lint، app debug compile و instrumentation-test source compile موفق.
-- diagnostics artifact: ID `14375682172`؛ `build-reports/android/gate.json` PASS. این artifact فقط gate.json داشت و count/suite XML را منتشر نکرد؛ test count در این checkpoint ادعا نمی‌شود.
-- `ci/core`: PASS. `ci/static-core`: PASS، شامل Harness و token drift CLI.
-- `verify:static:all`: آخرین failure در run `44186937373` فقط `practice` بود: 0.5040485829959515%، 1494/296400 pixels. Artifact `14374088460` بررسی شد و duplicate lock را نشان داد؛ اصلاح در `PracticeView.tsx` با commit `ca8067f0` اعمال شده است. Golden/threshold دست‌نخورده‌اند.
+- نتیجه: Gradle exitCode=0؛ `BUILD SUCCESSFUL` در 3m08s؛ 822 actionable tasks، 533 اجرا و 289 از cache؛ lint، app debug compile و instrumentation-test source compile موفق.
+- Diagnostics artifact: ID `14377826064`؛ `build-reports/android/gate.json` PASS؛ preflight exit 0؛ Gradle exit 0.
+- چهار warning deprecation برای `createComposeRule` در چهار فایل instrumentation source وجود دارد؛ کامپایل آن‌ها pass است. این Gate `connectedDebugAndroidTest` یا physical device test اجرا نکرد و APK نساخت.
 
-**محدودیت:** این شواهد برای کد پیش از آخرین اصلاحات Button Border است. اجرای جدید CI پس از SHA `c4fc214` و تغییرات مستندات هنوز باید نتیجه بدهد؛ تا آن زمان کامپایل آخرین branch commit را PASS اعلام نمی‌کنیم.
+**Web/core CI run `44191579879` روی همان head:**
+- `core`: PASS — package build، `typecheck:all` و Vitest.
+- `static-core`: PASS — Harness validate/next، `token-codegen --check` و `verify:static:core`.
+- `visual-and-static`: FAIL تنها در parity؛ `PARITY: FAIL (7/29)` و `STATIC_ALL: FAIL (93/94)`.
+- Parity artifact: ID `14375744795`; Practice پس از حذف قفل تکراری PASS شد: 0.4683% (1388/296400). Compact replay source تک‌خطی شده اما diff آن هنوز 0.7994% (88/11008) است.
+- failureهای دیگر در همین report: phone 0.5052%; button-amber 0.3246% (حد 0.15); guide-07 0.9209% (حد 0.15); chip-06 2.6282% (حد 0.15); chip-icon-clock-06 0.6655%; profile 0.5402%. Goldens و maxDiffPercent تغییر نکرده‌اند.
+
+**Baseline:** main CI run `40687075654` (2026-10-28) و `43088599553` (2026-11-11) هر دو parity total `8/29` داشته‌اند؛ در هر دو log، Practice در 0.50% fail بود. Current branch total به `7/29` کاهش یافته است. لاگ‌های تاریخی identity کامل تمام failureها را حفظ نکرده‌اند، بنابراین نمی‌توان همهٔ هفت failure فعلی را با قطعیت همان نمونه‌های تاریخی دانست.
+
+**محدودیت Native:** source/JVM/Gradle success جایگزین screenshot catalog، Compose semantics، TalkBack، Persian IME یا physical device validation نیست. NATIVE_PENDING باقی می‌ماند.
 
 ## 6. محدودیت rendering واقعی
 
@@ -97,6 +105,7 @@
 4. IME فارسی، focus/keyboard، process restore و reduced-motion باید روی device اجرا شوند.
 5. فایل TTF Vazirmatn باید از مالک/منبع تأییدشده برسد؛ fallback نباید Vazirmatn معرفی شود.
 6. Shadow renderer token-driven فقط با visual evidence تکمیل شود.
-7. CI کامل commit `ca8067f0` باید parity را دوباره اجرا کند؛ نتیجهٔ pending را پس از اتمام ثبت کنید.
+7. اختلاف raster در compact replay و پنج نمونهٔ کوچک دیگر را با بررسی glyph/font/icon source تحلیل کنید؛ threshold یا golden را برای سبزکردن مصنوعی تغییر ندهید.
+8. `createComposeRule` instrumentation tests را پس از مطالعهٔ Migration Guide به v2 ارتقا دهید؛ رفتار coroutine scheduling را حفظ و compile + device tests اجرا کنید.
 
-**نتیجه:** بنیاد token/codegen و shared components در source و JVM logic وجود دارد؛ Native visual validation هنوز انجام نشده و release/design mission کامل اعلام نمی‌شود.
+**نتیجه:** بنیاد token/codegen و shared components در source/JVM logic و Android Gradle Gate تأیید شده؛ Native visual validation هنوز انجام نشده و parity 7/29 fail است؛ release/design mission کامل اعلام نمی‌شود.

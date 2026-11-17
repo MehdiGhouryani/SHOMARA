@@ -949,3 +949,17 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - Fix commit ca8067f0e36a27ff75733336a0ec83d25b8362c2. CI run 44189288523 and Android Native run 44189288438 were pending when this checkpoint was prepared.
 - Android evidence on ancestor 8ebfa084: Gate PASS; JDK 17, SDK 37, preflight exit 0, Gradle test/lint/app compile/androidTest-source compile exit 0; BUILD SUCCESSFUL. The published gate artifact did not expose a JUnit count. No APK or device test was produced.
 - Harness: N11-02 DONE_WITH_BLOCKER; N11-04 DONE_WITH_BLOCKER (Native visual validation pending); N11-05 IN_PROGRESS. O5 remains OPEN.
+
+
+## 2026-11-18 — DT-05 — Android gate PASS and parity review
+
+- **Branch head:** `7dd835a80f0cde920b34f24a6b06932f5d6942b9`; PR #4 remains a draft against `infra/p14b-home-ui`. Main and candidate branch were not changed.
+- **Android Native:** run `44191580216`, conclusion SUCCESS. Artifact `14377826064`, `build-reports/android/gate.json` status PASS. JDK 17 + SDK 37 READY; preflight exit 0; Gradle command `./gradlew test lint :app:compileDebugKotlin :app:compileDebugAndroidTestKotlin --stacktrace --no-daemon` exit 0; BUILD SUCCESSFUL in 3m08s; 822 actionable tasks, 533 executed and 289 from cache.
+- **Android boundaries:** four deprecation warnings for `createComposeRule` in instrumentation test source; `:app:compileDebugAndroidTestKotlin` passed. The gate did not run connected/device instrumentation and did not produce an APK.
+- **Web/core CI:** run `44191579879`: `core` PASS (package build, typecheck:all, Vitest); `static-core` PASS (Harness validate/next, token-codegen `--check`, verify:static:core); `visual-and-static` fails at parity; static aggregate `93/94`.
+- **Parity report:** artifact `14375744795` from run `44191579879`, head `7dd835a`. Current summary: 7/29 specimens fail. Practice now passes at 0.4683% (1388/296400) after removing duplicate lock in `PracticeView`; no golden or threshold changed.
+- **Compact replay Button:** source now uses single-line compact label; actual and golden both display one line. Its diff remains 0.7994% (88/11008) vs 0.5% limit, visually concentrated on text/icon pixels. It is NOT marked PASS and no threshold was weakened.
+- **Other current parity failures:** phone 0.5052%; button-amber 0.3246% (max 0.15); guide-07 0.9209% (max 0.15); chip-06 2.6282% (max 0.15); chip-icon-clock-06 0.6655%; profile 0.5402%. These require deliberate visual/raster analysis.
+- **Baseline:** main CI run `40687075654` (2026-10-28) and `43088599553` (2026-11-11) both had total parity failure 8/29. Their preserved logs explicitly show Practice at 0.50%; current branch has 7/29 after the duplicate-lock fix. The old logs do not preserve all individual failed specimen IDs, so no claim is made that every remaining failure is identical to all historical failures.
+- **Harness:** N11-02 stays DONE_WITH_BLOCKER (O5 local identity/progress read-model); N11-04 stays DONE_WITH_BLOCKER (source/JVM and Gradle gates pass; native visual evidence pending); N11-05 remains IN_PROGRESS.
+- **Still blocked:** O5, actual local active-child profile/progress projection, content/evaluator owner decisions, human-authored/licensed media, TalkBack/device screenshot catalog, release HG-05. No APK/release was generated.

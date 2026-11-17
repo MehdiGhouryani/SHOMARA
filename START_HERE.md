@@ -35,9 +35,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 62
+file_version: 63
 last_updated: 2026-11-18
-snapshot_id: SNAP-20261118-DT-04-HOME-PARITY
+snapshot_id: SNAP-20261118-DT-05-ANDROID-PASS-PARITY-BASELINE
 baseline_commit: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
 working_branch: work/shomara-deep-transformation
 working_branch_pushed: true
@@ -47,9 +47,9 @@ closed_product: AVA
 target_client: Android Native (Kotlin + Jetpack Compose)
 current_phase: N11
 current_task: N11-05
-phase_status: N11_02_DONE__N11_04_DONE_WITH_NATIVE_BLOCKERS__N11_05_IN_PROGRESS
+phase_status: N11_02_DONE_WITH_O5_BLOCKER__N11_04_DONE_WITH_NATIVE_BLOCKERS__N11_05_IN_PROGRESS
 apk_status: NOT_BUILT_ON_TRANSFORMATION_BRANCH
-blocked_note: N11-02 persistence/composition-root and N11-04 source/JVM foundation are implemented; Android Gate PASS on 8ebfa084 (Gradle test + lint + app compile + androidTest source compile, exit 0). O5 remains OPEN, so Home/Practice now default to unresolved Loading and cannot fabricate progress. Practice parity duplicate-lock fix landed in ca8067f0; latest CI is pending. O1/O2/O3/O5/O6/O7, authored content/media rights, TalkBack/device QA, APK and release HG-05 remain open.
+blocked_note: N11-02 persistence/composition-root + fail-closed Home lifecycle guards implemented; N11-04 Clay/token foundation source/JVM complete with Native visual blockers. Latest Android Native run 44191580216 on head 7dd835a PASS: JDK17/SDK37, Gradle test+lint+app compile+androidTest-source compile exit 0, 822 tasks (533 executed/289 cached); no APK or device test. CI core + static-core PASS; visual-and-static fails only parity 7/29 (static-all 93/94). Practice fix is verified PASS 0.4683%; compact replay layout is now one-line but remains 0.7994% pixel diff. Six other parity items remain. O5 remains OPEN and Home/Practice keep unresolved Loading. Content/media rights, TalkBack/device QA, APK and release HG-05 remain open.
 ```
 
 ## 0. تصمیم مالک و مرز کار

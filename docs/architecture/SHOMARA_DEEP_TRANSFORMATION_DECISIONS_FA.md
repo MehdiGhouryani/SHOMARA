@@ -86,14 +86,25 @@
 
 ### DTR-006 — Home unresolved state و اصلاح parity صفحهٔ تمرین
 
-**وضعیت:** REVISE → source implemented؛ CI روی commit ca806 pending.
+**وضعیت:** REVISE → source implemented؛ Practice parity fix در CI تأیید شد.
 
-- **Home:** isResolved پیش‌فرض false است؛ فقط snapshot محلی resolveشده یا emptyResolved() اجازهٔ Fresh می‌دهد. Home/Practice در حالت unresolved Loading هستند و deep link/Station Start Sheet تا resolve شدن متوقف می‌شود.
-- **تست:** JVM distinction برای unresolved/emptyResolved، Compose test برای deferred deep link و Compose test برای Practice Loading وجود دارند. Android Gate روی ancestor 8ebfa اجرا شد و Gradle test/lint/app compile/androidTest-source compile را با exit code صفر تمام کرد.
-- **Parity baseline:** artifact 14374088460 از run 44186937373 نشان می‌دهد practice diff = 0.5040485829959515% (1494 bad pixels از 296400؛ سقف 0.5%). تصویر actual در ردیف Locked دو قفل داشت؛ golden تنها یک قفل داخل badge داشت.
-- **ریشهٔ دقیق:** parity specimen در tabs.tsx icon='lock' را می‌داد؛ PracticeView هم همان badge icon را رندر می‌کرد و هم trailingIcon='lock' را به ListRow می‌داد. trailingIcon تکراری حذف شد؛ badge lock باقی است. Golden و threshold تغییر نکردند.
-- **CI جدید:** ca8067f0e36a27ff75733336a0ec83d25b8362c2؛ runهای 44189288523 و 44189288438 هنگام ثبت این سند pending بودند. تا تکمیل آن‌ها parity fix را verified اعلام نکنید.
-- **O5:** تصمیم همچنان OPEN است؛ بستهٔ تصمیم مالک در OWNER_DECISION_BRIEF_O5_LOCAL_PROFILE_FA.md. هیچ child_profiles table یا single/multi policy بدون رأی مالک اضافه نشده.
+- **Home:** `isResolved` پیش‌فرض false است؛ فقط snapshot محلی resolveشده یا `emptyResolved()` اجازهٔ Fresh می‌دهد. Home/Practice در حالت unresolved Loading هستند و deep link/Station Start Sheet تا resolve شدن متوقف می‌شود.
+- **تست:** JVM distinction برای unresolved/emptyResolved، Compose test برای deferred deep link (unresolved → resolved) و Compose test برای Practice Loading افزوده شده‌اند. Android Native Gate در run `44191580216` روی head `7dd835a`، Gradle test/lint/app compile/androidTest-source compile را با exitCode صفر اجرا کرد.
+- **Parity baseline:** artifact `14374088460` از run `44186937373` نشان داد Practice diff = 0.5040485829959515% (1494/296400؛ سقف 0.5%). Actual در ردیف Locked دو قفل داشت؛ golden یک قفل داخل badge داشت.
+- **ریشهٔ دقیق:** specimen در tabs.tsx icon='lock' را می‌داد؛ PracticeView همان badge icon را رندر می‌کرد و trailingIcon='lock' را دوباره به ListRow می‌داد. trailingIcon تکراری حذف شد؛ badge lock باقی است. در run `44191579879` مقدار Practice به 0.4683% (1388/296400) رسید و PASS شد. Golden/threshold دست‌نخورده‌اند.
+- **O5:** تصمیم همچنان OPEN است؛ بستهٔ تصمیم مالک در `OWNER_DECISION_BRIEF_O5_LOCAL_PROFILE_FA.md`. هیچ child_profiles table یا single/multi policy بدون رأی مالک اضافه نشده.
+
+### DTR-007 — compact replay button و وضعیت visual parity
+
+**وضعیت:** source layout correction implemented؛ pixel parity still FAIL.
+
+- **مسئله:** golden دکمهٔ «دوباره بشنو» را در یک خط نشان می‌داد؛ نسخهٔ compact می‌توانست label را دوخطی کند.
+- **تغییر:** در `apps/mobile/src/ui/v1/Button.tsx`، متن compact به یک خط محدود شد (`numberOfLines=1`، `ellipsizeMode=clip`، `flexShrink=0`). Golden و threshold تغییر نکردند.
+- **Evidence:** artifact `14375744795`، report run `44191579879`: `button-replay-07` هنوز 0.7994% (88/11008 pixels؛ حد 0.5%) است، هرچند actual و golden هر دو یک‌خطی‌اند و اختلاف visible عمدتاً در glyph/icon pixels است. بنابراین این specimen هنوز FAIL است و به تغییر threshold دست نزده‌ایم.
+- **گیت کل:** `core` PASS؛ `static-core` PASS؛ `visual-and-static` FAIL فقط در parity؛ `PARITY: FAIL (7/29)` و `STATIC_ALL: FAIL (93/94)`.
+- **تاریخچه:** main run `40687075654` در 2026-10-28 و `43088599553` در 2026-11-11 هر دو total parity `8/29` داشته‌اند؛ current head `7/29` است. لاگ‌های تاریخی همهٔ هویت‌های شکست را نگه نداشته‌اند؛ نمی‌توان همهٔ هفت مورد فعلی را دقیقاً همان هفت مورد تاریخی نامید.
+- **Android Gate:** run `44191580216` SUCCESS روی head `7dd835a`؛ environment JDK17/SDK37 READY؛ preflight exit 0؛ Gradle exit 0؛ 822 tasks (533 executed/289 cached)، BUILD SUCCESSFUL در 3m08s. instrumentation source compile شده اما connected/device tests اجرا نشده و APK تولید نشده است.
+
 ## 4. تغییرات ثبت‌شده در شاخهٔ اجرا
 
 | Commit | تغییر |

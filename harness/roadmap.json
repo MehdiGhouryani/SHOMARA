@@ -2669,10 +2669,10 @@
             "container.lessonRecords now flows MainActivity -> ShomaraApp -> LessonHost; required root dependency replaces nullable default",
             "Home placeholder summary/zero counter and redundant Continue CTA removed because no verified child identity is wired; path graph and Station Start Sheet retained",
             "GitHub Android Native workflow run 44158203235: environment READY (JDK 17, Android compile SDK 37); `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon` exit code 0.",
-            "CI XML aggregation: 81 suites, 575 tests, 0 failures, 0 errors, 0 skipped. New RoomLessonRecordRepositoryTest: 7/7 PASS.",
-            "Residual P0 moved to N11-05: O5 local identity/profile choice remains OPEN; no identity-backed progress projection exists. Empty default ShomaraPathProgress maps ST01 to Fresh, so returning users may be falsely shown at ST01. Do not invent progress.",
             "Home progress now defaults to unresolved; only an explicit resolved snapshot or emptyResolved() may render Fresh. Root deep links and the station sheet wait for resolution. Practice also remains Loading.",
-            "Android Native run 44188354588 on 8ebfa084ec32b4a3d8fb8333427c1aa140797e34: JDK 17 + SDK 37 READY; Gradle command including test, lint, app compile and Android-test-source compile exited 0; BUILD SUCCESSFUL. The artifact did not publish a test count."
+            "Android Native run 44188354588 on 8ebfa084ec32b4a3d8fb8333427c1aa140797e34: JDK 17 + SDK 37 READY; Gradle command including test, lint, app compile and Android-test-source compile exited 0; BUILD SUCCESSFUL. The artifact did not publish a test count.",
+            "Latest verified Android Native run 44191580216 on branch head 7dd835a80f0cde920b34f24a6b06932f5d6942b9: preflight PASS (JDK 17, Android SDK 37); `./gradlew test lint :app:compileDebugKotlin :app:compileDebugAndroidTestKotlin --stacktrace --no-daemon` exitCode 0; gate report status PASS, 822 actionable tasks (533 executed, 289 cached). No APK generated and no on-device tests run.",
+            "Home path is unresolved by default; only a resolved local-child snapshot or explicit emptyResolved() can present Fresh. Home/Practice stay in Loading while O5 identity/progress wiring is absent; deep-link and station-sheet presentation is deferred."
           ],
           "blocker": "O5 remains OPEN. Local child identity and Room progress are not wired; however the path defaults to unresolved and remains Loading rather than falsely marking ST01 Fresh. No profile schema is added before the owner decision."
         },
@@ -2708,9 +2708,11 @@
             "Read skills/shomara-design-system/SKILL.md, design/MASTER.md, design/INSPIRATION_GUARDRAILS.md, COMPONENT_READINESS.md and NATIVE_IMPLEMENTATION.md. No token/component implementation is claimed yet.",
             "Base token, typography, primitive and accessibility work is independent of authoring the remaining curriculum; content-specific manipulatives remain gated by approved content.",
             "Canonical Clay resolver and state-dependent Card/Button border changes are implemented with regression tests. Core CI and static-core passed on 8ebfa084; token-codegen --check, Harness validate/next, typecheck and Vitest passed.",
-            "Android Native run 44188354588 passed Gradle test, lint, :app:compileDebugKotlin and :app:compileDebugAndroidTestKotlin with exit code 0. Visual screenshot/TalkBack/device validation is still pending."
+            "Android Native run 44188354588 passed Gradle test, lint, :app:compileDebugKotlin and :app:compileDebugAndroidTestKotlin with exit code 0. Visual screenshot/TalkBack/device validation is still pending.",
+            "Android Native run 44191580216 on branch head 7dd835a passed Gradle test, lint, app compile and :app:compileDebugAndroidTestKotlin (exit 0). Four Compose test files emit deprecated createComposeRule warnings; tests compile, but no device/instrumentation execution was performed.",
+            "On branch head 7dd835a, CI core PASS (build packages, typecheck:all, Vitest), static-core PASS (Harness validate/next, token-codegen --check, verify:static:core). visual-and-static remains fail solely at parity: 7/29; verify:static:all reports 93/94."
           ],
-          "blocker": "NATIVE_PENDING: screenshot catalog at 360/390/412dp and 200% font; Compose semantics/TalkBack; Persian IME and real-device review. Approved Vazirmatn TTF still requires owner supply."
+          "blocker": "NATIVE_PENDING: screenshot catalog 360/390/412dp + 200% font, Compose semantics/TalkBack, Persian IME and real-device review. Approved Vazirmatn TTF still requires owner supply. Visual parity baseline retains 7 failing specimens; do not change golden/tolerance without a deliberate, reviewed design decision."
         },
         {
           "id": "N11-05",
@@ -2729,9 +2731,13 @@
             "Removed Home hardcoded grade/chapter, false zero-progress count and duplicate Continue CTA; winding path and Station Start Sheet remain primary.",
             "Progress is unresolved by default; only a resolved local child snapshot can show Fresh/Current/Locked. Deep links and Station Start Sheet wait until resolution.",
             "Practice tab shows Loading until progress resolves rather than marking every activity Locked. Compose tests cover unresolved practice and deferred deep links.",
-            "No identity-backed ViewModel/UseCase/Room progress pipeline exists yet because O5 is OPEN and no child_profiles table is approved."
+            "No identity-backed ViewModel/UseCase/Room progress pipeline exists yet because O5 is OPEN and no child_profiles table is approved.",
+            "Practice parity issue fixed in apps/mobile/src/practice/views/PracticeView.tsx: duplicate trailing lock removed while badge lock retained. Current run 44191579879 reports Practice PASS at 0.4683% (1388/296400), compared with 0.5040% before fix.",
+            "Compact replay button source updated at 7dd835a: compact label is single-line and does not shrink. Actual/golden now both visually render one line; parity remains 0.7994% (88/11008) vs max 0.5%, concentrated on text/icon pixels, so not marked PASS.",
+            "Current parity failures on 7dd835a: phone 0.5052%, button-amber 0.3246% (max 0.15), guide-07 0.9209% (max 0.15), chip-06 2.6282% (max 0.15), chip-icon-clock-06 0.6655%, button-replay-07 0.7994%, profile 0.5402%. `practice` passes. No golden or maxDiffPercent changed.",
+            "Historical main CI runs 40687075654 (2026-10-28) and 43088599553 (2026-11-11) both reported total parity FAIL (8/29); current branch is 7/29. Historical logs explicitly showed Practice at the 0.50% boundary; the individual identities of all historical failures are not fully preserved in the logs, so no claim is made that all six other current failures are identical."
           ],
-          "blocker": "O5 remains OPEN and there is no durable local active-child identity/progress projection. Keep Home/Practice in Loading; do not fabricate Fresh, Current, Locked or progress."
+          "blocker": "O5 remains OPEN and no durable local active-child identity/progress projection exists. Keep Home/Practice in Loading; do not fabricate Fresh, Current, Locked or progress. Remaining parity mismatch/device visual validation remains open; do not weaken thresholds."
         },
         {
           "id": "N11-06",
