@@ -103,7 +103,7 @@ class ShomaraPathGraphTest {
 
     @Test
     fun `unresolved progress is not confused with an initialized new learner`() {
-        val unresolved = ShomaraPathProgress.unresolved()
+        val unresolved = ShomaraPathProgress()
         assertTrue(!unresolved.isResolved)
         assertEquals(null, ShomaraPathGraphLogic.freshStationId(unresolved))
         assertEquals(null, ShomaraPathGraphLogic.nextStepStation(unresolved))
