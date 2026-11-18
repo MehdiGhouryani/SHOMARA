@@ -1,4 +1,5 @@
 # START_HERE.md — وضعیت canonical پروژهٔ SHOMARA
+| 2026-11-19 | SNAP-20261119-DT-12-HOME-UI-IMPLEMENTATION | Home/Path v3 واقعاً Native پیاده شد: `ShomaraHomeScreen`/`ShomaraHomeUiState` stateless، Header تک‌عنوانه، خلاصهٔ واقعی، گراف و Station Start Sheet حفظ، Loading/Empty/Offline/Error پیاده، PathGraph به چهار فایل مرتب شد و Continue تکراری برنگشت. شواهد: PathGraph 36/36، HomeScreen 4/4 و StationSheet 7/7 روی Pixel_6a، نه Screenshot واقعی Compose، `android:gate` با 586/586 JVM test و static 94/94. O5 و wiring هویت/progress همچنان OPEN؛ production unresolved و Linux parity debt 7/29 بدون تغییر است. |
 | 2026-11-19 | SNAP-20261119-DT-11-PR4-PARITY-ATTRIBUTION | شکست تنهای `STATIC_ALL` در run `44309817949` فقط `parity-run.mjs` است. مقایسهٔ artifact والد `3b1889f` با HEAD ثابت کرد شش Specimen byte-for-byte ثابت‌اند و replay از 6.7951% به 0.7994% بهبود یافته؛ هیچ Regression جدیدی اثبات نشد. همان HEAD در Windows با Parity هدفمند 7/7 و `STATIC_ALL` کامل 94/94، هر دو exit 0، PASS شد؛ Linux CI همچنان 7/29 باز است. Golden/threshold/source/workflow تغییر نکرد و Base آماده نیست. |
 | 2026-11-17 | SNAP-20261117-DT-01-REAL-DATA-HOME | Deep Transformation checkpoint 01 — روی شاخهٔ مستقل `work/shomara-deep-transformation` از SHA دقیق P14b: ثبت Attempt به یک Room transaction با idempotency مقاوم به retry منتقل شد؛ Repository واقعی lesson از MainActivity تزریق شد؛ در Home کارت پیشرفت با پایه/فصل ثابت و صفر غیرقابل‌اتکا و Continue تکراری حذف شد؛ Path و Station Start Sheet حفظ شدند. تصمیم‌ها و blockers: `docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md`. **گیت‌های Gradle/CI/device هنوز UNVERIFIED؛ هیچ PASS فنی ادعا نمی‌شود.** |
 | 2026-11-17 | SNAP-20261117-IPA-P14C-HOME-WIRED | برنامهٔ زیرساخت مالک — P14c بسته شد: **Home UI واقعاً به shell وصل شد** — ShomaraChildShellHost Path tab حالا HomeHeader + ChapterProgressCard + ContinueStationCard بالای ShomaraPathScreen رندر می‌کند (گراف زیگزاگی دست‌نخورده)؛ Continue Card به Station Start Sheet واقعی وصل شد؛ settings به shell/settings؛ رنگ‌های handoff به tokens.json canonical + codegen؛ Design Guard بدون استثنا (raw=0). شواهد: gate/static/repo PASS، screenshot روی device. |
@@ -36,9 +37,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 66
+file_version: 67
 last_updated: 2026-11-19
-snapshot_id: SNAP-20261119-DT-11-PR4-PARITY-ATTRIBUTION
+snapshot_id: SNAP-20261119-DT-12-HOME-UI-IMPLEMENTATION
 baseline_commit: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
 working_branch: work/shomara-deep-transformation
 working_branch_pushed: true
@@ -50,7 +51,7 @@ current_phase: N11
 current_task: N11-05
 phase_status: N11_02_DONE_WITH_O5_BLOCKER__N11_04_DONE_WITH_NATIVE_BLOCKERS__N11_05_IN_PROGRESS
 apk_status: NOT_BUILT_ON_TRANSFORMATION_BRANCH
-blocked_note: N11-02 atomic lesson persistence + repository injection have an Android CI pass; O5 local identity remains OPEN. N11-04 token/Clay source and JVM foundation is implemented, but screenshot/TalkBack/IME/device validation remains NATIVE_PENDING and visual parity remains 7/29 in Linux CI; 2026-11-19 parent/head image hashes and targeted/local full runs prove pre-existing environment-sensitive rendering debt rather than a new branch regression, without replacing the red CI gate. N11-05 retains one zigzag Path Graph, one shell heading, and unresolved progress defaults; `resolveEntryState` prevents Offline from overriding unresolved identity, with PathGraphTest 33/33. Android Native run 44308240426 PASS: 81 suites/583 tests/0 failures/0 errors/0 skipped; lint/app compile/androidTest source compile passed. ADR-0047 corrected: ParentPinManager is not backed by a durable PinStore and ParentGate remains verifier=null; no LocalProfileManager/ProfileSlotStore or in-app parent deletion flow is wired. PrivacyDataController now reports partial directory deletion. PIN KDF 210k PBKDF2 is legacy baseline only; choose current KDF and benchmark low-end devices before production integration. O5, O1/O2/O3/O6, curriculum/media rights, physical device/TalkBack, APK and release HG-05 remain open.
+blocked_note: N11-05 Home/Path handoff UI is implemented in Kotlin/Compose with PathGraphTest 36/36, HomeScreenTest 4/4, StationSheetTest 7/7, nine emulator Compose screenshots, android:gate 586/586 and static 94/94. O5 local identity remains OPEN, so no identity-backed ViewModel/UseCase/Repository exists and production Home stays unresolved rather than fabricating progress. Parent PIN has no durable PinStore, ParentGate remains verifier=null, and PrivacyDataController is not app-composed. PIN KDF remains legacy v1 pending algorithm/benchmark/migration. TalkBack gesture walkthrough, physical-device review, device deep-link execution, O1/O2/O3/O6, curriculum/media rights, release HG-05 and Linux web parity 7/29 remain open.
 ```
 
 ## 0. تصمیم مالک و مرز کار
@@ -59,7 +60,7 @@ blocked_note: N11-02 atomic lesson persistence + repository injection have an An
 - AVA بسته است؛ فقط الگوهای مفید معماری/فرایندی آن قابل الهام‌اند و هیچ تغییری در آن انجام نمی‌شود.
 - هدف، تبدیل مرحله‌ای کلاینت کودک به Android Native با UI/UX یکپارچه، کد مرتب و gateهای قابل اثبات است.
 - Expo فعلی تا cutover حذف نمی‌شود؛ در فازهای Clean کوچک و قابل اجرا نگه‌داری می‌شود و بعد route-by-route جایگزین خواهد شد.
-- **Home redesign handoff برای ادامهٔ آینده، ثبت‌شده و هنوز باز/پیاده‌سازی نشده:** `C:\Users\VISION LAPTOP\Downloads\SHOMARA_HOME_UI_HANDOFF_v3_FINAL.zip`. این مسیر فقط در task مستقل Home باید با رعایت AGENTS و DISCOVER→OBSERVE→AUDIT→DESIGN بررسی شود؛ manifest، checksum، provenance/license، فهرست و ابعاد assetها، قرارداد immutable UiState، حالات Loading/Empty/Offline/Error و معیارهای screenshot/TalkBack/font-scale/IME/QA پیش از implementation استخراج و تأیید شوند. پیاده‌سازی فقط Kotlin + Jetpack Compose با tokenهای canonical است؛ grade/chapter/progress ساختگی، Continue تکراری و معماری یا محتوای نامعتبر برنمی‌گردد. در ممیزی Parity جاری ZIP باز نشده و هیچ فایلی از آن مصرف نشده است.
+- **Home redesign handoff v3 در 2026-11-19 مصرف و پیاده شد:** ZIP با 114/114 checksum معتبر بررسی شد؛ فقط `shomara_garden_path_footer.webp` به‌عنوان asset جدید نصب شد و vectorهای لازم از قبل در repo بودند. `ShomaraHomeScreen`/`ShomaraHomeUiState` stateless، Header تک‌عنوانه، خلاصهٔ واقعی مسیر، گراف/Station Start Sheet، حالات Loading/Empty/Offline/Error و تست‌های 360/390/412dp + font scale 200% پیاده شدند. هیچ grade/chapter/progress ساختگی، Continue تکراری یا معماری ViewModel/Repository بدون تصمیم O5 اضافه نشده است. TalkBack gesture و physical-device review همچنان `NATIVE_PENDING`اند.
 
 ## 1. ترتیب مطالعه
 

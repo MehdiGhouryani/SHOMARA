@@ -1,5 +1,7 @@
 package com.mathlearning.core.designsystem
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -67,11 +72,13 @@ fun ShomaraStateSurface(
     retrying: Boolean = false,
     secondaryLabel: String? = null,
     onSecondary: (() -> Unit)? = null,
+    @DrawableRes stateIconRes: Int? = null,
+    containerColor: Color = ShomaraTokens.ColorCanvas,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(ShomaraTokens.ColorCanvas)
+            .background(containerColor)
             .statusBarsPadding()
             .navigationBarsPadding()
             .verticalScroll(rememberScrollState())
@@ -82,6 +89,13 @@ fun ShomaraStateSurface(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
+        if (stateIconRes != null) {
+            Image(
+                painter = painterResource(stateIconRes),
+                contentDescription = null,
+                modifier = Modifier.size(ShomaraTokens.Space40),
+            )
+        }
         if (character != null) {
             ShomaraCharacterImage(
                 character = character,

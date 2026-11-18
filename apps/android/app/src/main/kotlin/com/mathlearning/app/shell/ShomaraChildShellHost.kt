@@ -30,10 +30,11 @@ import com.mathlearning.core.designsystem.shomaraBackHandler
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
+import com.mathlearning.feature.path.ShomaraHomeAction
+import com.mathlearning.feature.path.ShomaraHomeScreen
+import com.mathlearning.feature.path.ShomaraHomeUiState
 import com.mathlearning.feature.path.ShomaraPathProgress
-import com.mathlearning.feature.path.ShomaraHomeHeader
 import com.mathlearning.core.model.ShomaraStationCatalog
-import com.mathlearning.feature.path.ShomaraPathScreen
 import com.mathlearning.feature.path.ShomaraStationStartSheet
 import com.mathlearning.feature.practice.ShomaraPracticeCatalog
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
@@ -146,42 +147,21 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Path.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Path.deepLink }),
                 ) {
-                    // P14b (handoff v3): the new Home header, progress card and continue card
-                    // sit ABOVE the existing path graph — the zigzag geometry, node states and
-                    // chapter bands are the existing ShomaraPathScreen, unchanged.
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        // A. Home header (handoff v3: title + Main character + settings)
-                        ShomaraHomeHeader(
-                            title = "مسیر یادگیری",
-                            subtitle = "قدم‌به‌قدم جلو می‌ریم",
-                            onSettings = { navController.navigate("shell/settings") },
-                            modifier = Modifier.padding(
-                                horizontal = com.mathlearning.core.designsystem.ShomaraTokens.Space24,
-                                vertical = com.mathlearning.core.designsystem.ShomaraTokens.Space12,
-                            ),
-                            characterSlot = {
-                                com.mathlearning.core.designsystem.ShomaraCharacterImage(
-                                    character = com.mathlearning.core.designsystem.ShomaraCharacter.Main,
-                                    poseId = 1,
-                                    slot = com.mathlearning.core.designsystem.ShomaraCharacterSlot.Inline,
-                                )
-                            },
-                        )
-                        // Keep the learning path as the primary Home action. The former progress
-                        // card displayed a hardcoded grade/chapter and a default zero count because
-                        // this app has no approved child identity/progress projection wired yet.
-                        // The former Continue card opened the exact same station sheet as tapping
-                        // the Current node, creating a duplicate primary action and pushing the path
-                        // below the fold. Reintroduce summary/continue only with verified identity-
-                        // backed UiState and a genuinely distinct resume action.
-                        // D. The REAL path graph — zigzag geometry, node states, chapter bands unchanged
-                        ShomaraPathScreen(
-                            progress = pathProgress,
-                            onStationTap = { selectedStationId = it },
-                            modifier = Modifier.weight(1f),
-                            showPathHeading = false,
-                        )
+                    val homeState = remember(pathProgress) {
+                        ShomaraHomeUiState(progress = pathProgress)
                     }
+                    ShomaraHomeScreen(
+                        state = homeState,
+                        onAction = { action ->
+                            when (action) {
+                                ShomaraHomeAction.OpenSettings -> navController.navigate("shell/settings")
+                                is ShomaraHomeAction.OpenStation -> selectedStationId = action.stationId
+                                // Home has no retry callback until a real identity/progress loader exists.
+                                ShomaraHomeAction.Retry -> Unit
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
                 composable(
                     route = ShomaraShellTab.Practice.route,

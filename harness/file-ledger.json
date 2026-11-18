@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-18",
+  "updatedAt": "2026-11-19",
   "classifications": [
     "CANONICAL_ACTIVE",
     "ACTIVE",
@@ -443,10 +443,10 @@
     },
     {
       "path": "apps/android/feature/path/src/main/kotlin/com/mathlearning/feature/path/ShomaraHomeUiState.kt",
-      "class": "DELETED",
+      "class": "ACTIVE",
       "owner": "N11-05",
-      "action": "retired with its unreferenced parallel screen contract; a new identity-backed immutable UiState will be introduced only after O5 approval",
-      "consumer": "none; historical source remains recoverable from Git history"
+      "action": "reintroduced as a minimal immutable Home presentation contract and action surface; no ViewModel/Repository is fabricated while O5 remains OPEN",
+      "consumer": "ShomaraHomeScreen and ShomaraChildShellHost"
     }
   ]
 }

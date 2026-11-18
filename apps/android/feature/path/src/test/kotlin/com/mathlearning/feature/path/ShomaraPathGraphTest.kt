@@ -408,4 +408,40 @@ class ShomaraPathGraphTest {
         val accents = (1..5).map { ShomaraPathGraphLogic.chapterBandColors(it).second }
         assertEquals(5, accents.toSet().size)
     }
+
+    @Test
+    fun `current node uses the canonical home focal colors in every chapter`() {
+        for (chapter in 1..5) {
+            val colors = ShomaraPathGraphLogic.colorsFor(ShomaraPathNodeState.Current, chapter)
+            assertEquals(ShomaraTokens.ColorHomeViolet, colors.container)
+            assertEquals(ShomaraTokens.ColorHomeVioletDark, colors.edge)
+            assertEquals(ShomaraTokens.ColorHomeOnViolet, colors.content)
+        }
+    }
+
+    @Test
+    fun `initial scroll reveals the real next station unless a saved chapter wins`() {
+        assertEquals(
+            0,
+            ShomaraPathGraphLogic.initialFirstVisibleIndex(null, ShomaraPathProgress.emptyResolved()),
+        )
+        assertEquals(
+            ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST04")),
+            ShomaraPathGraphLogic.initialFirstVisibleIndex(null, progress),
+        )
+        assertEquals(
+            ShomaraPathGraphLogic.restoredFirstVisibleIndex(3),
+            ShomaraPathGraphLogic.initialFirstVisibleIndex(3, progress),
+        )
+    }
+
+    @Test
+    fun `home defaults cannot expose fabricated fresh progress or retry`() {
+        val state = ShomaraHomeUiState()
+        assertFalse(state.progress.isResolved)
+        assertFalse(state.retryAvailable)
+        assertEquals(ShomaraEntryState.Loading, ShomaraPathGraphLogic.resolveEntryState(state.progress, state.entryState))
+        assertTrue(state.progress.completedStationIds.isEmpty())
+        assertEquals(null, state.progress.currentStationId)
+    }
 }

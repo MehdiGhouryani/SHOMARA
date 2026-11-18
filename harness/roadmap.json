@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-18",
+  "updatedAt": "2026-11-19",
   "currentPhase": "N11",
   "currentTask": "N11-05",
   "statusValues": [
@@ -2744,9 +2744,13 @@
             "ADR-0047 as-built corrected: current tree has ParentPinManager interface + in-memory test store only; no durable PinStore, LocalProfileManager/ProfileSlotStore or ParentGate verifier wiring. Active ParentGate remains verifier=null (fail-closed). PrivacyDataController is generic injected stores/dirs with tests, not app-composed. No in-app parent erasure feature is claimed.",
             "ParentPinManager hardening covers input/derived buffer clearing, malformed-record fail-closed, record validity and real persisted lockout reset assertions. 210k PBKDF2-HMAC-SHA256 is now explicitly labeled legacy v1 only; current OWASP prefers Argon2id and lists PBKDF2-HMAC-SHA256 600k when FIPS is required. KDF decision/target-device benchmark/versioned migration remain open before wiring.",
             "PrivacyDataController now treats a failed recursive directory delete that leaves the directory present as a failure; the wipe continues and test proves the residual directory is not counted as cleared.",
-            "Latest Path resolver tests passed in Android run 44308240426. Newer documentation-only commits are running a separate CI gate; no code change followed the tested SHA except the Path precedence implementation already included in bc9c1b8."
+            "Latest Path resolver tests passed in Android run 44308240426. Newer documentation-only commits are running a separate CI gate; no code change followed the tested SHA except the Path precedence implementation already included in bc9c1b8.",
+            "Stage-3 handoff ZIP was opened with SHA-256 22dc8a8f0be3de1e47f4db8ebab5f2a230af7d3a54b17e088d018bbf1c04c3ee; 114/114 internal checksums passed. Only shomara_garden_path_footer.webp was newly installed; existing handoff vectors were already byte-identical and preview mockups were not used as runtime evidence.",
+            "Native Home is now composed by stateless ShomaraHomeScreen/ShomaraHomeUiState and ShomaraHomeAction, wired by ShomaraChildShellHost. ShomaraPathGraph was split into state/geometry, chapter and node files without replacing the graph geometry or Station Start Sheet ownership.",
+            "Current Home evidence: ShomaraPathGraphTest 36/36; instrumented ShomaraHomeScreenTest 4/4 on Pixel_6a emulator (360/390/412dp, Persian RTL, 100/200% font, semantics and 48dp assertions); ShomaraStationSheetTest 7/7. Nine real instrumented Compose PNGs were pulled to build-reports/android/home-screenshots-stage3/compose-evidence.",
+            "Local gates after implementation: npm run android:gate PASS (exit 0; 81 XML suites / 586 JVM tests / 0 failures/errors/skips; lint and both app Kotlin compiles); verify:static:all PASS 94/94; design governance PASS; repository harness PASS with local Node 24.22.1 vs pinned 22.22.0 warning; token codegen check and native design guard PASS."
           ],
-          "blocker": "O5 remains OPEN; no durable local active-child identity/progress projection exists. Parent PIN has no durable PinStore and ParentGate remains fail-closed; PrivacyDataController has no production store/directory adapters or in-app deletion flow. KDF selection requires target-device benchmark and versioned migration. Home/Practice stay unresolved until owner-approved local identity is wired. Device/TalkBack/screenshot/200% font validation and 7/29 web parity failures remain open; no golden/threshold weakened."
+          "blocker": "O5 remains OPEN; no durable local active-child identity/progress projection exists. Parent PIN has no durable PinStore and ParentGate remains fail-closed; PrivacyDataController has no production store/directory adapters or in-app deletion flow. KDF selection requires target-device benchmark and versioned migration. Home/Practice stay unresolved until owner-approved local identity is wired. TalkBack gesture walkthrough, physical-device review, device deep-link execution and 7/29 Linux web parity failures remain open; no golden/threshold weakened."
         },
         {
           "id": "N11-06",

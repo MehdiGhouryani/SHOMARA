@@ -1,14 +1,18 @@
 package com.mathlearning.app.ui
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import com.mathlearning.app.shell.ShomaraChildShell
 import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
 import com.mathlearning.core.datastore.ShomaraSettingsStore
@@ -69,6 +73,13 @@ class ShomaraStationSheetTest {
                 onInitialStationConsumed = { consumed += initialStationId.orEmpty() },
             )
         }
+    }
+
+    private fun scrollToStation(title: String) {
+        val stationMatcher = SemanticsMatcher("station titled $title") { node ->
+            node.config.getOrNull(SemanticsProperties.ContentDescription)?.contains(title) == true
+        }
+        composeRule.onNodeWithTag("shomara-path-list").performScrollToNode(stationMatcher)
     }
 
     @Test
@@ -142,7 +153,8 @@ class ShomaraStationSheetTest {
         )
         setShell(readyProgress, started)
 
-        composeRule.onNodeWithContentDescription(st07Title).performScrollTo().performClick()
+        scrollToStation(st07Title)
+        composeRule.onNodeWithContentDescription(st07Title).performClick()
         composeRule.waitForIdle()
 
         // The sheet opened — and the tap alone navigated nowhere.
@@ -167,7 +179,8 @@ class ShomaraStationSheetTest {
         )
         setShell(lockedProgress, started)
 
-        composeRule.onNodeWithContentDescription(st07Title).performScrollTo().performClick()
+        scrollToStation(st07Title)
+        composeRule.onNodeWithContentDescription(st07Title).performClick()
         composeRule.waitForIdle()
 
         // The Locked sheet opens with the locked explanation — and the tap navigated nowhere.
@@ -222,7 +235,8 @@ class ShomaraStationSheetTest {
         setShell(progress, started, replayed = replayed)
 
         val st01Title: String = ShomaraStationCatalog.station("ST01").workingTitle
-        composeRule.onNodeWithContentDescription(st01Title).performScrollTo().performClick()
+        scrollToStation(st01Title)
+        composeRule.onNodeWithContentDescription(st01Title).performClick()
         composeRule.waitForIdle()
 
         // The completed station's sheet offers «تمرین دوباره» — the node's own words —
