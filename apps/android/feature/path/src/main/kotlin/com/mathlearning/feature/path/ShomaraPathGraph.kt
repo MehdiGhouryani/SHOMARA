@@ -368,6 +368,8 @@ fun ShomaraPathScreen(
     entryState: ShomaraEntryState? = null,
     onRetry: (() -> Unit)? = null,
     savedChapter: Int? = null,
+    /** False when the parent shell already renders the page heading and mascot. */
+    showPathHeading: Boolean = true,
 ) {
     // Explicit caller state wins. Otherwise unresolved identity/progress defaults to Loading;
     // a resolved empty snapshot is a legitimate new learner and may render ST01 as Fresh.
@@ -460,32 +462,38 @@ fun ShomaraPathScreen(
                     verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
                     modifier = Modifier.padding(bottom = ShomaraTokens.Space16),
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        // Static cameo only, from the 4 shipped drawables (Main pose 1).
-                        // It is decoration; the hero of this screen is the current node.
-                        ShomaraCharacterImage(
-                            character = ShomaraCharacter.Main,
-                            poseId = 1,
-                            slot = ShomaraCharacterSlot.Inline,
-                            decorative = true,
-                        )
-                        Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
-                            Text(text = "مسیر یادگیری", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-                            Text(
-                                text = remainingText,
-                                style = ShomaraTypography.Caption,
-                                color = ShomaraTokens.ColorMuted,
+                    if (showPathHeading) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            // Standalone Path screens keep their small mascot and heading.
+                            ShomaraCharacterImage(
+                                character = ShomaraCharacter.Main,
+                                poseId = 1,
+                                slot = ShomaraCharacterSlot.Inline,
+                                decorative = true,
                             )
-                            if (nextStepText != null) {
-                                Text(
-                                    text = nextStepText,
-                                    style = ShomaraTypography.Body,
-                                    color = ShomaraTokens.ColorInk,
-                                )
-                            }
+                            Text(
+                                text = "مسیر یادگیری",
+                                style = ShomaraTypography.Title,
+                                color = ShomaraTokens.ColorInk,
+                                modifier = Modifier.semantics { heading() },
+                            )
+                        }
+                    }
+                    Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
+                        Text(
+                            text = remainingText,
+                            style = ShomaraTypography.Caption,
+                            color = ShomaraTokens.ColorMuted,
+                        )
+                        if (nextStepText != null) {
+                            Text(
+                                text = nextStepText,
+                                style = ShomaraTypography.Body,
+                                color = ShomaraTokens.ColorInk,
+                            )
                         }
                     }
                     Box(
