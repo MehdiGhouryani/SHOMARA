@@ -66,6 +66,7 @@ class PrivacyAndDiagnosticsTest {
         assertTrue(dir.exists())
         assertEquals(0, dir.listFiles()?.size ?: -1)
         dir.delete()
+        Unit
     }
 
     @Test
