@@ -35,9 +35,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 64
+file_version: 65
 last_updated: 2026-11-18
-snapshot_id: SNAP-20261118-DT-06-HOME-SINGLE-HEADER-CLEANUP
+snapshot_id: SNAP-20261118-DT-10-PATH-PRIVACY-SECURITY
 baseline_commit: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
 working_branch: work/shomara-deep-transformation
 working_branch_pushed: true
@@ -49,7 +49,7 @@ current_phase: N11
 current_task: N11-05
 phase_status: N11_02_DONE_WITH_O5_BLOCKER__N11_04_DONE_WITH_NATIVE_BLOCKERS__N11_05_IN_PROGRESS
 apk_status: NOT_BUILT_ON_TRANSFORMATION_BRANCH
-blocked_note: N11-02 atomic lesson persistence + repository injection pass prior Android gate; O5 local identity remains OPEN. N11-04 token/Clay foundation source/JVM complete; Native screenshot/TalkBack/IME/device validation pending. N11-05 keeps the zigzag Path Graph primary, progress unresolved until local identity exists, Practice Loading, and removes the unreferenced duplicate Home screen/cards after a 38-file consumer scan. Shell Header is now a single 24dp-inset semantic heading; Compose instrumentation test asserts exactly one Home title. Latest Home cleanup awaits CI. Previous confirmed Android Native run 44192865183 PASS (JDK17/SDK37, Gradle test/lint/app compile/androidTest source compile); latest known core/static-core failures are being debugged, not hidden. Visual parity 7/29 remains open; no golden/threshold changes. O5, O1/O2/O3/O6, approved curriculum/media rights, real device/TalkBack, APK and release HG-05 remain open.
+blocked_note: N11-02 atomic lesson persistence + repository injection have an Android CI pass; O5 local identity remains OPEN. N11-04 token/Clay source and JVM foundation is implemented, but screenshot/TalkBack/IME/device validation remains NATIVE_PENDING and visual parity remains 7/29. N11-05 retains one zigzag Path Graph, one shell heading, and unresolved progress defaults; `resolveEntryState` prevents Offline from overriding unresolved identity, with PathGraphTest 33/33. Android Native run 44308240426 PASS: 81 suites/583 tests/0 failures/0 errors/0 skipped; lint/app compile/androidTest source compile passed. ADR-0047 corrected: ParentPinManager is not backed by a durable PinStore and ParentGate remains verifier=null; no LocalProfileManager/ProfileSlotStore or in-app parent deletion flow is wired. PrivacyDataController now reports partial directory deletion. PIN KDF 210k PBKDF2 is legacy baseline only; choose current KDF and benchmark low-end devices before production integration. O5, O1/O2/O3/O6, curriculum/media rights, physical device/TalkBack, APK and release HG-05 remain open.
 ```
 
 ## 0. تصمیم مالک و مرز کار
