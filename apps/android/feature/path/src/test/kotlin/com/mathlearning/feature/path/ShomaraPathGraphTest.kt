@@ -1,6 +1,7 @@
 package com.mathlearning.feature.path
 
 import com.mathlearning.core.designsystem.ShomaraTokens
+import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.model.ShomaraChapterCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
 import org.junit.Assert.assertEquals
@@ -100,6 +101,52 @@ class ShomaraPathGraphTest {
     }
 
     // ---- Phase A: Fresh is reachable, never a fake Current ----
+
+    @Test
+    fun `unresolved progress always stays loading even when offline is requested`() {
+        val unresolved = ShomaraPathProgress()
+
+        assertEquals(
+            ShomaraEntryState.Loading,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, null),
+        )
+        assertEquals(
+            ShomaraEntryState.Loading,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Offline),
+        )
+    }
+
+    @Test
+    fun `explicit content errors and empty states are preserved before progress resolves`() {
+        val unresolved = ShomaraPathProgress()
+
+        assertEquals(
+            ShomaraEntryState.Error,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Error),
+        )
+        assertEquals(
+            ShomaraEntryState.Empty,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Empty),
+        )
+        assertEquals(
+            ShomaraEntryState.Loading,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Loading),
+        )
+    }
+
+    @Test
+    fun `resolved offline path remains available and keeps its offline state`() {
+        val resolvedOffline = ShomaraPathProgress.emptyResolved().copy(offline = true)
+
+        assertEquals(
+            ShomaraEntryState.Offline,
+            ShomaraPathGraphLogic.resolveEntryState(resolvedOffline, ShomaraEntryState.Offline),
+        )
+        assertEquals(
+            null,
+            ShomaraPathGraphLogic.resolveEntryState(resolvedOffline, null),
+        )
+    }
 
     @Test
     fun `unresolved progress is not confused with an initialized new learner`() {
