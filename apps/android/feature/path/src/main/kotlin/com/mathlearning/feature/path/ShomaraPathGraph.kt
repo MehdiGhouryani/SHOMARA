@@ -129,6 +129,21 @@ data class ShomaraNodeColors(val container: Color, val content: Color, val edge:
 
 /** Pure node-state mapping; exactly ONE Current node can exist at a time (single featured). */
 object ShomaraPathGraphLogic {
+    /**
+     * Resolves entry-state precedence. A real error/empty result remains visible, but
+     * Offline cannot expose a path before the local identity/progress snapshot is ready.
+     */
+    fun resolveEntryState(
+        progress: ShomaraPathProgress,
+        requested: ShomaraEntryState?,
+    ): ShomaraEntryState? = when (requested) {
+        ShomaraEntryState.Loading -> ShomaraEntryState.Loading
+        ShomaraEntryState.Error -> ShomaraEntryState.Error
+        ShomaraEntryState.Empty -> ShomaraEntryState.Empty
+        ShomaraEntryState.Offline -> if (progress.isResolved) ShomaraEntryState.Offline else ShomaraEntryState.Loading
+        null -> if (progress.isResolved) null else ShomaraEntryState.Loading
+    }
+
     // N08R-06 zigzag geometry (owner directive: Duolingo-style winding learning path).
     // Nodes alternate sides of the centre axis on EVERY row — never a vertical line, never a
     // checkerboard — with a deterministic magnitude rhythm so the path reads organic but is
@@ -373,7 +388,7 @@ fun ShomaraPathScreen(
 ) {
     // Explicit caller state wins. Otherwise unresolved identity/progress defaults to Loading;
     // a resolved empty snapshot is a legitimate new learner and may render ST01 as Fresh.
-    val resolvedEntryState = entryState ?: if (!progress.isResolved) ShomaraEntryState.Loading else null
+    val resolvedEntryState = ShomaraPathGraphLogic.resolveEntryState(progress, entryState)
 
     // Honest state surfaces (family 16): when the caller reports that the path data has
     // not arrived, the screen says so instead of rendering a fully locked path. Offline
