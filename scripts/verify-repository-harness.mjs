@@ -53,29 +53,22 @@ assert.ok(ledgerPaths.has('apps/mobile/src/path/PathBanner.tsx'), 'dead-code del
 
 const storedDependencyMap = JSON.parse(fs.readFileSync(path.join(root, 'harness/dependency-map.json'), 'utf8'));
 const liveDependencyMap = buildDependencySnapshot(buildDependencyAudit());
-try {
-  assert.deepEqual(storedDependencyMap, liveDependencyMap, 'dependency map drift; regenerate and review it');
-} catch (error) {
-  // Keep the guard strict, but identify exactly which snapshot section drifted.
-  const keys = [...new Set([...Object.keys(storedDependencyMap), ...Object.keys(liveDependencyMap)])].sort();
-  for (const key of keys) {
-    if (JSON.stringify(storedDependencyMap[key]) !== JSON.stringify(liveDependencyMap[key])) {
-      const before = storedDependencyMap[key];
-      const after = liveDependencyMap[key];
-      if (Array.isArray(before) && Array.isArray(after)) {
-        const beforeSet = new Set(before.map((item) => JSON.stringify(item)));
-        const afterSet = new Set(after.map((item) => JSON.stringify(item)));
-        console.error(`DEPENDENCY_MAP_DRIFT[${key}]: stored=${before.length}, live=${after.length}`);
-        console.error('  added:', after.filter((item) => !beforeSet.has(JSON.stringify(item))).slice(0, 20));
-        console.error('  removed:', before.filter((item) => !afterSet.has(JSON.stringify(item))).slice(0, 20));
-      } else {
-        console.error(`DEPENDENCY_MAP_DRIFT[${key}]`);
-        console.error('  stored:', before);
-        console.error('  live:', after);
-      }
-    }
+const dependencyKeys = [...new Set([...Object.keys(storedDependencyMap), ...Object.keys(liveDependencyMap)])].sort();
+const dependencyDrift = dependencyKeys.flatMap((key) => {
+  const before = storedDependencyMap[key];
+  const after = liveDependencyMap[key];
+  if (JSON.stringify(before) === JSON.stringify(after)) return [];
+  if (Array.isArray(before) && Array.isArray(after)) {
+    const beforeSet = new Set(before.map((item) => JSON.stringify(item)));
+    const afterSet = new Set(after.map((item) => JSON.stringify(item)));
+    const added = after.filter((item) => !beforeSet.has(JSON.stringify(item)));
+    const removed = before.filter((item) => !afterSet.has(JSON.stringify(item)));
+    return [`${key}: stored=${before.length}, live=${after.length}, added=${JSON.stringify(added.slice(0, 8))}, removed=${JSON.stringify(removed.slice(0, 8))}`];
   }
-  throw error;
+  return [`${key}: stored=${JSON.stringify(before)}, live=${JSON.stringify(after)}`];
+});
+if (dependencyDrift.length) {
+  assert.fail(`dependency map drift; regenerate and review it:\n${dependencyDrift.join('\n')}`);
 }
 assert.equal(storedDependencyMap.counts.deepWorkspaceImports, 0, 'deep workspace imports are forbidden');
 
