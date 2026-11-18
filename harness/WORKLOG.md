@@ -963,3 +963,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **Baseline:** main CI run `40687075654` (2026-10-28) and `43088599553` (2026-11-11) both had total parity failure 8/29. Their preserved logs explicitly show Practice at 0.50%; current branch has 7/29 after the duplicate-lock fix. The old logs do not preserve all individual failed specimen IDs, so no claim is made that every remaining failure is identical to all historical failures.
 - **Harness:** N11-02 stays DONE_WITH_BLOCKER (O5 local identity/progress read-model); N11-04 stays DONE_WITH_BLOCKER (source/JVM and Gradle gates pass; native visual evidence pending); N11-05 remains IN_PROGRESS.
 - **Still blocked:** O5, actual local active-child profile/progress projection, content/evaluator owner decisions, human-authored/licensed media, TalkBack/device screenshot catalog, release HG-05. No APK/release was generated.
+
+## 2026-11-18 — DT-06 — Home single-header and dead-screen retirement
+
+- **Home duplicate audit:** reviewed all 38 Kotlin files in the Android app shell/navigation, app tests/androidTests and feature/path. `ShomaraHomePathScreen` had no external consumer; `ShomaraHomeUiState` was only used by that unused screen; Progress/Continue/NodeLabel cards were only composed by that screen. The only shared consumer was `ShomaraHomeHeader` in the active `ShomaraChildShellHost`.
+- **KEEP:** the active zigzag `ShomaraPathScreen` remains the only child learning path; shell Header and Station Start Sheet remain.
+- **RETIRE:** deleted the unreferenced parallel `ShomaraHomePathScreen.kt` + `ShomaraHomeUiState.kt`; removed the three unused parallel cards; kept a header-only `ShomaraHomeComponents.kt` and four required Home token aliases. Recorded both deletions in `harness/file-ledger.json`.
+- **Visual/layout correction:** active shell Home Header now uses 24dp horizontal inset and 12dp vertical spacing, exposes title as a semantic heading, while Path Graph supports `showPathHeading`; shell passes false so title/mascot are not duplicated. Path count and next-step summary remain visible.
+- **Regression:** added Compose instrumentation test: exactly one `مسیر یادگیری` heading and remaining-station summary visible.
+- **Identity boundary unchanged:** O5 remains OPEN. Home/Practice remain Loading when unresolved; no fabricated progress or new Room profile schema was introduced.
+- **Evidence pending:** latest commit requires Android Native and CI. Even if compile/test gates pass, no physical device/TalkBack/screenshot/200% font validation is claimed. Parity thresholds and goldens were not changed.
