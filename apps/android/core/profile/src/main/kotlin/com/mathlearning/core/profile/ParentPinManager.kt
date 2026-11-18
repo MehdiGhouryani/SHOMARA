@@ -7,9 +7,11 @@ import java.security.SecureRandom
 /**
  * ParentPinManager (P10, ADR-0047) — the local parent control secret.
  *
- *  - The PIN is NEVER stored plaintext: PBKDF2WithHmacSHA256, a per-install random salt, and
- *    210,000 iterations (OWASP 2023 guidance for PBKDF2-HMAC-SHA256) — salt stored alongside,
- *    which is standard and safe (the salt is not a secret; it defeats rainbow tables).
+ *  - The PIN is NEVER stored plaintext: PBKDF2WithHmacSHA256 with a per-record random 16-byte salt.
+ *    210,000 iterations is the legacy ADR-0047 v1 baseline only; it is NOT the current OWASP
+ *    recommendation for PBKDF2-HMAC-SHA256. Before production wiring, select a current KDF/work
+ *    factor and benchmark it on low-end target devices. See DTR-009 / ADR-0047 evidence correction.
+ *    The salt is stored alongside the hash; it is not a secret and prevents rainbow-table reuse.
  *  - Verification is constant-time over the derived key (MessageDigest.isEqual).
  *  - Retry/lockout policy v1 (defined here per the owner mission, versioned like every rule):
  *    after FAILED_LOCKOUT_THRESHOLD consecutive failures the manager locks for a growing window
@@ -154,6 +156,7 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
     companion object {
         const val PIN_MIN: Int = 4
         const val PIN_MAX: Int = 8
+        /** Legacy v1 test baseline; replace via a versioned KDF migration before production wiring. */
         const val ITERATIONS: Int = 210_000
         const val SALT_BYTES: Int = 16
         const val KEY_BITS: Int = 256
