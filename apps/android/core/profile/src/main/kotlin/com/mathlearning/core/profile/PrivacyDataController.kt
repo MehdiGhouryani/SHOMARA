@@ -39,7 +39,10 @@ class PrivacyDataController(
             runCatching {
                 if (dir.exists()) {
                     val removed = dir.walkTopDown().filter { it.isFile }.count()
-                    dir.deleteRecursively()
+                    val deleted = dir.deleteRecursively()
+                    if (!deleted && dir.exists()) {
+                        throw IllegalStateException("directory deletion was incomplete")
+                    }
                     cleared += "${dir.path}=$removed"
                 }
             }.onFailure { failures += "${dir.path}: ${it.message}" }
