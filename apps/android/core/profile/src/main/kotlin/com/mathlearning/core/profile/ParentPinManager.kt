@@ -29,26 +29,88 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
 
     data class VerifyResult(val ok: Boolean, val lockedForMs: Long)
 
+    /**
+     * Consumes [pin]: the supplied character array is cleared on every exit path.
+     * Callers must not expect to reuse it after this call.
+     */
     fun setPin(pin: CharArray) {
-        require(pin.size in PIN_MIN..PIN_MAX) { "PIN length outside the $PIN_MIN..$PIN_MAX band" }
-        val salt = ByteArray(SALT_BYTES).also { SecureRandom().nextBytes(it) }
-        store.write(PinRecord(salt.toHex(), hash(pin, salt, ITERATIONS), ITERATIONS, failedAttempts = 0, lockedUntilMs = 0))
+        try {
+            require(pin.size in PIN_MIN..PIN_MAX) { "PIN length outside the $PIN_MIN..$PIN_MAX band" }
+            require(pin.all { it in '0'..'9' }) { "PIN must contain ASCII digits only" }
+            val salt = ByteArray(SALT_BYTES).also { SecureRandom().nextBytes(it) }
+            try {
+                val derived = derive(pin, salt, ITERATIONS)
+                try {
+                    store.write(
+                        PinRecord(
+                            saltHex = salt.toHex(),
+                            hashHex = derived.toHex(),
+                            iterations = ITERATIONS,
+                            failedAttempts = 0,
+                            lockedUntilMs = 0,
+                        ),
+                    )
+                } finally {
+                    derived.fill(0)
+                }
+            } finally {
+                salt.fill(0)
+            }
+        } finally {
+            pin.fill('\\u0000')
+        }
     }
 
+    /**
+     * Consumes [pin]: input and temporary derived key/salt buffers are cleared on every path.
+     * A malformed/corrupt stored record fails closed and never authenticates.
+     */
     fun verify(pin: CharArray): VerifyResult {
-        val record = store.read() ?: return VerifyResult(ok = false, lockedForMs = 0)
-        val now = nowMs()
-        if (record.lockedUntilMs > now) return VerifyResult(ok = false, lockedForMs = record.lockedUntilMs - now)
-        val candidate = hash(pin, record.saltHex.fromHex(), record.iterations)
-        val ok = MessageDigestBridge.constantTimeEquals(candidate, record.hashHex)
-        if (ok) {
-            store.write(record.copy(failedAttempts = 0, lockedUntilMs = 0))
-            return VerifyResult(ok = true, lockedForMs = 0)
+        try {
+            val record = store.read() ?: return VerifyResult(ok = false, lockedForMs = 0)
+            val now = nowMs()
+            if (record.lockedUntilMs > now) {
+                return VerifyResult(ok = false, lockedForMs = record.lockedUntilMs - now)
+            }
+            if (record.iterations !in MIN_ITERATIONS..MAX_ITERATIONS) {
+                return VerifyResult(ok = false, lockedForMs = 0)
+            }
+            val salt = decodeHex(record.saltHex, SALT_BYTES)
+                ?: return VerifyResult(ok = false, lockedForMs = 0)
+            val expected = decodeHex(record.hashHex, KEY_BITS / 8)
+            if (expected == null) {
+                salt.fill(0)
+                return VerifyResult(ok = false, lockedForMs = 0)
+            }
+            val candidate = try {
+                derive(pin, salt, record.iterations)
+            } finally {
+                salt.fill(0)
+            }
+            val ok = try {
+                MessageDigestBridge.constantTimeEquals(candidate, expected)
+            } finally {
+                candidate.fill(0)
+                expected.fill(0)
+            }
+            if (ok) {
+                store.write(record.copy(failedAttempts = 0, lockedUntilMs = 0))
+                return VerifyResult(ok = true, lockedForMs = 0)
+            }
+            val failed = record.failedAttempts + 1
+            val locked = if (failed >= FAILED_LOCKOUT_THRESHOLD) lockoutMsFor(failed) else 0
+            store.write(record.copy(failedAttempts = failed, lockedUntilMs = now + locked))
+            return VerifyResult(ok = false, lockedForMs = locked)
+        } finally {
+            pin.fill('\\u0000')
         }
-        val failed = record.failedAttempts + 1
-        val locked = if (failed >= FAILED_LOCKOUT_THRESHOLD) lockoutMsFor(failed) else 0
-        store.write(record.copy(failedAttempts = failed, lockedUntilMs = now + locked))
-        return VerifyResult(ok = false, lockedForMs = locked)
+    }
+
+    private fun decodeHex(value: String, expectedBytes: Int): ByteArray? {
+        if (value.length != expectedBytes * 2 || value.any { it !in '0'..'9' && it !in 'a'..'f' && it !in 'A'..'F' }) {
+            return null
+        }
+        return runCatching { value.fromHex() }.getOrNull()
     }
 
     fun isConfigured(): Boolean = store.read() != null
@@ -62,10 +124,14 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
         return seconds.coerceAtMost(900) * 1000
     }
 
-    private fun hash(pin: CharArray, salt: ByteArray, iterations: Int): String {
+    private fun derive(pin: CharArray, salt: ByteArray, iterations: Int): ByteArray {
         val spec = PBEKeySpec(pin, salt, iterations, KEY_BITS)
-        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
-        return factory.generateSecret(spec).encoded.toHex()
+        try {
+            val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+            return factory.generateSecret(spec).encoded
+        } finally {
+            spec.clearPassword()
+        }
     }
 
     companion object {
@@ -74,6 +140,8 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
         const val ITERATIONS: Int = 210_000
         const val SALT_BYTES: Int = 16
         const val KEY_BITS: Int = 256
+        const val MIN_ITERATIONS: Int = 210_000
+        const val MAX_ITERATIONS: Int = 1_000_000
         const val FAILED_LOCKOUT_THRESHOLD: Int = 5
         const val POLICY_VERSION: String = "parent-pin-policy:v1"
     }
@@ -81,8 +149,12 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
 
 internal object MessageDigestBridge {
     /** java.security.MessageDigest.isEqual is the constant-time comparison (available JVM+Android). */
+    fun constantTimeEquals(a: ByteArray, b: ByteArray): Boolean =
+        java.security.MessageDigest.isEqual(a, b)
+
+    /** Kept for compatibility with existing adapters; prefer byte arrays for secret material. */
     fun constantTimeEquals(a: String, b: String): Boolean =
-        java.security.MessageDigest.isEqual(a.toByteArray(), b.toByteArray())
+        constantTimeEquals(a.toByteArray(), b.toByteArray())
 }
 
 fun ByteArray.toHex(): String = joinToString("") { "%02x".format(it) }
