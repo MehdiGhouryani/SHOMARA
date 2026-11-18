@@ -53,7 +53,6 @@ assert.ok(ledgerPaths.has('apps/mobile/src/path/PathBanner.tsx'), 'dead-code del
 
 const storedDependencyMap = JSON.parse(fs.readFileSync(path.join(root, 'harness/dependency-map.json'), 'utf8'));
 const liveDependencyMap = buildDependencySnapshot(buildDependencyAudit());
-if (!assert.deepEqual) throw new Error('assert.deepEqual unavailable');
 try {
   assert.deepEqual(storedDependencyMap, liveDependencyMap, 'dependency map drift; regenerate and review it');
 } catch (error) {
