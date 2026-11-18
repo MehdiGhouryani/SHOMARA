@@ -105,6 +105,18 @@
 - **تاریخچه:** main run `40687075654` در 2026-10-28 و `43088599553` در 2026-11-11 هر دو total parity `8/29` داشته‌اند؛ current head `7/29` است. لاگ‌های تاریخی همهٔ هویت‌های شکست را نگه نداشته‌اند؛ نمی‌توان همهٔ هفت مورد فعلی را دقیقاً همان هفت مورد تاریخی نامید.
 - **Android Gate:** run `44191580216` SUCCESS روی head `7dd835a`؛ environment JDK17/SDK37 READY؛ preflight exit 0؛ Gradle exit 0؛ 822 tasks (533 executed/289 cached)، BUILD SUCCESSFUL در 3m08s. instrumentation source compile شده اما connected/device tests اجرا نشده و APK تولید نشده است.
 
+### DTR-008 — یک Home فعال، بدون Header تکراری و کارت‌های موازی
+
+**وضعیت:** REVISE → RETIRE duplicate implementation / KEEP Path Graph + shell Header.
+
+- **مسئله:** دو پیاده‌سازی برای Home/Path در Native وجود داشت. مسیر فعال در `ShomaraChildShellHost` از `ShomaraPathScreen` (LazyColumn/zigzag/chapter bands/node states) استفاده می‌کرد؛ `ShomaraHomePathScreen` یک صفحهٔ جدا با `verticalScroll` و node label card بود که به آن route نشده بود. Header/کاراکتر «مسیر یادگیری» نیز هم در shell و هم در Path Graph تکرار می‌شد.
+- **Consumer evidence:** تمام ۳۸ فایل Kotlin در app shell/navigation، app tests/androidTests و feature/path بررسی شدند. `ShomaraHomePathScreen` فقط در فایل خودش، `ShomaraHomeUiState` فقط در همان screen و تعریف خودش، و `ShomaraChapterProgressCard`/`ShomaraContinueStationCard`/`ShomaraHomeNodeLabelCard` فقط از screen یتیم ارجاع می‌شدند. تنها consumer بیرونی `ShomaraHomeHeader`، `ShomaraChildShellHost` است.
+- **KEEP:** `ShomaraPathGraph` مسیر اصلی و تنها graph یادگیری باقی می‌ماند؛ `ShomaraHomeHeader` Header رسمی shell می‌ماند. CTA اصلی هر ایستگاه همچنان از Station Start Sheet می‌گذرد.
+- **RETIRE:** `ShomaraHomePathScreen.kt` و `ShomaraHomeUiState.kt` حذف شدند. سه composable موازی Progress/Continue/NodeLabel از `ShomaraHomeComponents.kt` حذف شد؛ خود فایل فقط Header فعال را نگه می‌دارد. `ShomaraHomeUiTokens` به چهار alias موردنیاز Header محدود شد. حذف‌ها در `harness/file-ledger.json` با class=DELETED ثبت شدند.
+- **REVISE:** Path Graph API با `showPathHeading` توسعه یافت؛ مقدار پیش‌فرض true است تا استفادهٔ مستقل/Preview عنوان و کاراکتر خود را داشته باشد. shell مقدار false می‌دهد و Summary/Next-step باقی می‌ماند؛ پس در Home عنوان/کاراکتر دوبار رندر نمی‌شود. shell Header به inset افقی 24dp و padding عمودی 12dp align شد و title semantics از نوع heading گرفت.
+- **Regression test:** Compose test تعداد heading «مسیر یادگیری» را در Home دقیقاً یک بررسی می‌کند و متن تعداد ایستگاه‌های باقی‌مانده را هم assert می‌کند.
+- **مرز:** این تغییر ViewModel/UseCase/Room progress نمی‌سازد؛ O5 همچنان OPEN است. تا زمانی که identity/progress از منبع محلی معتبر نیامده، Home و Practice در Loading می‌مانند. گیت Android جدید روی cleanup و Header refactor باید PASS شود؛ device/TalkBack screenshot و parity همچنان جداگانه لازم‌اند.
+
 ## 4. تغییرات ثبت‌شده در شاخهٔ اجرا
 
 | Commit | تغییر |
