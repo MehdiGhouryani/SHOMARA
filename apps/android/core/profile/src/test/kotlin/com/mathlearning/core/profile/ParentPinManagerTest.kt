@@ -6,7 +6,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** In-memory pin store fixture (durable DataStore impl wired in the app module). */
+/** In-memory test fixture only; no durable PinStore adapter is wired in the app module yet. */
 class InMemoryPinStore : ParentPinManager.PinStore {
     var record: ParentPinManager.PinRecord? = null
     override fun read(): ParentPinManager.PinRecord? = record
