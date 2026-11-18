@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-28",
+  "updatedAt": "2026-11-18",
   "classifications": [
     "CANONICAL_ACTIVE",
     "ACTIVE",
@@ -14,65 +14,439 @@
     "DELETED"
   ],
   "entries": [
-    { "path": "AGENTS.md", "class": "CANONICAL_ACTIVE", "owner": "governance", "action": "keep", "consumer": "all coding agents" },
-    { "path": "START_HERE.md", "class": "CANONICAL_ACTIVE", "owner": "status", "action": "update every checkpoint", "consumer": "all coding agents" },
-    { "path": "ZCODE.md", "class": "CANONICAL_ACTIVE", "owner": "resume", "action": "keep concise", "consumer": "new chat/session" },
-    { "path": "harness/**", "class": "CANONICAL_ACTIVE", "owner": "execution", "action": "validate every checkpoint", "consumer": "tools/harness.mjs" },
-    { "path": "harness/dependency-map.json", "class": "CANONICAL_ACTIVE", "owner": "architecture", "action": "regenerate only after reviewed dependency changes", "consumer": "tools/dependency-audit.mjs" },
-    { "path": "docs/README.md", "class": "CANONICAL_ACTIVE", "owner": "documentation", "action": "keep as documentation index", "consumer": "agents and owner" },
-    { "path": "docs/roadmap/**", "class": "CANONICAL_ACTIVE", "owner": "planning", "action": "keep", "consumer": "agents and owner" },
-    { "path": "docs/architecture/**", "class": "CANONICAL_ACTIVE", "owner": "architecture", "action": "keep", "consumer": "N01+ tasks" },
-    { "path": "docs/adr/ADR-0036-android-native-foundation.md", "class": "CANONICAL_ACTIVE", "owner": "android-architecture", "action": "change only through a superseding ADR", "consumer": "N02+ Native tasks" },
-    { "path": "design/**", "class": "CANONICAL_ACTIVE", "owner": "native-ux", "action": "use for every UI task; keep route and implementation guidance current", "consumer": "N03+ UI tasks" },
-    { "path": "design/INSPIRATION_GUARDRAILS.md", "class": "CANONICAL_ACTIVE", "owner": "product-design", "action": "filter all external inspiration through adopt/adapt/reject", "consumer": "all UI tasks and skills" },
-    { "path": "design/playbook/COMPONENT_READINESS.md", "class": "CANONICAL_ACTIVE", "owner": "design-system", "action": "define component contract before N03 implementation", "consumer": "N03 component tasks" },
-    { "path": "design/playbook/PAGE_UIUX_BLUEPRINT.md", "class": "CANONICAL_ACTIVE", "owner": "native-ux", "action": "lock composition, state coverage and Native batch order for all 17 page families", "consumer": "N03-N08 UI implementation" },
-    { "path": "design/playbook/N08R_MISSION_FA.md", "class": "CANONICAL_ACTIVE", "owner": "owner-directive", "action": "canonical mission record for parallel phase N08R (Duolingo-level UI/UX, protected screens, page loop)", "consumer": "N08R tasks" },
-    { "path": "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv", "class": "CANONICAL_ACTIVE", "owner": "native-ux-evidence", "action": "update work item status only with named implementation evidence", "consumer": "route migration and handoff" },
-    { "path": "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md", "class": "CANONICAL_ACTIVE", "owner": "delivery", "action": "use as the final independent handoff for the next chat", "consumer": "owner and next coding agent" },
-    { "path": "skills/**", "class": "CANONICAL_ACTIVE", "owner": "agent-workflows", "action": "one lowercase-kebab folder per skill; SKILL plus agents metadata; validate every checkpoint", "consumer": "all implementation agents" },
-    { "path": "skills/shomara-android-build/**", "class": "CANONICAL_ACTIVE", "owner": "android-build", "action": "route SDK/Gradle/CI/debug APK work through fail-closed build evidence", "consumer": "N02+ build tasks and coding agents" },
-    { "path": "skills/shomara-design-system/**", "class": "CANONICAL_ACTIVE", "owner": "design-system", "action": "route token/theme/component work and keep reference progressive", "consumer": "N03+ shared UI tasks" },
-    { "path": "apps/android/**", "class": "ACTIVE", "owner": "android-native", "action": "primary target client; respect module boundaries", "consumer": "N02+ Native build and CI" },
-    { "path": ".github/workflows/android-native.yml", "class": "CANONICAL_ACTIVE", "owner": "android-ci", "action": "keep unsigned until N10 approval", "consumer": "Native pull requests" },
-    { "path": "scripts/verify-android-foundation.mjs", "class": "CANONICAL_ACTIVE", "owner": "android-verification", "action": "run at every Native checkpoint", "consumer": "N02+ CI and agents" },
-    { "path": "scripts/verify-android-environment.mjs", "class": "CANONICAL_ACTIVE", "owner": "android-verification", "action": "run before Gradle gates; BLOCKED_ENV is not PASS", "consumer": "N02 local/CI build environments" },
-    { "path": "scripts/android-build.mjs", "class": "CANONICAL_ACTIVE", "owner": "android-build", "action": "single entry point for doctor/gate/debug APK and hash report", "consumer": "local build, CI and handoff" },
-    { "path": "scripts/verify-android-build-harness.mjs", "class": "CANONICAL_ACTIVE", "owner": "android-verification", "action": "enforce build modes, unsigned boundary and CI routing", "consumer": "N02+ repository gates" },
-    { "path": "build-reports/**", "class": "GENERATED_IGNORED", "owner": "android-build", "action": "regenerate locally; never commit", "consumer": "local/CI build evidence" },
-    { "path": "scripts/verify-content-library.mjs", "class": "CANONICAL_ACTIVE", "owner": "content-governance", "action": "run before every content checkpoint", "consumer": "N02/N05–N08 gates" },
-    { "path": "scripts/generate-content-indexes.mjs", "class": "CANONICAL_ACTIVE", "owner": "content-governance", "action": "generate/check derived curriculum indexes only", "consumer": "content verifier and future authoring" },
-    { "path": "scripts/verify-project-skills.mjs", "class": "CANONICAL_ACTIVE", "owner": "agent-workflows", "action": "run after skill or root naming changes", "consumer": "repository gate" },
-    { "path": "apps/web/**", "class": "ACTIVE", "owner": "web-api", "action": "preserve", "consumer": "runtime/tests" },
-    { "path": "apps/mobile/**", "class": "LEGACY_ACTIVE", "owner": "expo-client", "action": "freeze features; migrate route-by-route", "consumer": "current child client and flows" },
-    { "path": "packages/contracts/**", "class": "ACTIVE_PROTECTED", "owner": "contracts", "action": "change only with contract review", "consumer": "web/mobile/runtimes" },
-    { "path": "packages/*-runtime/**", "class": "ACTIVE_PROTECTED", "owner": "domain", "action": "preserve", "consumer": "tests and server/client adapters" },
-    { "path": "packages/design-system/**", "class": "ACTIVE_MIGRATION_SOURCE", "owner": "design-system", "action": "become cross-platform token source", "consumer": "Expo/Web; Kotlin generator planned" },
-    { "path": "supabase/**", "class": "ACTIVE_PROTECTED", "owner": "backend", "action": "no cleanup without migration audit", "consumer": "database" },
-    { "path": "content/**", "class": "ACTIVE_PROTECTED", "owner": "content-runtime", "action": "preserve", "consumer": "dev packs and verifiers" },
-    { "path": "content-library/originals/**", "class": "ACTIVE_PROTECTED", "owner": "content-research", "action": "byte-protected; never edit or auto-promote", "consumer": "content mapping and human review" },
-    { "path": "content-library/derived/**", "class": "CANONICAL_ACTIVE", "owner": "content-governance", "action": "regenerate/review against originals", "consumer": "content validators and roadmap" },
-    { "path": "content-library/integration/**", "class": "CANONICAL_ACTIVE", "owner": "content-governance", "action": "keep conflicts, promotion gates and repo mapping current", "consumer": "N05–N08 content tasks" },
-    { "path": "content-library/integration/AUTHORING_CONTRACT_GAPS.md", "class": "CANONICAL_ACTIVE", "owner": "content-contracts", "action": "enforce authoring/published/client separation and lifecycle mapping", "consumer": "N06–N08 implementation and CMS tasks" },
-    { "path": "project-design-v2/**", "class": "ACTIVE_MIGRATION_SOURCE", "owner": "character-assets", "action": "preserve generator", "consumer": "web/mobile generated art" },
-    { "path": "scripts/**", "class": "ACTIVE_MIXED", "owner": "verification", "action": "migrate incrementally", "consumer": "CI and package scripts" },
-    { "path": "docs/design-handoff-2026-10/**", "class": "LEGACY_ACTIVE", "owner": "v1-goldens", "action": "remove only after verifier migration", "consumer": "parity and UI v1 verifiers" },
-    { "path": "apps/mobile/src/ui/v1/**", "class": "LEGACY_ACTIVE", "owner": "expo-v1", "action": "remove after zero-consumer proof", "consumer": "live V1 imports and parity specimens" },
-    { "path": "apps/mobile/src/ui/v2/**", "class": "ACTIVE_MIGRATION_SOURCE", "owner": "expo-v2", "action": "behavior reference, not Native source", "consumer": "current Expo routes" },
-    { "path": "ROADMAP_PHASES.md", "class": "LEGACY_ACTIVE", "owner": "legacy-roadmap", "action": "keep until verifier migration", "consumer": "multiple scripts/verify-*.mjs" },
-    { "path": "docs/history/**", "class": "LEGACY_ACTIVE", "owner": "legacy-manifests", "action": "keep until verifier migration", "consumer": "phase 5/9/10 verifiers" },
-    { "path": "docs/archive/**", "class": "HISTORICAL", "owner": "evidence", "action": "append only; not canonical", "consumer": "audit" },
-    { "path": "artifacts/p02/**", "class": "HISTORICAL", "owner": "p02-evidence", "action": "retain until legacy gate retirement", "consumer": "audit" },
-    { "path": "prototypes/**", "class": "HISTORICAL", "owner": "research", "action": "no runtime import", "consumer": "manual reference" },
-    { "path": "node_modules/**", "class": "GENERATED_IGNORED", "owner": "tooling", "action": "never package", "consumer": "local install" },
-    { "path": "**/dist/**", "class": "GENERATED_IGNORED", "owner": "tooling", "action": "never package", "consumer": "local build" },
-    { "path": "**/build/**", "class": "GENERATED_IGNORED", "owner": "tooling", "action": "never package", "consumer": "local build" },
-    { "path": "parity-out-expo/**", "class": "DELETED", "owner": "N00", "action": "must remain untracked", "consumer": "none; reproducible output" },
-    { "path": "docs/handoff/PROMPTS.md", "class": "DELETED", "owner": "N00", "action": "replaced by ZCODE+harness", "consumer": "none" },
-    { "path": "README_INSTALL_FIRST.md", "class": "DELETED", "owner": "N01", "action": "recoverable from Git history", "consumer": "none" },
-    { "path": "PACKAGE_CONTENTS.md", "class": "DELETED", "owner": "N01", "action": "recoverable from Git history", "consumer": "none" },
-    { "path": "SHOMARA_ZCODE_MASTER_PLAN_FA.md", "class": "DELETED", "owner": "N01", "action": "replaced by canonical roadmap+harness", "consumer": "none" },
-    { "path": "metadata.json", "class": "DELETED", "owner": "N01", "action": "orphan package metadata", "consumer": "none" },
-    { "path": "apps/mobile/src/path/PathBanner.tsx", "class": "DELETED", "owner": "N01", "action": "zero-consumer proof; recoverable from Git history", "consumer": "none" }
+    {
+      "path": "AGENTS.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "governance",
+      "action": "keep",
+      "consumer": "all coding agents"
+    },
+    {
+      "path": "START_HERE.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "status",
+      "action": "update every checkpoint",
+      "consumer": "all coding agents"
+    },
+    {
+      "path": "ZCODE.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "resume",
+      "action": "keep concise",
+      "consumer": "new chat/session"
+    },
+    {
+      "path": "harness/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "execution",
+      "action": "validate every checkpoint",
+      "consumer": "tools/harness.mjs"
+    },
+    {
+      "path": "harness/dependency-map.json",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "architecture",
+      "action": "regenerate only after reviewed dependency changes",
+      "consumer": "tools/dependency-audit.mjs"
+    },
+    {
+      "path": "docs/README.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "documentation",
+      "action": "keep as documentation index",
+      "consumer": "agents and owner"
+    },
+    {
+      "path": "docs/roadmap/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "planning",
+      "action": "keep",
+      "consumer": "agents and owner"
+    },
+    {
+      "path": "docs/architecture/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "architecture",
+      "action": "keep",
+      "consumer": "N01+ tasks"
+    },
+    {
+      "path": "docs/adr/ADR-0036-android-native-foundation.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "android-architecture",
+      "action": "change only through a superseding ADR",
+      "consumer": "N02+ Native tasks"
+    },
+    {
+      "path": "design/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "native-ux",
+      "action": "use for every UI task; keep route and implementation guidance current",
+      "consumer": "N03+ UI tasks"
+    },
+    {
+      "path": "design/INSPIRATION_GUARDRAILS.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "product-design",
+      "action": "filter all external inspiration through adopt/adapt/reject",
+      "consumer": "all UI tasks and skills"
+    },
+    {
+      "path": "design/playbook/COMPONENT_READINESS.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "design-system",
+      "action": "define component contract before N03 implementation",
+      "consumer": "N03 component tasks"
+    },
+    {
+      "path": "design/playbook/PAGE_UIUX_BLUEPRINT.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "native-ux",
+      "action": "lock composition, state coverage and Native batch order for all 17 page families",
+      "consumer": "N03-N08 UI implementation"
+    },
+    {
+      "path": "design/playbook/N08R_MISSION_FA.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "owner-directive",
+      "action": "canonical mission record for parallel phase N08R (Duolingo-level UI/UX, protected screens, page loop)",
+      "consumer": "N08R tasks"
+    },
+    {
+      "path": "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "native-ux-evidence",
+      "action": "update work item status only with named implementation evidence",
+      "consumer": "route migration and handoff"
+    },
+    {
+      "path": "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "delivery",
+      "action": "use as the final independent handoff for the next chat",
+      "consumer": "owner and next coding agent"
+    },
+    {
+      "path": "skills/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "agent-workflows",
+      "action": "one lowercase-kebab folder per skill; SKILL plus agents metadata; validate every checkpoint",
+      "consumer": "all implementation agents"
+    },
+    {
+      "path": "skills/shomara-android-build/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "android-build",
+      "action": "route SDK/Gradle/CI/debug APK work through fail-closed build evidence",
+      "consumer": "N02+ build tasks and coding agents"
+    },
+    {
+      "path": "skills/shomara-design-system/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "design-system",
+      "action": "route token/theme/component work and keep reference progressive",
+      "consumer": "N03+ shared UI tasks"
+    },
+    {
+      "path": "apps/android/**",
+      "class": "ACTIVE",
+      "owner": "android-native",
+      "action": "primary target client; respect module boundaries",
+      "consumer": "N02+ Native build and CI"
+    },
+    {
+      "path": ".github/workflows/android-native.yml",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "android-ci",
+      "action": "keep unsigned until N10 approval",
+      "consumer": "Native pull requests"
+    },
+    {
+      "path": "scripts/verify-android-foundation.mjs",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "android-verification",
+      "action": "run at every Native checkpoint",
+      "consumer": "N02+ CI and agents"
+    },
+    {
+      "path": "scripts/verify-android-environment.mjs",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "android-verification",
+      "action": "run before Gradle gates; BLOCKED_ENV is not PASS",
+      "consumer": "N02 local/CI build environments"
+    },
+    {
+      "path": "scripts/android-build.mjs",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "android-build",
+      "action": "single entry point for doctor/gate/debug APK and hash report",
+      "consumer": "local build, CI and handoff"
+    },
+    {
+      "path": "scripts/verify-android-build-harness.mjs",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "android-verification",
+      "action": "enforce build modes, unsigned boundary and CI routing",
+      "consumer": "N02+ repository gates"
+    },
+    {
+      "path": "build-reports/**",
+      "class": "GENERATED_IGNORED",
+      "owner": "android-build",
+      "action": "regenerate locally; never commit",
+      "consumer": "local/CI build evidence"
+    },
+    {
+      "path": "scripts/verify-content-library.mjs",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "content-governance",
+      "action": "run before every content checkpoint",
+      "consumer": "N02/N05–N08 gates"
+    },
+    {
+      "path": "scripts/generate-content-indexes.mjs",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "content-governance",
+      "action": "generate/check derived curriculum indexes only",
+      "consumer": "content verifier and future authoring"
+    },
+    {
+      "path": "scripts/verify-project-skills.mjs",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "agent-workflows",
+      "action": "run after skill or root naming changes",
+      "consumer": "repository gate"
+    },
+    {
+      "path": "apps/web/**",
+      "class": "ACTIVE",
+      "owner": "web-api",
+      "action": "preserve",
+      "consumer": "runtime/tests"
+    },
+    {
+      "path": "apps/mobile/**",
+      "class": "LEGACY_ACTIVE",
+      "owner": "expo-client",
+      "action": "freeze features; migrate route-by-route",
+      "consumer": "current child client and flows"
+    },
+    {
+      "path": "packages/contracts/**",
+      "class": "ACTIVE_PROTECTED",
+      "owner": "contracts",
+      "action": "change only with contract review",
+      "consumer": "web/mobile/runtimes"
+    },
+    {
+      "path": "packages/*-runtime/**",
+      "class": "ACTIVE_PROTECTED",
+      "owner": "domain",
+      "action": "preserve",
+      "consumer": "tests and server/client adapters"
+    },
+    {
+      "path": "packages/design-system/**",
+      "class": "ACTIVE_MIGRATION_SOURCE",
+      "owner": "design-system",
+      "action": "become cross-platform token source",
+      "consumer": "Expo/Web; Kotlin generator planned"
+    },
+    {
+      "path": "supabase/**",
+      "class": "ACTIVE_PROTECTED",
+      "owner": "backend",
+      "action": "no cleanup without migration audit",
+      "consumer": "database"
+    },
+    {
+      "path": "content/**",
+      "class": "ACTIVE_PROTECTED",
+      "owner": "content-runtime",
+      "action": "preserve",
+      "consumer": "dev packs and verifiers"
+    },
+    {
+      "path": "content-library/originals/**",
+      "class": "ACTIVE_PROTECTED",
+      "owner": "content-research",
+      "action": "byte-protected; never edit or auto-promote",
+      "consumer": "content mapping and human review"
+    },
+    {
+      "path": "content-library/derived/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "content-governance",
+      "action": "regenerate/review against originals",
+      "consumer": "content validators and roadmap"
+    },
+    {
+      "path": "content-library/integration/**",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "content-governance",
+      "action": "keep conflicts, promotion gates and repo mapping current",
+      "consumer": "N05–N08 content tasks"
+    },
+    {
+      "path": "content-library/integration/AUTHORING_CONTRACT_GAPS.md",
+      "class": "CANONICAL_ACTIVE",
+      "owner": "content-contracts",
+      "action": "enforce authoring/published/client separation and lifecycle mapping",
+      "consumer": "N06–N08 implementation and CMS tasks"
+    },
+    {
+      "path": "project-design-v2/**",
+      "class": "ACTIVE_MIGRATION_SOURCE",
+      "owner": "character-assets",
+      "action": "preserve generator",
+      "consumer": "web/mobile generated art"
+    },
+    {
+      "path": "scripts/**",
+      "class": "ACTIVE_MIXED",
+      "owner": "verification",
+      "action": "migrate incrementally",
+      "consumer": "CI and package scripts"
+    },
+    {
+      "path": "docs/design-handoff-2026-10/**",
+      "class": "LEGACY_ACTIVE",
+      "owner": "v1-goldens",
+      "action": "remove only after verifier migration",
+      "consumer": "parity and UI v1 verifiers"
+    },
+    {
+      "path": "apps/mobile/src/ui/v1/**",
+      "class": "LEGACY_ACTIVE",
+      "owner": "expo-v1",
+      "action": "remove after zero-consumer proof",
+      "consumer": "live V1 imports and parity specimens"
+    },
+    {
+      "path": "apps/mobile/src/ui/v2/**",
+      "class": "ACTIVE_MIGRATION_SOURCE",
+      "owner": "expo-v2",
+      "action": "behavior reference, not Native source",
+      "consumer": "current Expo routes"
+    },
+    {
+      "path": "ROADMAP_PHASES.md",
+      "class": "LEGACY_ACTIVE",
+      "owner": "legacy-roadmap",
+      "action": "keep until verifier migration",
+      "consumer": "multiple scripts/verify-*.mjs"
+    },
+    {
+      "path": "docs/history/**",
+      "class": "LEGACY_ACTIVE",
+      "owner": "legacy-manifests",
+      "action": "keep until verifier migration",
+      "consumer": "phase 5/9/10 verifiers"
+    },
+    {
+      "path": "docs/archive/**",
+      "class": "HISTORICAL",
+      "owner": "evidence",
+      "action": "append only; not canonical",
+      "consumer": "audit"
+    },
+    {
+      "path": "artifacts/p02/**",
+      "class": "HISTORICAL",
+      "owner": "p02-evidence",
+      "action": "retain until legacy gate retirement",
+      "consumer": "audit"
+    },
+    {
+      "path": "prototypes/**",
+      "class": "HISTORICAL",
+      "owner": "research",
+      "action": "no runtime import",
+      "consumer": "manual reference"
+    },
+    {
+      "path": "node_modules/**",
+      "class": "GENERATED_IGNORED",
+      "owner": "tooling",
+      "action": "never package",
+      "consumer": "local install"
+    },
+    {
+      "path": "**/dist/**",
+      "class": "GENERATED_IGNORED",
+      "owner": "tooling",
+      "action": "never package",
+      "consumer": "local build"
+    },
+    {
+      "path": "**/build/**",
+      "class": "GENERATED_IGNORED",
+      "owner": "tooling",
+      "action": "never package",
+      "consumer": "local build"
+    },
+    {
+      "path": "parity-out-expo/**",
+      "class": "DELETED",
+      "owner": "N00",
+      "action": "must remain untracked",
+      "consumer": "none; reproducible output"
+    },
+    {
+      "path": "docs/handoff/PROMPTS.md",
+      "class": "DELETED",
+      "owner": "N00",
+      "action": "replaced by ZCODE+harness",
+      "consumer": "none"
+    },
+    {
+      "path": "README_INSTALL_FIRST.md",
+      "class": "DELETED",
+      "owner": "N01",
+      "action": "recoverable from Git history",
+      "consumer": "none"
+    },
+    {
+      "path": "PACKAGE_CONTENTS.md",
+      "class": "DELETED",
+      "owner": "N01",
+      "action": "recoverable from Git history",
+      "consumer": "none"
+    },
+    {
+      "path": "SHOMARA_ZCODE_MASTER_PLAN_FA.md",
+      "class": "DELETED",
+      "owner": "N01",
+      "action": "replaced by canonical roadmap+harness",
+      "consumer": "none"
+    },
+    {
+      "path": "metadata.json",
+      "class": "DELETED",
+      "owner": "N01",
+      "action": "orphan package metadata",
+      "consumer": "none"
+    },
+    {
+      "path": "apps/mobile/src/path/PathBanner.tsx",
+      "class": "DELETED",
+      "owner": "N01",
+      "action": "zero-consumer proof; recoverable from Git history",
+      "consumer": "none"
+    },
+    {
+      "path": "apps/android/feature/path/src/main/kotlin/com/mathlearning/feature/path/ShomaraHomePathScreen.kt",
+      "class": "DELETED",
+      "owner": "N11-05",
+      "action": "retired after consumer proof; duplicate P14 handoff screen was unreferenced; the real ShomaraPathGraph remains the single Home journey",
+      "consumer": "none; historical source remains recoverable from Git history"
+    },
+    {
+      "path": "apps/android/feature/path/src/main/kotlin/com/mathlearning/feature/path/ShomaraHomeUiState.kt",
+      "class": "DELETED",
+      "owner": "N11-05",
+      "action": "retired with its unreferenced parallel screen contract; a new identity-backed immutable UiState will be introduced only after O5 approval",
+      "consumer": "none; historical source remains recoverable from Git history"
+    }
   ]
 }
