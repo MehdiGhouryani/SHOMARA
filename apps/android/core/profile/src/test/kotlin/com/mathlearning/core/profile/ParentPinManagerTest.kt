@@ -61,8 +61,10 @@ class ParentPinManagerTest {
                 lockedUntilMs = 0,
             )
         }
+        val corruptedManager = ParentPinManager(corruptedStore)
+        assertFalse(corruptedManager.isConfigured())
         val corruptInput = "2468".toCharArray()
-        assertFalse(ParentPinManager(corruptedStore).verify(corruptInput).ok)
+        assertFalse(corruptedManager.verify(corruptInput).ok)
         assertTrue(corruptInput.all { it == 0.toChar() })
     }
 
