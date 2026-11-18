@@ -47,7 +47,7 @@ const results = scripts.map((file) => {
   const r = spawnSync(process.execPath, [...nodeFlags, join('scripts', file)], { cwd: root, encoding: 'utf8', timeout: 300_000 });
   const ok = r.status === 0;
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${file}`);
-  if (!ok) console.log((r.stdout + r.stderr).split('\n').slice(-12).join('\n'));
+  if (!ok) console.log((r.stdout + r.stderr).split('\n').slice(-40).join('\n'));
   return ok;
 });
 const failed = results.filter((ok) => !ok).length;
