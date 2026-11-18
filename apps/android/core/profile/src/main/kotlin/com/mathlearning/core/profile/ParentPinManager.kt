@@ -113,7 +113,24 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
         return runCatching { value.fromHex() }.getOrNull()
     }
 
-    fun isConfigured(): Boolean = store.read() != null
+    fun isConfigured(): Boolean = store.read()?.let(::hasValidRecord) == true
+
+    private fun hasValidRecord(record: PinRecord): Boolean {
+        if (record.iterations !in MIN_ITERATIONS..MAX_ITERATIONS ||
+            record.failedAttempts < 0 ||
+            record.lockedUntilMs < 0
+        ) return false
+
+        val salt = decodeHex(record.saltHex, SALT_BYTES) ?: return false
+        val expected = decodeHex(record.hashHex, KEY_BITS / 8)
+        if (expected == null) {
+            salt.fill(0)
+            return false
+        }
+        salt.fill(0)
+        expected.fill(0)
+        return true
+    }
 
     fun clearPin() = store.clear()
 
