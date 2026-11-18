@@ -99,7 +99,7 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
             }
             val failed = record.failedAttempts + 1
             val locked = if (failed >= FAILED_LOCKOUT_THRESHOLD) lockoutMsFor(failed) else 0
-            store.write(record.copy(failedAttempts = failed, lockedUntilMs = now + locked))
+            store.write(record.copy(failedAttempts = failed, lockedUntilMs = if (locked > 0) now + locked else 0L))
             return VerifyResult(ok = false, lockedForMs = locked)
         } finally {
             pin.fill(0.toChar())
