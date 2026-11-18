@@ -117,6 +117,27 @@
 - **Regression test:** Compose test تعداد heading «مسیر یادگیری» را در Home دقیقاً یک بررسی می‌کند و متن تعداد ایستگاه‌های باقی‌مانده را هم assert می‌کند.
 - **مرز:** این تغییر ViewModel/UseCase/Room progress نمی‌سازد؛ O5 همچنان OPEN است. تا زمانی که identity/progress از منبع محلی معتبر نیامده، Home و Practice در Loading می‌مانند. گیت Android جدید روی cleanup و Header refactor باید PASS شود؛ device/TalkBack screenshot و parity همچنان جداگانه لازم‌اند.
 
+### DTR-009 — اصلاح مرز واقعی Parent PIN و حذف داده
+
+**وضعیت:** KEEP security primitives / REVISE as-built claims؛ production wiring و انتخاب KDF هنوز OPEN.
+
+- **مسئله:** ADR-0047 ادعای durable DataStore PIN adapter، LocalProfileManager و Parent deletion flow را القا می‌کرد، درحالی‌که consumer scan در source tree فقط `ParentPinManager` و `PrivacyDataController` را یافت. `PinStore` فقط interface است؛ تست‌ها از `InMemoryPinStore` استفاده می‌کنند. `ShomaraChildShellHost` هنوز `ShomaraParentGate(verifier = null)` می‌سازد و fail-closed است. `PreferencesProfileDraftStore` تنها draft ناقص onboarding را نگه می‌دارد و profile پایدار نیست.
+- **REVISE / PIN:** ورودی `CharArray` در set/verify در هر خروجی پاک می‌شود؛ salt/derived/expected buffers صفر می‌شوند؛ `PBEKeySpec.clearPassword()` اجرا می‌شود؛ رکورد malformed یا iteration نامعتبر fail-closed است؛ `isConfigured` ساختار record را validate می‌کند؛ lock timestamp در حالت بدون lock صفر باقی می‌ماند. هیچ PinStore واقعی، ParentGate verifier یا parent UI اضافه نشده است.
+- **REVISE / Privacy:** `PrivacyDataController` دیگر false نتیجهٔ `deleteRecursively()` را موفق ثبت نمی‌کند؛ اگر directory باقی بماند failure گزارش می‌شود و ادامهٔ wipe بقیهٔ stores/directories متوقف نمی‌شود. تست جدید این failure را با directory غیرقابل‌حذف کنترل‌شده ثابت می‌کند. Controller همچنان فقط روی stores/dirs تزریق‌شده کار می‌کند و در app composition متصل نیست.
+- **KDF risk:** مقدار 210,000 PBKDF2-HMAC-SHA256 فقط legacy baseline مربوط به ADR-0047 v1 است، نه توصیهٔ جاری OWASP. OWASP اکنون Argon2id را ترجیح می‌دهد و PBKDF2-HMAC-SHA256 با 600,000 iteration را در صورت الزام FIPS فهرست می‌کند؛ work factor باید روی target device benchmark شود. منبع: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html. هیچ عددی کورکورانه بالا نرفت؛ پیش از production wiring انتخاب KDF، versioned record format و benchmark لازم است.
+- **CI evidence:** Android Native run `44308240426` روی SHA `bc9c1b8`: 81 XML suites، 583 tests، zero failure/error/skip؛ `ParentPinManagerTest` 7/7 و `PrivacyAndDiagnosticsTest` 6/6 PASS؛ lint/app compile/androidTest source compile موفق. Device/Keystore/ParentGate integration اجرا نشده.
+- **ریسک/اثر مهاجرت:** تا O5 و رأی مالک دربارهٔ Parent UX روشن نشود، profile table/active profile یا ParentGate ساخته نمی‌شود. Erasure را در privacy-policy/store listing به‌عنوان قابلیت موجود معرفی نکنید.
+
+### DTR-010 — اولویت صحیح Loading / Offline در Path
+
+**وضعیت:** REVISE → SOURCE_IMPLEMENTED / LOGIC_TESTED.
+
+- **مسئله:** caller می‌توانست `entryState=Offline` را همراه progress حل‌نشده بدهد و UI فهرست ایستگاه‌ها را با stateهای Locked نشان دهد؛ درحالی‌که هنوز هویت/پیشرفت کودک resolve نشده بود.
+- **تصمیم:** تابع خالص `ShomaraPathGraphLogic.resolveEntryState(progress, requested)` اضافه شد. Loading صریح Loading می‌ماند؛ Error و Empty صریح حفظ می‌شوند؛ Offline فقط وقتی progress resolved است نمایش داده می‌شود؛ Offline + unresolved و null + unresolved هر دو Loading می‌شوند. پس از resolve شدن، offline path با stateهای واقعی پیشرفت باقی می‌ماند.
+- **Regression tests:** unresolved + Offline → Loading؛ unresolved + null → Loading؛ Error/Empty صریح حتی قبل از resolve حفظ می‌شوند؛ resolved Offline حفظ می‌شود؛ resolved بدون override به state عادی مسیر می‌رود.
+- **CI evidence:** همین implementation در Android Native run `44308240426` روی `bc9c1b8` اجرا شد؛ PathGraphTest 33/33 و کل Gradle gate 583/583 PASS.
+- **مرز:** این helper هویت یا progress تولید نمی‌کند؛ O5 همچنان OPEN و Home/Practice تا منبع محلی معتبر در Loading باقی می‌مانند.
+
 ## 4. تغییرات ثبت‌شده در شاخهٔ اجرا
 
 | Commit | تغییر |
