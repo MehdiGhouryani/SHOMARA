@@ -35,9 +35,9 @@
 | 2026-10-31 | SNAP-20261031-N04-PHASE-CLOSED | فاز N04 بسته شد: سه ماژول واقعی network/datastore/onboarding، OTP با مسیرهای منفی MockWebServer، DataStore امن، restore/expiry fail-closed، سیم‌کشی واقعی launch؛ ۷۲ تست جدید؛ connectedCheck بدون device ثبت صادقانه. |
 
 ```yaml
-file_version: 63
+file_version: 64
 last_updated: 2026-11-18
-snapshot_id: SNAP-20261118-DT-05-ANDROID-PASS-PARITY-BASELINE
+snapshot_id: SNAP-20261118-DT-06-HOME-SINGLE-HEADER-CLEANUP
 baseline_commit: 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c
 working_branch: work/shomara-deep-transformation
 working_branch_pushed: true
@@ -49,7 +49,7 @@ current_phase: N11
 current_task: N11-05
 phase_status: N11_02_DONE_WITH_O5_BLOCKER__N11_04_DONE_WITH_NATIVE_BLOCKERS__N11_05_IN_PROGRESS
 apk_status: NOT_BUILT_ON_TRANSFORMATION_BRANCH
-blocked_note: N11-02 persistence/composition-root + fail-closed Home lifecycle guards implemented; N11-04 Clay/token foundation source/JVM complete with Native visual blockers. Latest Android Native run 44191580216 on head 7dd835a PASS: JDK17/SDK37, Gradle test+lint+app compile+androidTest-source compile exit 0, 822 tasks (533 executed/289 cached); no APK or device test. CI core + static-core PASS; visual-and-static fails only parity 7/29 (static-all 93/94). Practice fix is verified PASS 0.4683%; compact replay layout is now one-line but remains 0.7994% pixel diff. Six other parity items remain. O5 remains OPEN and Home/Practice keep unresolved Loading. Content/media rights, TalkBack/device QA, APK and release HG-05 remain open.
+blocked_note: N11-02 atomic lesson persistence + repository injection pass prior Android gate; O5 local identity remains OPEN. N11-04 token/Clay foundation source/JVM complete; Native screenshot/TalkBack/IME/device validation pending. N11-05 keeps the zigzag Path Graph primary, progress unresolved until local identity exists, Practice Loading, and removes the unreferenced duplicate Home screen/cards after a 38-file consumer scan. Shell Header is now a single 24dp-inset semantic heading; Compose instrumentation test asserts exactly one Home title. Latest Home cleanup awaits CI. Previous confirmed Android Native run 44192865183 PASS (JDK17/SDK37, Gradle test/lint/app compile/androidTest source compile); latest known core/static-core failures are being debugged, not hidden. Visual parity 7/29 remains open; no golden/threshold changes. O5, O1/O2/O3/O6, approved curriculum/media rights, real device/TalkBack, APK and release HG-05 remain open.
 ```
 
 ## 0. تصمیم مالک و مرز کار
