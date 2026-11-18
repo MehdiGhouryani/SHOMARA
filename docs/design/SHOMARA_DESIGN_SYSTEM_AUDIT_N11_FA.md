@@ -109,3 +109,12 @@
 8. `createComposeRule` instrumentation tests را پس از مطالعهٔ Migration Guide به v2 ارتقا دهید؛ رفتار coroutine scheduling را حفظ و compile + device tests اجرا کنید.
 
 **نتیجه:** بنیاد token/codegen و shared components در source/JVM logic و Android Gradle Gate تأیید شده؛ Native visual validation هنوز انجام نشده و parity 7/29 fail است؛ release/design mission کامل اعلام نمی‌شود.
+
+
+## 8. تأیید Gate بعد از آخرین Refactor (2026-11-18)
+
+- Android Native run `44308240426` روی SHA `bc9c1b8`: PASS؛ 81 XML suites / 583 tests؛ zero failure/error/skip؛ lint + `:app:compileDebugKotlin` + `:app:compileDebugAndroidTestKotlin` PASS.
+- `core` و `static-core` CI نیز PASS؛ `token-codegen --check` و Harness validate/next موفق‌اند.
+- آخرین parity artifact مربوط به run `44307010296`: 22/29 PASS، 7/29 FAIL؛ موارد: phone 0.5052%, button-amber 0.3246% (limit 0.15), guide-07 0.9209% (limit 0.15), chip-06 2.6282% (limit 0.15), chip-icon-clock-06 0.6655%, button-replay-07 0.7994%, profile 0.5402%. تصاویر actual/golden از artifact بازبینی شدند؛ تفاوت‌ها در چند مورد بسیار ظریف‌اند اما تا وقتی root cause رندر/browser/font مشخص نشود، threshold/golden تغییر نمی‌کند.
+- Compose test sourceها compile می‌شوند؛ `connectedDebugAndroidTest` و اجرای فیزیکی، screenshot در 360/390/412dp، font scale=2.0، TalkBack و Persian IME هنوز انجام نشده‌اند.
+- بنابراین **SOURCE/JVM + Android compile gate PASS**؛ اما **NATIVE_VALIDATED نه** و release/design acceptance هنوز باز است.
