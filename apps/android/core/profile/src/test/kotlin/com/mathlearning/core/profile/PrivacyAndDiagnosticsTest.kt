@@ -13,6 +13,10 @@ import java.io.File
  */
 class PrivacyAndDiagnosticsTest {
 
+    private class RefusesDeleteFile(path: String) : File(path) {
+        override fun delete(): Boolean = false
+    }
+
     private class CountingStore(override val label: String, private var rows: Int) : PrivacyDataController.PrivacyStore {
         override suspend fun wipeAll(): Int { val n = rows; rows = 0; return n }
     }
@@ -20,7 +24,7 @@ class PrivacyAndDiagnosticsTest {
     @Test
     fun `controlled deletion wipes every store and directory and reports counts`() = runBlocking {
         val dir = File.createTempFile("wipe-test", "").let { f -> File(f.parent, f.name + "-dir").apply { mkdirs() } }
-        File(dir, "nested/deep.bin").apply { parentFile.mkdirs() }.writeText("child data")
+        File(dir, "nested/deep.bin").apply { parentFile?.mkdirs() }.writeText("child data")
         val controller = PrivacyDataController(
             stores = listOf(CountingStore("room", 42), CountingStore("datastore", 7)),
             dirs = listOf(dir),
@@ -43,6 +47,25 @@ class PrivacyAndDiagnosticsTest {
         val result = PrivacyDataController(stores = listOf(failing), dirs = listOf(dir)).deleteAllChildData()
         assertTrue(result.failures.single().startsWith("boom"))
         assertFalse(dir.exists()) // the file wipe still ran
+    }
+
+    @Test
+    fun `incomplete directory deletion is reported instead of counted as success`() = runBlocking {
+        val dir = File.createTempFile("wipe3", "").let { f ->
+            File(f.parent, f.name + "-dir").apply { mkdirs() }
+        }
+        File(dir, "child.bin").writeText("child data")
+
+        val result = PrivacyDataController(
+            stores = listOf(CountingStore("room", 2)),
+            dirs = listOf(RefusesDeleteFile(dir.path)),
+        ).deleteAllChildData()
+
+        assertTrue(result.cleared.any { it == "room=2" })
+        assertTrue(result.failures.single().startsWith(dir.path))
+        assertTrue(dir.exists())
+        assertEquals(0, dir.listFiles()?.size ?: -1)
+        dir.delete()
     }
 
     @Test
