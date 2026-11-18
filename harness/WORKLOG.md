@@ -973,3 +973,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **Regression:** added Compose instrumentation test: exactly one `مسیر یادگیری` heading and remaining-station summary visible.
 - **Identity boundary unchanged:** O5 remains OPEN. Home/Practice remain Loading when unresolved; no fabricated progress or new Room profile schema was introduced.
 - **Evidence pending:** latest commit requires Android Native and CI. Even if compile/test gates pass, no physical device/TalkBack/screenshot/200% font validation is claimed. Parity thresholds and goldens were not changed.
+
+## 2026-11-18 — DT-07/08 — Path state precedence, PIN and privacy evidence correction
+
+- **Path state correction:** added pure `ShomaraPathGraphLogic.resolveEntryState`. Explicit Error/Empty and explicit Loading are preserved; Offline with unresolved progress now remains Loading, preventing a false fully locked path; resolved Offline still renders the real path. Four state-matrix assertions were added.
+- **Android gate:** run `44308240426` on `bc9c1b8` PASS — JDK 17 / Android SDK 37; 81 XML suites, 583 tests, zero failures/errors/skips; `lint`, app debug compile and androidTest Kotlin source compile all passed. `ShomaraPathGraphTest` 33/33, `ParentPinManagerTest` 7/7, `PrivacyAndDiagnosticsTest` 6/6.
+- **PIN hardening:** caller char arrays and temporary derived bytes are cleared; malformed records fail-closed; configured status validates salt/hash structure; persisted lockout test now asserts actual stored count and reset timestamp. Test store is in-memory only.
+- **KDF correction:** 210k PBKDF2-HMAC-SHA256 is labeled legacy ADR-0047 v1 baseline, not current OWASP guidance. OWASP now prefers Argon2id; if FIPS requires PBKDF2-HMAC-SHA256 it lists 600k. No blind bump was made; target-device benchmark, algorithm/record version and migration are required before wiring.
+- **Privacy deletion:** incomplete recursive directory deletion is surfaced as failure when the path remains; later wipes continue. Test proves it. Controller still accepts generic stores/dirs and is not app-composed.
+- **ADR-0047 correction:** no `LocalProfileManager`, `ProfileSlotStore` or durable `PinStore` exists in the source tree. ParentGate is still instantiated with `verifier=null`; profile draft store is not a permanent identity. No in-app data deletion flow is currently shipped. O5 remains OPEN.
+- **Visual/static:** CI core/static-core are green; visual-and-static remains informational FAIL due 7/29 pixel parity specimens. No golden, threshold or parity baseline was weakened.
