@@ -158,6 +158,7 @@
       "apps/mobile/src/path/PathView.tsx",
       "apps/mobile/src/profile/views/MeView.tsx",
       "apps/mobile/src/station/views/ChallengeIntroView.tsx",
+      "docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md",
       "docs/archive/evidence/2026-10-18/u3-vitest.log",
       "docs/archive/evidence/2026-10-23/u4-vitest.log",
       "docs/archive/evidence/2026-10-24/u5a-vitest.log",
