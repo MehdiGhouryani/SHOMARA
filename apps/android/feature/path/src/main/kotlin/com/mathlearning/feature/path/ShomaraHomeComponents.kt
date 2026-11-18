@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
@@ -60,8 +61,15 @@ fun ShomaraHomeHeader(
     ) {
         // In RTL, the first child is at the right edge: title first, then mascot, then settings.
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-            Text(title, color = ShomaraHomeUiTokens.Ink, fontSize = ShomaraTokens.TypeTitleFontSize,
-                lineHeight = ShomaraTokens.TypeTitleLineHeight, fontWeight = FontWeight.Bold, textAlign = TextAlign.End)
+            Text(
+                title,
+                color = ShomaraHomeUiTokens.Ink,
+                fontSize = ShomaraTokens.TypeTitleFontSize,
+                lineHeight = ShomaraTokens.TypeTitleLineHeight,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End,
+                modifier = Modifier.semantics { heading() },
+            )
             Spacer(Modifier.height(ShomaraTokens.Space4))
             Text(subtitle, color = ShomaraHomeUiTokens.Muted, fontSize = ShomaraTokens.TypeBodyFontSize,
                 lineHeight = ShomaraTokens.TypeBodyLineHeight, textAlign = TextAlign.End)
