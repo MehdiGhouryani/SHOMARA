@@ -155,6 +155,10 @@ fun ShomaraChildShell(
                             title = "مسیر یادگیری",
                             subtitle = "قدم‌به‌قدم جلو می‌ریم",
                             onSettings = { navController.navigate("shell/settings") },
+                            modifier = Modifier.padding(
+                                horizontal = com.mathlearning.core.designsystem.ShomaraTokens.Space24,
+                                vertical = com.mathlearning.core.designsystem.ShomaraTokens.Space12,
+                            ),
                             characterSlot = {
                                 com.mathlearning.core.designsystem.ShomaraCharacterImage(
                                     character = com.mathlearning.core.designsystem.ShomaraCharacter.Main,
@@ -175,6 +179,7 @@ fun ShomaraChildShell(
                             progress = pathProgress,
                             onStationTap = { selectedStationId = it },
                             modifier = Modifier.weight(1f),
+                            showPathHeading = false,
                         )
                     }
                 }
