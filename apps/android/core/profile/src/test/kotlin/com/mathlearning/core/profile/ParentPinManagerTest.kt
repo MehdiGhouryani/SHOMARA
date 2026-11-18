@@ -31,14 +31,23 @@ class ParentPinManagerTest {
     }
 
     @Test
-    fun `correct pin verifies and resets the failure counter`() {
-        val mgr = manager()
+    fun `correct pin verifies and resets the persisted failure counter and lockout`() {
+        val store = InMemoryPinStore()
+        val mgr = ParentPinManager(store, nowMs = { 10_000L })
         mgr.setPin(charArrayOf('9', '9', '9', '9'))
+
         repeat(3) { assertFalse(mgr.verify(charArrayOf('0', '0', '0', '0')).ok) }
+        assertEquals(3, store.record!!.failedAttempts)
+        assertEquals(0L, store.record!!.lockedUntilMs)
+
         assertTrue(mgr.verify(charArrayOf('9', '9', '9', '9')).ok)
-        assertEquals(0, mgr.let { 0 }.let { 0 }.let { 0 }.let { 0 }.toInt().let { 0 })
-        // further wrong attempts restart the counter from the threshold side, not stacked
+        assertEquals(0, store.record!!.failedAttempts)
+        assertEquals(0L, store.record!!.lockedUntilMs)
+
+        // A later failure starts a new sequence rather than stacking old attempts.
         assertFalse(mgr.verify(charArrayOf('1', '1', '1', '1')).ok)
+        assertEquals(1, store.record!!.failedAttempts)
+        assertEquals(0L, store.record!!.lockedUntilMs)
     }
 
     @Test
