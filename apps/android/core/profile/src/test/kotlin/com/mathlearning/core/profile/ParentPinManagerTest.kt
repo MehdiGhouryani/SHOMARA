@@ -31,6 +31,42 @@ class ParentPinManagerTest {
     }
 
     @Test
+    fun `set pin consumes the supplied character array and accepts digits only`() {
+        val store = InMemoryPinStore()
+        val mgr = ParentPinManager(store)
+        val secret = "2468".toCharArray()
+
+        mgr.setPin(secret)
+
+        assertTrue(secret.all { it == 0.toChar() })
+        assertTrue(mgr.isConfigured())
+
+        val invalid = "24a8".toCharArray()
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) { mgr.setPin(invalid) }
+        assertTrue(invalid.all { it == 0.toChar() })
+    }
+
+    @Test
+    fun `verify consumes input even when no pin exists or stored record is corrupt`() {
+        val emptyInput = "2468".toCharArray()
+        assertFalse(ParentPinManager(InMemoryPinStore()).verify(emptyInput).ok)
+        assertTrue(emptyInput.all { it == 0.toChar() })
+
+        val corruptedStore = InMemoryPinStore().apply {
+            record = ParentPinManager.PinRecord(
+                saltHex = "not-hex",
+                hashHex = "also-not-hex",
+                iterations = ParentPinManager.ITERATIONS,
+                failedAttempts = 0,
+                lockedUntilMs = 0,
+            )
+        }
+        val corruptInput = "2468".toCharArray()
+        assertFalse(ParentPinManager(corruptedStore).verify(corruptInput).ok)
+        assertTrue(corruptInput.all { it == 0.toChar() })
+    }
+
+    @Test
     fun `correct pin verifies and resets the persisted failure counter and lockout`() {
         val store = InMemoryPinStore()
         val mgr = ParentPinManager(store, nowMs = { 10_000L })
