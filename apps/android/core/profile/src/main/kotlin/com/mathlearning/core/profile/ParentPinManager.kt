@@ -57,7 +57,7 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
                 salt.fill(0)
             }
         } finally {
-            pin.fill('\\u0000')
+            pin.fill(0.toChar())
         }
     }
 
@@ -102,7 +102,7 @@ class ParentPinManager(private val store: PinStore, private val nowMs: () -> Lon
             store.write(record.copy(failedAttempts = failed, lockedUntilMs = now + locked))
             return VerifyResult(ok = false, lockedForMs = locked)
         } finally {
-            pin.fill('\\u0000')
+            pin.fill(0.toChar())
         }
     }
 
