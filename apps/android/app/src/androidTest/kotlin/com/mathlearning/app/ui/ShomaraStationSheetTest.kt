@@ -72,6 +72,14 @@ class ShomaraStationSheetTest {
     }
 
     @Test
+    fun homeShowsOneHeadingAndKeepsPathSummaryVisible() {
+        setShell(ShomaraPathProgress.emptyResolved(), mutableListOf())
+
+        composeRule.onAllNodesWithText("مسیر یادگیری").assertCountEquals(1)
+        composeRule.onNodeWithText("ایستگاه‌های باقی‌مانده: ۲۵").assertIsDisplayed()
+    }
+
+    @Test
     fun unresolvedProgressShowsLoadingAndOpensDeferredDeepLinkOnlyAfterResolution() {
         val started = mutableListOf<String>()
         val consumed = mutableListOf<String>()
