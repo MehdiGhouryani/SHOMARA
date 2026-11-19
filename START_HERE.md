@@ -12,8 +12,8 @@ current_task: N11-05
 | مورد | مقدار |
 |---|---|
 | شاخهٔ کار | `work/shomara-deep-transformation` |
-| آخرین commit | (پس از commit این دور به‌روز می‌شود) |
-| `origin/main` | `e604100` (ff-only، همگام تا قبل از این دور) |
+| آخرین commit | `70049f5` (DT-78) |
+| `origin/main` | `70049f5` (ff-only، همگام) |
 | `android:gate` | exit 0 (`ANDROID_BUILD: PASS`) |
 | `harness validate` | VALID (۱۲۹ task) |
 | `verify:static:all` | PASS 94/94 |
