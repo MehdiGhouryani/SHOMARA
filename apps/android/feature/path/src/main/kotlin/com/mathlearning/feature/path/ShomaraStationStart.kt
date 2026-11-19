@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -240,7 +241,13 @@ fun ShomaraStationStartSheet(
             // and the metadata line already announce everything.
             Box(
                 modifier = Modifier
-                    .size(ShomaraTokens.Space40)
+                    // DT-36: same family as the path band badge (DT-35). A fixed 40dp square cut
+                    // the chapter digit at 2x - the calibrated oracle measured it needing 119px of
+                    // height in a 105px slot - so the badge keeps its 40dp minimum and grows.
+                    .defaultMinSize(
+                        minWidth = ShomaraTokens.Space40,
+                        minHeight = ShomaraTokens.Space40,
+                    )
                     .background(heroAccent, RoundedCornerShape(ShomaraTokens.RadiusMd))
                     .clearAndSetSemantics {},
                 contentAlignment = Alignment.Center,

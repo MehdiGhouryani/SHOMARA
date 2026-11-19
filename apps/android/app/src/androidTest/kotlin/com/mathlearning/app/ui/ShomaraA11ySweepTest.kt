@@ -486,6 +486,51 @@ class ShomaraA11ySweepTest {
     }
 
     @Test
+    fun stationSheetLockedFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("StationSheetLocked") {
+            // Rendered directly instead of tapping a node in the shell: at 360dp the far stations sit
+            // below the fold, and a touch injected at an off-screen coordinate fails rather than
+            // measuring anything. This is the same composable the shell hosts, in the Locked state —
+            // the densest copy in the journey, and the one that has to stay readable to explain why a
+            // station is closed.
+            ShomaraStationStartSheet(
+                stationId = "ST06",
+                progress = ShomaraPathProgress(
+                    completedStationIds = setOf("ST01", "ST02", "ST03"),
+                    perfectStationIds = setOf("ST02"),
+                    currentStationId = "ST04",
+                    isResolved = true,
+                ),
+                onStart = {},
+                onDismiss = {},
+            )
+        }
+    }
+
+    @Test
+    fun lessonDiscoverFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("LessonDiscover") {
+            ShomaraLessonHost(
+                stationId = "ST07",
+                gateway = LessonGateway(client = OkHttpClient(), submitUrl = { null }),
+                checkpointStore = MemoryCheckpoints(),
+                onExitToShell = {},
+            )
+        }
+    }
+
+    @Test
+    fun parentGateLockedOutFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("ParentGateLockedOut") {
+            val gate = ShomaraParentGate(verifier = { it == "1234" })
+            gate.verify("0000", 0L)
+            gate.verify("1111", 0L)
+            gate.verify("2222", 0L)
+            ShomaraParentGateScreen(gate = gate, onAuthenticated = {}, onBack = {})
+        }
+    }
+
+    @Test
     fun meFitsAt360dpWithDoubleText() {
         assertFitsAtNarrowWidth("Me") {
             ShomaraMeScreen(
@@ -768,6 +813,9 @@ private val CLIPPED_BUDGET: Map<String, Int> = mapOf(
     "Settings" to 0,
     "ParentHome" to 0,
     "OnboardingProfile" to 0,
+    "StationSheetLocked" to 0,
+    "LessonDiscover" to 0,
+    "ParentGateLockedOut" to 0,
 )
 
 private object FakeSettingsStore : ShomaraSettingsStore {
@@ -891,7 +939,11 @@ private object FakeSettingsStore : ShomaraSettingsStore {
      * Overflow is detected rather than eyeballed: a node whose bounds leave the 360dp viewport is
      * exactly what hides on a big device and cuts text off on a small one.
      */
-    private fun assertFitsAtNarrowWidth(screen: String, content: @Composable () -> Unit) {
+    private fun assertFitsAtNarrowWidth(
+        screen: String,
+        prepare: (() -> Unit)? = null,
+        content: @Composable () -> Unit,
+    ) {
         var measurer: TextMeasurer? = null
         compose.setContent {
             val remembered = rememberTextMeasurer()
@@ -904,6 +956,8 @@ private object FakeSettingsStore : ShomaraSettingsStore {
                 }
             }
         }
+        prepare?.invoke()
+        compose.waitForIdle()
         val label = "$screen/360dp/2x"
         assertA11yContract(label)
         val widthPx = 360f * 2.625f
