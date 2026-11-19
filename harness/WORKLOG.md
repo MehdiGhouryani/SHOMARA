@@ -1166,3 +1166,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **متن:** ۶ برچسب ناحیهٔ skeleton در `ShomaraTemplateSkeletons` به `ShomaraTemplateSkeletonStrings` منتقل شد (متن بدون تغییر). متریک: MAIN ۱۳۰ → **۱۲۴**، TOTAL=**۱۷۹**.
 - **شواهد:** `ShomaraA11ySweepTest` **۳۱/۳۱** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ef880a0…`.
 - **بازمانده:** O5؛ تصمیم دربارهٔ `AssetResolver`/`AudioAssetResolver`؛ instrumented در CI؛ شواهد دستگاه.
+
+## 2026-11-19 — DT-31 — بازبینی مسیر (منطق قفل) + پوشش state ذخیرهٔ پروفایل
+
+- **بررسی ادعای «گرهٔ قفل‌شده»:** `ShomaraPathGraphLogic.tapEnabled(state)` برای همهٔ stateها `true` برمی‌گرداند — عمدی. یک گرهٔ قفل‌شده **باید** قابل لمس باشد تا شیت در حالت Locked باز شود و به کودک بگوید چرا قفل است (`stateLabelFor(Locked) = «هنوز قفل؛ با ترتیب مسیر باز می‌شود»`). پس این باگ نیست، یک تعامل طراحی‌شده است؛ ثبت شد تا دوباره «رفع» نشود.
+- **شکاف واقعی sweep — ذخیرهٔ پروفایل:** صفحهٔ پروفایل `saveState` دارد با بنر شکست (Retry) و بنر موفقیت، اما هیچ state‌ای جز پیش‌فرض سنجیده نمی‌شد. دو case جدید:
+  - `onboardingProfileSaveFailureOffersTheWarmRetry` — شکست ذخیره با درفت معتبر: تأیید متن canonical `ShomaraProfileStrings.SaveFailed`، قرارداد a11y، و **دقیقاً یک CTA اصلی**.
+  - `onboardingProfileSavingKeepsOnePrimaryAndSaysItIsWorking` — در حال ذخیره: CTA همچنان تنها CTA اصلی است **و** صریحاً `Disabled` است (تأیید شد؛ دوبار‌ارسال ممکن نیست).
+- **sweep از ۳۱ به ۳۳** رسید.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۳/۳۳** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ef880a0…` (بدون تغییر کد اصلی در این دور).
+- **بازمانده:** O5؛ instrumented در CI؛ شواهد دستگاه؛ بدهی Linux parity.

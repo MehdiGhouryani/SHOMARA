@@ -30,6 +30,7 @@ import com.mathlearning.feature.onboarding.ShomaraPlacementState
 import com.mathlearning.feature.onboarding.ShomaraProfileDraft
 import com.mathlearning.feature.onboarding.ShomaraProfileSaveState
 import com.mathlearning.feature.onboarding.ShomaraProfileScreen
+import com.mathlearning.feature.onboarding.ShomaraProfileStrings
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
@@ -349,6 +350,52 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("OnboardingProfile")
+    }
+
+    @Test
+    fun onboardingProfileSaveFailureOffersTheWarmRetry() {
+        // A guardian who has typed a name and hit a save failure must be told what happened, in the
+        // canonical retry wording, and keep exactly one primary action to try again.
+        val draft = ShomaraProfileDraft(name = "آریا")
+        val failed = ShomaraProfileSaveState(draft = draft).startSave().onSaveFailure()
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraProfileScreen(
+                    draft = draft,
+                    onDraftChange = {},
+                    saveState = failed,
+                    onSave = {},
+                )
+            }
+        }
+        assertTextPresent("OnboardingProfile/SaveFailed", ShomaraProfileStrings.SaveFailed)
+        assertA11yContract("OnboardingProfile/SaveFailed")
+        assertPrimaryCtaCount("OnboardingProfile/SaveFailed", 1)
+    }
+
+    @Test
+    fun onboardingProfileSavingKeepsOnePrimaryAndSaysItIsWorking() {
+        val draft = ShomaraProfileDraft(name = "آریا")
+        val saving = ShomaraProfileSaveState(draft = draft).startSave()
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraProfileScreen(
+                    draft = draft,
+                    onDraftChange = {},
+                    saveState = saving,
+                    onSave = {},
+                )
+            }
+        }
+        // The in-flight CTA is still the single primary action, but it must not be double-submittable.
+        assertA11yContract("OnboardingProfile/Saving")
+        assertPrimaryCtaCount("OnboardingProfile/Saving", 1)
+        val cta = compose.onAllNodesWithText(ShomaraProfileStrings.Continue).fetchSemanticsNodes()
+        assertTrue("OnboardingProfile/Saving: the CTA is missing while in flight", cta.isNotEmpty())
+        assertTrue(
+            "OnboardingProfile/Saving: the CTA must be marked disabled while saving",
+            cta.any { it.config.contains(SemanticsProperties.Disabled) },
+        )
     }
 
     @Test
