@@ -149,3 +149,51 @@
 2. سپس `parity-run.mjs` را با یک gate اسکرین‌شات Compose جایگزین کنید (AGENTS.md §5) و بعد بازنشسته کنید.
 3. `flow-*.mjs` آخرین گروه باشند: تا وقتی صفحه‌های React Native وجود دارند، این‌ها تنها
    آزمون تعاملیِ end-to-end رفتار Expo هستند و باید تا لحظهٔ حذف خودِ `apps/mobile` بمانند.
+
+---
+
+## ضمیمهٔ DT-63 — فایل‌هایی که فقط با «متن» زنده‌اند (اندازه‌گیری‌شده)
+
+نقشهٔ وابستگی (`harness/dependency-map.json`) سه فایل را با صفر یال ورودی گزارش کرد. **هیچ‌کدام مرده نبودند**،
+چون verifierها محتوای آن‌ها را به‌صورت **متن** می‌خوانند، نه با import:
+
+| فایل | مصرف‌کنندهٔ واقعی |
+|---|---|
+| `apps/mobile/src/performance/runtimeBudget.ts` | `verify-phase9.mjs`، `verify-phase10.mjs` |
+| `apps/mobile/src/state/useGradeExperience.ts` | `verify-phase-a-grade-experience.mjs`، `verify-ui-v1-path.mjs` |
+| `packages/design-system/src/tokens.generated.ts` | `generate-design-system-css.mjs` (تولیدکننده‌اش) + مستندات |
+
+پس گراف import برای حکم «مرده» کافی نیست. این یک **دستهٔ واقعی** است، نه سه استثنا:
+
+- **۱۸ verifier** روی متن فایل assert می‌کنند
+- **۳۱ فایل** با متن pin شده‌اند
+- از این‌ها **۲۳ فایل سورس محصول** است (`apps/mobile` + `apps/web`)، بقیه سند/پیکربندی‌اند که متن، خودِ محتوایشان است
+
+الگوی تشخیص: `read('path').includes('...')` روی کد محصول.
+
+### چرا برای بازنشستگی V1 مهم است
+
+**۲۲ از آن ۲۳ فایل زیر `apps/mobile` یا `apps/web` هستند.** یعنی این‌ها با import زنده نمانده‌اند، با **assert متنی**
+زنده مانده‌اند. تا وقتی آن assertها به تست رفتاری تبدیل نشوند (یا حذف نشوند)، حذف `apps/mobile` آن‌ها را می‌شکند:
+
+- `apps/mobile/app/(tabs)/_layout.tsx`
+- `apps/mobile/app/onboarding.tsx`
+- `apps/mobile/app/station/[stationId]/start.tsx`
+- `apps/mobile/parity/specimens/onboarding.tsx`
+- `apps/mobile/src/navigation/ChildTabBar.tsx`
+- `apps/mobile/src/onboarding/views2/CodeView2.tsx`
+- `apps/mobile/src/path/PathNode.tsx`، `PathView.tsx`، `pathModel.ts`
+- `apps/mobile/src/station/LessonPlayerChrome.tsx`، `runtimeApi.ts` (۲ verifier)
+- `apps/mobile/src/station/views2/LessonViewsV2.tsx`
+- `apps/mobile/src/ui/v2/forms.tsx`، `shell.tsx` (۲ verifier)
+- `apps/web/app/api/v1/sync/batch/route.ts`
+- `apps/web/app/profile/avatar/page.tsx`
+- `apps/web/app/station/[stationId]/play/page.tsx`
+- `apps/web/components/AuthFlowScreen.tsx`، `StationStartView.tsx`
+- `apps/web/lib/runtime-gates.ts` (۲ verifier)
+
+### نتیجهٔ عملی برای گام بعدی
+
+پیش از حذف `apps/mobile`، برای هر فایل بالا تصمیم ثبت شود: **یا** assert متنی به تست رفتاری سطح Android تبدیل شود،
+**یا** خودِ assert بازنشسته شود (اگر موضوعش با حذف V1 از بین می‌رود). یک verifier که فقط می‌سنجد «این فایل این رشته را
+دارد»، رفتار را نمی‌سنجد؛ پیاده‌سازی را قفل می‌کند — و همان قفل است که حذف کد مرده را غیرممکن می‌کند.
