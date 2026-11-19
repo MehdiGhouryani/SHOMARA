@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: gradle/actions/wrapper-validation@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".nvmrc"
       - uses: actions/setup-java@v4
