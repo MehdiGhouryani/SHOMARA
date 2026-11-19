@@ -1108,3 +1108,12 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **پوشش state:** sweep از ۲۲ به **۲۶** رسید: «من» در Loading/Offline/Empty/Error، هر کدام با تأیید متن canonical. سه state اطلاعاتی به‌درستی `expectActions = false` هستند (شل تب دارد).
 - **شواهد:** `ShomaraA11ySweepTest` **۲۶/۲۶** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `cae99d7…`.
 - **بازمانده:** استخراج متن در `StationStart`/`ParentBoundary`/`LaunchGate`/`LessonStageChrome`/`Settings` (فایل‌به‌فایل)؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-25 — شیت ایستگاه و تنظیمات canonical شدند + state های قفل/آفلاین شیت
+
+- **شیت ایستگاه (نزدیک‌ترین سطح به مسیر):** `ShomaraStationStart` ۱۴ رشتهٔ inline داشت (برچسب CTA هر state، خط متادیتا، توضیح قفل، عنوان شیت پرش، بنرهای offline/error/preparing/starting، «بستن»، «پرش»، «؛ انتخاب شد»). همه به `ShomaraStationStartStrings` منتقل شدند؛ خط متادیتا و عنوان پرش به تابع تبدیل شدند تا ارقام فارسی از قبل تبدیل‌شده پاس داده شوند. متن **بدون تغییر** — `ShomaraStationStartTest` و بقیهٔ تست‌های ماژول مسیر سبز.
+- **تنظیمات:** ۵ رشتهٔ inline باقی‌مانده (پسوند «انتخاب‌شده»، «روشن»/«خاموش» در `stateDescription` و برچسب) به `ShomaraSettingsStrings` اضافه شدند؛ constهای موجود دست‌نخورده.
+- **پوشش state شیت:** دو case جدید — شیت در حالت **Locked** (تنها کنترل: «متوجه شدم») و **Offline** — با تأیید متن canonical قبل از سنجش؛ sweep از ۲۶ به **۲۸** رسید.
+- **اثر قابل اندازه‌گیری:** ممیزی inline از **۲۴۶** به **۲۱۷** رسید (`build-reports/audit/inline_persian_audit.py`). باقی‌ماندهٔ پرتراکم: `LessonContentWiring` (۲۴، debug)، `ShomaraCatalog` (۲۱)، `ParentBoundary` (۱۴)، `ShomaraFeedback` (۱۳)، `LaunchGate` (۱۲)، `LessonStageChrome` (۱۰).
+- **شواهد:** `ShomaraA11ySweepTest` **۲۸/۲۸** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `020fe6d…`.
+- **بازمانده:** `ParentBoundary`/`LaunchGate`/`LessonStageChrome` (و تصمیم دربارهٔ `ShomaraCatalog`/`ShomaraFeedback` که ممکن است canonical باشد)؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI.

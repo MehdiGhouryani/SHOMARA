@@ -112,6 +112,9 @@ object ShomaraSettingsStrings {
     const val Save: String = "ذخیره"
     const val SavedMessage: String = "ذخیره شد."
     const val SaveFailed: String = "ذخیره نشد؛ دوباره تلاش کن."
+    const val SelectedSuffix: String = "انتخاب‌شده"
+    const val ToggleOn: String = "روشن"
+    const val ToggleOff: String = "خاموش"
 
     /** Selected-avatar line: label comes from the real catalog, so it can never drift. */
     fun selectedAvatar(labelFa: String): String = "آواتار انتخاب‌شده: $labelFa"
@@ -197,8 +200,8 @@ private fun RowScope.AvatarTile(option: com.mathlearning.core.model.ShomaraAvata
             // this tile's node («خورشیدی — انتخاب‌شده، دکمه») instead of three stops.
             .semantics(mergeDescendants = true) {
                 role = Role.Button
-                contentDescription = if (equipped) option.label + " — انتخاب‌شده" else option.label
-                stateDescription = if (equipped) "انتخاب‌شده" else ""
+                contentDescription = if (equipped) option.label + " — " + ShomaraSettingsStrings.SelectedSuffix else option.label
+                stateDescription = if (equipped) ShomaraSettingsStrings.SelectedSuffix else ""
             }
             .clickable(role = Role.Button) { onEquip(option.id) }
             .padding(ShomaraTokens.Space8),
@@ -233,7 +236,7 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
             // that read the label twice.
             .semantics(mergeDescendants = true) {
                 contentDescription = label
-                stateDescription = if (checked) "روشن" else "خاموش"
+                stateDescription = if (checked) ShomaraSettingsStrings.ToggleOn else ShomaraSettingsStrings.ToggleOff
             }
             .padding(ShomaraTokens.Space12),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -246,7 +249,7 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
         // Status indicator only, not a button: the row owns the toggle. It is invisible
         // to TalkBack (cleared semantics) so the state is announced exactly once, by the row.
         Text(
-            text = if (checked) "روشن" else "خاموش",
+            text = if (checked) ShomaraSettingsStrings.ToggleOn else ShomaraSettingsStrings.ToggleOff,
             style = ShomaraTypography.Body,
             color = if (checked) ShomaraTokens.ColorPrimaryDark else ShomaraTokens.ColorInk2,
             modifier = Modifier.clearAndSetSemantics {},

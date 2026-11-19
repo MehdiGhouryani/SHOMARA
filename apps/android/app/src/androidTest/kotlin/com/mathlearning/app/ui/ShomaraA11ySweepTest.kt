@@ -32,6 +32,8 @@ import com.mathlearning.feature.path.ShomaraHomeScreen
 import com.mathlearning.feature.path.ShomaraHomeStrings
 import com.mathlearning.feature.path.ShomaraHomeUiState
 import com.mathlearning.feature.path.ShomaraPathProgress
+import com.mathlearning.feature.path.ShomaraStationStartSheet
+import com.mathlearning.feature.path.ShomaraStationStartStrings
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
 import com.mathlearning.feature.practice.ShomaraPracticeItem
 import com.mathlearning.feature.profile.ShomaraMeFacts
@@ -477,6 +479,41 @@ class ShomaraA11ySweepTest {
         override suspend fun clear(sessionId: String, stationId: String) {
             map.remove("$sessionId|$stationId")
         }
+    }
+
+    @Test
+    fun stationSheetLockedExplainsItselfWithOneAcknowledge() {
+        // Locked is the sheet state a child meets most often early on, and its only control is the
+        // acknowledgement — so if that one control were unnamed or small, the sheet would trap them.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraStationStartSheet(
+                    stationId = "ST07",
+                    progress = ShomaraPathProgress.emptyResolved(),
+                    onStart = {},
+                    onDismiss = {},
+                )
+            }
+        }
+        assertTextPresent("StationSheet/Locked", ShomaraStationStartStrings.LockedExplanation)
+        assertA11yContract("StationSheet/Locked")
+    }
+
+    @Test
+    fun stationSheetOfflineSaysSoAndKeepsOneAcknowledge() {
+        val progress = ShomaraPathProgress.emptyResolved().copy(offline = true)
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraStationStartSheet(
+                    stationId = "ST01",
+                    progress = progress,
+                    onStart = {},
+                    onDismiss = {},
+                )
+            }
+        }
+        assertTextPresent("StationSheet/Offline", ShomaraStationStartStrings.Offline)
+        assertA11yContract("StationSheet/Offline")
     }
 
     @Test
