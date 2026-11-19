@@ -38,6 +38,7 @@ import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.feature.path.ShomaraStationStartSheet
 import com.mathlearning.feature.practice.ShomaraPracticeCatalog
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
+import com.mathlearning.feature.practice.ShomaraPracticeHubStrings
 import com.mathlearning.feature.profile.ShomaraMeScreen
 import com.mathlearning.feature.settings.ShomaraSettingsSaveState
 import com.mathlearning.feature.settings.ShomaraSettingsScreen
@@ -175,8 +176,8 @@ fun ShomaraChildShell(
                         // surface must not add a second status/navigation padding.
                         ShomaraStateSurface(
                             state = ShomaraEntryState.Loading,
-                            title = "در حال آماده‌سازی تمرین‌ها",
-                            body = "تمرین‌های مناسب تو پس از آماده‌شدن مسیر نمایش داده می‌شوند.",
+                            title = ShomaraPracticeHubStrings.PreparingTitle,
+                            body = ShomaraPracticeHubStrings.PreparingBody,
                             applySystemInsets = false,
                         )
                     } else {

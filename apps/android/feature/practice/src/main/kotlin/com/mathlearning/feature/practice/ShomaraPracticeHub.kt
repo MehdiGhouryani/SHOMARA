@@ -79,6 +79,10 @@ object ShomaraPracticeHubStrings {
     const val Offline: String = "اینترنت وصل نیست؛ تمرین‌های ذخیره‌شده بعداً به‌روز می‌شوند."
     const val Loading: String = "در حال آوردن تمرین‌ها…"
     const val DoneSuffix: String = "انجام شده"
+    /** The child shell shows this while progress is still unresolved (it must not fake a
+     *  first-run learner or an all-locked hub). */
+    const val PreparingTitle: String = "در حال آماده‌سازی تمرین‌ها"
+    const val PreparingBody: String = "تمرین‌های مناسب تو پس از آماده‌شدن مسیر نمایش داده می‌شوند."
 }
 
 @Composable

@@ -7,6 +7,7 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import com.mathlearning.app.shell.ShomaraChildShell
@@ -14,6 +15,7 @@ import com.mathlearning.core.datastore.LessonCheckpoint
 import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
 import com.mathlearning.core.datastore.ShomaraSettingsStore
+import com.mathlearning.core.designsystem.ShomaraChildTabs
 import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraPrimaryCta
 import com.mathlearning.core.designsystem.ShomaraTheme
@@ -451,6 +453,26 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("ParentHome")
+    }
+
+    @Test
+    fun practiceTabWhileProgressIsUnresolvedExplainsItself() {
+        // O5: without a local identity/progress source the shell's snapshot never resolves, so this
+        // is the surface a child actually meets on the Practice tab — it must explain the wait and
+        // stay navigable instead of rendering a fabricated all-locked hub.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraChildShell(
+                    onSignOut = {},
+                    settingsStore = FakeSettingsStore,
+                )
+            }
+        }
+        compose.onNodeWithText(ShomaraChildTabs.Practice).performClick()
+        compose.waitForIdle()
+        assertTextPresent("PracticeTab/Unresolved", ShomaraPracticeHubStrings.PreparingTitle)
+        assertTextPresent("PracticeTab/Unresolved", ShomaraPracticeHubStrings.PreparingBody)
+        assertA11yContract("PracticeTab/Unresolved")
     }
 
     @Test

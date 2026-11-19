@@ -1146,3 +1146,12 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **تست‌ها:** helper جدید `assertPrimaryCtaCount(screen, expected)` و Home حالا صریحاً **دقیقاً ۱** CTA اصلی را assert می‌کند؛ sweep همان **۲۹/۲۹** روی `Pixel_6a`.
 - **شواهد:** `android:gate` exit 0 (`ANDROID_BUILD: PASS`)، ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `d6f482c…`.
 - **بازمانده:** O5 باز؛ instrumented در CI؛ شواهد دستگاه فیزیکی؛ بدهی Linux parity.
+
+## 2026-11-19 — DT-29 — سنجش کد تکراری + صفر شدن متن inline در `app` + تست state تب تمرین
+
+- **ادعای «کد تکراری» سنجیده شد، نه حدس:** اسکنر `build-reports/audit/duplicate_scan.py` (بلوک‌های ۸+ خطی نرمال‌شده، فقط source اصلی، بدون `build`/generated/test) → در ۱۵۲ فایل: **صفر** بلوک تکراری ≥۱۲ خط، و فقط **۴ جفت** ۸–۱۱ خطی که همه boilerplate چیدمان‌اند (`Column/Arrangement.spacedBy`, `interactionSource` boilerplate). نتیجهٔ صادقانه: تکرار معنادار باقی نمانده؛ ادغام آن ۴ جفت ریسک ظاهری بدون سود واقعی است.
+- **`app` به صفر متن inline رسید:** دو رشتهٔ آخر در `ShomaraChildShellHost` («در حال آماده‌سازی تمرین‌ها» و بدنه‌اش) به `ShomaraPracticeHubStrings.PreparingTitle/PreparingBody` منتقل شدند. اکنون هیچ رشتهٔ فارسی inline در `app/src/main` نیست (فقط در `debug`).
+- **متریک:** MAIN ۱۳۲ → **۱۳۰**، DEBUG=۵۵، TOTAL=**۱۸۵**.
+- **تست state جدید (۳۰ مورد):** `practiceTabWhileProgressIsUnresolvedExplainsItself` — همان سطحی که کودک در O5 **واقعاً** می‌بیند: تب تمرین با مسیر حل‌نشده. تست تب را می‌زند، متن canonical را تأیید می‌کند و قرارداد a11y را می‌سنجد. (پیش از این فقط خود کامپوزبل تمرین تست می‌شد، نه سطح shell.)
+- **شواهد:** `ShomaraA11ySweepTest` **۳۰/۳۰** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `81636ef…`.
+- **بازمانده:** O5 (مسدودکنندهٔ واقعی)؛ instrumented در CI؛ شواهد دستگاه فیزیکی؛ بدهی Linux parity 7/29.
