@@ -89,6 +89,11 @@ fun ShomaraLessonHost(
     var gate by remember { mutableStateOf(ShomaraSubmitGateState()) }
     var awaitingServerStage by remember { mutableStateOf(false) }
     var resultSurface by remember { mutableStateOf<ShomaraResultSurface?>(null) }
+    // DT-55: the session's start time is captured ONCE. It used to be read inline for every attempt, so
+    // each recorded attempt carried a later `startedAtMs` than the previous one and the session appeared
+    // to restart on every check — any duration computed from it was wrong. `updatedAtMs` stays live,
+    // because that one is supposed to move.
+    val sessionStartedAtMs = remember { System.currentTimeMillis() }
 
     val journey = remember(stationId) {
         gateway?.let { ShomaraLessonJourney(sessionId, stationId, it, checkpointStore ?: NoCheckpoints) }
@@ -206,7 +211,7 @@ fun ShomaraLessonHost(
                                         stageCursor = 0, lifecycle = "ACTIVE",
                                         engineRuleVersion = "learning-engine:v1",
                                         contentPackageVersion = 1,
-                                        startedAtMs = System.currentTimeMillis(),
+                                        startedAtMs = sessionStartedAtMs,
                                         updatedAtMs = System.currentTimeMillis(),
                                     ),
                                     com.mathlearning.core.model.repository.RecordedAttempt(
