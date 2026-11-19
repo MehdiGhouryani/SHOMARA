@@ -311,6 +311,9 @@ fun ShomaraPlacementScreen(
     // immediately on a successful save, so this is where the «ذخیره شد» banner is seen.
     // Null when the user did not just save (no banner is invented).
     savedAnnouncement: String? = null,
+    // DT-75: the primary CTA once a placement decision exists. The screen without it is the
+    // old dead end — a decision was rendered with no way to act on it.
+    onStart: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier
@@ -364,6 +367,15 @@ fun ShomaraPlacementScreen(
                     }
                 }
             }
+        }
+        // DT-75: with a decision the screen has exactly one primary CTA — «شروع مسیر».
+        // The skip stays a ghost affordance below it (DEBUG only), never a second primary.
+        if (state.hasDecision && onStart != null) {
+            ShomaraButton(
+                text = ShomaraProfileStrings.PlacementStart,
+                onClick = onStart,
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
         // #88: the skip button renders only when a skip callback is supplied (product/DEBUG
         // flag). In release there is no button at all — never a disabled or dead skip.

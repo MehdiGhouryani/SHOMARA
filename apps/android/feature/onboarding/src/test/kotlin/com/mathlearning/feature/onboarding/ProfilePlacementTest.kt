@@ -8,7 +8,7 @@ import org.junit.Assert.assertTrue
 import com.mathlearning.core.model.ShomaraGradeCatalog
 import org.junit.Test
 
-/** N04-04 profile/placement logic tests: save retry, incomplete state, server authority. */
+/** N04-04 profile/placement logic tests: save retry, incomplete state, DT-75 local resolution. */
 class ProfilePlacementTest {
 
     @Test
@@ -90,6 +90,30 @@ class ProfilePlacementTest {
         assertEquals("ایستگاه شمارش", decided.serverDecision)
         // A skipped placement and a server decision are mutually exclusive by construction.
         assertThrows(IllegalArgumentException::class.java) { ShomaraPlacementState(serverDecision = "x", skippedByUser = true) }
+    }
+
+    @Test
+    fun `DT-75 - local resolution turns pending into an actionable decision from the chosen grade`() {
+        // The old contract waited for a server that has no endpoint (infinite spinner,
+        // release dead end). The local resolution reads the child's explicit grade choice.
+        val pending = ShomaraPlacementState()
+        val resolved = pending.resolveLocally("پایه دوم ابتدایی")
+        assertFalse(resolved.isPending)
+        assertTrue(resolved.hasDecision)
+        assertEquals("از ابتدای مسیر پایه دوم ابتدایی شروع می‌کنیم", resolved.serverDecision)
+        // Idempotent guard: a decision (server OR local) is never overwritten by a second resolve.
+        assertEquals(resolved, resolved.resolveLocally("پایه سوم ابتدایی"))
+        // A skip still wins only from pending — once resolved, the decision stands.
+        assertTrue(ShomaraPlacementState.skip().isSkipped)
+    }
+
+    @Test
+    fun `DT-75 - local resolution never invents mastery - it names the grade start only`() {
+        // The template mentions only the grade beginning; no station, score, or completion claim.
+        val resolved = ShomaraPlacementState().resolveLocally("پایه اول ابتدایی")
+        assertTrue(resolved.serverDecision!!.contains("ابتدای مسیر"))
+        assertFalse(resolved.serverDecision.contains("تکمیل"))
+        assertFalse(resolved.serverDecision.contains("امتیاز"))
     }
 
     @Test

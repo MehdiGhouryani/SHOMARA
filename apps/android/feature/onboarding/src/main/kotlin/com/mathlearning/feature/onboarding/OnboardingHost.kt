@@ -258,6 +258,18 @@ class ShomaraOnboardingStateHolder(
     }
 
     /**
+     * DT-75 local placement resolution (ADR-0039 offline-first): no endpoint has ever produced a
+     * server decision, so the pending state was an infinite spinner and a release dead end. The
+     * local start point is the chosen grade's beginning — the same thing the domain's fresh state
+     * renders; no mastery is guessed here. A real server decision, if one ever arrives, still
+     * wins through [ShomaraPlacementState.withServerDecision].
+     */
+    fun resolvePlacementLocally() {
+        if (!placement.isPending) return
+        placement = placement.resolveLocally(ShomaraProfileDraft.gradeLabel(profileDraft.gradeId))
+    }
+
+    /**
      * DEBUG simulation only (N08-15): jumps from the phone step straight to the profile step with
      * no network call and no credential. The only callers are UI affordances gated behind
      * `simulatedAuth`; filling a valid phone keeps every downstream validation honest, and
@@ -478,22 +490,37 @@ fun ShomaraOnboardingHost(
                     }
                 },
             )
-            OnboardingStep.GradePlacement -> ShomaraPlacementScreen(
-                state = holder.placement,
-                chosenGradeLabel = ShomaraProfileDraft.gradeLabel(holder.profileDraft.gradeId),
-                // #88: the skip is a product/DEBUG affordance, gated behind the same flag as
-                // simulatedAuth (true only in a DEBUG build). In release the placement
-                // screen renders no skip button at all — no dead affordance, no bypass.
-                onSkip = if (simulatedAuth) {
-                    { holder.skipPlacement(); onAuthenticated() }
-                } else {
-                    null
-                },
-                // #100: the save confirmation is carried to the step the user lands on —
-                // the profile step itself advances immediately on success, so this is
-                // where the «ذخیره شد» banner is actually seen (and TalkBack hears it once).
-                savedAnnouncement = holder.saveState.announcement().takeIf { holder.saveState.saved },
-            )
+            OnboardingStep.GradePlacement -> {
+                // DT-75: the offline-first build resolves placement the moment the step is
+                // entered — the child must never wait on a server that has no endpoint.
+                // LaunchedEffect keys on the step so a re-entry after process death re-resolves
+                // only when still pending.
+                androidx.compose.runtime.LaunchedEffect(holder.flow.step) {
+                    holder.resolvePlacementLocally()
+                }
+                ShomaraPlacementScreen(
+                    state = holder.placement,
+                    chosenGradeLabel = ShomaraProfileDraft.gradeLabel(holder.profileDraft.gradeId),
+                    // #88: the skip is a product/DEBUG affordance, gated behind the same flag as
+                    // simulatedAuth (true only in a DEBUG build). In release the placement
+                    // screen renders no skip button at all — no dead affordance, no bypass.
+                    onSkip = if (simulatedAuth) {
+                        { holder.skipPlacement(); onAuthenticated() }
+                    } else {
+                        null
+                    },
+                    // DT-75: the primary CTA — the locally resolved start point is actionable,
+                    // not a dead-end announcement. This is the one exit into the child shell.
+                    onStart = {
+                        holder.flow = holder.flow.advanceTo(OnboardingStep.Complete)
+                        onAuthenticated()
+                    },
+                    // #100: the save confirmation is carried to the step the user lands on —
+                    // the profile step itself advances immediately on success, so this is
+                    // where the «ذخیره شد» banner is actually seen (and TalkBack hears it once).
+                    savedAnnouncement = holder.saveState.announcement().takeIf { holder.saveState.saved },
+                )
+            }
             OnboardingStep.Complete -> onAuthenticated()
         }
     }
