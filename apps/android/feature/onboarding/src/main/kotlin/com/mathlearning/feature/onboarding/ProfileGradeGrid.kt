@@ -24,6 +24,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
@@ -38,7 +40,13 @@ import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.model.ShomaraGradeCatalog
 import com.mathlearning.core.model.ShomaraGradeOption
 
-/** The grade grid: 2 columns x 3 rows, RTL order (G1/G2, G3/G4, G5/G6). */
+/**
+ * The grade grid: 2 columns x 3 rows, RTL order (G1/G2, G3/G4, G5/G6).
+ *
+ * The grid is the second section of the step, so it is exposed as a heading with the canonical
+ * section title. The declared TalkBack traversal contract (OnboardingA11y) lists that heading,
+ * and the rendered screen had no such heading before this.
+ */
 @Composable
 internal fun ShomaraProfileGradeGrid(
     draft: ShomaraProfileDraft,
@@ -46,7 +54,12 @@ internal fun ShomaraProfileGradeGrid(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics {
+                contentDescription = ShomaraProfileStrings.GradeSectionTitle
+                heading()
+            },
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
         // The first child of each Row is on the right in RTL, so chunking

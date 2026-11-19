@@ -20,6 +20,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import com.mathlearning.core.designsystem.ShomaraProfileDrawables
 import com.mathlearning.core.designsystem.ShomaraTokens
 
@@ -47,11 +50,21 @@ private val HillBand5: Color = ShomaraTokens.ColorPrimarySoft.copy(alpha = 0.75f
 /**
  * The hero: clouds + back hills + leaves + rays + the mascot WebP peeking
  * over the front curve, layered in that order (the front curve is drawn
- * last, so it covers the mascot's lower body). All art is decorative.
+ * last, so it covers the mascot's lower body). The artwork is the page title
+ * visually, so it carries the step title as a heading: the declared TalkBack
+ * traversal contract (OnboardingA11y) names this heading, and before this the
+ * rendered screen had no heading at all for assistive technology to reach.
  */
 @Composable
 internal fun ShomaraProfileHero(modifier: Modifier = Modifier) {
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics {
+                contentDescription = ShomaraProfileStrings.ProfileTitle
+                heading()
+            },
+    ) {
         val heroWidth = maxWidth
         val heroHeight = heroWidth / ShomaraProfileLayout.HeroAspectRatio
         Box(

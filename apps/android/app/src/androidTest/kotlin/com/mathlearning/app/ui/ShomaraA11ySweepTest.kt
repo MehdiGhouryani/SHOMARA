@@ -2,6 +2,7 @@ package com.mathlearning.app.ui
 
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -227,6 +228,14 @@ class ShomaraA11ySweepTest {
             }
         }
         assertTrue(problems.joinToString(separator = "\n"), problems.isEmpty())
+
+        // Structure, not just size: TalkBack's heading navigation is how a child (and their parent)
+        // finds the title of a page. A screen with no heading is unnavigable by structure.
+        val headings = compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading)).fetchSemanticsNodes()
+        assertTrue(
+            "$screen: no heading — assistive technology cannot reach a title on this screen",
+            headings.isNotEmpty(),
+        )
     }
 
     private companion object {
