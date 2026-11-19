@@ -26,7 +26,7 @@ import com.mathlearning.core.designsystem.ShomaraTab
 import com.mathlearning.core.designsystem.ShomaraTabBar
 import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraStateSurface
-import com.mathlearning.core.designsystem.shomaraBackHandler
+import com.mathlearning.core.designsystem.ShomaraBackHandler
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
@@ -118,7 +118,7 @@ fun ShomaraChildShell(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val onTabRoute = backStackEntry?.destination?.route in ShomaraShellTab.entries.map { it.route }
     val backTarget = if (onTabRoute) ShomaraShellLogic.backTarget(currentTab) else null
-    shomaraBackHandler(enabled = selectedStationId != null || backTarget != null) {
+    ShomaraBackHandler(enabled = selectedStationId != null || backTarget != null) {
         if (selectedStationId != null) {
             selectedStationId = null
         } else {

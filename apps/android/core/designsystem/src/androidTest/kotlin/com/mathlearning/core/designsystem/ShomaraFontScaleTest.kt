@@ -58,7 +58,7 @@ class ShomaraFontScaleTest {
         val scale = mutableStateOf(1.0f)
         val label = mutableStateOf(labels.first())
         compose.setContent {
-            themeAt(scale.value) { ShomaraButton(text = label.value, onClick = {}) }
+            ThemeAt(scale.value) { ShomaraButton(text = label.value, onClick = {}) }
         }
         for (s in fontScales) {
             for (text in labels) {
@@ -79,7 +79,7 @@ class ShomaraFontScaleTest {
     fun buttonLabelStaysInsideItsOwnBoxAtTwoHundredPercent() {
         val scale = mutableStateOf(1.0f)
         compose.setContent {
-            themeAt(scale.value) {
+            ThemeAt(scale.value) {
                 ShomaraButton(text = "شروع ایستگاه ششم", onClick = {}, modifier = Modifier.testTag("cta"))
             }
         }
@@ -99,7 +99,7 @@ class ShomaraFontScaleTest {
     fun buttonBoxGrowsWithTheLabelInsteadOfClippingIt() {
         val scale = mutableStateOf(1.0f)
         compose.setContent {
-            themeAt(scale.value) {
+            ThemeAt(scale.value) {
                 ShomaraButton(text = "شروع ایستگاه ششم", onClick = {}, modifier = Modifier.testTag("cta"))
             }
         }
@@ -118,7 +118,7 @@ class ShomaraFontScaleTest {
     @Test
     fun buttonKeepsTheTokenMinimumHeightAtNormalScale() {
         compose.setContent {
-            themeAt(1.0f) {
+            ThemeAt(1.0f) {
                 ShomaraButton(text = "ادامه", onClick = {}, modifier = Modifier.testTag("cta"))
             }
         }
@@ -137,7 +137,7 @@ class ShomaraFontScaleTest {
         val label = "گزینهٔ درست را انتخاب کن و بعد ادامه بده"
         val scale = mutableStateOf(1.0f)
         compose.setContent {
-            themeAt(scale.value) {
+            ThemeAt(scale.value) {
                 ShomaraCard(state = ShomaraCardState.Default) { Text(label) }
             }
         }
@@ -154,7 +154,7 @@ class ShomaraFontScaleTest {
         val text = "ایراد نداره؛ باز هم امتحان کن!"
         val scale = mutableStateOf(1.0f)
         compose.setContent {
-            themeAt(scale.value) { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Retry, text = text) }
+            ThemeAt(scale.value) { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Retry, text = text) }
         }
         for (s in fontScales) {
             scale.value = s
@@ -168,7 +168,7 @@ class ShomaraFontScaleTest {
     fun textFieldLabelNeverClipsAtAnyFontScale() {
         val scale = mutableStateOf(1.0f)
         compose.setContent {
-            themeAt(scale.value) {
+            ThemeAt(scale.value) {
                 Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
                     ShomaraTextField(value = "۰۹۱۲۳۴۵۶۷۸۹", onValueChange = {}, label = "شمارهٔ همراه")
                 }
@@ -191,7 +191,7 @@ class ShomaraFontScaleTest {
         val filled = ShomaraOtpState.empty(4).advance(1)
         val scale = mutableStateOf(1.0f)
         compose.setContent {
-            themeAt(scale.value) {
+            ThemeAt(scale.value) {
                 Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
                     ShomaraOtpInput(state = filled, onStateChange = {})
                 }
@@ -209,7 +209,7 @@ class ShomaraFontScaleTest {
     fun otpRowStaysInsideTheViewportAtTwoHundredPercent() {
         val filled = ShomaraOtpState.empty(4).advance(1).advance(2).advance(3).advance(4)
         compose.setContent {
-            themeAt(2.0f) {
+            ThemeAt(2.0f) {
                 Column(modifier = Modifier.fillMaxWidth().testTag("viewport")) {
                     ShomaraOtpInput(state = filled, onStateChange = {})
                 }
@@ -229,7 +229,7 @@ class ShomaraFontScaleTest {
     fun otpRowKeepsStrictLtrOrderAtTwoHundredPercent() {
         val filled = ShomaraOtpState.empty(4).advance(1).advance(2).advance(3).advance(4)
         compose.setContent {
-            themeAt(2.0f) {
+            ThemeAt(2.0f) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     ShomaraOtpInput(state = filled, onStateChange = {})
                 }
@@ -251,7 +251,7 @@ class ShomaraFontScaleTest {
         // the app RESPECTS the device direction).
         var captured: LayoutDirection? = null
         compose.setContent {
-            themeAt(1.0f) {
+            ThemeAt(1.0f) {
                 captured = LocalLayoutDirection.current
                 androidx.compose.material3.Text("جهت")
             }
@@ -266,7 +266,7 @@ class ShomaraFontScaleTest {
     @Test
     fun rtlShellDoesNotMirrorMathContent() {
         compose.setContent {
-            themeAt(2.0f) {
+            ThemeAt(2.0f) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     // A Persian (RTL) label next to math (LTR) — both in the same composition.
                     Text("جمع کن")
@@ -295,7 +295,7 @@ class ShomaraFontScaleTest {
     @Test
     fun equationSlotKeepsOperandOrderLtrAtTwoHundredPercent() {
         compose.setContent {
-            themeAt(2.0f) {
+            ThemeAt(2.0f) {
                 // The theme provides RTL at the root; math must not mirror it.
                 ShomaraEquationSlot(operands = listOf("7", "8", "15"), operators = listOf("+", "="))
             }
@@ -310,7 +310,7 @@ class ShomaraFontScaleTest {
     @Test
     fun numberTileLabelNeverClipsAtTwoHundredPercent() {
         compose.setContent {
-            themeAt(2.0f) {
+            ThemeAt(2.0f) {
                 ShomaraNumberTile(tileId = "t1", label = "۱۲", state = ShomaraManipulativeState.Idle, onTap = {})
             }
         }
@@ -322,16 +322,23 @@ class ShomaraFontScaleTest {
     @Test
     fun longPersianLabelWrapsInsteadOfTruncating() {
         val long = "این یک برچسب عمداً طولانی است تا رفتار شکستن خط بررسی شود"
-        compose.setContent { themeAt(2.0f) { ShomaraButton(text = long, onClick = {}) } }
+        compose.setContent { ThemeAt(2.0f) { ShomaraButton(text = long, onClick = {}) } }
         val layout = textLayoutOf(long)
         assertFalse("long label clipped at 200%", layout.didOverflowHeight)
         assertTrue("long label must occupy at least one line", layout.lineCount >= 1)
+        // DT-38: `didOverflowHeight` is a weak signal on its own (see DT-34: it stayed false for text
+        // that was genuinely cut). The paragraph's real measured size is compared with the box the
+        // text was given, so a label that needs more room than it has fails here either way.
+        assertTrue(
+            "long label needs ${layout.multiParagraph.height}px but its box is ${layout.size.height}px",
+            layout.multiParagraph.height <= layout.size.height + 0.5f,
+        )
     }
 
     // ---- theme / measurement helpers ----
 
     @Composable
-    private fun themeAt(scale: Float, content: @Composable () -> Unit) {
+    private fun ThemeAt(scale: Float, content: @Composable () -> Unit) {
         DeviceConfigurationOverride(DeviceConfigurationOverride.FontScale(scale)) {
             ShomaraTheme { content() }
         }

@@ -301,10 +301,12 @@ fun ShomaraPlacementScreen(
     // #88: null means no skip affordance at all — the button is not rendered, not merely
     // disabled. The host passes a real callback only when the product/DEBUG flag allows it.
     onSkip: (() -> Unit)?,
+    // DT-38: modifier moved ahead of the other optional parameters (Compose convention, enforced by
+    // lint). Every call site passes named arguments, so no caller changed.
+    modifier: Modifier = Modifier,
     // Owner bug fix: the skipped state used to hardcode «پایه اول ابتدایی» — a child
     // who picked G3 read G1. The host passes the draft's actual grade label.
     chosenGradeLabel: String? = null,
-    modifier: Modifier = Modifier,
     // #100: the save confirmation carried from the profile step — the profile step advances
     // immediately on a successful save, so this is where the «ذخیره شد» banner is seen.
     // Null when the user did not just save (no banner is invented).

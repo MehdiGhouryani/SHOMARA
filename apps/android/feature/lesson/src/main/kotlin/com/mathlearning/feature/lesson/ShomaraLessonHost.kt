@@ -27,7 +27,7 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
-import com.mathlearning.core.designsystem.shomaraBackHandler
+import com.mathlearning.core.designsystem.ShomaraBackHandler
 import com.mathlearning.core.model.MacroStage
 import com.mathlearning.core.network.LessonGateway
 import kotlinx.coroutines.launch
@@ -119,7 +119,7 @@ fun ShomaraLessonHost(
 
     // N08-05: back must ask before throwing away the child's place. Consuming the gesture while the
     // question is open means a stray second back cannot exit either.
-    shomaraBackHandler(enabled = journey != null) {
+    ShomaraBackHandler(enabled = journey != null) {
         closeState = ShomaraLessonBackLogic.onBack(closeState)
     }
 

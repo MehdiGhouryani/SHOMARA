@@ -38,7 +38,7 @@ object ShomaraBackLogic {
  * @param onBack invoked when the gesture is consumed
  */
 @Composable
-fun shomaraBackHandler(
+fun ShomaraBackHandler(
     enabled: Boolean = true,
     onBack: () -> Unit,
 ) {

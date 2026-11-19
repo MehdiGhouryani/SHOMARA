@@ -1230,6 +1230,20 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **شواهد:** `ShomaraA11ySweepTest` **۴۴/۴۴** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `f3c2cb4…`.
 - **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
 
+## 2026-11-19 — DT-38 — اجرای lint (gate ای که اجرا نشده بود) و رفع یافته‌های واقعی UI
+
+- **کشف:** `lint` در AGENTS §7 جزو gate بومی است ولی هیچ‌جا در `package.json` نبود و در این جلسه اجرا نشده بود. اجرای `:app:lintDebug` و سپس lint **همهٔ** ماژول‌ها (lint روی app به‌طور پیش‌فرض کتابخانه‌ها را تحلیل نمی‌کند) ۲۱ warning در app و چند مورد واقعی در کد UI داد.
+- **رفع‌های واقعی:**
+  1. **`DefaultLocale`** در `ShomaraCharacter.labelFor`: `String.format("%02d", poseId)` بدون Locale. این مقدار **کلید مسیر فایل asset** است؛ در localeهایی که `%02d` را با رقم غیر‌ASCII می‌سازند، تصویر شخصیت بی‌صدا گم می‌شد. → `Locale.ROOT`.
+  2. **`ComposableNaming`** در Design System: `shomaraBackHandler` (حرف کوچک) کنار `ShomaraTheme`/`ShomaraTokens`. → `ShomaraBackHandler` و هر ۵ نقطهٔ فراخوانی به‌روز شد (هنگام رفع، یک فراخوانی دیگر در `feature:lesson` پیدا شد که build را شکست و همان هم اصلاح شد).
+  3. **`ModifierParameter`** در `ShomaraPlacementScreen`: `modifier` بعد از یک پارامتر اختیاری دیگر بود؛ به جایگاه درست (اولین اختیاری) منتقل شد. همهٔ فراخوانی‌ها آرگومان نام‌دار هستند، پس هیچ فراخوانی عوض نشد.
+  4. **`MonochromeLauncherIcon` ×۲:** لایهٔ `<monochrome>` به هر دو آیکون adaptive اضافه شد (آیکون تم‌دار اندروید ۱۳+).
+- **تقویت تست a11y:** تست `ShomaraFontScaleTest` فقط `didOverflowHeight` را چک می‌کرد — همان خانوادهٔ flag بی‌اعتبارشده در DT-34. حالا ارتفاع واقعی پاراگراف با ارتفاع جعبه مقایسه می‌شود، پس متنی که واقعاً جا نمی‌شود از هر دو مسیر می‌افتد.
+- **نتیجهٔ lint:** `core:designsystem` از **۳ → ۰**، `feature:onboarding` از **۱ → ۰**، `feature:lesson` **۰**، `app` از **۲۱ → ۱۹** (باقی‌مانده‌ها dependency/manifest/orientation هستند، نه کد UI).
+- **تصمیم‌های واگذارشده به مالک (تغییر ندادم):** `LockedOrientationActivity` + `DiscouragedApi` (قفل جهت صفحه؛ اندروید ۱۶ آن را نادیده می‌گیرد و باز کردنش نیاز به بازبینی چیدمان افقی دارد)، `NotShrinkingResources` (فقط روی build نوع release اثر دارد و ساخت release مجاز/ممکن نیست، پس بدون سنجش تغییر ندادم — هرچند `getIdentifier` صفر است و ریسک پایین).
+- **شواهد:** lint همهٔ ماژول‌ها exit 0؛ `ShomaraA11ySweepTest` **۴۸/۴۸** و `ShomaraFontScaleTest` **۱۶/۱۶** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`، ۸۱ suite / ۵۹۱ تست / ۰ خطا)؛ APK `7215284…` (کد تولید عوض شد).
+- **بازمانده:** O5؛ تصمیم‌های مالک (جهت صفحه، shrink منابع)؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
+
 ## 2026-11-19 — DT-37 — پوشش چهار حالت ورودی Home در ۳۶۰dp/۲× و یک invariant ضد-ساختگی که تست را اصلاح کرد
 
 - **پوشش تازه:** Home تا امروز فقط در حالت مسیر حل‌شده سنجیده می‌شد. حالا هر چهار حالت ورودی جداگانه تست دارند: `HomeLoading`، `HomeError`، `HomeEmpty`، `HomeOffline` — همه با اوراکل کالیبره‌شده و بودجهٔ صفر.
