@@ -1185,3 +1185,14 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **تغییر با شاهد:** ۲۰dp → **۲۴dp** در `ShomaraHomeScreen`؛ همان تست در باریک‌ترین/بزرگ‌ترین حالت **سبز** ماند → تغییر بدون شکستن چیدمان، با همراستایی canonical.
 - **شواهد:** `ShomaraA11ySweepTest` **۳۴/۳۴** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ca82512…` (**تغییر کرد** — این دور کد تولید عوض شد).
 - **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه.
+
+## 2026-11-19 — DT-33 — عرض ۳۶۰dp با فونت ۲× (خواستهٔ AGENTS §6) و کشف بریدگی متن با مکانیزمش
+
+- **شکاف پوشش:** sweep همیشه روی عرض دستگاه و ۱× اجرا می‌شد؛ AGENTS §6 عرض ۳۶۰/۳۹۰/۴۱۲ **و بزرگ‌نمایی متن** را می‌خواهد. helper مشترک `assertFitsAtNarrowWidth` ساخته شد (نه ۶ نسخهٔ تکراری): رندر داخل `CompositionLocalProvider(LocalDensity provides Density(2.625f, fontScale = 2f))` + `Box(width = 360.dp)`، سپس قرارداد a11y + سنجش سرریز. ۶ صفحه پوشش گرفت: Home, Me, PracticeHub, Settings, ParentHome, OnboardingProfile. sweep ۳۴ → **۳۹**.
+- **چک اول بی‌اثر بود:** سنجش با `boundsInRoot` هیچ‌وقت شکست نمی‌خورد، چون Compose متن را **clip** می‌کند و جعبه داخل viewport می‌ماند. جایگزین دقیق: `SemanticsActions.GetTextLayoutResult` → `TextLayoutResult.hasVisualOverflow`.
+- **نقص واقعی پیدا شد:** در ۳۶۰dp/۲× متن در **هر ۶ صفحه** بریده می‌شود — مجموعاً **۳۷** گره متنی (Home 8، Settings 11، Me 7، PracticeHub 7، Profile 2، ParentHome 2). این دقیقاً همان کاربری است که به بزرگ‌نمایی سیستم تکیه دارد.
+- **مکانیزم با اندازه‌گیری، نه حدس:** تست تشخیصی موقت هر گره بریده را لاگ کرد؛ نتیجه یکدست بود: `didWidth=true`، `didHeight=false`، `lines=1`، `layout.size == node.size`. یعنی ظرف‌های **عرض‌ثابت** در ۲× حتی برای یک کلمه کافی نیستند و متن فرصت شکستن خط ندارد. (هیچ `maxLines`ی در feature/path نیست؛ محدودیت از عرض ظرف می‌آید.)
+- **تصمیم:** ratchet به‌جای «صفر یا هیچ». بودجهٔ اندازه‌گیری‌شده per-screen ثبت شد و **فقط می‌تواند کم شود**؛ هر افزایش (= بریدگی بیشتر) تست را می‌شکند. اسامی همهٔ ۳۷ برچسب در KDoc نقشه ثبت شد.
+- **اثبات اینکه ratchet بی‌اثر نیست:** بودجهٔ Home موقتاً ۸→۷ شد و تست **شکست** (`8 text node(s) are clipped ... budget is 7`)؛ سپس ۷→۸ و کل suite دوباره سبز. بدون این اثبات، یک assertion «همیشه‌سبز» تحویل داده بودم.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۹/۳۹** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK بدون تغییر `ca82512…` (فقط سورس تست).
+- **بازمانده:** رفع ساختاری بریدگی ۳۷ برچسب (عرض‌های ثابت مسیر/تنظیمات باید در ۲× بازآرایی شوند)؛ O5؛ instrumented در CI.

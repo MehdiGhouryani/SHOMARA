@@ -2,10 +2,13 @@
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
@@ -360,40 +363,87 @@ class ShomaraA11ySweepTest {
 
     @Test
     fun homeStaysUsableAt360dpWithDoubleText() {
-        // AGENTS §6 requires 360dp width AND text zoom, but Home had never been measured at either:
-        // the sweep only ever rendered at the device's own width and 1.0x text. A 360dp phone at 2x
-        // text is the narrowest realistic case, so the priority surface is pinned here.
-        compose.setContent {
-            CompositionLocalProvider(LocalDensity provides Density(density = 2.625f, fontScale = 2f)) {
-                ShomaraTheme {
-                    Box(modifier = Modifier.width(360.dp)) {
-                        ShomaraHomeScreen(
-                            state = ShomaraHomeUiState(
-                                progress = ShomaraPathProgress(
-                                    completedStationIds = setOf("ST01", "ST02", "ST03"),
-                                    perfectStationIds = setOf("ST02"),
-                                    currentStationId = "ST04",
-                                    isResolved = true,
-                                ),
-                            ),
-                            onAction = {},
-                        )
-                    }
-                }
-            }
+        assertFitsAtNarrowWidth("Home") {
+            ShomaraHomeScreen(
+                state = ShomaraHomeUiState(
+                    progress = ShomaraPathProgress(
+                        completedStationIds = setOf("ST01", "ST02", "ST03"),
+                        perfectStationIds = setOf("ST02"),
+                        currentStationId = "ST04",
+                        isResolved = true,
+                    ),
+                ),
+                onAction = {},
+            )
         }
-        assertA11yContract("Home/360dp/2x")
         assertPrimaryCtaCount("Home/360dp/2x", 1)
-        // Nothing may spill past the 360dp viewport: overflow is exactly the failure mode a wider
-        // device hides, and it is what makes text unreadable on a small phone at large text.
-        val widthPx = 360f * 2.625f
-        val overflowing = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
-            .fetchSemanticsNodes()
-            .filter { it.boundsInRoot.right > widthPx + 0.5f || it.boundsInRoot.left < -0.5f }
-        assertTrue(
-            "Home/360dp/2x: ${overflowing.size} node(s) overflow the 360dp viewport",
-            overflowing.isEmpty(),
-        )
+    }
+
+    @Test
+    fun meFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("Me") {
+            ShomaraMeScreen(
+                facts = ShomaraMeFacts(
+                    childName = "آریا",
+                    avatar = ShomaraAvatarCatalog.option("sun"),
+                    completedStations = 3,
+                    totalStations = 25,
+                ),
+                onOpenParent = {},
+                onOpenSettings = {},
+            )
+        }
+    }
+
+    @Test
+    fun practiceHubFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("PracticeHub") {
+            ShomaraPracticeHubScreen(
+                items = listOf(
+                    ShomaraPracticeItem(id = "p1", title = "جمع تا ۱۰"),
+                    ShomaraPracticeItem(
+                        id = "p2",
+                        title = "الگوها",
+                        locked = true,
+                        lockedReason = "بعد از ایستگاه ۳",
+                    ),
+                ),
+                recent = listOf(ShomaraPracticeItem(id = "p3", title = "شمردن")),
+                onItemTap = {},
+            )
+        }
+    }
+
+    @Test
+    fun settingsFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("Settings") {
+            ShomaraSettingsScreen(
+                state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false),
+                onAvatarSelect = {},
+                onReducedMotionChange = {},
+                onSave = {},
+            )
+        }
+    }
+
+    @Test
+    fun parentHomeFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("ParentHome") {
+            ShomaraParentHome(completedStations = 3, totalStations = 25, onSignOut = {})
+        }
+    }
+
+    @Test
+    fun profileFitsAt360dpWithDoubleText() {
+        val draft = ShomaraProfileDraft(name = "آریا")
+        assertFitsAtNarrowWidth("OnboardingProfile") {
+            ShomaraProfileScreen(
+                draft = draft,
+                onDraftChange = {},
+                saveState = ShomaraProfileSaveState(draft = draft),
+                onSave = {},
+            )
+        }
     }
 
     @Test
@@ -600,7 +650,37 @@ class ShomaraA11ySweepTest {
         totalStations = 25,
     )
 
-    private object FakeSettingsStore : ShomaraSettingsStore {
+    /**
+     * Measured clipping budget at 360dp / 2x text (DT-33). Each entry counts the text nodes whose
+     * own layout reports `hasVisualOverflow` on a real Pixel_6a run. The numbers may only go DOWN:
+     * this is a debt register, not a tolerance. Clipped labels as measured on 2026-11-19:
+     *
+     *  Home               8 — فصل ۱ · ایستگاه‌های باقی‌مانده: ۲۲ · ایستگاه فعلی · هنوز قفل · ۱ ·
+     *                          فصل ۱ · ایستگاه‌های ۱ تا ۵ · ۳ از ۵ کامل شد
+     *  Settings          11 — آواتار و تنظیمات · آواتار من · ✓ · برگ · ابری · ماه ·
+     *                          آواتار انتخاب‌شده: خورشیدی · تنظیم‌های برنامه · حرکت کمتر ·
+     *                          انیمیشن‌ها متوقف می‌شوند. · ذخیره
+     *  Me                 7 — من · آریا · آواتار من: خورشیدی · آواتار و تنظیمات ·
+     *                          ظاهر و تنظیم‌های واقعی · بخش والدین · با تأیید بزرگ‌ترها باز می‌شود
+     *  PracticeHub        7 — تمرین · تمرین‌های قابل انجام · جمع تا ۱۰ · الگوها · قفل ·
+     *                          تمرین‌های اخیر · شمردن
+     *  OnboardingProfile  2 — نام کودک · ادامه
+     *  ParentHome         2 — گزارش والدین · خروج از حساب
+     *
+     * These states are reached mainly through system font scaling — exactly the setting the
+     * accessibility users this app targets depend on — which is why the debt is registered with
+     * every label named instead of being silenced.
+     */
+    private val CLIPPED_TEXT_BUDGET: Map<String, Int> = mapOf(
+    "Home" to 8,
+    "Settings" to 11,
+    "Me" to 7,
+    "PracticeHub" to 7,
+    "OnboardingProfile" to 2,
+    "ParentHome" to 2,
+)
+
+private object FakeSettingsStore : ShomaraSettingsStore {
         override val state: Flow<ShomaraSettingsSnapshot> = MutableStateFlow(ShomaraSettingsSnapshot.Defaults)
 
         override suspend fun save(snapshot: ShomaraSettingsSnapshot) {}
@@ -711,6 +791,63 @@ class ShomaraA11ySweepTest {
     private fun assertTextPresent(screen: String, text: String) {
         val found = compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes()
         assertTrue("$screen: «$text» never rendered, so this state is not being shown", found.isNotEmpty())
+    }
+
+    /**
+     * AGENTS §6 requires 360/390/412dp widths AND text zoom; the sweep otherwise only ever renders
+     * at the device's own width and 1.0x. 360dp at 2x text is the binding extreme — if a routed page
+     * fits there it fits the wider cases — so the primary pages are pinned at that combination.
+     *
+     * Overflow is detected rather than eyeballed: a node whose bounds leave the 360dp viewport is
+     * exactly what hides on a big device and cuts text off on a small one.
+     */
+    private fun assertFitsAtNarrowWidth(screen: String, content: @Composable () -> Unit) {
+        compose.setContent {
+            CompositionLocalProvider(LocalDensity provides Density(density = 2.625f, fontScale = 2f)) {
+                ShomaraTheme {
+                    Box(modifier = Modifier.width(360.dp)) {
+                        content()
+                    }
+                }
+            }
+        }
+        val label = "$screen/360dp/2x"
+        assertA11yContract(label)
+        val widthPx = 360f * 2.625f
+        val nodes = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+        val overflowing = nodes.filter {
+            it.boundsInRoot.right > widthPx + 0.5f || it.boundsInRoot.left < -0.5f
+        }
+        assertTrue(
+            "$label: ${overflowing.size} node(s) overflow the 360dp viewport",
+            overflowing.isEmpty(),
+        )
+        // Bounds alone are weak: Compose clips a too-long line, so the box stays inside the viewport
+        // while the glyphs are cut. The text layout result knows — it reports hasVisualOverflow.
+        val clipped = nodes.mapNotNull { node ->
+            val action = node.config.getOrNull(SemanticsActions.GetTextLayoutResult) ?: return@mapNotNull null
+            val results = mutableListOf<TextLayoutResult>()
+            action.action?.invoke(results)
+            val layout = results.firstOrNull() ?: return@mapNotNull null
+            if (layout.hasVisualOverflow) {
+                node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" / ") ?: "<unlabelled>"
+            } else {
+                null
+            }
+        }
+        // RATCHET, not a pass/fail-on-zero check: 360dp at 2x text clips a real, measured set of
+        // labels (DT-33 records every one of them). The baseline is per screen and may only go
+        // DOWN — a font-size or spacing change that clips MORE text fails here, and every fix
+        // lowers the number in this table. Pretending the debt is zero would have meant shipping
+        // an assertion nobody could satisfy, which is how clipping debt stays invisible.
+        val budget = CLIPPED_TEXT_BUDGET[screen]
+            ?: throw AssertionError("$label: no recorded clipping budget for '$screen' — add one, "
+                + "measured from a real run, instead of guessing")
+        assertTrue(
+            "$label: ${clipped.size} text node(s) are clipped at 360dp/2x, budget is $budget -> $clipped",
+            clipped.size <= budget,
+        )
     }
 
     /**
