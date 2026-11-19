@@ -1,5 +1,11 @@
 ﻿package com.mathlearning.app.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
@@ -350,6 +356,44 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("OnboardingProfile")
+    }
+
+    @Test
+    fun homeStaysUsableAt360dpWithDoubleText() {
+        // AGENTS §6 requires 360dp width AND text zoom, but Home had never been measured at either:
+        // the sweep only ever rendered at the device's own width and 1.0x text. A 360dp phone at 2x
+        // text is the narrowest realistic case, so the priority surface is pinned here.
+        compose.setContent {
+            CompositionLocalProvider(LocalDensity provides Density(density = 2.625f, fontScale = 2f)) {
+                ShomaraTheme {
+                    Box(modifier = Modifier.width(360.dp)) {
+                        ShomaraHomeScreen(
+                            state = ShomaraHomeUiState(
+                                progress = ShomaraPathProgress(
+                                    completedStationIds = setOf("ST01", "ST02", "ST03"),
+                                    perfectStationIds = setOf("ST02"),
+                                    currentStationId = "ST04",
+                                    isResolved = true,
+                                ),
+                            ),
+                            onAction = {},
+                        )
+                    }
+                }
+            }
+        }
+        assertA11yContract("Home/360dp/2x")
+        assertPrimaryCtaCount("Home/360dp/2x", 1)
+        // Nothing may spill past the 360dp viewport: overflow is exactly the failure mode a wider
+        // device hides, and it is what makes text unreadable on a small phone at large text.
+        val widthPx = 360f * 2.625f
+        val overflowing = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .filter { it.boundsInRoot.right > widthPx + 0.5f || it.boundsInRoot.left < -0.5f }
+        assertTrue(
+            "Home/360dp/2x: ${overflowing.size} node(s) overflow the 360dp viewport",
+            overflowing.isEmpty(),
+        )
     }
 
     @Test

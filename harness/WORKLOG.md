@@ -1176,3 +1176,12 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **sweep از ۳۱ به ۳۳** رسید.
 - **شواهد:** `ShomaraA11ySweepTest` **۳۳/۳۳** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ef880a0…` (بدون تغییر کد اصلی در این دور).
 - **بازمانده:** O5؛ instrumented در CI؛ شواهد دستگاه؛ بدهی Linux parity.
+
+## 2026-11-19 — DT-32 — بازگشت Home به inset canonical ۲۴dp (با سنجش، نه سلیقه)
+
+- **یافته:** ممیزی ریتم ۱۹ صفحه نشان داد inset کناری متفاوت است: ۲۴dp در اکثر صفحه‌های کامل (Me، Practice، Profile، ParentGate، Placement، Phone)، ۱۶dp در Settings/OnboardingHost/JumpSheet (کاهش تطبیقی **ثبت‌شده** در `STAGE4_IMPLEMENTATION_NOTE`)، و **Home با ۲۰dp که هیچ‌جا ثبت نشده بود**.
+- **مسئله:** playbook می‌گوید inset ترجیحی ۲۴dp و هر کاهش باید *مستند* باشد. ۲۰dp در Home یک انحراف مستندنشده بود — یا باید ۲۴ شود یا باید ثبت شود.
+- **تست پایه قبل از تغییر (مهم):** `homeStaysUsableAt360dpWithDoubleText` ساخته شد — Home در عرض **۳۶۰dp** با **فونت ۲×** (که AGENTS §6 می‌خواهد و تا حالا هیچ‌وقت سنجیده نشده بود): قرارداد a11y، یک CTA اصلی، و **صفر نود سرریزشده** از viewport. پایه با ۲۰dp **سبز** بود.
+- **تغییر با شاهد:** ۲۰dp → **۲۴dp** در `ShomaraHomeScreen`؛ همان تست در باریک‌ترین/بزرگ‌ترین حالت **سبز** ماند → تغییر بدون شکستن چیدمان، با همراستایی canonical.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۴/۳۴** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ca82512…` (**تغییر کرد** — این دور کد تولید عوض شد).
+- **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه.

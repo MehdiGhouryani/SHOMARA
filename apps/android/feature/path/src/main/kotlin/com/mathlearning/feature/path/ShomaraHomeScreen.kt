@@ -1,4 +1,4 @@
-package com.mathlearning.feature.path
+﻿package com.mathlearning.feature.path
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -35,7 +35,7 @@ fun ShomaraHomeScreen(
             onSettings = { onAction(ShomaraHomeAction.OpenSettings) },
             settingsContentDescription = ShomaraHomeStrings.Settings,
             modifier = Modifier.padding(
-                horizontal = ShomaraTokens.Space20,
+                horizontal = ShomaraTokens.Space24,
                 vertical = ShomaraTokens.Space12,
             ),
             characterSlot = {
@@ -59,7 +59,7 @@ fun ShomaraHomeScreen(
                 kind = ShomaraFeedbackKind.Recovery,
                 text = ShomaraHomeStrings.Offline,
                 modifier = Modifier.padding(
-                    horizontal = ShomaraTokens.Space20,
+                    horizontal = ShomaraTokens.Space24,
                     vertical = ShomaraTokens.Space8,
                 ),
             )
