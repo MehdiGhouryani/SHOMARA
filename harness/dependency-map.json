@@ -207,6 +207,7 @@
       "docs/notes/verifier-migration-map.md",
       "docs/qa/P01_product-game-research-design-lock.md",
       "packages/contracts/src/engagement-policy.ts",
+      "scripts/README.md",
       "scripts/verify-p06-mission-engine.mjs",
       "scripts/verify-p07-collection.mjs",
       "scripts/verify-p08-avatar.mjs",

@@ -104,4 +104,32 @@ if (junkHits.length) {
   ok('no tracked backup or editor leftovers');
 }
 
+// ---------------------------------------------------------------- 5. every verifier is in the scripts index
+// DT-60: scripts/ holds 101 .mjs files in one flat directory, which is deliberate - the domain is in each file's
+// name, and moving them would break 277 path references across 45 files, including historical ledgers that must not
+// be rewritten. The price of a flat folder is that nothing tells a reader what lives there, so scripts/README.md
+// does. This rule keeps that index honest: a verifier added without an index entry is invisible, and an index entry
+// for a file that no longer exists is a lie.
+const scriptFiles = readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.mjs'));
+const indexPath = join(root, 'scripts', 'README.md');
+if (!statSync(join(root, 'scripts')).isDirectory()) {
+  fail('scripts is not a directory');
+} else {
+  let index = '';
+  try {
+    index = readFileSync(indexPath, 'utf8');
+  } catch {
+    fail('scripts/README.md is missing: the flat scripts folder has no index');
+  }
+  const missingFromIndex = scriptFiles.filter((f) => !index.includes('`' + f + '`'));
+  for (const f of missingFromIndex.slice(0, 10)) fail(`scripts/${f} is not listed in scripts/README.md`);
+  // The other direction: an indexed file that is gone. Read the table cells rather than scanning free text.
+  const indexed = [...index.matchAll(/\| `([^`]+\.mjs)` \|/g)].map((m) => m[1]);
+  const stale = indexed.filter((f) => !scriptFiles.includes(f));
+  for (const f of stale.slice(0, 10)) fail(`scripts/README.md lists ${f}, which does not exist`);
+  if (!missingFromIndex.length && !stale.length) {
+    ok(`scripts/README.md indexes every verifier (${scriptFiles.length} files, ${indexed.length} entries)`);
+  }
+}
+
 console.log(`STRUCTURE: ${process.exitCode ? 'FAIL' : 'PASS'} (${tracked.length} files, ${modules.length} modules)`);
