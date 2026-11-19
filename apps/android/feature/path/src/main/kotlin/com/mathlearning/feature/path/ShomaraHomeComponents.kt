@@ -34,7 +34,14 @@ import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 
-/** One responsive Home heading with a real settings action and an optional static cameo. */
+/**
+ * One responsive Home heading with a real settings action and an optional static cameo.
+ *
+ * DT-39: this is the screen's focal object, so it is a real card rather than a bare row of text.
+ * Prominence comes from a filled accent surface, a larger cameo and a clear type step — not from the
+ * Featured depth tier, which the Current station node owns (at most one Featured surface per
+ * viewport, ADR-0040).
+ */
 @Composable
 fun ShomaraHomeHeader(
     title: String,
@@ -44,66 +51,87 @@ fun ShomaraHomeHeader(
     settingsContentDescription: String = ShomaraHomeStrings.Settings,
     characterSlot: (@Composable () -> Unit)? = null,
 ) {
-    Row(
+    Surface(
         modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+        shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
+        color = ShomaraHomeUiTokens.VioletSoft,
+        border = BorderStroke(ShomaraTokens.ClaySoftBorderWidth, ShomaraHomeUiTokens.Border),
+        shadowElevation = ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation,
     ) {
-        Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-            Text(
-                text = title,
-                style = ShomaraTypography.Title,
-                color = ShomaraHomeUiTokens.Ink,
-                textAlign = TextAlign.End,
-                modifier = Modifier.semantics { heading() },
-            )
-            Spacer(Modifier.height(ShomaraTokens.Space4))
-            Text(
-                text = subtitle,
-                style = ShomaraTypography.Caption,
-                color = ShomaraHomeUiTokens.Muted,
-                textAlign = TextAlign.End,
-            )
-        }
-        if (characterSlot != null) {
-            Box(
-                Modifier.size(ShomaraTokens.ComponentNodeSize),
-                contentAlignment = Alignment.Center,
-            ) {
-                characterSlot()
+        Row(
+            modifier = Modifier.padding(
+                horizontal = ShomaraTokens.Space16,
+                vertical = ShomaraTokens.Space12,
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+        ) {
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                Text(
+                    text = title,
+                    style = ShomaraTypography.Title,
+                    color = ShomaraHomeUiTokens.Ink,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.semantics { heading() },
+                )
+                Spacer(Modifier.height(ShomaraTokens.Space4))
+                Text(
+                    text = subtitle,
+                    style = ShomaraTypography.Caption,
+                    color = ShomaraHomeUiTokens.VioletDark,
+                    textAlign = TextAlign.End,
+                )
             }
-        }
-        if (onSettings != null) {
-            Surface(
-                onClick = onSettings,
-                modifier = Modifier
-                    .defaultMinSize(
-                        minWidth = ShomaraTokens.ComponentTouchMin,
-                        minHeight = ShomaraTokens.ComponentTouchMin,
-                    )
-                    .semantics { contentDescription = settingsContentDescription },
-                shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
-                color = ShomaraHomeUiTokens.Surface,
-                border = BorderStroke(
-                    ShomaraTokens.ClaySoftBorderWidth,
-                    ShomaraHomeUiTokens.Border,
-                ),
-                shadowElevation = ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation,
-            ) {
+            if (characterSlot != null) {
+                // The cameo is the visual anchor of the card: it takes the full height the card can
+                // spare instead of a small fixed square, and it is decorative (the heading carries
+                // the meaning), so TalkBack never reads an image description twice.
                 Box(
-                    Modifier.padding(ShomaraTokens.Space12),
+                    modifier = Modifier
+                        .defaultMinSize(
+                            minWidth = HomeCameoSize,
+                            minHeight = HomeCameoSize,
+                        ),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.shomara_ui_settings),
-                        contentDescription = null,
-                        modifier = Modifier.size(ShomaraTokens.Space24),
-                    )
+                    characterSlot()
+                }
+            }
+            if (onSettings != null) {
+                Surface(
+                    onClick = onSettings,
+                    modifier = Modifier
+                        .defaultMinSize(
+                            minWidth = ShomaraTokens.ComponentTouchMin,
+                            minHeight = ShomaraTokens.ComponentTouchMin,
+                        )
+                        .semantics { contentDescription = settingsContentDescription },
+                    shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
+                    color = ShomaraHomeUiTokens.Surface,
+                    border = BorderStroke(
+                        ShomaraTokens.ClaySoftBorderWidth,
+                        ShomaraHomeUiTokens.Border,
+                    ),
+                    shadowElevation = ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation,
+                ) {
+                    Box(
+                        Modifier.padding(ShomaraTokens.Space12),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.shomara_ui_settings),
+                            contentDescription = null,
+                            modifier = Modifier.size(ShomaraTokens.Space24),
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+/** Height of the hero cameo: a node-sized portrait plus one breathing step, never a tiny icon. */
+private val HomeCameoSize = ShomaraTokens.ComponentNodeCurrent + ShomaraTokens.Space16
 
 /**
  * Pinned orientation for the path: the real chapter, the real next step and the real remaining
