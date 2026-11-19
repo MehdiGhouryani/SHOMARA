@@ -36,7 +36,10 @@ import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
 import com.mathlearning.feature.practice.ShomaraPracticeItem
 import com.mathlearning.feature.profile.ShomaraMeFacts
 import com.mathlearning.feature.profile.ShomaraMeScreen
+import com.mathlearning.feature.practice.ShomaraPracticeHubLogic
+import com.mathlearning.feature.practice.ShomaraPracticeHubStrings
 import com.mathlearning.feature.settings.ShomaraSettingsScreen
+import com.mathlearning.feature.settings.ShomaraSettingsStrings
 import com.mathlearning.feature.settings.ShomaraSettingsState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,6 +77,55 @@ class ShomaraA11ySweepTest {
     }
 
     @Test
+    fun settingsDirtyExposesTheSaveAction() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraSettingsScreen(
+                    state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false)
+                        .withReducedMotion(true),
+                    onAvatarSelect = {},
+                    onReducedMotionChange = {},
+                    onSave = {},
+                )
+            }
+        }
+        assertTextPresent("Settings/Dirty", ShomaraSettingsStrings.Save)
+        assertA11yContract("Settings/Dirty")
+    }
+
+    @Test
+    fun settingsSavingStaysConsistent() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraSettingsScreen(
+                    state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false).withReducedMotion(true).startSave(),
+                    onAvatarSelect = {},
+                    onReducedMotionChange = {},
+                    onSave = {},
+                )
+            }
+        }
+        assertA11yContract("Settings/Saving")
+    }
+
+    @Test
+    fun settingsErrorShowsItsMessage() {
+        val message = ShomaraSettingsStrings.SaveFailed
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraSettingsScreen(
+                    state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false).withReducedMotion(true).onSaveFailure(message),
+                    onAvatarSelect = {},
+                    onReducedMotionChange = {},
+                    onSave = {},
+                )
+            }
+        }
+        assertTextPresent("Settings/Error", message)
+        assertA11yContract("Settings/Error")
+    }
+
+    @Test
     fun meScreenExposesLabelledTouchTargets() {
         compose.setContent {
             ShomaraTheme {
@@ -90,6 +142,56 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("Me")
+    }
+
+    @Test
+    fun practiceLoadingAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList(), loading = true)
+            }
+        }
+        assertTextPresent("Practice/Loading", ShomaraPracticeHubStrings.Loading)
+        assertA11yContract("Practice/Loading", expectActions = false)
+    }
+
+    @Test
+    fun practiceOfflineAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList(), offline = true)
+            }
+        }
+        assertTextPresent("Practice/Offline", ShomaraPracticeHubStrings.Offline)
+        // An informational state: the hub shows the notice and offers no in-screen action, because
+        // the escape is the shell's own tab bar (three fixed tabs, always present). Recorded
+        // finding: Home's error state DOES offer a retry while Practice's does not — the same
+        // product answering the same question two ways. Adding an onRetry here without an app-shell
+        // caller would be a dead parameter, so it is recorded for the owner instead.
+        assertA11yContract("Practice/Offline", expectActions = false)
+    }
+
+    @Test
+    fun practiceErrorShowsTheCallerMessage() {
+        val message = "تمرین‌ها بارگذاری نشدند."
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList(), errorText = message)
+            }
+        }
+        assertTextPresent("Practice/Error", message)
+        assertA11yContract("Practice/Error", expectActions = false)
+    }
+
+    @Test
+    fun practiceEmptyShowsTheWarmGuide() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList())
+            }
+        }
+        assertTextPresent("Practice/Empty", ShomaraPracticeHubLogic.emptyGuide())
+        assertA11yContract("Practice/Empty", expectActions = false)
     }
 
     @Test

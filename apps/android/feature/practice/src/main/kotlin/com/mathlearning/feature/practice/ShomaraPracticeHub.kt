@@ -66,6 +66,21 @@ object ShomaraPracticeHubLogic {
     fun lockedLabel(item: ShomaraPracticeItem): String = "قفل: ${item.lockedReason}"
 }
 
+/**
+ * Canonical copy for the practice hub. Every user-visible line lives here (AGENTS §10): the
+ * renderer had seven inline Persian literals, which made the text impossible to assert from a test
+ * without duplicating it and impossible to review as a set.
+ */
+object ShomaraPracticeHubStrings {
+    const val Title: String = "تمرین"
+    const val RecommendedHeading: String = "تمرین‌های قابل انجام"
+    const val RecentHeading: String = "تمرین‌های اخیر"
+    const val ErrorFallback: String = "مشکلی پیش آمد."
+    const val Offline: String = "اینترنت وصل نیست؛ تمرین‌های ذخیره‌شده بعداً به‌روز می‌شوند."
+    const val Loading: String = "در حال آوردن تمرین‌ها…"
+    const val DoneSuffix: String = "انجام شده"
+}
+
 @Composable
 fun ShomaraPracticeHubScreen(
     items: List<ShomaraPracticeItem>,
@@ -80,11 +95,11 @@ fun ShomaraPracticeHubScreen(
     // Stage 4, family 12: generous breathing room, one clear hierarchy.
     // Preferred inset is 24dp; rows stay full-width so nothing is squeezed.
     Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
-        Text(text = "تمرین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        Text(text = ShomaraPracticeHubStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         when (state) {
-            ShomaraPracticeHubState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ تمرین‌های ذخیره‌شده بعداً به‌روز می‌شوند.")
-            ShomaraPracticeHubState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: "مشکلی پیش آمد.")
-            ShomaraPracticeHubState.Loading -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "در حال آوردن تمرین‌ها…")
+            ShomaraPracticeHubState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraPracticeHubStrings.Offline)
+            ShomaraPracticeHubState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: ShomaraPracticeHubStrings.ErrorFallback)
+            ShomaraPracticeHubState.Loading -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraPracticeHubStrings.Loading)
             ShomaraPracticeHubState.Empty -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraPracticeHubLogic.emptyGuide())
             else -> {}
         }
@@ -95,7 +110,7 @@ fun ShomaraPracticeHubScreen(
         // F-25: there is no History state — stateFor never returns it and the history list
         // below renders from `recent` directly. The dead branch is removed, not wired.
         if (state == ShomaraPracticeHubState.List) {
-            Text(text = "تمرین‌های قابل انجام", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+            Text(text = ShomaraPracticeHubStrings.RecommendedHeading, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             for (item in ShomaraPracticeHubLogic.recommendedFor(items)) {
                 PracticeRow(item = item, locked = false, onItemTap = onItemTap)
             }
@@ -104,7 +119,7 @@ fun ShomaraPracticeHubScreen(
             }
         }
         if (recent.isNotEmpty()) {
-            Text(text = "تمرین‌های اخیر", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+            Text(text = ShomaraPracticeHubStrings.RecentHeading, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
             for (item in ShomaraPracticeHubLogic.historyFor(recent)) {
                 PracticeRow(item = item, locked = false, onItemTap = onItemTap, historical = true)
             }
@@ -136,7 +151,7 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
                 // old locked branch read only the lock reason and TalkBack
                 // users never heard which practice row they were on.
                 contentDescription = when {
-                    historical -> "$description — انجام شده"
+                    historical -> "$description — ${ShomaraPracticeHubStrings.DoneSuffix}"
                     locked -> "${item.title} — $description"
                     else -> description
                 }

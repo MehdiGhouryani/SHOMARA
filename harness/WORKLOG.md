@@ -1091,3 +1091,11 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **رفع:** شرط بنر به `progress.isResolved && (progress.offline || entryState == Offline)` تغییر کرد؛ پیام همان رشتهٔ canonical است و چیزی اختراع نشد. حالا هر دو کانال به کودک می‌رسند و دو تست جدا هر کانال را می‌سنجند.
 - **شواهد:** `ShomaraA11ySweepTest` **۱۵/۱۵** روی `Pixel_6a` (۱۰ صفحه؛ Home با ۵ state)؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ رفتار Loading این‌گونه مستند شد که «در state بارگذاری هیچ کنترل عملی وجود ندارد» و به‌جای aimlessly سبز شدن، صریح با `expectActions = false` بیان شده است.
 - **بازمانده:** O5 باز؛ قاعدهٔ «CTA اصلی یکتا»؛ اجرای instrumented در CI؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-23 — state های تنظیمات/تمرین + استخراج متن canonical تمرین (نقض §۱۰ و یافتهٔ ۶)
+
+- **نقض §۱۰ رفع شد:** کامپوزبل `ShomaraPracticeHubScreen` هفت رشتهٔ فارسی را **inline** داشت (عنوان، سه بنر، دو heading بخش، «انجام شده») و §۱۰ می‌گوید متن UI باید از منبع canonical بیاید. همه به `ShomaraPracticeHubStrings` منتقل شدند؛ حالا تست‌ها هم همان ثابت‌ها را می‌خوانند و متن در دو جا تکرار نمی‌شود. رشته‌ها **بدون تغییر متن** منتقل شدند و تست‌های JVM ماژول تمرین سبز ماندند.
+- **پوشش state:** sweep از ۱۵ به **۲۲** تست رسید: تنظیمات در حالت‌های Dirty/Saving/Error (با تأیید متن «ذخیره» و پیام خطای واقعی) و تمرین در حالت‌های Loading/Offline/Error/Empty (با تأیید متن canonical همان state).
+- **یافتهٔ ۶ (ثبت‌شده، عمداً تغییر نکرد):** سه state اطلاعاتی تمرین (Offline/Error/Empty) **هیچ کنترل درون‌صفحه‌ای** ندارند. بررسی شد که بن‌بست نیست: شل کودک سه تب ثابت دارد و مسیر همیشه در دسترس است. اما ناسازگاری واقعی است: Home در state خطا «تلاش دوباره» دارد و تمرین ندارد — یک محصول، دو پاسخ به یک پرسش. افزودن `onRetry` بدون مصرف‌کننده در شل، پارامتر مرده می‌ساخت، پس **API اختراع نشد**؛ قرارداد هر state صریح شد (`expectActions = false`) و یافته برای تصمیم مالک ثبت شد.
+- **شواهد:** `ShomaraA11ySweepTest` **۲۲/۲۲** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `711362c…`.
+- **بازمانده:** O5 باز؛ قاعدهٔ «CTA اصلی یکتا» (نیازمند نشانهٔ primary در design system)؛ اجرای instrumented در CI؛ `onRetry` تمرین (تصمیم مالک)؛ capture/TalkBack `NATIVE_PENDING`.
