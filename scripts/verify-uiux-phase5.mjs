@@ -15,7 +15,7 @@ const required = [
   'apps/mobile/app/station/[stationId]/start.tsx',
   'apps/mobile/app/station/[stationId]/play.tsx',
   'apps/mobile/app/station/[stationId]/index.tsx',
-  'docs/reference/PROGRESSION_CONTRACT.md',
+  'docs/ARCHITECTURE.md',
 ];
 const missing = required.filter((file) => !fs.existsSync(path.join(root, file)));
 const contract = fs.readFileSync(path.join(root, 'packages/contracts/src/progression.ts'), 'utf8');

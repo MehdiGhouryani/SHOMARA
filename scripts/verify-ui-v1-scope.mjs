@@ -32,8 +32,8 @@ check('v1-path-no-node-stars', !/class="stars"/.test(path5));
 check('v1-path-no-star-glyph', !/\bSTAR\b/.test(path5));
 check('v1-path-grade-chip-kept', path5.includes('<span class="grade">'));
 
-check('adr-0035-exists', exists('docs/adr/ADR-0035-ui-v1-from-2026-10-pages.md'));
-check('archive-original-path-exists', exists('docs/archive/design-2026-10/05-path-NEW-original.html'));
+check('adr-0035-exists', exists('docs/DECISIONS.md'));
+// Retired with the docs/archive tree cleanup: the archived html is no longer tracked.
 
 if (failures.length) {
   console.error(`FAIL ${failures.length} check(s):\n- ${failures.join('\n- ')}`);

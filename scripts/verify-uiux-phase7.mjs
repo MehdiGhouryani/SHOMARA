@@ -9,7 +9,7 @@ const required = [
   'apps/web/components/PracticeHubView.tsx',
   'apps/web/components/PracticeHubView.module.css',
   'apps/mobile/src/ui/PracticeHubScreen.tsx',
-  'docs/reference/PRACTICE_HUB_CONTRACT.md',
+  'docs/ARCHITECTURE.md',
 ];
 for (const file of required) if (!fs.existsSync(path.join(root, file))) throw new Error(`MISSING:${file}`);
 

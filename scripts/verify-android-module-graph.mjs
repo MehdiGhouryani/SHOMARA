@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Static Android architecture guard (P3, ADR-0041) — enforces the module dependency rules of
- * docs/architecture/ANDROID_MODULE_GRAPH.md against the actual Kotlin sources:
+ * docs/ARCHITECTURE.md against the actual Kotlin sources:
  *
  *  R1  GlobalScope is forbidden in every main source set (no unowned global mutable state).
  *  R2  Dispatchers.Main is forbidden in main sources of every module except :app — dispatchers

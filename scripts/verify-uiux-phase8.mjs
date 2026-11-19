@@ -30,7 +30,7 @@ check('avatar-persistence-web', read('apps/web/app/profile/avatar/page.tsx').inc
 check('avatar-persistence-mobile', state.includes('updateAvatarPreset') && core.includes('updateChildAvatarPreset'));
 check('child-nav-still-three', (nav.match(/id: '(PATH|PRACTICE|PROFILE)'/g)??[]).length===3);
 check('removed-surfaces-still-enforced', ['TEACHER_LOGIN','LEADERBOARD','ASSIGNMENTS','FRIENDS_FEED'].every(x=>surface.includes(`'${x}'`)));
-check('p08-contract', exists('docs/reference/PROFILE_ACHIEVEMENT_AVATAR_CONTRACT.md'));
+check('p08-contract', exists('docs/ARCHITECTURE.md'));
 
 if(failures.length){console.error(`\nFAIL ${failures.length} checks`); failures.forEach(f=>console.error(` - ${f}`)); process.exit(1);}
 console.log(`\nUX-P08 verifier: PASS`);

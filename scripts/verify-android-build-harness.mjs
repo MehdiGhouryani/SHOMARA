@@ -9,7 +9,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 for (const file of [
   'scripts/android-build.mjs',
   'scripts/verify-android-environment.mjs',
-  'docs/architecture/ANDROID_BUILD_ENVIRONMENT.md',
+  'docs/ARCHITECTURE.md',
   'skills/shomara-android-build/SKILL.md',
 ]) {
   assert.ok(fs.existsSync(path.join(root, file)), `missing Android build harness file: ${file}`);

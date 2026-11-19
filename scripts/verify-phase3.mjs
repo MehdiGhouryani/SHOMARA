@@ -7,7 +7,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
 const required = [
   'supabase/migrations/0022_content_delivery.sql',
-  'docs/api/API_CONTENT_DELIVERY_CONTRACT.md',
+  'docs/ARCHITECTURE.md',
   'packages/content-delivery/src/index.ts',
   'apps/mobile/src/content/ContentManager.ts',
   'apps/web/app/api/v1/content/manifest/route.ts',

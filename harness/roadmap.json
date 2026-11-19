@@ -20,12 +20,8 @@
     "docs/README.md",
     "docs/roadmap/SHOMARA_NATIVE_ROADMAP_FA.md",
     "docs/roadmap/PHASE_CHECKLISTS_FA.md",
-    "docs/architecture/REPOSITORY_MAP_FA.md",
-    "docs/architecture/PACKAGE_BOUNDARIES_FA.md",
-    "docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md",
-    "docs/architecture/ANDROID_MODULE_GRAPH.md",
-    "docs/architecture/ANDROID_BUILD_ENVIRONMENT.md",
-    "docs/adr/ADR-0036-android-native-foundation.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DECISIONS.md",
     "skills/shomara-product-design/SKILL.md",
     "skills/shomara-android-build/SKILL.md",
     "skills/shomara-design-system/SKILL.md",
@@ -46,8 +42,7 @@
     "harness/file-ledger.json",
     "harness/dependency-map.json",
     "harness/WORKLOG.md",
-    "design/playbook/N08R_MISSION_FA.md",
-    "docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md"
+    "design/playbook/N08R_MISSION_FA.md"
   ],
   "commandAllowlist": [
     "git status",

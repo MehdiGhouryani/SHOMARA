@@ -57,7 +57,11 @@ for (const historical of ['revoke delete on public.evidence', 'revoke delete on 
   if (!allSql.toLowerCase().includes(historical)) errors.push(`Missing historical safety rule: ${historical}`);
 }
 
-if (!fs.existsSync(path.join(root, 'docs', 'adr', 'ADR-0001-no-unity-game-architecture.md'))) {
+// DT-41: the per-ADR files were folded into docs/DECISIONS.md, so this asserts that the merged
+// decision record actually carries ADR-0001 instead of that a file with that name exists.
+const decisionsPath = path.join(root, 'docs', 'DECISIONS.md');
+const decisionsBody = fs.existsSync(decisionsPath) ? fs.readFileSync(decisionsPath, 'utf8') : '';
+if (!decisionsBody.includes('ADR-0001')) {
   errors.push('Missing no-Unity architecture ADR');
 }
 

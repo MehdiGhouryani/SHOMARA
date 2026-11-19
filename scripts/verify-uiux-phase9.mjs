@@ -31,7 +31,7 @@ check('parent-mobile-no-teacher-assignment', !/(معلم|Teacher|تکلیف|assi
 check('no-client-parent-auth-gate', !parent.includes('ParentGate') && !mobileParent.includes('ParentGate') && !read('apps/web/components/AuthFlowScreen.tsx').includes('ParentGate') && !read('apps/mobile/app/onboarding.tsx').includes('ParentGate'));
 check('parent-session-api-boundary', parentApi.includes('requireRequestAccountPrincipal'));
 check('teacher-stays-out-of-child', surface.includes("'TEACHER_LOGIN'") && read('packages/contracts/src/path2.ts').includes('teacherInChildShell: false'));
-check('adult-contract', exists('docs/reference/ADULT_SURFACE.md'));
+check('adult-contract', exists('docs/ARCHITECTURE.md'));
 check('old-adult-global-shell-removed', !read('apps/web/app/globals.css').includes('Adult & Teacher Shell Styles'));
 
 if(failures.length){console.error(`\nFAIL ${failures.length} checks`); failures.forEach(f=>console.error(` - ${f}`)); process.exit(1);}

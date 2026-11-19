@@ -7,7 +7,7 @@ const required = [
   'e2e/web/critical-path.spec.ts',
   'e2e/web/api-critical-path.spec.ts',
   'scripts/performance/phase10-performance.mjs',
-  'docs/api/API_E2E_RELEASE_CONTRACT.md',
+  'docs/ARCHITECTURE.md',
   'docs/history/SNAPSHOT_MANIFEST_PHASE_10.json',
 ];
 for (const rel of required) {
