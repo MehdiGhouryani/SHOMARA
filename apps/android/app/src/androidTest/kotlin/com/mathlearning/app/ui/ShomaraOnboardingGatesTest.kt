@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package com.mathlearning.app.ui
 
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -12,6 +15,7 @@ import com.mathlearning.feature.onboarding.ShomaraPlacementState
 import com.mathlearning.feature.onboarding.ShomaraProfileDraft
 import com.mathlearning.feature.onboarding.ShomaraProfileSaveState
 import com.mathlearning.feature.onboarding.ShomaraProfileScreen
+import com.mathlearning.feature.onboarding.ShomaraProfileStrings
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -103,5 +107,26 @@ class ShomaraOnboardingGatesTest {
         }
 
         composeRule.onNodeWithText("ذخیره شد").assertIsDisplayed()
+    }
+
+    @Test
+    fun profileCtaStopsAdvertisingOnClickWhileTheNameIsStillEmpty() {
+        // The onboarding CTAs are now the canonical ShomaraButton (shape + arrow + disabled colour
+        // are parameters), so the quiet-state contract comes with them: a disabled CTA must not
+        // expose an OnClick action to assistive technology. This is the wiring check for that
+        // merge — before it, four hand-rolled copies each had to remember this rule.
+        val draft = ShomaraProfileDraft()
+        composeRule.setContent {
+            ShomaraProfileScreen(
+                draft = draft,
+                onDraftChange = {},
+                saveState = ShomaraProfileSaveState(draft = draft),
+                onSave = {},
+            )
+        }
+
+        composeRule.onNodeWithText(ShomaraProfileStrings.Continue)
+            .assertIsDisplayed()
+            .assert(SemanticsMatcher.keyNotDefined(SemanticsActions.OnClick))
     }
 }

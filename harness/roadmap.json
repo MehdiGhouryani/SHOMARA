@@ -965,7 +965,8 @@
             "ShomaraPhoneLogic: Persian/Arabic digit normalization, 0098/+98/98/0 prefix handling, separators, canonical 09XXXXXXXXX (11 digits), actionable Persian error only when invalid",
             "ShomaraBackLogic: deterministic back target per step (welcome has no route behind; complete exits)",
             "ShomaraWelcomeScreen/ShomaraPhoneScreen composables built from design-system primitives only (numericLtr field for phone, CTA gated on validity)",
-            "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (13/13 tests incl. 6 new)"
+            "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (13/13 tests incl. 6 new)",
+          "DT-15 de-duplication (2026-11-19): the welcome CTA no longer carries its own copy of the button's press/focus state machine, colour and clay-depth lookup, disabled semantics, tap guard, padding and label. ShomaraButton gained three defaulted parameters — `shape` (the owner's pill samples), `disabledContainer`/`disabledContent` (the documented dark-when-disabled CTAs) and a `leading` slot (the drawn arrow, which receives the resolved content colour) — and one internal `OnboardingCta` now backs the welcome, phone and profile buttons. Net effect: -292 lines of duplicated machinery, +43 unused imports removed, and the onboarding CTAs finally get the canonical press-scale feedback. feature:onboarding 92/92 unit tests; instrumented ShomaraOnboardingGatesTest 6/6 (new: a disabled profile CTA does not advertise OnClick) plus Home 5/5, StationSheet 7/7 and JumpAssessmentShell 3/3 regression-green on Pixel_6a."
           ]
         },
         {
@@ -985,7 +986,8 @@
             "PreferencesTokenStore: real DataStore-backed store (JVM file-backed test), blank tokens rejected, clear removes the key entirely, toString redacts",
             "ShomaraAuthSession: token persisted ONLY on verified response; restore fail-closed (missing/rejected clears immediately; offline keeps token for later retry); signOut always clears",
             "gradle three-module test+lint = BUILD SUCCESSFUL (network 11, datastore 6, feature 22 = 39 tests, 0 failures)",
-            "close-out addendum: OTP paste support (fillFromCode LTR with cap) and Expired field state with warm Persian label"
+            "close-out addendum: OTP paste support (fillFromCode LTR with cap) and Expired field state with warm Persian label",
+          "DT-15 de-duplication (2026-11-19): ShomaraOtpConfirmButton is deleted. Its body already delegated every state to ShomaraButtonLogic (its own KDoc still claimed a dark disabled override that the code had deliberately dropped), so the «تأیید کد» CTA is now a plain ShomaraButton — same label, same loading/reduced-motion semantics, same disabled behaviour, now with the canonical press feedback."
           ]
         },
         {
@@ -1005,7 +1007,8 @@
             "ShomaraPlacementState: server-authoritative decision rendering, user skip mutually exclusive with server decision by construction, pending banner while the server decides",
             "ShomaraProfileScreen/ShomaraPlacementScreen built from design-system primitives (feedback banners, gated save button with loading)",
             "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (28/28 tests incl. 6 new)",
-            "close-out addendum: avatar selection from canonical catalog (sun/leaf/cloud/moon), G1-G6 catalog with warmly-locked future grades, real DataStore draft persistence for incomplete-profile resume across process death"
+            "close-out addendum: avatar selection from canonical catalog (sun/leaf/cloud/moon), G1-G6 catalog with warmly-locked future grades, real DataStore draft persistence for incomplete-profile resume across process death",
+          "DT-15 de-duplication (2026-11-19): ShomaraProfileCta is now a thin OnboardingCta call — pill shape, drawn arrow and the owner's dark-when-disabled colour are ShomaraButton parameters instead of a 130-line page-local button. The rendered result keeps the sample's pill, arrow and disabled colour while the press/focus/semantics/tap-guard rules now exist in exactly one place."
           ]
         },
         {

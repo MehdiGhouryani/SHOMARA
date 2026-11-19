@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,13 +19,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +37,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -61,8 +57,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraButton
-import com.mathlearning.core.designsystem.ShomaraButtonLogic
-import com.mathlearning.core.designsystem.ShomaraButtonState
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
 import com.mathlearning.core.designsystem.ShomaraCard
 import com.mathlearning.core.designsystem.ShomaraCardLogic
@@ -816,15 +810,12 @@ private fun ShomaraProfileGradeCard(
 }
 
 /**
- * The page-02 CTA: one big green pill, exactly the Primary button's colours,
- * Clay depth, tap guard, loading and disabled states — but pill-shaped with
- * a Canvas-drawn right-pointing arrow at the physical right, as in the
- * sample. [ShomaraButton] is text-only (no icon slot), so the arrow cannot
- * be added to it; this page-local button reuses its logic object instead of
- * duplicating colours or depth. Mirrors [ShomaraLaunchCta] on page 01.
+ * The page-02 CTA: the same pill and drawn arrow as pages 01/03, plus loading and the page-local
+ * disabled colour the owner asked for. Shape, arrow slot and disabled override are
+ * [ShomaraButton] parameters now, so the page owns no button machinery of its own.
  *
- * OPEN QUESTION (owner): the arrow points right (→) while RTL forward is
- * usually left (←). Reproduced exactly as the sample shows, as on page 01.
+ * OPEN QUESTION (owner): the arrow points right while RTL forward is usually left.
+ * Reproduced exactly as the sample shows, as on page 01.
  */
 @Composable
 private fun ShomaraProfileCta(
@@ -835,127 +826,16 @@ private fun ShomaraProfileCta(
     // F-33: under reduced motion the loading spinner renders as a static dot.
     reducedMotion: Boolean = LocalShomaraReducedMotion.current,
 ) {
-    val tapGuard = rememberShomaraTapGuard()
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
-    val focused by interactionSource.collectIsFocusedAsState()
-    val state = when {
-        !enabled -> ShomaraButtonState.Disabled
-        loading -> ShomaraButtonState.Loading
-        pressed -> ShomaraButtonState.Pressed
-        focused -> ShomaraButtonState.Focused
-        else -> ShomaraButtonState.Default
-    }
-    // Page-local CTA colour: the owner wants «ادامه» dark even while the
-    // name is still empty (mockup shows the dark green). The shared quiet
-    // mapping stays untouched for every other button; here Disabled renders
-    // the darker token and stays non-clickable.
-    val (container, content) = if (state == ShomaraButtonState.Disabled) {
-        ShomaraTokens.ColorPrimaryDark to ShomaraTokens.ColorWhite
-    } else {
-        ShomaraButtonLogic.colors(
-            ShomaraButtonVariant.Primary,
-            state,
-        )
-    }
-    val depth = ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, state)
-    val semanticsLabel = when (state) {
-        ShomaraButtonState.Disabled -> "غیرفعال"
-        ShomaraButtonState.Loading -> "در حال انجام"
-        ShomaraButtonState.Pressed -> "فشرده"
-        else -> ""
-    }
-    // Disabled/Loading buttons must not expose an OnClick action to a11y
-    // services: Compose's clickable keeps advertising OnClick even when
-    // enabled=false, so quiet states skip the clickable modifier entirely
-    // (found by the instrumented N08-02 semantics tests).
-    val interactive = ShomaraButtonLogic.isEnabled(state)
-    val depthElevation = ShomaraClay.specFor(depth).elevation
-    Box(
-        modifier = modifier
-            .defaultMinSize(
-                minWidth = ShomaraButtonLogic.MinTouchTarget,
-                minHeight = ShomaraButtonLogic.minHeight(),
-            )
-            .shadow(depthElevation, RoundedCornerShape(ShomaraTokens.RadiusPill))
-            .background(container, RoundedCornerShape(ShomaraTokens.RadiusPill))
-            .semantics(mergeDescendants = true) {
-                role = Role.Button
-                if (state == ShomaraButtonState.Disabled) disabled()
-                if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
-            }
-            .let {
-                if (interactive) {
-                    it.clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        enabled = true,
-                        role = Role.Button,
-                    ) {
-                        if (tapGuard.beginLatched()) {
-                            try {
-                                onSave()
-                            } finally {
-                                tapGuard.end()
-                            }
-                        }
-                    }
-                } else it
-            }
-            .padding(
-                horizontal = ShomaraTokens.Space16,
-                vertical = ShomaraButtonLogic.VerticalPadding,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (state == ShomaraButtonState.Loading) {
-                if (reducedMotion) {
-                    // F-33: static loading mark — same size and colour as the
-                    // spinner, no rotation.
-                    Box(
-                        modifier = Modifier.size(ShomaraTokens.Space16).background(content, CircleShape),
-                    )
-                } else {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(ShomaraTokens.Space16),
-                        color = content,
-                        strokeWidth = ShomaraTokens.Space4,
-                    )
-                }
-            }
-            Text(
-                text = ShomaraProfileStrings.Continue,
-                style = ShomaraTypography.Title,
-                color = content,
-                textAlign = TextAlign.Center,
-                maxLines = ShomaraButtonLogic.MaxLabelLines,
-            )
-        }
-        // Right-pointing arrow, drawn from the owner SVG (16-icon-arrow) —
-        // the same proportions as the page-01 arrow (ShomaraLaunchLayout
-        // .arrowPoints: tail 0.15, tip 0.85, wings 0.62; this SVG: 0.146,
-        // 0.833, 0.562). Physical right = Alignment.CenterStart in RTL,
-        // exactly where the sample puts it.
-        Canvas(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .size(ShomaraTokens.Space24)
-                .clearAndSetSemantics {},
-        ) {
-            drawPath(
-                path = ShomaraProfileShapes.iconArrowPath(size.width, size.height),
-                color = content,
-                style = Stroke(
-                    width = ShomaraTokens.Space4.toPx(),
-                    cap = StrokeCap.Round,
-                ),
-            )
-        }
-    }
+    OnboardingCta(
+        text = ShomaraProfileStrings.Continue,
+        onClick = onSave,
+        modifier = modifier,
+        enabled = enabled,
+        loading = loading,
+        darkWhenDisabled = true,
+        reducedMotion = reducedMotion,
+        arrow = { content -> OnboardingArrow(content) },
+    )
 }
 
 @Composable

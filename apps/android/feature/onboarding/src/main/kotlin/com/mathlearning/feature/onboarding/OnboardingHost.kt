@@ -1,28 +1,18 @@
 package com.mathlearning.feature.onboarding
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,25 +23,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
-import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraButton
-import com.mathlearning.core.designsystem.ShomaraButtonLogic
-import com.mathlearning.core.designsystem.ShomaraButtonState
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
-import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraOtpInput
@@ -60,7 +39,6 @@ import com.mathlearning.core.designsystem.ShomaraProgressBar
 import com.mathlearning.core.designsystem.ShomaraProgressState
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
-import com.mathlearning.core.designsystem.rememberShomaraTapGuard
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -451,7 +429,8 @@ fun ShomaraOnboardingHost(
                 }
                 // Owner UX: the primary action sits directly under the keypad —
                 // the DEBUG buttons below it used to push «تأیید کد» under the fold.
-                ShomaraOtpConfirmButton(
+                ShomaraButton(
+                    text = ShomaraOtpStepStrings.Confirm,
                     onClick = { scope.launch { holder.verifyOtp() } },
                     enabled = holder.otp.isComplete && !holder.otpBusy,
                     loading = holder.otpBusy,
@@ -565,116 +544,6 @@ internal object ShomaraOtpStepStrings {
     const val SimulationSkip: String = "عبور آزمایشی (حالت توسعه)"
 }
 
-/**
- * The page-local «تأیید کد» CTA: the shared [ShomaraButton] renderer with ONE
- * page-local colour override — the Disabled state renders the dark primary
- * token with white content, the same treatment as the page-02 and page-03
- * page-local CTAs — so the main action stays legible while the code is still
- * incomplete. The shared quiet mapping stays untouched for every other
- * button; states, clay depth, tap guard, loading, reduced motion and
- * semantics are the shared button's, and ShomaraButtonLogic is not modified.
- */
-@Composable
-private fun ShomaraOtpConfirmButton(
-    onClick: () -> Unit,
-    enabled: Boolean,
-    loading: Boolean,
-    modifier: Modifier = Modifier,
-    loadingStateLabel: String = "در حال انجام",
-    // F-33: under reduced motion the loading spinner renders as a static dot —
-    // a spinning indicator is motion the child asked to reduce.
-    reducedMotion: Boolean = LocalShomaraReducedMotion.current,
-) {
-    val tapGuard = rememberShomaraTapGuard()
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
-    val focused by interactionSource.collectIsFocusedAsState()
-    val state = when {
-        !enabled -> ShomaraButtonState.Disabled
-        loading -> ShomaraButtonState.Loading
-        pressed -> ShomaraButtonState.Pressed
-        focused -> ShomaraButtonState.Focused
-        else -> ShomaraButtonState.Default
-    }
-    // Disabled keeps the shared quiet mapping: a dark disabled CTA read as
-    // «looks on, does nothing» on device (owner complaint pattern); the
-    // owner's dark-CTA decision was profile-specific.
-    val (container, content) = ShomaraButtonLogic.colors(
-        ShomaraButtonVariant.Primary,
-        state,
-    )
-    val depth = ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, state)
-    val semanticsLabel = when (state) {
-        ShomaraButtonState.Disabled -> "غیرفعال"
-        ShomaraButtonState.Loading -> loadingStateLabel
-        ShomaraButtonState.Pressed -> "فشرده"
-        else -> ""
-    }
-    // Disabled/Loading buttons must not expose an OnClick action to a11y
-    // services: Compose's clickable keeps advertising OnClick even when
-    // enabled=false, so quiet states skip the clickable modifier entirely
-    // (the shared button's N08-02 instrumented-test pattern).
-    val interactive = ShomaraButtonLogic.isEnabled(state)
-    val depthElevation = ShomaraClay.specFor(depth).elevation
-    Box(
-        modifier = modifier
-            .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget, minHeight = ShomaraButtonLogic.minHeight())
-            .shadow(depthElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .semantics(mergeDescendants = true) {
-                role = Role.Button
-                if (state == ShomaraButtonState.Disabled) disabled()
-                if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
-            }
-            .let {
-                if (interactive) {
-                    it.clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        enabled = true,
-                        role = Role.Button,
-                    ) {
-                        if (tapGuard.beginLatched()) {
-                            try { onClick() } finally { tapGuard.end() }
-                        }
-                    }
-                } else it
-            }
-            .padding(
-                horizontal = ShomaraTokens.Space16,
-                vertical = ShomaraButtonLogic.VerticalPadding,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (state == ShomaraButtonState.Loading) {
-                if (reducedMotion) {
-                    // F-33: static loading mark — same size and colour as the
-                    // spinner, no rotation.
-                    Box(
-                        modifier = Modifier.size(ShomaraTokens.Space16).background(content, CircleShape),
-                    )
-                } else {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(ShomaraTokens.Space16),
-                        color = content,
-                        strokeWidth = ShomaraTokens.Space4,
-                    )
-                }
-            }
-            Text(
-                text = ShomaraOtpStepStrings.Confirm,
-                style = ShomaraTypography.Title,
-                color = content,
-                textAlign = TextAlign.Center,
-                maxLines = ShomaraButtonLogic.MaxLabelLines,
-            )
-        }
-    }
-}
 
 /**
  * Numeric keypad for the OTP step (ShomaraOtpInput owns no input mechanism of its own). The grid

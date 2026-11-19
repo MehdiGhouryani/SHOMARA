@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.role
@@ -157,6 +158,25 @@ fun ShomaraButton(
     // indicator is motion the child asked to reduce. Defaults to the composition-wide flag
     // so a caller cannot forget to pass it.
     reducedMotion: Boolean = LocalShomaraReducedMotion.current,
+    /**
+     * Surface shape. [ShomaraTokens.RadiusMd] is the app-wide default. The onboarding CTAs are
+     * pills because the owner's handoff samples are pills; the shape is a parameter instead of
+     * four copy-pasted button implementations that reimplemented this composable.
+     */
+    shape: Shape = RoundedCornerShape(ShomaraTokens.RadiusMd),
+    /**
+     * Page-local disabled colours, for the documented owner decision that the onboarding CTAs stay
+     * dark-green while the field is still empty. Null keeps the shared quiet mapping, so no
+     * existing caller changes.
+     */
+    disabledContainer: Color? = null,
+    disabledContent: Color? = null,
+    /**
+     * Drawn decoration pinned to the physical start edge (the onboarding arrow). It is placed
+     * inside the button's Box so it never shifts the centred label, and it receives the resolved
+     * content colour so a drawn mark can never drift from its label colour.
+     */
+    leading: (@Composable (Color) -> Unit)? = null,
 ) {
     val pressed by interactionSource.collectIsPressedAsState()
     val focused by interactionSource.collectIsFocusedAsState()
@@ -167,7 +187,14 @@ fun ShomaraButton(
         focused -> ShomaraButtonState.Focused
         else -> ShomaraButtonState.Default
     }
-    val (container, content) = ShomaraButtonLogic.colors(variant, state)
+    // A page-local disabled pair wins only for the Disabled state: every other state keeps the
+    // shared mapping, so an override can never leak into the interactive feedback.
+    val disabledPair = if (disabledContainer != null && disabledContent != null) disabledContainer to disabledContent else null
+    val (container, content) = if (state == ShomaraButtonState.Disabled && disabledPair != null) {
+        disabledPair
+    } else {
+        ShomaraButtonLogic.colors(variant, state)
+    }
     val depth = ShomaraButtonLogic.clayDepth(variant, state)
     val semanticsLabel = when (state) {
         ShomaraButtonState.Disabled -> "غیرفعال"
@@ -195,14 +222,14 @@ fun ShomaraButton(
                 reducedMotion = reducedMotion,
             )
             .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget, minHeight = ShomaraButtonLogic.minHeight())
-            .shadow(depthElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            .shadow(depthElevation, shape)
+            .background(container, shape)
             // E-03: a Ghost button is flat by design, but flat must not mean edgeless — it
             // carries a hairline border in the line token so the touchable area stays visible
             // against the canvas. The depth stays Flat (ADR-0040 R1).
             .then(
                 if (variant == ShomaraButtonVariant.Ghost) {
-                    Modifier.border(ShomaraButtonLogic.borderWidthFor(variant, state), ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                    Modifier.border(ShomaraButtonLogic.borderWidthFor(variant, state), ShomaraTokens.ColorLine, shape)
                 } else Modifier
             )
             .semantics(mergeDescendants = true) {
@@ -254,6 +281,9 @@ fun ShomaraButton(
                 textAlign = TextAlign.Center,
                 maxLines = ShomaraButtonLogic.MaxLabelLines,
             )
+        }
+        if (leading != null) {
+            Box(modifier = Modifier.align(Alignment.CenterStart)) { leading(content) }
         }
     }
 }
