@@ -10,7 +10,7 @@ for (const file of [
   'scripts/android-build.mjs',
   'scripts/verify-android-environment.mjs',
   'docs/ARCHITECTURE.md',
-  'skills/shomara-android-build/SKILL.md',
+  'docs/DESIGN_RULES.md',
 ]) {
   assert.ok(fs.existsSync(path.join(root, file)), `missing Android build harness file: ${file}`);
 }

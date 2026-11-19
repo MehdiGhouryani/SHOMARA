@@ -22,16 +22,7 @@
     "docs/roadmap/PHASE_CHECKLISTS_FA.md",
     "docs/ARCHITECTURE.md",
     "docs/DECISIONS.md",
-    "skills/shomara-product-design/SKILL.md",
-    "skills/shomara-android-build/SKILL.md",
-    "skills/shomara-design-system/SKILL.md",
-    "skills/shomara-screen-execution/SKILL.md",
-    "skills/shomara-learning-content/SKILL.md",
-    "design/MASTER.md",
-    "design/INSPIRATION_GUARDRAILS.md",
-    "design/playbook/PAGE_UIUX_BLUEPRINT.md",
-    "design/playbook/COMPONENT_READINESS.md",
-    "design/playbook/NATIVE_IMPLEMENTATION.md",
+    "docs/DESIGN_RULES.md",
     "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv",
     "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md",
     "content-library/INTEGRATION_GATE.md",
@@ -41,8 +32,7 @@
     "harness/roadmap.json",
     "harness/file-ledger.json",
     "harness/dependency-map.json",
-    "harness/WORKLOG.md",
-    "design/playbook/N08R_MISSION_FA.md"
+    "harness/WORKLOG.md"
   ],
   "commandAllowlist": [
     "git status",

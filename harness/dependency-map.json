@@ -7,8 +7,8 @@
     "scripts"
   ],
   "counts": {
-    "sourceFiles": 553,
-    "importEdges": 1896,
+    "sourceFiles": 552,
+    "importEdges": 1893,
     "v1ImportConsumers": 119,
     "v2ImportConsumers": 84,
     "workspaceImportEdges": 111,
@@ -201,11 +201,10 @@
       "apps/mobile/src/path/__fixtures__/design-trail.json",
       "apps/mobile/src/ui/v1/README.md",
       "apps/mobile/src/ui/v1/icons.ts",
-      "design/playbook/POSE_TO_PAGE_MAPPING_DRAFT.md",
-      "design/playbook/STEP_ZERO_RECONCILIATION.md",
       "design/playbook/assets/home-handoff-v3/ASSET_MANIFEST.json",
       "docs/ARCHITECTURE.md",
       "docs/DECISIONS.md",
+      "docs/DESIGN_RULES.md",
       "docs/README.md",
       "packages/design-system/src/tokens.json",
       "scripts/gen-path-fixture.mjs",

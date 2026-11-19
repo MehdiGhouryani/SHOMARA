@@ -27,7 +27,7 @@ const required = [
   'scripts/verify-android-environment.mjs',
   'scripts/android-build.mjs',
   'scripts/verify-android-build-harness.mjs',
-  'skills/shomara-android-build/SKILL.md',
+  'docs/DESIGN_RULES.md',
 ];
 
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), `missing ${file}`);

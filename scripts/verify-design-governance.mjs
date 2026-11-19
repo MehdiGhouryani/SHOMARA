@@ -10,7 +10,7 @@ const read = (relative) => {
   return fs.readFileSync(file, 'utf8');
 };
 
-const guardrails = read('design/INSPIRATION_GUARDRAILS.md');
+const guardrails = read('docs/DESIGN_RULES.md');
 for (const source of ['Duolingo', 'AVA', 'UI/UX Pro Max', 'Claymorphism']) {
   assert.ok(guardrails.includes(source), `inspiration policy missing ${source}`);
 }
@@ -20,7 +20,7 @@ for (const rule of ['adopt / adapt / reject', 'design dials', 'anti-pattern', 'R
 assert.ok(guardrails.includes('منبع حقیقت بصری'), 'canonical precedence must be explicit');
 assert.ok(guardrails.includes('dependency'), 'external dependency boundary must be explicit');
 
-const readiness = read('design/playbook/COMPONENT_READINESS.md');
+const readiness = read('docs/DESIGN_RULES.md');
 for (const family of [
   'Button', 'TextField/OTP', 'Card/Choice', 'Feedback', 'Progress',
   'TopBar/TabBar', 'Dialog/Sheet', 'AudioControl', 'Manipulative',
@@ -35,11 +35,11 @@ for (const tier of ['flat', 'hint', 'soft', 'featured']) {
 }
 assert.ok(readiness.includes('NATIVE_PENDING'), 'Native evidence boundary is missing');
 
-const master = read('design/MASTER.md');
+const master = read('docs/DESIGN_RULES.md');
 assert.ok(master.includes('design/INSPIRATION_GUARDRAILS.md'), 'design master must route inspiration decisions');
 assert.ok(master.includes('design/playbook/COMPONENT_READINESS.md'), 'design master must route component readiness');
 
-const blueprint = read('design/playbook/PAGE_UIUX_BLUEPRINT.md');
+const blueprint = read('docs/DESIGN_RULES.md');
 for (let id = 1; id <= 17; id += 1) {
   const pageId = String(id).padStart(2, '0');
   assert.ok(blueprint.includes(`| ${pageId} |`), `page UI/UX blueprint missing family ${pageId}`);
@@ -56,11 +56,11 @@ for (const id of ['UI-001', 'UI-020']) {
 }
 assert.ok(backlogRows.slice(1).every((row) => row.includes('NATIVE_PENDING')), 'unimplemented UI backlog rows must remain NATIVE_PENDING');
 
-const routeRegistry = read('design/playbook/ROUTE_REGISTRY.md');
+const routeRegistry = read('docs/DESIGN_RULES.md');
 assert.ok(routeRegistry.includes('PAGE_UIUX_BLUEPRINT.md'), 'route registry must route the page UI/UX blueprint');
 assert.ok(routeRegistry.includes('NATIVE_IMPLEMENTATION_BACKLOG.csv'), 'route registry must route the Native implementation backlog');
 
-const designSkill = read('skills/shomara-design-system/SKILL.md');
+const designSkill = read('docs/DESIGN_RULES.md');
 for (const route of [
   'design/INSPIRATION_GUARDRAILS.md',
   'design/playbook/COMPONENT_READINESS.md',
@@ -69,8 +69,8 @@ for (const route of [
   assert.ok(designSkill.includes(route), `design-system skill missing route: ${route}`);
 }
 
-const productSkill = read('skills/shomara-product-design/SKILL.md');
-const screenSkill = read('skills/shomara-screen-execution/SKILL.md');
+const productSkill = read('docs/DESIGN_RULES.md');
+const screenSkill = read('docs/DESIGN_RULES.md');
 assert.ok(productSkill.includes('skills/shomara-design-system/SKILL.md'), 'product-design skill must route shared UI work');
 assert.ok(screenSkill.includes('skills/shomara-design-system/SKILL.md'), 'screen-execution skill must route shared UI work');
 
