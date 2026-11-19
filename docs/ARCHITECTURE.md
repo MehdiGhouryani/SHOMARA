@@ -30,7 +30,7 @@
 - | PACKAGE_BOUNDARIES_FA.md:26 | «repository مرز local/remote» | خلاف مدل آفلاین | **AMENDED:** هماهنگی Room/DataStore ↔ پکیج bundle | — |
 - | skills/shomara-product-design:27 | «server-authoritative» | خلاف §2 | **AMENDED** (local source authoritative) | — |
 
-_منبع: `docs/architecture/ADR_RECONCILIATION_P2_FA.md`_
+_منبع: `docs/notes/ADR_RECONCILIATION_P2_FA.md`_
 
 ## Android build environment contract
 
@@ -59,7 +59,7 @@ _منبع: `docs/architecture/ADR_RECONCILIATION_P2_FA.md`_
 - - **هویت، نه نام پوشه:** preflight پکیج را از `package.xml` داخل پوشهٔ platform تأیید می‌کند (`path="platforms;android-37.0"`) — چیدمان legacy «inconsistent location» (پکیج 37.0 در پوشهٔ `android-37`، همان حالت موجود روی ماشین مالک با Warning صریح sdkmanager) نیز فقط وقتی می‌پذیرده که package.xml همان پین را declare کن…
 - - **compileSdk:** عدد صحیح `37` می‌ماند (AGP 9.4 حداکثر API 37)؛ نسخهٔ minor نصب‌شده مستقل از compileSdk است و در یک ثابت (`PINNED_PLATFORM_PACKAGE`) و یک env واریبل workflow پین شده است.
 
-_منبع: `docs/architecture/ANDROID_BUILD_ENVIRONMENT.md`_
+_منبع: `docs/notes/ANDROID_BUILD_ENVIRONMENT.md`_
 
 ## Android Native module graph — N07 offline content foundation · به‌روزرسانی P3 (ADR-0041, 2026-11-13)
 
@@ -84,7 +84,7 @@ _منبع: `docs/architecture/ANDROID_BUILD_ENVIRONMENT.md`_
 **Scope ownership (ADR-0041)**
 - | Scope | Owner | Lifecycle | Notes |
 
-_منبع: `docs/architecture/ANDROID_MODULE_GRAPH.md`_
+_منبع: `docs/notes/ANDROID_MODULE_GRAPH.md`_
 
 ## برنامهٔ یکپارچه‌سازی Design System در مهاجرت Native
 
@@ -113,7 +113,7 @@ _منبع: `docs/architecture/ANDROID_MODULE_GRAPH.md`_
 **موج B — Compose primitives**
 - - `ShomaraTheme` و component catalog؛
 
-_منبع: `docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md`_
+_منبع: `docs/notes/DESIGN_SYSTEM_MIGRATION_FA.md`_
 
 ## گزارش baseline فنی SHOMARA — ارزیابی اجرایی ممیزی زیرساخت (Phase 0)
 
@@ -142,7 +142,7 @@ _منبع: `docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md`_
 - | `npm run verify:content-library` | 0 | PASS (10 protected originals, 25 stations, 15 patterns, 232 draft audio rows, 18 audited issues) |
 - | `npm run verify:migrations` | 0 | PASS (74 migrations, latest=0074_audio_cms_tables.sql) |
 
-_منبع: `docs/architecture/INFRASTRUCTURE_BASELINE_REPORT_FA.md`_
+_منبع: `docs/notes/INFRASTRUCTURE_BASELINE_REPORT_FA.md`_
 
 ## نقشهٔ راه اجرای زیرساخت SHOMARA — Phase 0 تا 6 (وابستگی‌آگاه)
 
@@ -171,7 +171,7 @@ _منبع: `docs/architecture/INFRASTRUCTURE_BASELINE_REPORT_FA.md`_
 - - P2-2 profile محلی + چند/تک پروفایل `[O5]` + Parent PIN هش‌شده fail-closed + ParentGate با verifier محلی.
 - - P2-3 حذف `:sync` و transport آن‌لاین + `ShomaraRuntimeConfig` + `LessonGateway` HTTP `[O3-b]`؛ بازنشستهٔ `:core:network` (یا نگاه‌داشت صفر-استفاده با ADR).
 
-_منبع: `docs/architecture/INFRASTRUCTURE_EXECUTION_ROADMAP_FA.md`_
+_منبع: `docs/notes/INFRASTRUCTURE_EXECUTION_ROADMAP_FA.md`_
 
 ## ثبت شکاف‌های زیرساخت SHOMARA (Phase 0 — ممیزی فنی)
 
@@ -200,7 +200,7 @@ _منبع: `docs/architecture/INFRASTRUCTURE_EXECUTION_ROADMAP_FA.md`_
 - - **اثر:** شکست هر verifier امنیتی/معماری در check-run سبز دیده می‌شود؛ مرز «required» فقط job `core` (build/typecheck/vitest) است.
 - - **راه‌حل:** تفکیک: یک job required «static-core» برای verifierهای غیرمرورگری، و فقط gateهای Chromium/parity در job اطلاعاتی بمانند تا وقتی runner سبز شود؛ سپس حذف `continue-on-error`.
 
-_منبع: `docs/architecture/INFRASTRUCTURE_GAP_REGISTER_FA.md`_
+_منبع: `docs/notes/INFRASTRUCTURE_GAP_REGISTER_FA.md`_
 
 ## Owner Decision Register — SHOMARA (v2، زنده — فاز P2)
 
@@ -228,7 +228,7 @@ _منبع: `docs/architecture/INFRASTRUCTURE_GAP_REGISTER_FA.md`_
 - - **ریسک:** 🛠 (a) دو معنای «Gateway» در کد برای یک سال آینده · 🚢 هر دو بی‌اثر بر release تا محتوا (P4/P7) بیاید · 🔒 مرز answer-key در هر دو باید snapshot-test شود · 🧒 بی‌اثر.
 - - **پیشنهاد مهندسی (غیرمصوب):** (b) مطابق مطالعهٔ آفلاین؛ idempotency-key قطعی برای هویت attempt حفظ شود.
 
-_منبع: `docs/architecture/INFRASTRUCTURE_OWNER_DECISIONS_FA.md`_
+_منبع: `docs/notes/INFRASTRUCTURE_OWNER_DECISIONS_FA.md`_
 
 ## معماری هدف زیرساخت SHOMARA (نسخهٔ Phase 0 — برای تأیید مالک)
 
@@ -258,14 +258,14 @@ _منبع: `docs/architecture/INFRASTRUCTURE_OWNER_DECISIONS_FA.md`_
 **3. لایهٔ داده (پیشنهاد، مشمول O4)**
 - Room (تخمین ۹ جدول؛ نام‌ها قطعی نیستند):
 
-_منبع: `docs/architecture/INFRASTRUCTURE_TARGET_ARCHITECTURE_FA.md`_
+_منبع: `docs/notes/INFRASTRUCTURE_TARGET_ARCHITECTURE_FA.md`_
 
 ## O6 Decision Pack — سرنوشت Backend/Supabase/apps-web (P11)
 
 **O6 Decision Pack — سرنوشت Backend/Supabase/apps-web (P11)**
 - - **تاریخ:** 2026-11-14 · **وضعیت O6:** **OPEN** — طبق مأموریت صریح مالک، **فقط این Decision Pack تهیه شد؛ هیچ حذف، هیچ گسترش production و هیچ تغییری در runtime کودک انجام نشده**.
 - - **وضعیت child runtime (بی‌تغییر در هر سه گزینه):** کلاینت کودک صفر وابستگی Backend دارد (URLها null، بدون INTERNET permission، موتور + پکیج‌انجین آفلاین در P5/P6/P8 اثبات شدند). این Decision Pack فقط سمت authoring/server را تعیین تکلیف می‌کند.
-- - **Inventory ماشین‌خوان:** `docs/architecture/o6-pack/inventory.json` — **۴۹ API route · ۷۴ migration · ۸ فایل InMemory repo** (تولید با `node tools/o6-inventory.mjs`).
+- - **Inventory ماشین‌خوان:** `docs/notes/o6-pack/inventory.json` — **۴۹ API route · ۷۴ migration · ۸ فایل InMemory repo** (تولید با `node tools/o6-inventory.mjs`).
 **گزینهٔ A — Retain Backend/CMS as independent authoring service**
 **مفهوم:** Supabase + apps/web به‌عنوان سرویس authoring/مدیریت بزرگسال زنده می‌مانند؛ child runtime کاملاً مستقل می‌ماند (آماده است).
 **کارهای لازم (endpoint-by-endpoint / migration-by-migration):**
@@ -287,14 +287,14 @@ _منبع: `docs/architecture/INFRASTRUCTURE_TARGET_ARCHITECTURE_FA.md`_
 - 6. ۷۴ migration: archive + نگه‌داشت در repo (هیچ SQL پاک نمی‌شود)؛ retirement plan per-table در همین pack.
 **ریسک:** نگه‌داری دو استک موقت تا اتمام retire؛ تیم authoring باید با CLI کار کند.
 
-_منبع: `docs/architecture/O6_DECISION_PACK_FA.md`_
+_منبع: `docs/notes/O6_DECISION_PACK_FA.md`_
 
 ## بستهٔ تصمیم مالک — O5: هویت محلی تک‌پروفایل یا چندپروفایل
 
 **بستهٔ تصمیم مالک — O5: هویت محلی تک‌پروفایل یا چندپروفایل**
 - - تاریخ تهیه: 2026-11-18
 - - وضعیت: **برای تصمیم مالک؛ هیچ گزینه‌ای در این سند تصویب نشده است.**
-- - حاکم: `docs/architecture/INFRASTRUCTURE_OWNER_DECISIONS_FA.md`، بخش O5.
+- - حاکم: `docs/notes/INFRASTRUCTURE_OWNER_DECISIONS_FA.md`، بخش O5.
 - - قرارداد محصول: ADR-0039 (Accepted, 2026-11-05) — کاملاً آفلاین، بدون حساب/سرور؛ هویت کودک و PIN والد کاملاً محلی.
 - - هدف: جلوگیری از migration سنگین progress و حفظ privacy و جداسازی دادهٔ کودکان.
 **1. تصمیم موردنیاز**
@@ -316,7 +316,7 @@ _منبع: `docs/architecture/O6_DECISION_PACK_FA.md`_
 - 2. ساده‌سازی اولین اجرا برای کودک و والد مهم‌تر از ورود زودهنگام به مدیریت خانوادهٔ چندپروفایلی است.
 - 3. schema باید از ابتدا هر ردیف progress/session/attempt را به یک `childProfileId` پایدار نسبت دهد؛ در آینده می‌توان چند ردیف پروفایل را بدون انتقال progress از شناسه‌های مبهم وارد کرد.
 
-_منبع: `docs/architecture/OWNER_DECISION_BRIEF_O5_LOCAL_PROFILE_FA.md`_
+_منبع: `docs/notes/OWNER_DECISION_BRIEF_O5_LOCAL_PROFILE_FA.md`_
 
 ## مرز package و module در SHOMARA
 
@@ -346,7 +346,7 @@ _منبع: `docs/architecture/OWNER_DECISION_BRIEF_O5_LOCAL_PROFILE_FA.md`_
 **Naming**
 - - فایل component/view با PascalCase، utility با camelCase و test کنار source.
 
-_منبع: `docs/architecture/PACKAGE_BOUNDARIES_FA.md`_
+_منبع: `docs/notes/PACKAGE_BOUNDARIES_FA.md`_
 
 ## نقشهٔ repository و طبقه‌بندی مسیرها
 
@@ -375,7 +375,7 @@ _منبع: `docs/architecture/PACKAGE_BOUNDARIES_FA.md`_
 - - `AGENTS.md`: قوانین پایدار عامل‌ها.
 - - `START_HERE.md`: وضعیت انسانی روز.
 
-_منبع: `docs/architecture/REPOSITORY_MAP_FA.md`_
+_منبع: `docs/notes/REPOSITORY_MAP_FA.md`_
 
 ## SHOMARA — Deep Transformation Decision Register
 
@@ -404,7 +404,7 @@ _منبع: `docs/architecture/REPOSITORY_MAP_FA.md`_
 - | حذف V1/Expo و verifierهای legacy | DEFERRED | فقط بعد از parity route-by-route و اثبات consumer-free. |
 - | HomePathScreen / HomeUiState موازی | OPEN | استفادهٔ زندهٔ آن‌ها باید با reference scan کامل اثبات شود؛ حذف عجولانه ممنوع. |
 
-_منبع: `docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md`_
+_منبع: `docs/notes/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md`_
 
 ## Adult Surface
 

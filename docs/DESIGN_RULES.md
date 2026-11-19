@@ -266,7 +266,7 @@ _منبع: `design/playbook/MASTER_EXECUTION.md`_
 - ترتیب اجباری:
 - 1. AGENTS.md
 - 2. START_HERE.md
-- 4. docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md
+- 4. docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md
 - 5. design/MASTER.md
 - 6. design/INSPIRATION_GUARDRAILS.md
 - 7. design/playbook/PAGE_UIUX_BLUEPRINT.md
@@ -826,7 +826,7 @@ _منبع: `design/playbook/ZCODE_MASTER_PROMPT.md`_
 - Produce reproducible evidence; never turn a missing toolchain into a green result.
 **Required workflow**
 - 1. Read `AGENTS.md`, `START_HERE.md`, run `node tools/harness.mjs validate` and `node tools/harness.mjs resume`.
-- 2. Read `docs/architecture/ANDROID_BUILD_ENVIRONMENT.md` and the active roadmap task.
+- 2. Read `docs/notes/ANDROID_BUILD_ENVIRONMENT.md` and the active roadmap task.
 - 3. Run `npm run android:doctor`. If it reports `BLOCKED_ENV`, fix only the named JDK/SDK requirement and rerun.
 - 4. Run `npm run android:gate` for unit/lint/compile evidence.
 - 5. Run `npm run android:assemble:debug` only when a debug APK is requested or the active task permits it.

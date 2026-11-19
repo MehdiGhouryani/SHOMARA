@@ -131,7 +131,7 @@ function resumeReport(roadmap) {
     'read:',
     '  1. AGENTS.md',
     '  2. START_HERE.md',
-    '  3. docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md',
+    '  3. docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md',
     '',
     'allowed paths:',
     ...phase.allowedPaths.map((item) => `  - ${item}`),

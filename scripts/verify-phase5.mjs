@@ -47,7 +47,7 @@ const required = [
   'apps/web/app/api/v1/learning/attempts/submit/route.ts',
   'docs/ARCHITECTURE.md',
   'docs/DECISIONS.md',
-  'docs/history/PACKAGE_MANIFEST_PHASE_5.json',
+  'docs/notes/PACKAGE_MANIFEST_PHASE_5.json',
 ];
 for (const file of required) {
   if (!fs.existsSync(path.join(root, file))) throw new Error(`Missing: ${file}`);

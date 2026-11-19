@@ -72,7 +72,7 @@ for (const pattern of ['*.keystore', '*.jks', 'credentials.json', 'google-servic
 }
 check('gitignore-env', /^\.env$/m.test(gitignore) && /^\.env\.\*$/m.test(gitignore) && /^!\.env\.example$/m.test(gitignore), 'env secrets ignored, the template stays tracked');
 
-const previewDoc = read('docs/release/APK_PREVIEW.md');
+const previewDoc = read('docs/notes/APK_PREVIEW.md');
 check('doc-owner-commands', previewDoc.includes('npx eas-cli@latest whoami') && previewDoc.includes('npx eas-cli@latest login') && previewDoc.includes('build --platform android --profile preview'));
 check('doc-profiles-warning', previewDoc.includes('production') && previewDoc.includes('market-apk'), 'the doc must warn against the store profiles');
 

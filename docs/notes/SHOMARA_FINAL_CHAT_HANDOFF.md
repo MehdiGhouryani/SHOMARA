@@ -75,7 +75,7 @@ git status --short --branch
 git log -3 --oneline
 cat AGENTS.md
 cat START_HERE.md
-cat docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md
+cat docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md
 node tools/harness.mjs validate
 node tools/harness.mjs status
 node tools/harness.mjs next

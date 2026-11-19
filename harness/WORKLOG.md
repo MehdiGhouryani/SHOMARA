@@ -31,7 +31,7 @@
 - gates: Node 22.22 build/typecheck PASS؛ Vitest 65 file / 502 test PASS؛ repository، release و dependency verifier PASS.
 - static: 76/81 PASS؛ پنج flow/parity gate فقط به‌علت Chromium unavailable در وضعیت `BLOCKED_ENV` باقی ماند.
 - outcome: `N01 DONE_WITH_BLOCKER`؛ هیچ threshold یا assertion تضعیف نشد.
-- handoff: manifest تحویل در `docs/delivery/SHOMARA_N01_CHECKPOINT.md`؛ task بعدی `N02-01` در انتظار HG-01 مالک برای applicationId/minSdk.
+- handoff: manifest تحویل در `docs/notes/SHOMARA_N01_CHECKPOINT.md`؛ task بعدی `N02-01` در انتظار HG-01 مالک برای applicationId/minSdk.
 
 ## 2026-10-28 — DESIGN checkpoint / commit e4035b0
 
@@ -95,7 +95,7 @@
 - design: برای هر خانواده outcome، focal object، CTA، Clay depth، state matrix و reject اختصاصی در `PAGE_UIUX_BLUEPRINT.md` قفل شد؛ ترتیب U0–U6 dependencies را از foundation تا cross-route QA مشخص می‌کند.
 - execution: ۲۰ work item در `NATIVE_IMPLEMENTATION_BACKLOG.csv` با module/components/states/blocker/exit evidence ثبت شد و همگی تا شواهد واقعی `NATIVE_PENDING` باقی ماندند.
 - governance: همهٔ ۱۷ page contract، route registry، Design Master، دو Skill اجرایی، docs index، design verifier، file ledger و resume protocol به blueprint/backlog canonical متصل شدند.
-- handoff: `docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md` برای ادامهٔ مستقل از تاریخچهٔ چت ایجاد شد؛ N02 اکنون ۱۰/۱۱ و فقط `N02-07` محیطی مسدود است.
+- handoff: `docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md` برای ادامهٔ مستقل از تاریخچهٔ چت ایجاد شد؛ N02 اکنون ۱۰/۱۱ و فقط `N02-07` محیطی مسدود است.
 - gates: harness/design/skills/repository PASS؛ package build و typecheck هر ۹ workspace PASS؛ Vitest برابر ۶۵ فایل/۵۰۲ تست؛ static همان ۸۱/۸۶ و پنج failure فقط Chromium؛ Android preflight همان SDK 37 blocker را بازتولید کرد.
 - boundary: هیچ Native route، APK/AAB، audio asset یا production content ساخته/فعال نشد؛ N03 تا compile/lint/unit واقعی شروع نمی‌شود.
 
@@ -137,7 +137,7 @@
 
 ## 2026-10-31 — N02-07 / N02 closure + stage 4B cleanup — DIFF_READY, uncommitted
 
-- closure: `N02-07` BLOCKED → DONE و فاز `N02` IN_PROGRESS → DONE در `harness/roadmap.json`، بر اساس شواهد همان اجرا: `npm run android:gate` = PASS (exit 0) با JDK 17 Temurin و `D:\SDK`/platform 37، رفع خطای lint واقعی `themes.xml` با qualifier `values-v27`، `android:doctor` = READY، و module graph ثبت‌شده در `docs/architecture/ANDROID_MODULE_GRAPH.md`. debug APK عمداً ساخته نشد (متن task مجوز نداد)؛ N03 شروع نشد و فقط با go-ahead مالک از `N03-01` باز می‌شود.
+- closure: `N02-07` BLOCKED → DONE و فاز `N02` IN_PROGRESS → DONE در `harness/roadmap.json`، بر اساس شواهد همان اجرا: `npm run android:gate` = PASS (exit 0) با JDK 17 Temurin و `D:\SDK`/platform 37، رفع خطای lint واقعی `themes.xml` با qualifier `values-v27`، `android:doctor` = READY، و module graph ثبت‌شده در `docs/notes/ANDROID_MODULE_GRAPH.md`. debug APK عمداً ساخته نشد (متن task مجوز نداد)؛ N03 شروع نشد و فقط با go-ahead مالک از `N03-01` باز می‌شود.
 - verifier: `scripts/verify-phase5.mjs` اکنون خروجی generated Gradle (`build`، `.gradle`) را از اسکن Unity مستثنا می‌کند (منبع در برابر artifact؛ AGENTS §4) — gate دیگر نیازی به پاک‌سازی دستی `build/` ندارد.
 - cleanup: شواهد اجرا از `docs/archive/evidence/2026-10-31/` به خارج از repo منتقل شد: `/tmp/shomara-evidence-2026-10-31` (grounding-report، final-report، ci-honesty-inventory و ۳۳ فایل baseline) تا dependency-map فقط فایل‌های واقعی repo را ببیند؛ `.zcode/` (ابزار عامل محلی) به `.gitignore` افزوده شد؛ ارجاع START_HERE به‌روز شد.
 - evidence note: مسیر قبلی `docs/archive/evidence/2026-10-31/` در دو entry قبلی همین WORKLOG مذکور است؛ مسیر معتبر فعلی `/tmp/shomara-evidence-2026-10-31` است (append-only حفظ شد).
@@ -190,7 +190,7 @@
 
 - `ShomaraDesignSystemCatalog`: fixture قطعی light theme برای هر ۹ خانواده (RTL رابط + LTR ریاضی)؛ ماتریس ۳۶۰/۳۹۰/۴۱۲ × font scale 1/2 با تست JVM (۴ تست؛ مجموع ماژول ۵۶/۵۶). Screenshot واقعی صادقانه NATIVE_PENDING ماند (Paparazzi در cache آفلاین موجود نبود؛ افزودن plugin تصمیم مالک است).
 - `scripts/verify-design-system-native.mjs`: گیت صفر raw token (hex/dp/sp/FontWeight خارج از ShomaraTokens.kt) روی :core:designsystem و :app + ممنوعه‌های ایمنی کودک؛ اولین اجرا دو literal خام در FoundationScreen.kt (placeholder N02) گرفت که توکنیزه شد و `:app` به `:core:designsystem` وابسته شد؛ PASS (۱۸ فایل Kotlin).
-- ثبت صادقانه: `docs/design/NATIVE_COMPONENT_READINESS_N03.md` — جدول ۹ خانواده با تفکیک JVM/semantics/catalog از screenshot/device.
+- ثبت صادقانه: `docs/notes/NATIVE_COMPONENT_READINESS_N03.md` — جدول ۹ خانواده با تفکیک JVM/semantics/catalog از screenshot/device.
 - closure: N03-06 = DONE؛ N03-07 = DONE_WITH_BLOCKER (HG-02 امضای مالک + شواهد device/paparazzi)؛ فاز N03 = DONE_WITH_BLOCKER (8/8)؛ harness next = N04-01.
 - boundary: هیچ commit برای این milestone انجام نشد (DIFF_READY)؛ N04 شروع نشد.
 
@@ -236,11 +236,11 @@
 ## 2026-10-31 — MEGA-STAGE N04 close-out — deltas beyond the completed phase — atomic commit (DIFF_READY)
 
 - audit: هدف تکراری بود؛ همهٔ اقلام اصلی (HG-02، ۷ task، سه ماژول، APK، 88/88) قبلاً انجام و commit شده بودند؛ فقط دلتاهای واقعی اجرا شد.
-- module graph: `docs/architecture/ANDROID_MODULE_GRAPH.md` به گرام N04 (۸ ماژول + مرزها) به‌روز شد؛ allowedPaths آن سند + `core:model/**` را مجاز کرد.
+- module graph: `docs/notes/ANDROID_MODULE_GRAPH.md` به گرام N04 (۸ ماژول + مرزها) به‌روز شد؛ allowedPaths آن سند + `core:model/**` را مجاز کرد.
 - `:core:model`: `ShomaraLaunchState` (UI-001: Resolving/NewUser/RestoringSession/RecoverIncompleteProfile/Offline/Error)، `ShomaraGradeCatalog` (G1..G6 آینه‌ی contracts؛ G2+ قفل با توضیح گرم «به‌زودی»)، `ShomaraAvatarCatalog` (sun/leaf/cloud/moon) — آینه‌ی `packages/contracts/src/onboarding.ts`.
 - `:feature:onboarding`: نگه‌داشت launch→mode (fail-closed)، `ShomaraFlowUiState` (FirstRun/Resume/Back/Saving/Error)، OTP paste (`fillFromCode` LTR سقف‌دار) + حالت Expired با برچسب گرم (پاک‌شدن در ورود بعدی)، انتخاب آواتار، resume draft با DataStore واقعی (`PreferencesProfileDraftStore`) و `OnboardingRoutes.stepFor` برای process-death؛ host و app به draftStore وصل شدند.
 - guard: `verify-design-system-native.mjs` اکنون کل `apps/android/feature` (منابع production، بدون src/test) را اسکن می‌کند — PASS (۲۶ فایل).
-- readiness: `docs/product/ONBOARDING_JOURNEY_READINESS_N04.md` با تفکیک صادقانهٔ اثبات‌شده/NATIVE_PENDING.
+- readiness: `docs/notes/ONBOARDING_JOURNEY_READINESS_N04.md` با تفکیک صادقانهٔ اثبات‌شده/NATIVE_PENDING.
 - evidence: feature 50 + model 2 + designsystem 56 تست JVM سبز؛ `:app:compileDebugKotlin` PASS.
 
 ## 2026-11-01 — N05 شروع — M1/M2: wiring + N05-01 child shell — atomic commit
@@ -340,7 +340,7 @@
 
 - `OfflineJourneyTest`: سفر بحرانی کامل (manifest کش‌شده → آفلاین → process death → restore → drain idempotent با همان key → Server-Wins به COMPLETED) + قرنطینه SHA-256 خراب برای manifest و باینری صوت.
 - :app به :core:database و :sync وصل شد (AppContainer: localDatabase + outboxSyncEngine؛ transport تا I2 retriable). module graph به N07 (۱۶ ماژول) به‌روز شد.
-- readiness در `docs/content/OFFLINE_CMS_AUDIO_READINESS_N07.md`. closure: فاز N07 DONE (9/9)؛ pointer → N07-07؛ next = N08-01.
+- readiness در `docs/notes/OFFLINE_CMS_AUDIO_READINESS_N07.md`. closure: فاز N07 DONE (9/9)؛ pointer → N07-07؛ next = N08-01.
 
 ## 2026-11-03 — N08 شروع — M1: تثبیت کار نیمه‌کارهٔ N08-08 + رفع دو شکست گیت — atomic commit
 
@@ -837,8 +837,8 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 ## 2026-11-14 — IPA-P11 (O6 Decision Pack — بدون اجرا) — branch infra/p10-identity-privacy
 
 - **وضعیت O6 صادقانه:** OPEN → طبق مأموریت صریح مالک، **فقط Decision Pack** تهیه شد؛ **هیچ حذف، هیچ گسترش production، هیچ تغییری در runtime کودک** انجام نشد.
-- **Inventory ماشین‌خوان از وضعیت واقعی repo** (`node tools/o6-inventory.mjs` → `docs/architecture/o6-pack/inventory.json`): **۴۹ API route** (فهرست کامل endpoint-by-endpoint با dynamic segmentها) · **۷۴ migration** · **۸ فایل InMemory repo** · child runtime coupling = NONE (اثبات P5/P6/P8).
-- **Decision Pack** (`docs/architecture/O6_DECISION_PACK_FA.md`): سه مسیر اجرایی با کارهای گام‌به‌گام —
+- **Inventory ماشین‌خوان از وضعیت واقعی repo** (`node tools/o6-inventory.mjs` → `docs/notes/o6-pack/inventory.json`): **۴۹ API route** (فهرست کامل endpoint-by-endpoint با dynamic segmentها) · **۷۴ migration** · **۸ فایل InMemory repo** · child runtime coupling = NONE (اثبات P5/P6/P8).
+- **Decision Pack** (`docs/notes/O6_DECISION_PACK_FA.md`): سه مسیر اجرایی با کارهای گام‌به‌گام —
   **A** Retain as authoring service: persistent repos ×۸، Object Storage + signed URLs + checksum، RBAC/RLS/session/CSRF/rate-limit/audit، ۷۴ migration روی Local Supabase + Integration test چهار نقش، backup/restore، deploy separation — بزرگ‌ترین برنامه.
   **B** ⭐ توصیهٔ فنی (غیرمصوب): authoring محلی + export پکیج امضاشده؛ زیرساختش از P7 آماده (pipeline + validator + gate + builder)؛ باقی‌مانده: sign CLI مالک + archive/deprecation + verifier R11؛ retire ترتیبی auth→learning→sync→missions→teacher→admin با consumer-proof؛ ۷۴ migration archive و نگه‌داشت (هیچ SQL پاک نمی‌شود).
   **C** Retire کامل با archive (بازگشت‌ناپذیرترین).
@@ -924,7 +924,7 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **Regression coverage authored:** normal write, duplicate replay without timestamp change, 12 concurrent same-key retries, cross-session collision, mismatched session IDs, close/reopen durability and CONTENT-018 projection. These tests are **written, not run** in this execution environment.
 - **Composition root:** actual `container.lessonRecords` is passed MainActivity → ShomaraApp → LessonHost; the root repository argument is required instead of silently defaulting to null. Release remains without draft content/evaluator, so this is not a production lesson claim.
 - **Home UX correction:** removed hardcoded grade/chapter and default-zero progress summary; removed the Continue card because it opened the same Station Start Sheet as the Current path node. Header, Path graph, station sheet and tab navigation remain. Do not restore summary until identity-backed UiState is available.
-- **Decision register:** `docs/architecture/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md` records KEEP/REVISE/OPEN/SUPERSEDED/BLOCKED, evidence, trade-offs and human gates.
+- **Decision register:** `docs/notes/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md` records KEEP/REVISE/OPEN/SUPERSEDED/BLOCKED, evidence, trade-offs and human gates.
 - **Unverified:** Gradle compile/lint/Robolectric, Android instrumentation, screenshot sweep, TalkBack and physical-device tests. No local project runtime/Android SDK is exposed in this session; no exit codes are fabricated.
 - **External/product blockers:** O1/O2/O3/O5/O6/O7 remain owner decisions; correction: ADR-0039 already approves fully-offline/no-server product; OTP/token/session is legacy migration debt to retire in Phase 2 after O5; 24 stations, ST07 media, human review/rights remain unfulfilled; P15 release status stays BLOCKED.
 - **Code commits:** `ab5bcba`, `6f3a8a9`, `261c6bd`, `d5c9af2`, `ea4a8ed`, `c0a65fb`, `dd91193`.

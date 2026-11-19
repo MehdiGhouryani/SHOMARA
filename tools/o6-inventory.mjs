@@ -42,6 +42,6 @@ const pack = {
   },
 };
 
-fs.mkdirSync('docs/architecture/o6-pack', { recursive: true });
-fs.writeFileSync('docs/architecture/o6-pack/inventory.json', JSON.stringify(pack, null, 2) + '\n');
+fs.mkdirSync('docs/notes/o6-pack', { recursive: true });
+fs.writeFileSync('docs/notes/o6-pack/inventory.json', JSON.stringify(pack, null, 2) + '\n');
 console.log(`O6 INVENTORY: routes=${routes.length} migrations=${migrations.length} inMemory=${inMemory.length}`);

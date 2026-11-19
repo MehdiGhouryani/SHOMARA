@@ -64,7 +64,7 @@
       "consumer": "agents and owner"
     },
     {
-      "path": "docs/architecture/**",
+      "path": "docs/notes/**",
       "class": "CANONICAL_ACTIVE",
       "owner": "architecture",
       "action": "keep",
@@ -120,7 +120,7 @@
       "consumer": "route migration and handoff"
     },
     {
-      "path": "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md",
+      "path": "docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md",
       "class": "CANONICAL_ACTIVE",
       "owner": "delivery",
       "action": "use as the final independent handoff for the next chat",

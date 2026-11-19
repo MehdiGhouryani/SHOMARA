@@ -28,9 +28,9 @@ npm run android:doctor
 npm run android:gate
 ```
 
-`BLOCKED_ENV` را با static PASS جایگزین نکن. قرارداد محیط در `docs/architecture/ANDROID_BUILD_ENVIRONMENT.md` است.
+`BLOCKED_ENV` را با static PASS جایگزین نکن. قرارداد محیط در `docs/notes/ANDROID_BUILD_ENVIRONMENT.md` است.
 
-برای ادامه از چت جدید، ابتدا `docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md` را بخوان. قرارداد نهایی ۱۷ خانواده صفحه در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و صف اجرای ۲۰ work item در `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` است. تا سبزشدن واقعی `N02-07` هیچ ردیف `NATIVE_PENDING` را به IMPLEMENTED/TESTED تغییر نده و N03 را شروع نکن.
+برای ادامه از چت جدید، ابتدا `docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md` را بخوان. قرارداد نهایی ۱۷ خانواده صفحه در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و صف اجرای ۲۰ work item در `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` است. تا سبزشدن واقعی `N02-07` هیچ ردیف `NATIVE_PENDING` را به IMPLEMENTED/TESTED تغییر نده و N03 را شروع نکن.
 
 ## routing مهارت‌ها
 
