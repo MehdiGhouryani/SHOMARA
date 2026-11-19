@@ -5,6 +5,7 @@ import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -23,6 +24,7 @@ import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.feature.lesson.ShomaraLessonHost
+import com.mathlearning.feature.lesson.ShomaraTemplateSkeletonStrings
 import com.mathlearning.feature.onboarding.ShomaraPlacementScreen
 import com.mathlearning.feature.onboarding.ShomaraPlacementState
 import com.mathlearning.feature.onboarding.ShomaraProfileDraft
@@ -564,6 +566,28 @@ class ShomaraA11ySweepTest {
     }
 
     @Test
+    fun lessonDiscoverWithoutServerOptionsIsHonestAndNavigable() {
+        // The deepest screen in the app in the state it actually ships today: the lesson opens in
+        // P1 discovery while the server has no options yet (O5). The surface must say so, keep the
+        // exit reachable, and never label the empty slots as if they were real choices.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraLessonHost(
+                    stationId = "ST07",
+                    gateway = LessonGateway(client = OkHttpClient(), submitUrl = { null }),
+                    checkpointStore = MemoryCheckpoints(),
+                    onExitToShell = {},
+                )
+            }
+        }
+        compose.waitForIdle()
+        assertDescriptionPresent("LessonDiscover/NoOptions", ShomaraTemplateSkeletonStrings.OptionsPlaceholder)
+        assertA11yContract("LessonDiscover/NoOptions")
+        // The disabled primary is still the declared decision; it must stay a single primary.
+        assertPrimaryCtaCount("LessonDiscover/NoOptions", 1)
+    }
+
+    @Test
     fun lessonStartExposesLabelledTouchTargets() {
         // The lesson is the deepest screen in the app and the one with the most controls, yet it
         // had no a11y coverage at all: the module-local Compose test only asserts the resumed
@@ -596,6 +620,16 @@ class ShomaraA11ySweepTest {
     private fun assertTextPresent(screen: String, text: String) {
         val found = compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes()
         assertTrue("$screen: «$text» never rendered, so this state is not being shown", found.isNotEmpty())
+    }
+
+    /**
+     * Sibling of [assertTextPresent] for a state whose marker is spoken, not drawn: a region label
+     * carried by `contentDescription` is invisible to `onAllNodesWithText`, so a text-only probe
+     * would report a correctly rendered state as missing.
+     */
+    private fun assertDescriptionPresent(screen: String, description: String) {
+        val found = compose.onAllNodesWithContentDescription(description, substring = true).fetchSemanticsNodes()
+        assertTrue("$screen: «$description» was never spoken, so this state is not being shown", found.isNotEmpty())
     }
 
     /**

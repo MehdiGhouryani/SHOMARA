@@ -49,6 +49,25 @@ import com.mathlearning.core.model.MacroStage
  * [onCheck] cannot fire yet — it is the Phase 1 hook, not a live path. No option is ever
  * marked correct here: `correct` lives only in the evaluator (O1).
  */
+/**
+ * Canonical copy for the template skeletons. AGENTS §10: the region labels the skeleton announces to
+ * TalkBack used to be inline literals, so they could not be reviewed as a set or asserted from a
+ * test. Wording is unchanged — this is a move, not a copy edit.
+ */
+object ShomaraTemplateSkeletonStrings {
+    const val Check: String = "بررسی"
+    /** The empty option row of the T01 discover skeleton. */
+    const val OptionsPlaceholder: String = "جای گزینه‌ها"
+    /** The empty answer slot of the T01 skeleton. */
+    const val AnswerPlaceholder: String = "جای پاسخ"
+    /** The empty pattern slot. */
+    const val PatternPlaceholder: String = "جای الگو"
+    /** The option tray of the T15 skeleton. */
+    const val OptionTray: String = "سینی گزینه‌ها"
+    /** The empty number-line slot. */
+    const val NumberLinePlaceholder: String = "محل نوشتن مسیر"
+}
+
 @Composable
 fun ShomaraTemplateSkeletonForStage(
     macroStage: MacroStage,
@@ -79,7 +98,7 @@ fun ShomaraTemplateSkeletonForStage(
             ShomaraHintSlot(hintText = null)
         }
         ShomaraButton(
-            text = "بررسی",
+            text = ShomaraTemplateSkeletonStrings.Check,
             onClick = onCheck,
             // No selection can exist yet (no real options), so the check stays disabled —
             // an enabled check with nothing chosen would submit an answer never given.
@@ -129,7 +148,7 @@ private fun ShomaraT01DiscoverSkeleton(modifier: Modifier = Modifier) {
                 // A11y: empty skeleton slots were silent boxes; one merged
                 // description gives TalkBack the structure.
                 .semantics(mergeDescendants = true) {
-                    contentDescription = "جای گزینه‌ها"
+                    contentDescription = ShomaraTemplateSkeletonStrings.OptionsPlaceholder
                 },
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
             verticalAlignment = Alignment.CenterVertically,
@@ -161,7 +180,7 @@ private fun ShomaraT15Skeleton(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = ShomaraTokens.ComponentNodeSize)
                     // A11y: silent empty cards get a structure description.
-                    .semantics { contentDescription = "جای پاسخ" },
+                    .semantics { contentDescription = ShomaraTemplateSkeletonStrings.AnswerPlaceholder },
             )
         }
     }
@@ -187,7 +206,7 @@ private fun ShomaraT05GameSkeleton(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .semantics(mergeDescendants = true) { contentDescription = "جای الگو" },
+                .semantics(mergeDescendants = true) { contentDescription = ShomaraTemplateSkeletonStrings.PatternPlaceholder },
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -198,7 +217,7 @@ private fun ShomaraT05GameSkeleton(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .semantics(mergeDescendants = true) { contentDescription = "سینی گزینه‌ها" },
+                .semantics(mergeDescendants = true) { contentDescription = ShomaraTemplateSkeletonStrings.OptionTray },
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -225,7 +244,7 @@ private fun ShomaraT13Skeleton(modifier: Modifier = Modifier) {
         modifier = modifier
             // A11y: the tracing canvas describes its job (CONTENT-001 direction is
             // still open, so no directional language).
-            .semantics { contentDescription = "محل نوشتن مسیر" }
+            .semantics { contentDescription = ShomaraTemplateSkeletonStrings.NumberLinePlaceholder }
             .fillMaxWidth()
             .heightIn(min = ShomaraTokens.Space40 * 6)
             .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))

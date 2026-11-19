@@ -1155,3 +1155,14 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **تست state جدید (۳۰ مورد):** `practiceTabWhileProgressIsUnresolvedExplainsItself` — همان سطحی که کودک در O5 **واقعاً** می‌بیند: تب تمرین با مسیر حل‌نشده. تست تب را می‌زند، متن canonical را تأیید می‌کند و قرارداد a11y را می‌سنجد. (پیش از این فقط خود کامپوزبل تمرین تست می‌شد، نه سطح shell.)
 - **شواهد:** `ShomaraA11ySweepTest` **۳۰/۳۰** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `81636ef…`.
 - **بازمانده:** O5 (مسدودکنندهٔ واقعی)؛ instrumented در CI؛ شواهد دستگاه فیزیکی؛ بدهی Linux parity 7/29.
+
+## 2026-11-19 — DT-30 — اسکن کامل کد مرده (۵۲۸ اعلان) + پوشش state کشف درس + رفع نقص در helper خودم
+
+- **اسکن کامل، نه ۲۷ کاندید:** `build-reports/audit/dead_decl_scan.py` تمام اعلان‌های top-level در source اصلی (۵۲۸ اعلان) را شمرد و آن‌هایی را که **هیچ ارجاعی بیرون از فایل خودشان** ندارند جدا کرد → **۴۰ کاندید**. اسکنر با grep مستقیم روی ۹ نمونه **اعتبارسنجی شد** (همه واقعاً فقط در محل تعریف ظاهر می‌شوند).
+- **دسته‌بندی صادقانهٔ ۴۰ کاندید** (تفکیک مهمی که مانع حذف نادرست می‌شود): ۳۸ مورد **قرارداد مستند** (ارجاع در docs/ADR: `ShomaraStateHolder`, `AudioPolicy`, `ShomaraDialog`, `ShomaraChallengeIntro`, `ShomaraCountersGrid`, …) یا **قابلیت تست‌شدهٔ بدون سیم‌کشی** (`ManifestActivationEngine` ۷ ارجاع تست، `DraftAudioImporter` ۱۱، `ShomaraAssessmentDraw` ۱۶) یا **preview دیباگ**؛ فقط **۲ مورد** کاملاً یتیم بودند: `AssetResolver` و `AudioAssetResolver` (صفر ارجاع کد/تست/سند در کل مخزن).
+- **تصمیم دربارهٔ آن ۲ مورد: حذف نکردم** — و دلیلش را ثبت می‌کنم: KDoc آن‌ها را به ADR-0039 §۱ و CONTENT-017 گره می‌زند و مسئلهٔ O2 (قرارداد مسیر پکیج محتوا) باز است؛ این‌ها seamِ آمادهٔ اتصال‌اند نه کد مرده. حذفشان churn می‌ساخت. (این تصمیم مالک است، نه من.)
+- **پوشش state درس (عمیق‌ترین صفحه):** با dump درخت semantics معلوم شد درس در **P1 کشف** باز می‌شود و گزینه‌های سرور نیامده‌اند. تست جدید `lessonDiscoverWithoutServerOptionsIsHonestAndNavigable` همان سطح را می‌سنجد: متن صادقانه، قرارداد a11y، و **دقیقاً یک CTA اصلی**. sweep از ۳۰ به **۳۱** رسید.
+- **نقص در ابزار خودم پیدا و رفع شد:** `assertTextPresent` برچسبِ spoken (contentDescription) را نمی‌دید و stateِ درست‌رندرشده را «غایب» گزارش می‌کرد؛ helper مکمل `assertDescriptionPresent` اضافه شد (assertion ضعیف نشد، دقیق‌تر شد).
+- **متن:** ۶ برچسب ناحیهٔ skeleton در `ShomaraTemplateSkeletons` به `ShomaraTemplateSkeletonStrings` منتقل شد (متن بدون تغییر). متریک: MAIN ۱۳۰ → **۱۲۴**، TOTAL=**۱۷۹**.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۱/۳۱** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ef880a0…`.
+- **بازمانده:** O5؛ تصمیم دربارهٔ `AssetResolver`/`AudioAssetResolver`؛ instrumented در CI؛ شواهد دستگاه.
