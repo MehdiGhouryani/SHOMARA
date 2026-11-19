@@ -4,9 +4,15 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
+import com.mathlearning.app.shell.ShomaraChildShell
+import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
+import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.designsystem.ShomaraTheme
 import com.mathlearning.core.model.ShomaraAvatarCatalog
+import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.feature.onboarding.ShomaraPlacementScreen
 import com.mathlearning.feature.onboarding.ShomaraPlacementState
 import com.mathlearning.feature.onboarding.ShomaraProfileDraft
@@ -14,6 +20,7 @@ import com.mathlearning.feature.onboarding.ShomaraProfileSaveState
 import com.mathlearning.feature.onboarding.ShomaraProfileScreen
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
+import com.mathlearning.feature.parent.ShomaraParentHome
 import com.mathlearning.feature.path.ShomaraHomeScreen
 import com.mathlearning.feature.path.ShomaraHomeUiState
 import com.mathlearning.feature.path.ShomaraPathProgress
@@ -23,6 +30,8 @@ import com.mathlearning.feature.profile.ShomaraMeFacts
 import com.mathlearning.feature.profile.ShomaraMeScreen
 import com.mathlearning.feature.settings.ShomaraSettingsScreen
 import com.mathlearning.feature.settings.ShomaraSettingsState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -155,6 +164,47 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("OnboardingPlacement")
+    }
+
+    @Test
+    fun parentHomeExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraParentHome(completedStations = 3, totalStations = 25, onSignOut = {})
+            }
+        }
+        assertA11yContract("ParentHome")
+    }
+
+    @Test
+    fun stationSheetExposesLabelledTouchTargets() {
+        // The sheet is the one surface between Home and a lesson, so an unlabelled or small control
+        // here blocks the child's main journey.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraChildShell(
+                    onSignOut = {},
+                    pathProgress = ShomaraPathProgress(
+                        completedStationIds = setOf("ST01", "ST02", "ST03"),
+                        perfectStationIds = setOf("ST02"),
+                        currentStationId = "ST04",
+                        isResolved = true,
+                    ),
+                    settingsStore = FakeSettingsStore,
+                    onStartStation = {},
+                    onReplayStation = {},
+                )
+            }
+        }
+        compose.onNodeWithContentDescription(ShomaraStationCatalog.station("ST04").workingTitle).performClick()
+        compose.waitForIdle()
+        assertA11yContract("StationSheet")
+    }
+
+    private object FakeSettingsStore : ShomaraSettingsStore {
+        override val state: Flow<ShomaraSettingsSnapshot> = MutableStateFlow(ShomaraSettingsSnapshot.Defaults)
+
+        override suspend fun save(snapshot: ShomaraSettingsSnapshot) {}
     }
 
     /**
