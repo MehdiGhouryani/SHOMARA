@@ -309,7 +309,7 @@
       "consumer": "CI and package scripts"
     },
     {
-      "path": "docs/design-handoff-2026-10/**",
+      "path": "design/handoff-2026-10/**",
       "class": "LEGACY_ACTIVE",
       "owner": "v1-goldens",
       "action": "remove only after verifier migration",

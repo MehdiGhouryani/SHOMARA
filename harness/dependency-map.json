@@ -197,28 +197,7 @@
       "scripts/verify-ui-v2-tabs.mjs"
     ],
     "design-handoff-2026-10": [
-      "apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraCharacter.kt",
-      "apps/mobile/src/path/__fixtures__/design-trail.json",
-      "apps/mobile/src/ui/v1/README.md",
-      "apps/mobile/src/ui/v1/icons.ts",
-      "design/playbook/assets/ASSET_MANIFEST.json",
-      "docs/ARCHITECTURE.md",
-      "docs/DECISIONS.md",
-      "docs/DESIGN_RULES.md",
-      "docs/README.md",
-      "docs/notes/verifier-migration-map.md",
-      "packages/design-system/src/tokens.json",
-      "scripts/gen-path-fixture.mjs",
-      "scripts/parity-goldens.mjs",
-      "scripts/parity-run.mjs",
-      "scripts/verify-parity-goldens-pinned.mjs",
-      "scripts/verify-ui-v1-foundation.mjs",
-      "scripts/verify-ui-v1-path.mjs",
-      "scripts/verify-ui-v1-question.mjs",
-      "scripts/verify-ui-v1-result.mjs",
-      "scripts/verify-ui-v1-scope.mjs",
-      "scripts/verify-ui-v1-station.mjs",
-      "scripts/verify-ui-v1-tabs.mjs"
+      "docs/README.md"
     ],
     "ROADMAP_PHASES.md": [
       "AGENTS.md",

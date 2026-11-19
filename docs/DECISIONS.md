@@ -107,7 +107,7 @@
 
 **Status:** Accepted (owner decision, 2026-10-14)
 
-- صفحات `pages-v1` (۱۵ صفحه، `shomara-all-pages.zip`، manifest: `docs/design-handoff-2026-10/pages-v1/manifest.json`) مرجع Child Shell v1؛ ADR جزئاً ADR-0004 (پالت) و CHARACTER-BIBLE-v2 (cast) را supersede می‌کند.
+- صفحات `pages-v1` (۱۵ صفحه، `shomara-all-pages.zip`، manifest: `design/handoff-2026-10/pages-v1/manifest.json`) مرجع Child Shell v1؛ ADR جزئاً ADR-0004 (پالت) و CHARACTER-BIBLE-v2 (cast) را supersede می‌کند.
 - رنگ از `:root` در `15-design-guide.html`: primary `#2B5C7A`، amber `#E3A33B`، canvas `#F5F7F8` (جایگزین پالت سبز `tokens.json` و مقادیر ADR-0004)؛ فونت Vazirmatn.
 - V1 بدون ستاره/جان/streak؛ نوار مسیر فقط «پایهٔ ۱»؛ گرهٔ جاری آیکون کتاب (قابل بازگشت)؛ «دوباره بشنو» با TTS می‌ماند.
 - cast نمایشی: Main، Number، Dana، Fandogh، Roka؛ شناسه‌های `aria/qbo/dana/jiko` بعد از بررسی وابستگی حذف؛ صفحه‌های بدون طرح فقط توکن جدید می‌گیرند.

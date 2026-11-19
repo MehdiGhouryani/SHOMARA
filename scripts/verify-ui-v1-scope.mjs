@@ -10,7 +10,7 @@ const check = (name, ok, detail = '') => {
   else failures.push(`${name}${detail ? ` — ${detail}` : ''}`);
 };
 
-const V1 = 'docs/design-handoff-2026-10/pages-v1';
+const V1 = 'design/handoff-2026-10/pages-v1';
 const manifest = JSON.parse(read(`${V1}/manifest.json`));
 check('v1-manifest-version', manifest.version === 'v1');
 check('v1-page-count', manifest.pages.length === 15, `${manifest.pages.length} entries`);

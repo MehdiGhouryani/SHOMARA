@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const GOLD = path.join(process.cwd(), 'docs/design-handoff-2026-10/pages-v1/goldens');
+const GOLD = path.join(process.cwd(), 'design/handoff-2026-10/pages-v1/goldens');
 const PIN = path.join(GOLD, 'checksums.json');
 
 function hashFile(file) {

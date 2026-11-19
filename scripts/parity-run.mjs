@@ -10,7 +10,7 @@ import { launchChromium } from './lib/browser.mjs';
 
 const ROOT = process.cwd();
 const P = path.join(ROOT, 'apps/mobile/parity');
-const GOLD = path.join(ROOT, 'docs/design-handoff-2026-10/pages-v1/goldens');
+const GOLD = path.join(ROOT, 'design/handoff-2026-10/pages-v1/goldens');
 const OUT = path.join(P, 'out');
 const manifest = JSON.parse(fs.readFileSync(path.join(P, 'manifest.json'), 'utf8'));
 const rects = JSON.parse(fs.readFileSync(path.join(GOLD, 'rects.json'), 'utf8'));

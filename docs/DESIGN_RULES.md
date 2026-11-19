@@ -563,7 +563,7 @@ _منبع: `design/playbook/PAGE_UIUX_BLUEPRINT.md`_
 - - `shomara_char_number_17.webp`
 - - plus `shomara_splash_artwork.png` (splash only, untouched)
 - Handoff source (not runtime): 90 WebP in
-- `docs/design-handoff-2026-10/assets/characters/`, 5 families x 18.
+- `design/handoff-2026-10/assets/characters/`, 5 families x 18.
 
 _منبع: `design/playbook/POSE_TO_PAGE_MAPPING_DRAFT.md`_
 
@@ -686,7 +686,7 @@ _منبع: `design/playbook/ROUTE_REGISTRY.md`_
 - a touchable locked node must be read as "locked", not as "disabled".
 **4. Characters — three layers, kept separate**
 - - Handoff source: 5 families x 18 files = 90 WebP in
-- `docs/design-handoff-2026-10/assets/characters/` (Dana, Fandogh,
+- `design/handoff-2026-10/assets/characters/` (Dana, Fandogh,
 - Main, Number, Roka), 800x800 with alpha, under 70KB.
 - - Runtime today: only 4 drawables in
 - `apps/android/core/designsystem/src/main/res/drawable-nodpi/`

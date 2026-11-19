@@ -5,7 +5,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 const ROOT = process.cwd();
-const page = fs.readFileSync(path.join(ROOT, 'docs/design-handoff-2026-10/pages-v1/05-path.html'), 'utf8');
+const page = fs.readFileSync(path.join(ROOT, 'design/handoff-2026-10/pages-v1/05-path.html'), 'utf8');
 const script = page.match(/<script>([\s\S]*?)<\/script>/)[1];
 const start = script.indexOf('var CH=[');
 const end = script.indexOf('function node(r)');
@@ -17,7 +17,7 @@ vm.createContext(sandbox);
 vm.runInContext(`(function(){ ${geometry}\n this.__out = { CH: CH, rows: rows, starts: starts, y: y, curY: curY }; }).call(this);`, sandbox);
 const out = sandbox.__out;
 const fixture = {
-  source: 'docs/design-handoff-2026-10/pages-v1/05-path.html (geometry part of its script)',
+  source: 'design/handoff-2026-10/pages-v1/05-path.html (geometry part of its script)',
   width: 390,
   totalHeightBeforeFooter: out.y,
   curY: out.curY,

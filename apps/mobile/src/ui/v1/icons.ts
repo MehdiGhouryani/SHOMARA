@@ -1,5 +1,5 @@
 /**
- * Icon geometry copied verbatim from the approved pages (docs/design-handoff-2026-10/pages-v1).
+ * Icon geometry copied verbatim from the approved pages (design/handoff-2026-10/pages-v1).
  * All icons: 24x24 viewBox, no fill, rounded 2.5 stroke (applied by <Icon/>).
  * Names describe the shape; the pages use them for the roles noted in comments.
  */

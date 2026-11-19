@@ -365,7 +365,7 @@ _منبع: `docs/notes/PACKAGE_BOUNDARIES_FA.md`_
 - | `design` | قرارداد برند، فیلتر الهام، component readiness و playbook اجرای UI/UX | `ACTIVE_GUIDANCE` |
 - | `skills` | چهار workflow مستقل و triggerپذیر با agent metadata | `CANONICAL_ACTIVE` |
 - | `project-design-v2` | pipeline فعال asset/character | `ACTIVE_GENERATOR` |
-- | `docs/design-handoff-2026-10` | golden و مرجع V1 | `LEGACY_ACTIVE` تا مهاجرت verifier |
+- | `design/handoff-2026-10` | golden و مرجع V1 | `LEGACY_ACTIVE` تا مهاجرت verifier |
 - | `docs/archive` | evidence تاریخی | `HISTORICAL` |
 - | `docs/history` | manifestهای خوانده‌شده توسط verifier | `LEGACY_ACTIVE` |
 - | `scripts` | gateها و ابزارهای legacy | `ACTIVE_MIXED`؛ مرحله‌ای مهاجرت شود |

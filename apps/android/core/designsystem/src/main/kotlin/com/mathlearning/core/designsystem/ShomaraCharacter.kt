@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.Dp
 /**
  * Shared character rendering (N08-15, task §5).
  *
- * Source of truth for which approved artwork exists: `docs/design-handoff-2026-10/pages-v1/manifest.json`
+ * Source of truth for which approved artwork exists: `design/handoff-2026-10/pages-v1/manifest.json`
  * (ADR-0035 cast — Main, Number, Dana, Fandogh, Roka) and the committed files under
- * `docs/design-handoff-2026-10/assets/characters/<Family>/`. Only shipped poses are referenced by
+ * `design/handoff-2026-10/assets/characters/<Family>/`. Only shipped poses are referenced by
  * [ShomaraCharacterDrawables]; the component never invents a missing pose and never claims
  * animation it does not have.
  *

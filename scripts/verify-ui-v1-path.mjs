@@ -52,7 +52,7 @@ check('layout-tests-exist', exists('apps/mobile/src/path/layout.test.ts') && exi
 const manifest = JSON.parse(read('apps/mobile/parity/manifest.json'));
 for (const id of ['path', 'path-s900', 'path-s1800', 'path-s2700', 'path-s3600']) {
   const s = manifest.find((x) => x.id === id);
-  check(`parity:${id}`, Boolean(s) && s.page === '05' && s.maxDiffPercent <= 1.0 && exists(`docs/design-handoff-2026-10/pages-v1/goldens/${s.golden ?? s.page}.png`));
+  check(`parity:${id}`, Boolean(s) && s.page === '05' && s.maxDiffPercent <= 1.0 && exists(`design/handoff-2026-10/pages-v1/goldens/${s.golden ?? s.page}.png`));
 }
 check('parity:path-strict', manifest.find((x) => x.id === 'path').maxDiffPercent <= 0.3);
 check('parity:tabbar-05', manifest.some((x) => x.id === 'tabbar-05' && x.page === '05'));

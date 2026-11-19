@@ -14,7 +14,7 @@ if (!process.argv.includes('--write')) {
 }
 
 const ROOT = process.cwd();
-const V1 = path.join(ROOT, 'docs/design-handoff-2026-10/pages-v1');
+const V1 = path.join(ROOT, 'design/handoff-2026-10/pages-v1');
 const OUT = path.join(V1, 'goldens');
 const SELECTORS = ['.scr', '.top', '.bar', '.bar > i', '.ibtn', '.guide', '.por', '.bub', '.btn', '.tbtn', '.card', '.chip', '.inp', '.field', '.tabs', '.tab', '.tray', '.bead', '.bn', '.opts', '.opt', '.opt.sel', '.fb', '.fbh', '.fbi', '.fbi svg', '.tile', '.unit', '.node', '.h1', '.sub', '.cap', '.hero', '.body', '.foot'];
 const SCROLL_SHOTS = [900, 1800, 2700, 3600];
