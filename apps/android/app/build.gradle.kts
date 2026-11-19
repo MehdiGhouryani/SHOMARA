@@ -84,16 +84,13 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.room.runtime)
     testImplementation(libs.androidx.test.core)
-    testImplementation(libs.kotlinx.coroutines.test)
-    // DT-57: JVM-rendered Compose. These let a UI assertion run in `test` (and therefore in CI) instead of only
-    // under androidTest on a device, which is what made landscape geometry unverifiable.
-    testImplementation(platform(libs.androidx.compose.bom))
-    testImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
     // N08-15: the launch controller is a coroutine state producer, so its unit tests need a test
     // dispatcher (TestScope/advanceUntilIdle). Test-only dependency; no runtime impact.
     testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
+    // DT-57: JVM-rendered Compose. These let a UI assertion run in `test` (and therefore in CI) instead of only
+    // under androidTest on a device, which is what made overflow geometry unverifiable.
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)
