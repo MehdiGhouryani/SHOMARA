@@ -166,6 +166,27 @@
    باز می‌شود؛ node با همان اسکرول خود کودک پیدا می‌شود. تست‌ها setupشان را گرفتن (scroll به node)؛
    هر assertion اصلی (pinned strip، wrap/semantics/single-intent، stateهای واقعی) دست‌نخورده اجرا می‌شود.
 
+## شواهد گام ۶ — ریشه‌یابی و رفع کامل connector (DT-79)
+
+بازخورد مالک: «خطوط بین ایستگاه‌ها صحیح قرار داده نشدند». روش ریشه‌یابی: نقاط کالیبراسیون رنگی
+روی Canvas (محلی x=0، مرکز، w/2، w−1) → اندازه‌گیری screen-x هر نقطه → استخراج transform واقعی.
+
+| شاهد | مقدار |
+|---|---|
+| عرض واقعی Canvas روی دستگاه | **۴۲۰px = ۱۶۰dp** (BoxWithConstraints دور ستون node می‌پیچد؛ matchParentSize همان را می‌گیرد) |
+| جهت رسم | LTR (آینه نیست): amber@480/blue@899 → بازهٔ [481,900] |
+| باگ اصلی | **direction-sign**: در RTL، `offset` بزرگ‌تر = حرکت به چپ (سمت END)، ولی محور x محلی راست‌رو است → دلتای افقی بدون منفی‌شدن، connector را آینه می‌کرد (ST01→ST02 به x=936 می‌رفت؛ ST02 واقعی x=446) |
+| رفع | `directionSign = if (isRtl) -1f else 1f` + `nextCenter = localCenter + directionSign * (nextOffset - exitOffset).toPx()` |
+| مارپیچ | ۲ ستون → ۳ ستون (magnitudes 1.0/0.62/0.62 × 0.9 amplitude)؛ sequence RTL: 691/446/634/389 |
+| رسیدن خط | `connectorBottomDp = Space24 + node/2 + Space8` (۶۸dp) — فراجهت زیر دایرهٔ بعد پنهان می‌شود |
+| **اثبات نهایی** | ST02 (446,1730) → ST03 (634,2120): خط در y=1830/1970/2020 در x=473/562/593؛ cubic مقادیر 478/574/591 را می‌دهد — **خط از مرکز هر دو دایره می‌گذرد** |
+| تست‌ها | `:feature:path:testDebugUnitTest` exit 0 (قرارداد winding جدید: طرف متناوب، >۲ ستون، clamp در 192dp) |
+| گیت‌ها | static 94/94 · android:gate PASS · harness VALID |
+| فریم‌های شاهد | `dt79-final.png`، `dt79-final-top.png` (غیر git-tracked) |
+
+مستندات این گام: `docs/notes/duolingo-gap-analysis-dt79.md` (تحقیق کامل Duolingo + جدول گپ ۸ردیفه)
+و `docs/notes/character-system-profile-dt79.md` (طرح شخصیت پروفایل — ۴ تصمیم باز مالک).
+
 ## چه چیزی ساخته نمی‌شود (ضد اقدام بیهوده)
 
 - کامپوننت موازی Button/TabBar/PathNode/Progress (Gate 3 v3 صریحاً ممنوع).
