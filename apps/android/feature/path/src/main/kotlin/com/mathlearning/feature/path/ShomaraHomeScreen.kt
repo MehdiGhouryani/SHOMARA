@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import com.mathlearning.core.designsystem.ShomaraCharacter
 import com.mathlearning.core.designsystem.ShomaraCharacterImage
 import com.mathlearning.core.designsystem.ShomaraCharacterSlot
+import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
@@ -46,7 +47,14 @@ fun ShomaraHomeScreen(
                 )
             },
         )
-        if (state.progress.offline && state.progress.isResolved) {
+        // The offline fact reaches this renderer through two channels: the resolved progress
+        // snapshot (`progress.offline`) and the caller's entry state (`entryState = Offline`).
+        // Keying the banner on the snapshot alone silently dropped the second one, so a caller that
+        // only knew "the network is down" left the child looking at a normal path. Either signal is
+        // now enough — the message is the same canonical line either way.
+        val offline = state.progress.isResolved &&
+            (state.progress.offline || state.entryState == ShomaraEntryState.Offline)
+        if (offline) {
             ShomaraFeedbackBanner(
                 kind = ShomaraFeedbackKind.Recovery,
                 text = ShomaraHomeStrings.Offline,

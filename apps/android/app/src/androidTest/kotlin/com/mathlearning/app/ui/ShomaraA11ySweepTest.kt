@@ -1,4 +1,4 @@
-package com.mathlearning.app.ui
+﻿package com.mathlearning.app.ui
 
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
@@ -14,6 +14,7 @@ import com.mathlearning.core.datastore.LessonCheckpoint
 import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
 import com.mathlearning.core.datastore.ShomaraSettingsStore
+import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraTheme
 import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
@@ -28,6 +29,7 @@ import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
 import com.mathlearning.feature.path.ShomaraHomeScreen
+import com.mathlearning.feature.path.ShomaraHomeStrings
 import com.mathlearning.feature.path.ShomaraHomeUiState
 import com.mathlearning.feature.path.ShomaraPathProgress
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
@@ -174,6 +176,89 @@ class ShomaraA11ySweepTest {
     }
 
     @Test
+    fun homeLoadingExposesTheAnnouncementAndNoDeadControls() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(entryState = ShomaraEntryState.Loading),
+                    onAction = {},
+                )
+            }
+        }
+        // Loading is the one state whose contract is "no action yet": there is nothing honest to
+        // tap while the path is being prepared, so it is measured for structure (a heading and a
+        // live announcement) rather than for touch targets.
+        assertTextPresent("Home/Loading", ShomaraHomeStrings.LoadingTitle)
+        assertA11yContract("Home/Loading", expectActions = false)
+    }
+
+    @Test
+    fun homeOfflineFromTheProgressSnapshotAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        progress = ShomaraPathProgress.emptyResolved().copy(offline = true),
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Offline(progress)", ShomaraHomeStrings.Offline)
+        assertA11yContract("Home/Offline(progress)")
+    }
+
+    @Test
+    fun homeOfflineFromTheEntryStateAlsoAnnouncesIt() {
+        // The second channel: a caller that only knows the network is down sets entryState. Before
+        // this fix that signal was silently dropped and the child saw a normal path.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        progress = ShomaraPathProgress.emptyResolved(),
+                        entryState = ShomaraEntryState.Offline,
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Offline(entryState)", ShomaraHomeStrings.Offline)
+        assertA11yContract("Home/Offline(entryState)")
+    }
+
+    @Test
+    fun homeErrorExposesALabelledRetry() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        entryState = ShomaraEntryState.Error,
+                        retryAvailable = true,
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Error", ShomaraHomeStrings.ErrorTitle)
+        assertA11yContract("Home/Error")
+    }
+
+    @Test
+    fun homeEmptyExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(entryState = ShomaraEntryState.Empty),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Empty", ShomaraHomeStrings.EmptyTitle)
+        assertA11yContract("Home/Empty")
+    }
+
+    @Test
     fun parentHomeExposesLabelledTouchTargets() {
         compose.setContent {
             ShomaraTheme {
@@ -256,14 +341,25 @@ class ShomaraA11ySweepTest {
     }
 
     /**
+     * Proves a state really rendered instead of the default path: without it, an ignored
+     * `entryState` would make the state cases pass while measuring the happy path four times.
+     */
+    private fun assertTextPresent(screen: String, text: String) {
+        val found = compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes()
+        assertTrue("$screen: «$text» never rendered, so this state is not being shown", found.isNotEmpty())
+    }
+
+    /**
      * Walks every clickable node of the current screen and reports every violation at once, so a
      * failure names the screen, the label and the measured height instead of just a boolean.
      */
-    private fun assertA11yContract(screen: String) {
+    private fun assertA11yContract(screen: String, expectActions: Boolean = true) {
         compose.waitForIdle()
         val minHeightPx = with(compose.density) { MinimumTouchTargetDp.dp.toPx() }
         val nodes = compose.onAllNodes(hasClickAction()).fetchSemanticsNodes()
-        assertTrue("$screen: no clickable node rendered at all", nodes.isNotEmpty())
+        if (expectActions) {
+            assertTrue("$screen: no clickable node rendered at all", nodes.isNotEmpty())
+        }
         val problems = nodes.mapNotNull { node ->
             val label = node.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")?.takeIf { it.isNotBlank() }
                 ?: node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }?.takeIf { it.isNotBlank() }
