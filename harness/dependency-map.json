@@ -8,7 +8,7 @@
   ],
   "counts": {
     "sourceFiles": 548,
-    "importEdges": 1841,
+    "importEdges": 1840,
     "v1ImportConsumers": 119,
     "v2ImportConsumers": 84,
     "workspaceImportEdges": 107,
@@ -240,7 +240,8 @@
       "scripts/verify-phase11-auth.mjs",
       "scripts/verify-phase2-foundation.mjs",
       "scripts/verify-phase3.mjs",
-      "scripts/verify-static-all.mjs"
+      "scripts/verify-static-all.mjs",
+      "scripts/verify-structure.mjs"
     ]
   },
   "caveat": "zeroInboundCandidates are review candidates only; route conventions, server loading, code generation and string-based access can create valid consumers."
