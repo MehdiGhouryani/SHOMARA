@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "1.0.0",
+  "screenId": "shomara.home.learningPath",
+  "routeOwner": "existing app navigation coordinator",
+  "stateOwner": "existing path/home ViewModel and local domain projection",
+  "direction": "RTL",
+  "hierarchy": [
+    {
+      "id": "homeHeader",
+      "component": "HomeHeader",
+      "content": [
+        "pageTitle",
+        "subtitle",
+        "optionalMainCharacterSlot",
+        "optionalSettingsAction"
+      ],
+      "interaction": "settings route only when a real destination exists"
+    },
+    {
+      "id": "chapterProgress",
+      "component": "ChapterProgressCard",
+      "content": [
+        "gradeLabel",
+        "chapterTitle",
+        "spokenProgress",
+        "progressIndicator"
+      ],
+      "dataSource": "authoritative chapter progress projection"
+    },
+    {
+      "id": "continueStation",
+      "component": "ContinueStationCard",
+      "content": [
+        "contextLabel",
+        "actualStationTitle",
+        "optionalSupportText",
+        "onePrimaryAction",
+        "optionalNumberTopicArt"
+      ],
+      "dataSource": "current station projection"
+    },
+    {
+      "id": "learningPath",
+      "component": "ShomaraPathGraph",
+      "content": [
+        "pathHeading",
+        "chapterRibbonAtBoundary",
+        "continuousConnector",
+        "stableKeyedNodes"
+      ],
+      "geometryOwner": "existing ShomaraPathGraph",
+      "nodeVisualStates": [
+        "fresh",
+        "current",
+        "completed",
+        "perfect",
+        "locked"
+      ]
+    },
+    {
+      "id": "bottomNavigation",
+      "component": "ChildBottomNavigation",
+      "tabs": [
+        "path",
+        "practice",
+        "me"
+      ],
+      "routeOwner": "existing app navigation coordinator"
+    }
+  ],
+  "optionalSurfaces": [
+    "lockedReasonSheet",
+    "offlineContentSurface",
+    "emptySurface",
+    "errorSurface",
+    "loadingSurface",
+    "scrollToCurrentAction"
+  ],
+  "nonGoals": [
+    "currency_or_coin_ui",
+    "streak_pressure_or_loss_aversion",
+    "hearts_or_lives",
+    "random_rewards_or_loot_boxes",
+    "leaderboard",
+    "new_mascot_poses",
+    "remote_content_dependency"
+  ]
+}

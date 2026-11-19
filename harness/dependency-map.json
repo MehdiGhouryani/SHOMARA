@@ -198,6 +198,12 @@
       "scripts/verify-ui-v2-tabs.mjs"
     ],
     "design-handoff-2026-10": [
+      "design/handoff-home-ui-v3/01_DESIGN/IMPLEMENTATION_GUIDE_FA.md",
+      "design/handoff-home-ui-v3/02_ASSETS/ASSET_MANIFEST.json",
+      "design/handoff-home-ui-v3/03_ANDROID/kotlin/CHARACTER_ASSET_INTEGRATION_FA.md",
+      "design/handoff-home-ui-v3/03_ANDROID/tools/install_fandogh_native.py",
+      "design/handoff-home-ui-v3/03_ANDROID/tools/validate_handoff.py",
+      "design/handoff-home-ui-v3/03_ANDROID/tools/verify_character_sources.py",
       "docs/README.md"
     ],
     "ROADMAP_PHASES.md": [

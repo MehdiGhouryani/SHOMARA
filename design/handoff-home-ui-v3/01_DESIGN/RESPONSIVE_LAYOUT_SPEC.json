@@ -1,0 +1,92 @@
+{
+  "screen": "LearningPathHome",
+  "direction": "RTL shell; numeric/math subtrees use semantic direction",
+  "contentInsetDp": 20,
+  "systemBars": "WindowInsets.safeDrawing; bottom content padding includes nav + gesture inset",
+  "topToBottom": [
+    {
+      "id": "header",
+      "height": "wrap; min 56dp",
+      "gapAfter": 16,
+      "items": [
+        "title+subtitle (end aligned)",
+        "settings icon button (48dp)",
+        "optional Main cameo (48–64dp max)"
+      ]
+    },
+    {
+      "id": "chapterProgress",
+      "height": "wrap; min 118dp",
+      "padding": 16,
+      "radius": 26,
+      "gapAfter": 14
+    },
+    {
+      "id": "continueCard",
+      "height": "wrap; min 132dp",
+      "padding": 18,
+      "radius": 28,
+      "gapAfter": 20,
+      "featured": true
+    },
+    {
+      "id": "pathHeading",
+      "height": "wrap; min 36dp",
+      "gapAfter": 8
+    },
+    {
+      "id": "chapterRibbon",
+      "height": "44–64dp; wrap for text",
+      "gapAfter": 12
+    },
+    {
+      "id": "pathList",
+      "rowMinHeight": 124,
+      "currentRowMinHeight": 168,
+      "nodeSize": 72,
+      "currentNodeSize": 84,
+      "connector": "continuous; draw behind nodes; use existing buildPathLayout geometry",
+      "scroll": "LazyColumn; stable keys from stationId"
+    },
+    {
+      "id": "bottomNav",
+      "height": "72–80dp + safe bottom inset",
+      "radius": 28,
+      "position": "bottom overlay with list bottom padding"
+    }
+  ],
+  "responsive": [
+    {
+      "widthDp": 360,
+      "insetDp": 16,
+      "maxTitleLines": 2,
+      "nodeLabelWidthDp": 116,
+      "fab": "icon only"
+    },
+    {
+      "widthDp": 390,
+      "insetDp": 20,
+      "maxTitleLines": 2,
+      "nodeLabelWidthDp": 132,
+      "fab": "icon only"
+    },
+    {
+      "widthDp": 412,
+      "insetDp": 20,
+      "maxTitleLines": 2,
+      "nodeLabelWidthDp": 144,
+      "fab": "icon only"
+    },
+    {
+      "widthDp": 600,
+      "layout": "centered max content width 520dp; no stretched node labels"
+    }
+  ],
+  "noOverlapRules": [
+    "Reserve bottom padding for nav + gesture inset",
+    "Reserve FAB footprint in scroll content",
+    "Node label bounds must remain inside safe horizontal content bounds",
+    "Current card cannot cover path node title",
+    "Do not place text inside bitmap illustrations"
+  ]
+}
