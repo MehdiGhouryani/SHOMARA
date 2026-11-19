@@ -89,6 +89,46 @@
 - **قانون CTA واحد**: با وجود کارت، node دیگر CTA ادعا نمی‌کند (`currentNodeClaimsPrimaryCta = !hasPathCards`).
 - **رنگ‌های v3 در شل**: TabBar از `ColorHomeSurface/Border/VioletSoft/VioletDark/Muted` (نه primarySoft قدیمی).
 
+## شواهد گام ۳ + ۴ — صفحات دیگر v3 + font-scale sweep (DT-77)
+
+| شاهد | مقدار |
+|---|---|
+| JVM تست‌ها (designsystem + path + practice + profile + settings + app) | **۲۴۰ تست، ۰ خطا** |
+| `:app:assembleDebug` + `android:gate` | exit 0 — PASS (748 task) |
+| `verify:static:all` | PASS 94/94 |
+| `harness validate` | VALID (129 tasks) |
+| پالت تب تمرین | `canvas ۹۰٪ / white ۶٪ / legacy-cream ۰٪` |
+| پالت تب من | `canvas ۷۱٪ / white ۱۵٪ / violet ۹٪ (کارت هویت + پیشرفت بنفش) / legacy-cream ۰٪` |
+| پالت تنظیمات | `canvas ۸۲٪ / white ۱۵٪ / legacy-cream ۰٪` |
+| کارت هویت واقعی | «SSara — ۰ از ۲۵ ایستگاه کامل شده» از draft store واقعی (نه null) |
+| font-scale sweep | **۶/۶ PASS**: 360/390/412dp × font 1.0 + 1.3/2.0 — هر سه تب، متن‌های اصلی حاضر، بدون crash |
+| فریم‌های شاهد | `dt77-{path,practice,me,settings}.png` + `dt77-fontscale/` (غیر git-tracked) |
+
+### کارکرد گام ۳
+
+- **Scaffold شل**: `containerColor = ColorHomeCanvas` — کل شل (سه تب + تنظیمات) روی canvas بنفش؛
+  legacy cream دیگر از پشت ستون‌های کوتاه پیدا نمی‌شود (قبلاً ۵۴٪ cream در من/تنظیمات!).
+- **تمرین**: canvas v3 + کارت‌های سفید r24 با border خانگی؛ ردیف قفل quiet `pressedSoft`؛ ✓ تاریخچه سبز.
+- **من**: canvas v3 + کارت هویت violet (Featured واحد) + متن onViolet/onVioletMuted + نوار پیشرفت بنفش
+  (پارامتر `fillColor` جدید به `ShomaraProgressBar` — بدون کامپوننت موازی) + کارت تنظیمات سفید r24.
+- **تنظیمات**: canvas v3 + ToggleRow سفید r24/border خانگی + وضعیت روشن violetDark + دکمهٔ ذخیره بنفش.
+- **دکمهٔ Home variant**: `ShomaraButton` بدون کامپوننت موازی `Home` گرفت (violet fill + onViolet،
+  quiet = violetSoft/muted)؛ CTA primary semantics (`shomaraPrimaryCta`) را هم ادعا می‌کند؛
+  Primary قدیمی برای صفحات lesson دست‌نخورده ماند (بدون global restyle بی‌اجازه).
+- **شیت‌های مسیر**: شروع ایستگاه و Jump sheet هم Home variant گرفتند (سطح home).
+- **منبع نام واقعی**: همان خواندن draft store که DT-76 اضافه کرد، حالا `childName` را هم می‌دهد.
+
+### اسپلش — ورودی مالک لازم (ثبت صادقانه، بدون اقدام بیهوده)
+
+پکیج v3 هیچ asset اسپلش ندارد؛ artwork فعلی cream مالک‌تحویلی است (`SPLASH.png` byte-for-byte).
+تغییر canvas اسپلش بدون artwork جدید با لبه‌های cream تصویر می‌جنگد. تا تحویل «logo mark v3»
+توسط مالک، اسپلش دست‌نخورده می‌ماند.
+
+### ریسک شناخته‌شده
+
+- FeedbackBannerهای state (offline/error/empty) هنوز روی رنگ‌های v1 sky/danger هستند — فقط در
+  حالت‌های خطا/آفلاین دیده می‌شوند؛ بازطراحی آن‌ها نیازمند تصمیم رنگ خطا در v3 است (مرحلهٔ بعد).
+
 ## چه چیزی ساخته نمی‌شود (ضد اقدام بیهوده)
 
 - کامپوننت موازی Button/TabBar/PathNode/Progress (Gate 3 v3 صریحاً ممنوع).

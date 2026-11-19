@@ -126,6 +126,10 @@ fun ShomaraChildShell(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        // DT-77 (handoff v3): the whole child shell speaks the home visual language — the
+        // scaffold canvas is the home lavender, so every tab and the settings route sit on
+        // the same canvas; screens no longer need to out-paint the legacy cream theme.
+        containerColor = com.mathlearning.core.designsystem.ShomaraTokens.ColorHomeCanvas,
         bottomBar = {
             ShomaraTabBar(
                 // DT-76 (handoff C13): each tab carries its canonical active/inactive nav icon —

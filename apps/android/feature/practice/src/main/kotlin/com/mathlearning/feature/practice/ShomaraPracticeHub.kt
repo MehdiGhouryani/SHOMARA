@@ -1,6 +1,7 @@
 package com.mathlearning.feature.practice
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -85,6 +86,23 @@ object ShomaraPracticeHubStrings {
     const val PreparingBody: String = "تمرین‌های مناسب تو پس از آماده‌شدن مسیر نمایش داده می‌شوند."
 }
 
+/**
+ * DT-76 (handoff v3, screen-local per DT precedent): semantic aliases for the home visual
+ * language — every value still comes from the canonical generated token object, never a magic hex.
+ */
+internal object ShomaraPracticeUiTokens {
+    val Canvas = ShomaraTokens.ColorHomeCanvas
+    val Surface = ShomaraTokens.ColorHomeSurface
+    val Ink = ShomaraTokens.ColorHomeInk
+    val Muted = ShomaraTokens.ColorHomeMuted
+    val Border = ShomaraTokens.ColorHomeBorder
+    val Violet = ShomaraTokens.ColorHomeViolet
+    val VioletDark = ShomaraTokens.ColorHomeVioletDark
+    val VioletSoft = ShomaraTokens.ColorHomeVioletSoft
+    val Locked = ShomaraTokens.ColorHomePressedSoft
+    val Green = ShomaraTokens.ColorHomeGreen
+}
+
 @Composable
 fun ShomaraPracticeHubScreen(
     items: List<ShomaraPracticeItem>,
@@ -98,8 +116,21 @@ fun ShomaraPracticeHubScreen(
     val state = ShomaraPracticeHubLogic.stateFor(items, loading, offline, errorText)
     // Stage 4, family 12: generous breathing room, one clear hierarchy.
     // Preferred inset is 24dp; rows stay full-width so nothing is squeezed.
-    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
-        Text(text = ShomaraPracticeHubStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+    // DT-76 (handoff v3): the tab speaks the home visual language — lavender canvas.
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .background(ShomaraPracticeUiTokens.Canvas)
+            .padding(ShomaraTokens.Space24),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+    ) {
+        Text(
+            text = ShomaraPracticeHubStrings.Title,
+            style = ShomaraTypography.Title,
+            color = ShomaraPracticeUiTokens.Ink,
+            modifier = Modifier.semantics { heading() },
+        )
         when (state) {
             ShomaraPracticeHubState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraPracticeHubStrings.Offline)
             ShomaraPracticeHubState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: ShomaraPracticeHubStrings.ErrorFallback)
@@ -114,7 +145,12 @@ fun ShomaraPracticeHubScreen(
         // F-25: there is no History state — stateFor never returns it and the history list
         // below renders from `recent` directly. The dead branch is removed, not wired.
         if (state == ShomaraPracticeHubState.List) {
-            Text(text = ShomaraPracticeHubStrings.RecommendedHeading, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+            Text(
+                text = ShomaraPracticeHubStrings.RecommendedHeading,
+                style = ShomaraTypography.Body,
+                color = ShomaraPracticeUiTokens.Ink,
+                modifier = Modifier.semantics { heading() },
+            )
             for (item in ShomaraPracticeHubLogic.recommendedFor(items)) {
                 PracticeRow(item = item, locked = false, onItemTap = onItemTap)
             }
@@ -123,7 +159,12 @@ fun ShomaraPracticeHubScreen(
             }
         }
         if (recent.isNotEmpty()) {
-            Text(text = ShomaraPracticeHubStrings.RecentHeading, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+            Text(
+                text = ShomaraPracticeHubStrings.RecentHeading,
+                style = ShomaraTypography.Body,
+                color = ShomaraPracticeUiTokens.Ink,
+                modifier = Modifier.semantics { heading() },
+            )
             for (item in ShomaraPracticeHubLogic.historyFor(recent)) {
                 PracticeRow(item = item, locked = false, onItemTap = onItemTap, historical = true)
             }
@@ -133,8 +174,10 @@ fun ShomaraPracticeHubScreen(
 
 @Composable
 private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (String) -> Unit, historical: Boolean = false) {
-    val container = if (locked) ShomaraTokens.ColorSurfaceAlt else ShomaraTokens.ColorSurface
-    val content = if (locked) ShomaraTokens.ColorMuted else ShomaraTokens.ColorInk
+    // DT-76 (handoff v3): a practicable row is a white home card with the home border; a locked
+    // row is the quiet pressed-soft surface. The old cream ColorSurfaceAlt reads as V1.
+    val container = if (locked) ShomaraPracticeUiTokens.Locked else ShomaraPracticeUiTokens.Surface
+    val content = if (locked) ShomaraPracticeUiTokens.Muted else ShomaraPracticeUiTokens.Ink
     val description = if (locked) ShomaraPracticeHubLogic.lockedLabel(item) else item.title
     // F-16: a locked row is not a button — no role, no click action. TalkBack reads the
     // locked reason, never «دکمه». الف-۰۲: the row merges its descendants into one
@@ -146,9 +189,9 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
             .heightIn(min = ShomaraTokens.ComponentTouchMin)
             // Batch 2 (ADR-0040 R1): a practiseable row is tactile, so it
             // renders Soft clay depth; a locked row is quiet and stays Flat.
-            .shadow(ShomaraClay.specFor(if (locked) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            .shadow(ShomaraClay.specFor(if (locked) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .background(container, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraPracticeUiTokens.Border, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .semantics(mergeDescendants = true) {
                 if (tappable) role = Role.Button
                 // A11y fix: the description must carry the row TITLE too — the
@@ -161,14 +204,19 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
                 }
             }
             .then(if (tappable) Modifier.clickable(role = Role.Button) { onItemTap(item.id) } else Modifier)
-            .padding(ShomaraTokens.Space12),
-        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+            .padding(ShomaraTokens.Space16),
+        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // F-30: a history row carries a visible ✓ — «done» is never colour alone. The
         // mark is decorative for TalkBack: the contentDescription already says «انجام شده».
         if (historical) {
-            Text(text = "✓", style = ShomaraTypography.Body, color = content, modifier = Modifier.clearAndSetSemantics {})
+            Text(
+                text = "✓",
+                style = ShomaraTypography.Body,
+                color = ShomaraPracticeUiTokens.Green,
+                modifier = Modifier.clearAndSetSemantics {},
+            )
         }
         Column {
             Text(text = item.title, style = ShomaraTypography.Body, color = content)
@@ -176,7 +224,7 @@ private fun PracticeRow(item: ShomaraPracticeItem, locked: Boolean, onItemTap: (
                 // Owner page-12: the full reason repeated on every locked row
                 // read as a wall; the visible line is the short «قفل» while
                 // the merged contentDescription keeps the full warm reason.
-                Text(text = "قفل", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+                Text(text = "قفل", style = ShomaraTypography.Caption, color = ShomaraPracticeUiTokens.Muted)
             }
         }
     }

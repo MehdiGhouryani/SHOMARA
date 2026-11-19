@@ -1312,3 +1312,23 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 **شواهد:** ۱۹۴ JVM تست / ۰ خطا؛ `:app:assembleDebug` exit 0؛ static:all 94/94؛ harness VALID. سفر واقعی امولاتور: placement → «شروع مسیر» → شل؛ متن‌های زندهٔ مسیر (کارت «۰ از ۵» + featured + ایستگاه ۱ «آمادهٔ شروع»)؛ پالت: violet ۱۶٪ (کارت)، canvas ۳۴٪؛ CTA «شروع ایستگاه» شیت واقعی ایستگاه را باز کرد.
 
 **بازمانده:** گام ۳ (تمرین/من/تنظیمات/اسپلش v3)، font-scale 2.0 + TalkBack sweep، O5 کامل (Room projection).
+
+## DT-77 — صفحات دیگر v3: تمرین/من/تنظیمات + دکمهٔ Home + font-scale sweep (2026-11-19)
+
+**Scaffold شل.** کل شل کودک (سه تب + تنظیمات) روی `ColorHomeCanvas` نشست؛ قبل از این، پشت ستون‌های کوتاه من/تنظیمات ۵۴٪ cream قدیمی پیدا می‌شد. سه تب اندازه‌گیری شدند: تمرین canvas ۹۰٪، من canvas ۷۱٪ + violet ۹٪ (کارت هویت بنفش)، تنظیمات canvas ۸۲٪ — legacy-cream همه ۰٪.
+
+**تمرین.** canvas v3، کارت‌های سفید r24 با border خانگی، ردیف قفل quiet pressedSoft، ✓ تاریخچه سبز.
+
+**من.** کارت هویت violet (Featured واحد) با متن onViolet؛ نوار پیشرفت بنفش با پارامتر fillColor جدید روی ShomaraProgressBar (بدون کامپوننت موازی)؛ نام واقعی کودک از همان draft store خوانده شد («SSara — ۰ از ۲۵ ایستگاه کامل شده»)، نه null.
+
+**تنظیمات.** canvas v3، ToggleRow سفید r24، وضعیت روشن violetDark، دکمهٔ ذخیره Home variant بنفش.
+
+**دکمهٔ Home variant.** ShomaraButton بدون کامپوننت موازی variant چهارم (Home) گرفت: violet fill + onViolet (4.99:1)، quiet = violetSoft/muted؛ shomaraPrimaryCta را هم ادعا می‌کند؛ Primary قدیمی برای lesson ها دست‌نخورده. شیت‌های شروع/پرش مسیر هم Home گرفتند.
+
+**اسپلش — ثبت صادقانه.** پکیج v3 asset اسپلش ندارد؛ artwork فعلی cream مالک‌تحویلی است. تا تحویل logo mark v3 توسط مالک، اسپلش دست‌نخورده می‌ماند (اقدام بیهوده ممنوع).
+
+**font-scale sweep.** ۶/۶ PASS: 360/390/412dp × font 1.0/1.3/2.0 — هر سه تب، متن‌های اصلی حاضر، بدون crash؛ RTL پیش‌فرض اپ. شکست اولیهٔ 360dp با re-run Pass شد (cold-start timing، نه layout).
+
+**شواهد:** ۲۴۰ JVM تست / ۰ خطا؛ android:gate PASS (748 task)؛ static:all 94/94؛ harness VALID. Backlog CSV: ردیف‌های UI-006/007/013/015/017 با exit_evidence واقعی به‌روز شد (NATIVE_PENDING ماند — state matrix کامل جارو نشده؛ صادقانه).
+
+**بازمانده:** FeedbackBannerهای خطا/آفلاین هنوز رنگ v1؛ TalkBack sweep دستگاهی؛ O5 کامل (Room projection).

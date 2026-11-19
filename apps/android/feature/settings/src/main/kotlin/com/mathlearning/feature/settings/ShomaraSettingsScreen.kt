@@ -1,6 +1,7 @@
 package com.mathlearning.feature.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -84,6 +85,19 @@ data class ShomaraSettingsState(
         }
 }
 
+/**
+ * DT-76 (handoff v3, screen-local per DT precedent): semantic aliases for the home visual
+ * language — every value still comes from the canonical generated token object, never a magic hex.
+ */
+internal object ShomaraSettingsUiTokens {
+    val Canvas = ShomaraTokens.ColorHomeCanvas
+    val Surface = ShomaraTokens.ColorHomeSurface
+    val Ink = ShomaraTokens.ColorHomeInk
+    val Muted = ShomaraTokens.ColorHomeMuted
+    val Border = ShomaraTokens.ColorHomeBorder
+    val VioletDark = ShomaraTokens.ColorHomeVioletDark
+}
+
 object ShomaraSettingsStrings {
     // ADR-0051: the avatar preset is gone, so the title no longer names avatars.
     const val Title: String = "تنظیمات"
@@ -117,9 +131,27 @@ fun ShomaraSettingsScreen(
     // The inset stays 16dp — the v2 adaptive inset for this page (a token, not a magic
     // number). The column scrolls, so at 200% font the toggles and the save button can
     // never clip on a small screen.
-    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
-        Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-        Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+    // DT-76 (handoff v3): the surface speaks the home visual language — lavender canvas.
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .background(ShomaraSettingsUiTokens.Canvas)
+            .padding(ShomaraTokens.Space16),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+    ) {
+        Text(
+            text = ShomaraSettingsStrings.Title,
+            style = ShomaraTypography.Title,
+            color = ShomaraSettingsUiTokens.Ink,
+            modifier = Modifier.semantics { heading() },
+        )
+        Text(
+            text = ShomaraSettingsStrings.PreferencesSection,
+            style = ShomaraTypography.Body,
+            color = ShomaraSettingsUiTokens.Ink,
+            modifier = Modifier.semantics { heading() },
+        )
         ToggleRow(
             label = ShomaraSettingsStrings.ReducedMotionLabel,
             hint = ShomaraSettingsStrings.ReducedMotionHint,
@@ -137,7 +169,9 @@ fun ShomaraSettingsScreen(
             onClick = onSave,
             enabled = state.canSave,
             loading = state.save == ShomaraSettingsSaveState.Saving,
-            variant = ShomaraButtonVariant.Primary,
+            // DT-77 (handoff v3): the save CTA speaks the home visual language — the violet
+            // Home variant, not the legacy garden green. It still claims the one primary CTA.
+            variant = ShomaraButtonVariant.Home,
             // Batch 2 (Duolingo structure): the primary save action is
             // full-width like every other primary CTA in the app, not a
             // narrow wrap-content button in a scrolling column.
@@ -151,15 +185,17 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
     // F-15: the whole row is the switch — a `toggleable` with Role.Switch — so TalkBack
     // announces «حرکت کمتر، سوئیچ، روشن/خاموش» once, and the full row is the tap target.
     // The old inner button made TalkBack read two controls for one setting.
+    // DT-76 (handoff v3): white home card with the home border; the on-state reads in
+    // violetDark (the home primary), not the legacy garden green.
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = ShomaraTokens.ComponentTouchMin)
             // Batch 2 (ADR-0040 R1): the toggle row is a tactile surface
             // (it holds the on/off control), so it renders Soft clay depth.
-            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .background(ShomaraSettingsUiTokens.Surface, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraSettingsUiTokens.Border, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onChecked)
             // R-03 (F-15): one TalkBack stop per row — the label and hint texts merge
             // into the row's node, like MeRow/PracticeRow, instead of separate stops
@@ -168,20 +204,20 @@ private fun ToggleRow(label: String, hint: String, checked: Boolean, enabled: Bo
                 contentDescription = label
                 stateDescription = if (checked) ShomaraSettingsStrings.ToggleOn else ShomaraSettingsStrings.ToggleOff
             }
-            .padding(ShomaraTokens.Space12),
+            .padding(ShomaraTokens.Space16),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column {
-            Text(text = label, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk)
-            Text(text = hint, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+            Text(text = label, style = ShomaraTypography.Body, color = ShomaraSettingsUiTokens.Ink)
+            Text(text = hint, style = ShomaraTypography.Caption, color = ShomaraSettingsUiTokens.Muted)
         }
         // Status indicator only, not a button: the row owns the toggle. It is invisible
         // to TalkBack (cleared semantics) so the state is announced exactly once, by the row.
         Text(
             text = if (checked) ShomaraSettingsStrings.ToggleOn else ShomaraSettingsStrings.ToggleOff,
             style = ShomaraTypography.Body,
-            color = if (checked) ShomaraTokens.ColorPrimaryDark else ShomaraTokens.ColorInk2,
+            color = if (checked) ShomaraSettingsUiTokens.VioletDark else ShomaraSettingsUiTokens.Muted,
             modifier = Modifier.clearAndSetSemantics {},
         )
     }

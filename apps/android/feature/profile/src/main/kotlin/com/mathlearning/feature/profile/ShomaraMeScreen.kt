@@ -1,6 +1,7 @@
 package com.mathlearning.feature.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,23 @@ import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 
 /** Me-tab state matrix (family 14): loading/ready/empty/offline/error. */
+/**
+ * DT-76 (handoff v3, screen-local per DT precedent): semantic aliases for the home visual
+ * language — every value still comes from the canonical generated token object, never a magic hex.
+ */
+internal object ShomaraMeUiTokens {
+    val Canvas = ShomaraTokens.ColorHomeCanvas
+    val Surface = ShomaraTokens.ColorHomeSurface
+    val Ink = ShomaraTokens.ColorHomeInk
+    val Muted = ShomaraTokens.ColorHomeMuted
+    val Border = ShomaraTokens.ColorHomeBorder
+    val Violet = ShomaraTokens.ColorHomeViolet
+    val VioletDark = ShomaraTokens.ColorHomeVioletDark
+    val VioletSoft = ShomaraTokens.ColorHomeVioletSoft
+    val OnViolet = ShomaraTokens.ColorHomeOnViolet
+    val OnVioletMuted = ShomaraTokens.ColorHomeOnVioletMuted
+}
+
 /**
  * Canonical copy for the Me screen. AGENTS §10: every user-visible line lives here instead of as an
  * inline literal in the renderer — the same rule the practice hub now follows. The strings are the
@@ -99,8 +117,21 @@ fun ShomaraMeScreen(
     // featured header card only. No second progress layer, no reward-economy motif.
     // Checklist (family 14 acceptance, 200% font): the column scrolls, so a
     // 200%-font header + rows can never clip on a small screen.
-    Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
-        Text(text = ShomaraMeStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+    // DT-76 (handoff v3): the tab speaks the home visual language — lavender canvas.
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .background(ShomaraMeUiTokens.Canvas)
+            .padding(ShomaraTokens.Space24),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+    ) {
+        Text(
+            text = ShomaraMeStrings.Title,
+            style = ShomaraTypography.Title,
+            color = ShomaraMeUiTokens.Ink,
+            modifier = Modifier.semantics { heading() },
+        )
         when (state) {
             ShomaraMeState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraMeStrings.Offline)
             ShomaraMeState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: ShomaraMeStrings.ErrorFallback)
@@ -108,17 +139,15 @@ fun ShomaraMeScreen(
             ShomaraMeState.Empty -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraMeStrings.Empty)
             ShomaraMeState.Ready -> {
                 val f = facts!!
+                // DT-76 (handoff v3): the identity card is the one Featured surface of this
+                // viewport and now uses the handoff's violet treatment — violet fill, on-violet
+                // text — instead of the legacy green primarySoft card.
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        // Batch 2: the identity card is the one Featured
-                        // surface of this viewport (ADR-0040 R1 — at most
-                        // one Featured per viewport), so it renders the
-                        // Featured clay depth; the rows below stay Soft.
                         .shadow(ShomaraClay.specFor(ShomaraClayDepth.Featured).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
-                        .background(ShomaraTokens.ColorPrimarySoft, RoundedCornerShape(ShomaraTokens.RadiusLg))
-                        .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorPrimary, RoundedCornerShape(ShomaraTokens.RadiusLg))
-                        .padding(ShomaraTokens.Space12),
+                        .background(ShomaraMeUiTokens.Violet, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                        .padding(ShomaraTokens.Space16),
                     horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -128,8 +157,17 @@ fun ShomaraMeScreen(
                     // Pose 1 only, from the 4 shipped drawables; no pose invented.
                     ShomaraCharacterImage(character = ShomaraCharacter.Main, poseId = 1, slot = ShomaraCharacterSlot.Inline, decorative = true)
                     Column {
-                        Text(text = f.childName, style = ShomaraTypography.Title, color = ShomaraTokens.ColorPrimaryDark)
-                        Text(text = f.progressLine(), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+                        Text(
+                            text = f.childName,
+                            style = ShomaraTypography.Title,
+                            color = ShomaraMeUiTokens.OnViolet,
+                            modifier = Modifier.semantics { heading() },
+                        )
+                        Text(
+                            text = f.progressLine(),
+                            style = ShomaraTypography.Caption,
+                            color = ShomaraMeUiTokens.OnVioletMuted,
+                        )
                     }
                 }
                 // Batch 2 (goal-card structure, ADR-0040 §5 — allowed for
@@ -143,6 +181,8 @@ fun ShomaraMeScreen(
                     state = ShomaraProgressState(
                         fraction = if (f.totalStations > 0) f.completedStations.toFloat() / f.totalStations.toFloat() else 0f,
                     ),
+                    // DT-77 (handoff v3): the progress fill speaks the home language too.
+                    fillColor = ShomaraMeUiTokens.Violet,
                 )
                 }
             // F-25: there is no EditReturn state — no caller ever returns from an edit into
@@ -162,15 +202,16 @@ fun ShomaraMeScreen(
 
 @Composable
 private fun MeRow(label: String, description: String, onClick: () -> Unit) {
+    // DT-76 (handoff v3): white home card with the home border; the arrow reads in home ink.
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = ShomaraTokens.ComponentTouchMin)
             // Batch 2 (ADR-0040 R1): the row is a tactile navigation target,
             // so it renders Soft clay depth.
-            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .background(ShomaraMeUiTokens.Surface, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .border(ShomaraTokens.ClaySoftBorderWidth, ShomaraMeUiTokens.Border, RoundedCornerShape(ShomaraTokens.RadiusLg))
             // الف-۰۲: the row merges its descendants into one announcement (label +
             // description) instead of three separate nodes.
             .semantics(mergeDescendants = true) {
@@ -178,16 +219,16 @@ private fun MeRow(label: String, description: String, onClick: () -> Unit) {
                 contentDescription = label + " — " + description
             }
             .clickable(role = Role.Button) { onClick() }
-            .padding(ShomaraTokens.Space12),
+            .padding(ShomaraTokens.Space16),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column {
-            Text(text = label, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk)
-            Text(text = description, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+            Text(text = label, style = ShomaraTypography.Body, color = ShomaraMeUiTokens.Ink)
+            Text(text = description, style = ShomaraTypography.Caption, color = ShomaraMeUiTokens.Muted)
         }
         // F-32: the «←» arrow is decoration — the row's contentDescription already says
         // where it goes. Without clearing, TalkBack reads the arrow glyph aloud.
-        Text(text = "←", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk2, modifier = Modifier.clearAndSetSemantics {})
+        Text(text = "←", style = ShomaraTypography.Title, color = ShomaraMeUiTokens.Muted, modifier = Modifier.clearAndSetSemantics {})
     }
 }

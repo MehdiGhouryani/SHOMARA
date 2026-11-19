@@ -84,7 +84,7 @@ class ShomaraTapGuard(
 /** Button state matrix: default/pressed/focused/disabled/loading (COMPONENT_READINESS Button row). */
 enum class ShomaraButtonState { Default, Pressed, Focused, Disabled, Loading }
 
-enum class ShomaraButtonVariant { Primary, Secondary, Ghost }
+enum class ShomaraButtonVariant { Primary, Secondary, Ghost, Home }
 
 /**
  * AGENTS §6 rule «in every state there is exactly one clear primary CTA» was prose only: nothing in
@@ -121,7 +121,6 @@ object ShomaraButtonLogic {
     fun borderWidthFor(variant: ShomaraButtonVariant, state: ShomaraButtonState) =
         if (variant == ShomaraButtonVariant.Ghost) ShomaraTokens.ClayHintBorderWidth
         else ShomaraClay.specFor(clayDepth(variant, state)).borderWidth
-
     /** (container, content) pairs resolve only through generated tokens. */
     fun colors(variant: ShomaraButtonVariant, state: ShomaraButtonState): Pair<Color, Color> {
         val quiet = state == ShomaraButtonState.Disabled || state == ShomaraButtonState.Loading
@@ -129,6 +128,13 @@ object ShomaraButtonLogic {
             ShomaraButtonVariant.Primary ->
                 if (quiet) ShomaraTokens.ColorPrimarySoft to ShomaraTokens.ColorMuted
                 else ShomaraTokens.ColorPrimary to ShomaraTokens.ColorWhite
+            // DT-77 (handoff v3): the home-language primary — violet fill, on-violet label
+            // (4.99:1), quiet states in violetSoft/home-muted. Same clay depth and geometry as
+            // Primary; only the color mapping differs. The legacy garden Primary stays for the
+            // lesson surfaces still on the old theme — no silent global restyle.
+            ShomaraButtonVariant.Home ->
+                if (quiet) ShomaraTokens.ColorHomeVioletSoft to ShomaraTokens.ColorHomeMuted
+                else ShomaraTokens.ColorHomeViolet to ShomaraTokens.ColorHomeOnViolet
             ShomaraButtonVariant.Secondary ->
                 if (quiet) ShomaraTokens.ColorSurfaceAlt to ShomaraTokens.ColorMuted
                 else ShomaraTokens.ColorPrimarySoft to ShomaraTokens.ColorPrimaryDark
@@ -252,9 +258,9 @@ fun ShomaraButton(
                 role = Role.Button
                 if (state == ShomaraButtonState.Disabled) disabled()
                 if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
-                // Only the Primary variant claims the decision; Secondary/Ghost deliberately do not,
-                // so a screen cannot accidentally advertise two primary actions.
-                if (variant == ShomaraButtonVariant.Primary) shomaraPrimaryCta = true
+                // Only the Primary/Home variants claim the decision; Secondary/Ghost deliberately do
+                // not, so a screen cannot accidentally advertise two primary actions.
+                if (variant == ShomaraButtonVariant.Primary || variant == ShomaraButtonVariant.Home) shomaraPrimaryCta = true
             }
             .let {
                 if (interactive) {

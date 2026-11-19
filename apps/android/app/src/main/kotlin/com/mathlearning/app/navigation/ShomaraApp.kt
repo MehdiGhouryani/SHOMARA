@@ -71,14 +71,18 @@ fun ShomaraApp(
 ) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
-    // DT-76 (O5 first step, honest): a saved complete profile IS the local learner. Reading it
+    // DT-76/77 (O5 first step, honest): a saved complete profile IS the local learner. Reading it
     // resolves the shell's progress snapshot to the truth of a fresh child — an empty completed
     // set with no current station — so the path renders real Fresh/Locked states instead of the
-    // permanent Loading an unresolved snapshot produced. Real cross-session progress (Room
-    // projection) stays open under O5; this wiring only stops lying that nothing is known.
+    // permanent Loading an unresolved snapshot produced. The same read hands the Me tab the
+    // child's real name, so the identity card is the saved learner, not a null guess.
+    // Real cross-session progress (Room projection) stays open under O5.
     var learnerProfilePresent by rememberSaveable { mutableStateOf(false) }
+    var learnerName by rememberSaveable { mutableStateOf<String?>(null) }
     LaunchedEffect(profileDraftStore) {
-        learnerProfilePresent = !profileDraftStore.read()?.name.isNullOrBlank()
+        val draft = profileDraftStore.read()
+        learnerProfilePresent = !draft?.name.isNullOrBlank()
+        learnerName = draft?.name
     }
     // R-05/R-08 — lesson-entry handshake with the shell. The flags are rememberSaveable so a
     // process death mid-lesson restores the same entry mode (the child already passed the
@@ -231,6 +235,8 @@ fun ShomaraApp(
                 } else {
                     com.mathlearning.feature.path.ShomaraPathProgress.unresolved()
                 },
+                // DT-77: the Me identity card renders the saved learner, never a null guess.
+                childName = learnerName,
             )
         }
         composable(

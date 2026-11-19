@@ -202,9 +202,16 @@ fun ShomaraProgressBar(
     // static placeholder instead of a Compose rememberInfiniteTransition, which ignores the
     // platform setting on its own.
     reducedMotion: Boolean = LocalShomaraReducedMotion.current,
+    /**
+     * DT-77 (handoff v3): optional page-local fill colour for home-language screens — the
+     * lesson surfaces keep the canonical green; the home tabs pass the home violet. Null keeps
+     * the shared mapping, so no existing caller changes.
+     */
+    fillColor: Color? = null,
 ) {
     val kind = ShomaraProgressLogic.kindFor(state)
     val height = ShomaraTokens.ComponentProgressH
+    val resolvedFill = fillColor ?: ShomaraProgressLogic.fillColor(state)
     Column(modifier = modifier.fillMaxWidth().semantics {
         stateDescription = ShomaraProgressLogic.announcementFor(state)
     }) {
@@ -219,12 +226,12 @@ fun ShomaraProgressBar(
                     modifier = Modifier
                         .fillMaxWidth(state.fraction ?: 0f)
                         .height(height)
-                        .background(ShomaraProgressLogic.fillColor(state), RoundedCornerShape(ShomaraTokens.RadiusPill)),
+                        .background(resolvedFill, RoundedCornerShape(ShomaraTokens.RadiusPill)),
                 )
                 ShomaraProgressKind.Indeterminate -> if (ShomaraProgressLogic.animates(state, reducedMotion)) {
                     androidx.compose.material3.LinearProgressIndicator(
                         modifier = Modifier.fillMaxWidth().height(height),
-                        color = ShomaraProgressLogic.fillColor(state),
+                        color = resolvedFill,
                         trackColor = ShomaraProgressLogic.trackColor(),
                     )
                 } else {
@@ -233,14 +240,14 @@ fun ShomaraProgressBar(
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .height(height)
-                            .background(ShomaraProgressLogic.fillColor(state), RoundedCornerShape(ShomaraTokens.RadiusPill)),
+                            .background(resolvedFill, RoundedCornerShape(ShomaraTokens.RadiusPill)),
                     )
                 }
                 else -> Box(
                     modifier = Modifier
                         .fillMaxWidth(0.25f)
                         .height(height)
-                        .background(ShomaraProgressLogic.fillColor(state), RoundedCornerShape(ShomaraTokens.RadiusPill)),
+                        .background(resolvedFill, RoundedCornerShape(ShomaraTokens.RadiusPill)),
                 )
             }
         }

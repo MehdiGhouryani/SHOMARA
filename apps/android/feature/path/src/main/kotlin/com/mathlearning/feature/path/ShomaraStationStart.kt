@@ -278,7 +278,9 @@ fun ShomaraStationStartSheet(
                 },
                 enabled = ShomaraStationStartLogic.ctaEnabled(state),
                 loading = state == ShomaraStationStartState.Starting,
-                variant = if (state == ShomaraStationStartState.Locked) ShomaraButtonVariant.Ghost else ShomaraButtonVariant.Primary,
+                // DT-77 (handoff v3): the station sheet is a home surface, so its primary CTA
+                // speaks the home violet; Locked keeps the quiet Ghost dismiss.
+                variant = if (state == ShomaraStationStartState.Locked) ShomaraButtonVariant.Ghost else ShomaraButtonVariant.Home,
             )
         }
         // Exactly one dismissing action when locked: the "متوجه شدم" CTA
@@ -374,7 +376,8 @@ fun ShomaraJumpSheet(
             text = ShomaraStationStartStrings.Jump,
             onClick = { state.selectedId?.let(onConfirm) },
             enabled = state.canConfirm,
-            variant = ShomaraButtonVariant.Primary,
+            // DT-77 (handoff v3): home violet primary for the home-surface sheet.
+            variant = ShomaraButtonVariant.Home,
         )
         ShomaraButton(text = ShomaraStationStartStrings.Close, onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
     }
