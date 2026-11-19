@@ -42,7 +42,7 @@ jobs:
       PINNED_SDK_PLATFORM_DIR: "/usr/local/lib/android/sdk/platforms/android-37.0"
     steps:
       - uses: actions/checkout@v4
-      - uses: gradle/actions/wrapper-validation@v4
+      - uses: gradle/actions/wrapper-validation@v6
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
