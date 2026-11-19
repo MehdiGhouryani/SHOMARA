@@ -54,7 +54,7 @@ jobs:
       # lockfile/dependency manifests; restore keys let a toolchain bump reuse the bulk of the
       # cache while the exact key keeps determinism.
       - name: Cache Android platform package
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: /usr/local/lib/android/sdk/platforms/android-37.0
           key: android-sdk-${{ runner.os }}-platform-android-37.0-v1
@@ -65,7 +65,7 @@ jobs:
         run: |
           "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --channel=0 --install "$PINNED_SDK_PACKAGE"
       - name: Cache Gradle (caches + wrapper distributions)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.gradle/caches
