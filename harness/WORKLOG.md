@@ -1126,3 +1126,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **اثر اندازه‌گیری‌شده:** ممیزی inline از **۲۱۷** به **۱۹۴**.
 - **شواهد:** `ShomaraA11ySweepTest` **۲۹/۲۹** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `84ca1ae…`.
 - **بازمانده:** `LessonStageChrome` و بقیهٔ فایل‌های درس؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI.
+
+## 2026-11-19 — DT-27 — گالری کاتالوگ از main به debug + متن مرحلهٔ درس canonical + تفکیک متریک
+
+- **کد مردهٔ اثبات‌شده:** `ShomaraDesignSystemCatalog` (۱۲۴ خط با ۲۱ رشتهٔ نمونه) **صفر مصرف‌کننده** داشت — تنها میزبانش (`DesignSystemGalleryActivity`) در دور ۱ حذف شده بود و فقط اعلان + دو اشاره در اسناد مانده بود. حذف کامل، شواهد N03-06 را از بین می‌برد؛ رهاکردن، UI مرده را در ریلیز می‌فرستاد. راه‌حل: **انتقال کامپوزبل به `src/debug`** (همان الگوی `Previews.kt` در دور ۱) و نگه‌داشتن `ShomaraCatalogMatrix` در main چون تست JVM به آن assert می‌کند.
+- **اثبات ساختاری (نه ادعا):** خروجی کلاس‌ها — ریلیز فقط `ShomaraCatalogMatrix.class`؛ دیباگ علاوه بر آن `ShomaraCatalogGalleryKt.class` و `ComposableSingletons$ShomaraCatalogGalleryKt.class`. یعنی گالری دیگر در artifact ریلیز نیست.
+- **متن مرحلهٔ درس:** ۱۰ رشتهٔ inline در `ShomaraLessonStageChrome` (پنج نام مرحله، عنوان ایستگاه، fallback شناسهٔ ناشناس، هدر «— مرحلهٔ …»، «برای ادامه، به مسیر برگرد.»، «بازگشت به مسیر») به `ShomaraLessonStageLabels` با `const val` + توابع سازنده منتقل شد. متن **بدون تغییر**؛ تست‌های JVM ماژول درس سبز.
+- **تفکیک متریک ممیزی:** اسکریپت اکنون `SUBTOTAL_MAIN` و `SUBTOTAL_DEBUG` جدا می‌دهد: **MAIN=۱۳۲، DEBUG=۵۵، TOTAL=۱۸۷**. این نشان می‌دهد بخش بزرگی از «موارد» باقی‌مانده در MAIN، توابع سازندهٔ قانونی داخل آبجکت‌های `*Strings` هستند (`ShomaraFeedback` ۱۳، `ShomaraPathState` ۸، `ShomaraAudio` ۹) — یعنی متریک به مرز کاربردش رسیده و ادامهٔ کورکورانه‌اش ارزش منفی دارد.
+- **بازبینی خودم:** بررسی شد که در فایل‌های اصلاح‌شده (والدین، ایستگاه، مرحلهٔ درس، من، تنظیمات) هیچ رشتهٔ inline جا نمانده باشد — تنها باقی‌مانده‌ها **داخل** همان توابع سازندهٔ canonical هستند. ✓
+- **شواهد:** `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ `android:assemble:debug` exit 0؛ `:core:designsystem` debug+release+JVM سبز؛ APK `a9da074…`. sweep دست‌نخورده ماند (هیچ UI رندرشده‌ای تغییر نکرد) و آخرین اجرای تأییدشده‌اش ۲۹/۲۹ در DT-26 است — این را صریح ثبت می‌کنم.
+- **بازمانده:** O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI؛ شواهد دستگاه؛ بدهی Linux parity.

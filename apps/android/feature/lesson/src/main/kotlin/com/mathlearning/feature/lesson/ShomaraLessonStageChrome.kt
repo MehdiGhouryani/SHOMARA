@@ -35,12 +35,33 @@ import com.mathlearning.core.model.ShomaraStationCatalog
  * restrained result surface (family 11).
  */
 object ShomaraLessonStageLabels {
+    // AGENTS §10: the five stage names and the lesson chrome's own copy live here, so the words a
+    // child sees across a lesson can be reviewed as one list and asserted from a test.
+    const val Discover: String = "کشف"
+    const val Guided: String = "تمرین هدایت‌شده"
+    const val Game: String = "بازی"
+    const val Assessment: String = "ارزیابی"
+    const val Transfer: String = "انتقال"
+    const val BackToPathPrompt: String = "برای ادامه، به مسیر برگرد."
+    const val BackToPath: String = "بازگشت به مسیر"
+
+    /** «ایستگاه ۷ — عنوان کار» using the already-Persian ordinal. */
+    fun stationTitle(ordinalFa: String, workingTitle: String): String =
+        "ایستگاه " + ordinalFa + " — " + workingTitle
+
+    /** Fallback when the station id is not in the catalog: never crash, never invent a title. */
+    fun unknownStationTitle(stationId: String): String = "ایستگاه " + stationId
+
+    /** «ایستگاه ۷ — عنوان کار — مرحلهٔ بازی» */
+    fun stageHeader(stationTitle: String, stageLabel: String): String =
+        stationTitle + " — مرحلهٔ " + stageLabel
+
     fun labelFor(stage: MacroStage): String = when (stage) {
-        MacroStage.P1_DISCOVER -> "کشف"
-        MacroStage.P2_GUIDED -> "تمرین هدایت‌شده"
-        MacroStage.P3_GAME -> "بازی"
-        MacroStage.P4_ASSESSMENT -> "ارزیابی"
-        MacroStage.P5_TRANSFER -> "انتقال"
+        MacroStage.P1_DISCOVER -> Discover
+        MacroStage.P2_GUIDED -> Guided
+        MacroStage.P3_GAME -> Game
+        MacroStage.P4_ASSESSMENT -> Assessment
+        MacroStage.P5_TRANSFER -> Transfer
     }
 
     /** Only P1 discovery may show a guide character, small and static. */
@@ -79,10 +100,10 @@ fun ShomaraLessonStageHeader(
         // catalog working title, both already user-visible on the path —
         // and an unknown id falls back to the old rendering, never a crash.
         val stationTitle = runCatching { ShomaraStationCatalog.station(stationId) }.getOrNull()?.let { meta ->
-            "ایستگاه ${ShomaraDigits.toFa(meta.ordinal)} — ${meta.workingTitle}"
-        } ?: "ایستگاه $stationId"
+            ShomaraLessonStageLabels.stationTitle(ShomaraDigits.toFa(meta.ordinal), meta.workingTitle)
+        } ?: ShomaraLessonStageLabels.unknownStationTitle(stationId)
         Text(
-            text = "$stationTitle — مرحلهٔ ${ShomaraLessonStageLabels.labelFor(macroStage)}",
+            text = ShomaraLessonStageLabels.stageHeader(stationTitle, ShomaraLessonStageLabels.labelFor(macroStage)),
             style = ShomaraTypography.Title,
             color = ShomaraTokens.ColorInk,
             textAlign = TextAlign.Start,
@@ -128,13 +149,13 @@ fun ShomaraLessonResultSurface(
             modifier = Modifier.semantics { heading() },
         )
         Text(
-            text = "برای ادامه، به مسیر برگرد.",
+            text = ShomaraLessonStageLabels.BackToPathPrompt,
             style = ShomaraTypography.Body,
             color = ShomaraTokens.ColorInk2,
             textAlign = TextAlign.Center,
         )
         ShomaraButton(
-            text = "بازگشت به مسیر",
+            text = ShomaraLessonStageLabels.BackToPath,
             onClick = onExitToShell,
             variant = ShomaraButtonVariant.Primary,
             modifier = Modifier.fillMaxWidth(),
