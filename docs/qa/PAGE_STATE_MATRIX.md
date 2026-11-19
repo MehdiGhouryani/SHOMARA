@@ -79,19 +79,28 @@
 | UI-006 | `reselect` | دارد (با نام «duplicate navigation guard») | دارد | ✅ موجود، نام متفاوت |
 | UI-006 | `modal` | دارد (`ShomaraChildShellHost` + `ShomaraDialog`) | دارد | ✅ موجود |
 | UI-006 | `IME` | **ندارد** | دارد (`OnboardingHost.imePadding`) | ⚠️ در والد اعمال می‌شود، در پوسته نه |
-| UI-017 | `restart` | **ندارد** | دارد (در `app`/`sync`) | ⚠️ واقعی: تنظیمات مسیر restart ندارد |
-| UI-017 | `ready` | **ندارد** | دارد (در ماژول‌های دیگر) | ⚠️ واقعی: تنظیمات وضعیت «آماده» صریح ندارد |
+| UI-017 | `restart` | **ندارد** | دارد — `ShomaraSettingsStoreTest` «save persists across a new store instance» | ✅ **موجود، در لایهٔ درست** (DT-66) |
+| UI-017 | `ready` | **ندارد** | دارد — `canSave == false` در حالت Clean | ✅ موجود، حالا صریحاً تست‌شده (DT-66) |
 | UI-019 | `missing-asset` | دارد — `MissingCharacterPlaceholder` در `ShomaraCharacter.kt` | دارد | ✅ موجود |
 | UI-019 | `pending-sync` | دارد (`OutboxSyncEngine`، `AppContainer`) | دارد | ✅ موجود |
 | UI-019 | `permission` | **ندارد** | **ندارد — صفر فایل** | ❌ شکاف واقعی |
 
-### دو شکاف واقعی که باقی می‌ماند
+### تصحیح DT-66 — حکم دور قبلِ من دربارهٔ `restart` و `ready` غلط بود
 
-**۱. `permission` (UI-019) — صفر ارجاع در کل محصول.** هیچ صفحه یا کامپوننتی حالت «مجوز داده نشده» را رندر نمی‌کند.
-این دقیقاً همان چیزی است که AGENTS.md §6 برای هر صفحهٔ مرتبط لازم می‌داند.
+در DT-64 نوشتم این دو «شکاف واقعی سیم‌کشی» هستند. **نبودند.** شاهد، که آن موقع نگشته بودم:
 
-**۲. `restart` و `ready` (UI-017) — فقط در ماژول تنظیمات غایب‌اند.** منطق restart در `app` هست، ولی صفحهٔ تنظیمات
-مسیر صریحی به آن ندارد و وضعیت `ready` خودش را نام نمی‌برد. این «نبودِ پیاده‌سازی» نیست، «نبودِ اتصال و نام» است.
+- **`restart`**: `ShomaraSettingsStoreTest` تستی دارد به نام
+  «save persists across a new store instance over the same file» — یعنی بقای ترجیح پس از مرگ فرایند سنجیده می‌شود.
+  من فقط ماژول `feature:settings` را گشته بودم و توکن را در `core:datastore` ندیدم.
+- **`ready`**: حالت Clean با `canSave == false` همان حالت آماده است و تستش از قبل بود.
+
+ولی یک چیز واقعاً کم بود و حالا اضافه شد: **نیمهٔ سمتِ صفحه از قرارداد restart**. تست استور ثابت می‌کند مقدار
+ذخیره‌شده می‌ماند؛ ثابت نمی‌کرد ویرایشِ ذخیره‌نشده پس از ری‌استارت **زنده نمی‌شود**. `ShomaraSettingsTest` حالا دو
+تست دارد: «restart does not resurrect an unsaved edit» و «ready state is dirty-free». عدد تست ماژول از ۷ به ۹ رفت
+(`tests=9 failures=0`).
+
+درس تکرارشده: حکم «شکاف واقعی» هم باید با جست‌وجو در **کل محصول** پشتیبانی شود، نه فقط در ماژول نام‌برده. همان
+اشتباهی که اول دربارهٔ `permission` مرتکب شدم، بار دوم دربارهٔ `restart` تکرار کردم.
 
 ### سه شکاف که شکاف نبودند
 
