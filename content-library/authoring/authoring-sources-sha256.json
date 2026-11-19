@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "note": "Hash registry for AUTHORED station specs (content-library/authoring/stations/specs/*.md). These are new authored works, NOT byte-protected research originals; originals keep their own registry in derived/source-sha256.json. Update the hash here whenever a spec is deliberately revised (the validator compares).",
+  "sha256": {
+    "authoring/stations/specs/ST01.md": "28493d0dbd678a575306c1ba7867b91edfc6be5eb8d869bdfd10fe2cc23484c6"
+  }
+}

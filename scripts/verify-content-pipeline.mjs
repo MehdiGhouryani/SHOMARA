@@ -27,6 +27,18 @@ const nonReview = real.violations.filter((v) => v.rule !== 'review-roles');
 expect(nonReview.length === 0, 'st07-validate', JSON.stringify(real.violations));
 expect(real.violations.filter((v) => v.rule === 'review-roles').length === 4, 'st07-review-roles-pending', 'expected exactly the 4 role gaps');
 
+// 1b. DT-80: the first fully-authored station beyond the pilot (ST01) validates clean too,
+//     its spec hash is tracked in the authored-sources registry, and its no-numeral policy
+//     (countableRange instead of taughtNumerals) is enforced by the validator.
+const st01 = await validateStation('content-library/authoring/stations/ST01.json');
+const st01NonReview = st01.violations.filter((v) => v.rule !== 'review-roles' && v.rule !== 'rights-moderation');
+expect(st01NonReview.length === 0, 'st01-validate', JSON.stringify(st01.violations));
+expect(st01.artifact.provenance?.taughtNumerals?.length === 0, 'st01-no-numerals', 'ST01 introduces no numeral glyphs (spec section-0)');
+expect(Array.isArray(st01.artifact.provenance?.countableRange) && st01.artifact.provenance.countableRange.length === 5, 'st01-countable-range', 'ST01 answers stay within counts 1..5');
+expect(st01.artifact.provenance?.audioRowCount === 62, 'st01-audio-rows', 'ST01 audio manifest must carry its 62 draft rows');
+const st01LedgerState = currentState(loadLedger(), 'ST01');
+expect(['SOURCE_ONLY', 'MAPPED_TO_REPO', 'STAGED', 'VALIDATED'].includes(st01LedgerState), 'st01-state', `ST01 is ${st01LedgerState} (must remain machine-reachable until human review)`);
+
 // 2. Ledger well-formed + the state must be a legitimate machine-reachable stage
 //    (P9 promoted ST07 to VALIDATED via the real gates — the verifier follows the LEDGER,
 //    never a hardcoded stage).
@@ -107,4 +119,4 @@ if (violations.length > 0) {
   console.log(`CONTENT_PIPELINE: FAIL (${violations.length})`);
   process.exit(1);
 }
-console.log('CONTENT_PIPELINE: PASS (ST07 clean, gates enforced, 7 negative fixtures rejected, leak guard active, originals intact)');
+console.log('CONTENT_PIPELINE: PASS (ST07 clean, ST01 authored spec clean, gates enforced, 7 negative fixtures rejected, leak guard active, originals intact)');

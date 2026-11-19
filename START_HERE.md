@@ -19,6 +19,7 @@ current_task: N11-05
 | `verify:static:all` | PASS 94/94 |
 | instrumented (دستی، همه) | **۶۶/۶۶ PASS** (Pixel_6a) — اولین اجرای کامل بعد از DT-76/77 |
 | font-scale sweep | ۶/۶ PASS روی امولاتور (360/390/412dp × 1.0/1.3/2.0) |
+| محتوای ایستگاه‌ها | **۲ از ۲۵ authored** (ST07 پایلوت + ST01 کامل؛ هر دو MAPPED/VALIDATED، بدون بازبینی انسانی) — `curriculum-matrix.json` |
 
 ## آخرین کارها
 
@@ -27,6 +28,7 @@ current_task: N11-05
 - **DT-77** صفحات دیگر v3: Scaffold شل روی canvas بنفش (قبلاً ۵۴٪ cream پشت من/تنظیمات)؛ تمرین canvas ۹۰٪؛ من canvas ۷۱٪ + کارت هویت بنفش با نام واقعی؛ تنظیمات canvas ۸۲٪ + دکمهٔ ذخیره بنفش (`Home` variant روی `ShomaraButton`، بدون کامپوننت موازی). legacy-cream در هر سه تب: **۰٪**. font-scale sweep ۶/۶.
 - **DT-78** رگرسیون‌های a11y + race خواندن draft: اولین اجرای کامل instrumented ۸ خطا داد (۵ رگرسیون DT-76: CTA بدون `shomaraPrimaryCta`، لیبل کاشی جا نشدن در font 2.0، strip پنهان؛ ۳ تست کهنه از DT-40). همه رفع شد؛ **باگ واقعی first-run هم پیدا و رفع شد** (خواندن draft فقط در شروع process بود → Loading ابدی تا restart؛ حالا شل هنگام ورود به route دوباره می‌خواند — روی دستگاه با نصب تازه از صفر تأیید شد). instrumented حالا **۶۶/۶۶**.
 - **DT-79** ریشهٔ «خطوط روی ایستگاه‌ها نیستند» پیدا و رفع شد (RTL direction-sign آینه می‌کرد + مارپیچ ۲→۳ ستون + رسیدن خط تا مرکز دایرهٔ بعد؛ اثبات پیکسلی روی دستگاه). **تحقیق کامل Duolingo** (۱۰ منبع رسمی): `docs/notes/duolingo-gap-analysis-dt79.md` — ۸ گپ اولویت‌دار؛ بزرگ‌ترین = ذخیرهٔ پیشرفت/مرور فاصله‌دار (G1). **طرح شخصیت پروفایل**: `docs/notes/character-system-profile-dt79.md` — فایل Fandogh در res هست ولی whitelist نیست؛ ۴ تصمیم باز مالک صریح ثبت شد.
+- **DT-80** ممیزی جزئیات مرحله‌به‌مرحله: فقط ۱/۲۵ ایستگاه محتوا داشت (ST07 پایلوت)؛ مستند `docs/notes/station-step-detail-audit-dt80.md`. **ST01 کامل تألیف شد** (۴۹ آیتم یکتا، ۶۲ خط صوت، بدون هیچ رقمی — نماد عدد از ST07 می‌آید): `content-library/authoring/stations/specs/ST01.md` + transcribe JSON + CSV صدا؛ pipeline به ۱۵ الگو + رژیم countableRange + رجیستری هش authoring گسترش یافت؛ matrix حالا از ledger واقعی مشتق می‌شود (۲/۲۵ authored). گیت‌ها: content-pipeline + content-library + static 94/94 + harness VALID.
 
 ## باز و تأییدنشده (صادقانه)
 
@@ -37,6 +39,7 @@ current_task: N11-05
 5. **شواهد دستگاه فیزیکی** — اسکرین‌شات/TalkBack/دیپ‌لینک روی دستگاه واقعی گرفته نشده.
 6. **Onboarding v3 — ورودی مالک لازم** — ممیزی کامل انجام شد: صفحات خوش‌آمد/تلفن/کد/پروفایل/placement حول artwork مالک‌تحویلی (mascot، تپه‌ها، برگ‌ها — cream) از نمونه‌های خود مالک ساخته شده‌اند و در فهرست درخواست اولیه (مسیر/تمرین/من/منوها/لوگو/تنظیمات) نبودند. بازرنگ کردن بدون artwork جدید با تصاویر cream می‌جنگد (همان وضعیت اسپلش). تا تصمیم مالک دست‌نخورده می‌ماند.
 7. **instrumented در CI** — `android:gate` تست‌های instrumented را اجرا نمی‌کند؛ اجرا دستی است (آخرین اجرای کامل: DT-78، ۶۶/۶۶).
+8. **۲۳ ایستگاه بدون authoring** (بعد از DT-80: ST02–ST25 به‌جز ST07) — بات‌های A تا E طبق برنامهٔ `docs/notes/station-step-detail-audit-dt80.md` §۳؛ هر ایستگاه ≈ ۵۰ آیتم با قالب ST01. صوت/دارایی واقعی، بازبینی انسانی و حقوق برای هر دو ایستگاه موجود (ST01/ST07) هم هنوز انجام نشده (CONTENT-009/010؛ O1/O2/O7 باز).
 
 ## تصمیم‌های مالک (۲۰۲۶-۱۱-۱۹)
 

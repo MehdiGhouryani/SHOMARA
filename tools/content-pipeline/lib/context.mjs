@@ -20,7 +20,10 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(here, '..', '..', '..');
 export const CONTENT = path.join(ROOT, 'content-library');
 export const AUTHORING = path.join(CONTENT, 'authoring');
-export const KNOWN_TEMPLATES = ['T01', 'T05', 'T11', 'T13', 'T15'];
+// All 15 game templates are defined in the byte-protected stage-5 reference (§7). The prototype
+// subset (T01/T05/T11/T13/T15) covers the ST07 pilot; DT-80 opens authoring to every station, so
+// the full defined set is legal here — anything else (T99…) is rejected.
+export const KNOWN_TEMPLATES = Array.from({ length: 15 }, (_, i) => `T${String(i + 1).padStart(2, '0')}`);
 export const PIPELINE_STATE = path.join(AUTHORING, 'promotion-ledger.json');
 
 export function readJson(file) {
@@ -113,11 +116,19 @@ export async function validateStation(authoringFile, options = {}) {
   const prereqViolations = prerequisiteViolations(artifact.prerequisites ?? [], known);
   prereqViolations.forEach((detail) => add('prerequisite-graph', detail));
 
-  // 5. Taught-numeral constraints: every discrete correctRef numeral must be within the taught set.
+  // 5. Taught-numeral constraints (two regimes, DT-80):
+  //    a) stations WITHOUT countableRange (pilot): numeral/picture-count values stay within taughtNumerals;
+  //    b) stations WITH countableRange (e.g. ST01 — no numeral glyphs exist yet, answers are dot/finger
+  //       counts): EVERY numeric correctRef value must stay within countableRange.
   const taught = artifact.provenance?.taughtNumerals ?? [];
+  const countable = artifact.provenance?.countableRange;
   for (const item of items) {
     const ref = item.correctRef;
-    if (ref && (ref.kind === 'numeral' || ref.kind === 'picture-count') && typeof ref.value === 'number') {
+    if (countable) {
+      if (ref && typeof ref.value === 'number' && !countable.includes(ref.value)) {
+        add('taught-numeral', `${item.id}: correct value ${ref.value} outside countable range [${countable}]`);
+      }
+    } else if (ref && (ref.kind === 'numeral' || ref.kind === 'picture-count') && typeof ref.value === 'number') {
       if (!taught.includes(ref.value)) add('taught-numeral', `${item.id}: correct value ${ref.value} outside taught numerals [${taught}]`);
     }
   }
@@ -186,21 +197,26 @@ export async function validateStation(authoringFile, options = {}) {
   // 12. Package compatibility (PROPOSED ADR-0043 guards).
   if (items.length > 10_000) add('package-compatibility', 'item count exceeds the PROPOSED package guard');
 
-  // 13. Provenance/source hash — the byte-protected source must still match the recorded hash.
+  // 13. Provenance/source hash — the source must still match its recorded hash. Two registries:
+  //     originals/** (byte-protected research, derived/source-sha256.json) and authored specs
+  //     (authoring/** — DT-80 — authoring/authoring-sources-sha256.json).
   try {
     const sourceFile = artifact.provenance?.sourceFile;
-    const recorded = readJson(artifact.provenance?.sourceSha256File ?? 'derived/source-sha256.json');
+    const isAuthored = String(sourceFile ?? '').startsWith('authoring/');
+    const registryFile = isAuthored
+      ? (artifact.provenance?.sourceSha256File ?? 'authoring/authoring-sources-sha256.json')
+      : (artifact.provenance?.sourceSha256File ?? 'derived/source-sha256.json');
+    const recorded = readJson(registryFile);
     const expected = recorded.sha256?.[sourceFile] ?? recorded.sha256?.[sourceFile.replace('originals/', '')];
     const actual = sha256Hex(fs.readFileSync(path.join(CONTENT, sourceFile)));
     if (!expected) add('provenance-source-hash', `no recorded hash for ${sourceFile}`);
-    else if (expected !== actual) add('provenance-source-hash', `${sourceFile} hash drift — originals must never change`);
-    // The pilot answer anchors must exist inside the byte-protected source.
+    else if (expected !== actual) add('provenance-source-hash', `${sourceFile} hash drift — authored specs change only with a registry update (originals must never change)`);
+    // The spec answer anchors must exist inside the recorded source.
     for (const item of items) {
-      if (item.pilotAnswerAnchor) {
+      if (item.pilotAnswerAnchor || item.specAnswerAnchor) {
         const itemId = item.id;
-        if (!actual && false) { /* unreachable */ }
         const text = fs.readFileSync(path.join(CONTENT, sourceFile), 'utf8');
-        if (!text.includes(itemId)) add('provenance-source-hash', `anchor ${item.pilotAnswerAnchor}: item ${itemId} not found in source`);
+        if (!text.includes(itemId)) add('provenance-source-hash', `anchor ${item.pilotAnswerAnchor ?? item.specAnswerAnchor}: item ${itemId} not found in source`);
       }
     }
   } catch (e) {

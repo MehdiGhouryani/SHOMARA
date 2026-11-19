@@ -32,6 +32,16 @@
       "evidence": {
         "kind": "tool-run"
       }
+    },
+    {
+      "stationId": "ST01",
+      "from": "SOURCE_ONLY",
+      "to": "MAPPED_TO_REPO",
+      "at": "2026-11-19T23:07:04.468Z",
+      "actor": "dt80-station-authoring",
+      "evidence": {
+        "kind": "tool-run"
+      }
     }
   ]
 }
