@@ -5,7 +5,7 @@ const root = process.cwd();
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const contract = read('packages/contracts/src/engagement.ts');
 const roadmap = read('ROADMAP_PHASES.md');
-const log = read('docs/qa/phase-logs/P01_product-game-research-design-lock.md');
+const log = read('docs/qa/P01_product-game-research-design-lock.md');
 const sourceSpec = read('docs/notes/math_learning_product_game_engagement_quest_reward_v0_28_completed_v0_31.md');
 
 const fail = (message) => { console.error(`FAIL: ${message}`); process.exitCode = 1; };
