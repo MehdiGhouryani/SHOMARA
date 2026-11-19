@@ -28,6 +28,7 @@ import com.mathlearning.feature.onboarding.ShomaraProfileScreen
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
 import com.mathlearning.feature.parent.ShomaraParentHome
+import com.mathlearning.feature.parent.ShomaraParentStrings
 import com.mathlearning.feature.path.ShomaraHomeScreen
 import com.mathlearning.feature.path.ShomaraHomeStrings
 import com.mathlearning.feature.path.ShomaraHomeUiState
@@ -281,6 +282,25 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("ParentGate")
+    }
+
+    @Test
+    fun parentGateLockedOutStillOffersExactlyItsTwoControls() {
+        // LockedOut is the state where a guardian has failed repeatedly: the wait notice must be
+        // spoken and the two real controls (passcode field, enter) must stay tappable and named,
+        // otherwise the adult is stuck with no way back either.
+        // maxFailures defaults to 3, so three wrong codes are what actually produce LockedOut.
+        val gate = ShomaraParentGate(verifier = { it == "1234" })
+        gate.verify("0000", 0L)
+        gate.verify("1111", 0L)
+        gate.verify("2222", 0L)
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraParentGateScreen(gate = gate, onAuthenticated = {}, onBack = {})
+            }
+        }
+        assertTextPresent("ParentGate/LockedOut", ShomaraParentStrings.LockedOutNotice)
+        assertA11yContract("ParentGate/LockedOut")
     }
 
     @Test

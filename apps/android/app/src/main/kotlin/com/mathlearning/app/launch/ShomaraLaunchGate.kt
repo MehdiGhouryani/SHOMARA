@@ -120,6 +120,19 @@ fun ShomaraLaunchRecoveryScreen(
 object ShomaraLaunchRecoveryCopy {
     const val StartOverLabel: String = "شروع از اول"
 
+    // Every line of launch-recovery copy, lifted out of the Copy(...) calls so the app's
+    // first screen can be reviewed as one list and asserted from a test.
+    const val Retry: String = "تلاش دوباره"
+    const val OfflineTitle: String = "به اینترنت وصل نیستیم"
+    const val OfflineBody: String = "برای ادامه لازم است یک بار به اینترنت وصل شویم."
+    const val OfflineHint: String = "شبکه را بررسی کن و دوباره تلاش کنیم."
+    const val GenericTitle: String = "هنوز آماده نیستیم"
+    const val GenericBody: String = "یک مشکل کوچک پیش آمد و نتوانستیم وارد شویم."
+    const val GenericHint: String = "اگر تکرار شد، با «شروع از اول» برمی‌گردیم به ابتدا."
+    const val NotConfiguredTitle: String = "ورود هنوز پیکربندی نشده"
+    const val NotConfiguredBody: String = "این نسخه هنوز به سرویس ورود وصل نیست."
+    const val NotConfiguredHint: String = "با «شروع از اول» می‌توانی از ابتدا شروع کنی."
+
     data class Copy(
         val title: String,
         val body: String,
@@ -129,17 +142,17 @@ object ShomaraLaunchRecoveryCopy {
 
     fun forState(state: ShomaraLaunchState): Copy = when (state) {
         ShomaraLaunchState.Offline -> Copy(
-            title = "به اینترنت وصل نیستیم",
-            body = "برای ادامه لازم است یک بار به اینترنت وصل شویم.",
-            hint = "شبکه را بررسی کن و دوباره تلاش کنیم.",
-            retryLabel = "تلاش دوباره",
+            title = OfflineTitle,
+            body = OfflineBody,
+            hint = OfflineHint,
+            retryLabel = Retry,
         )
         ShomaraLaunchState.Error -> forBackendNotConfigured()
         else -> Copy(
-            title = "هنوز آماده نیستیم",
-            body = "یک مشکل کوچک پیش آمد و نتوانستیم وارد شویم.",
-            hint = "اگر تکرار شد، با «شروع از اول» برمی‌گردیم به ابتدا.",
-            retryLabel = "تلاش دوباره",
+            title = GenericTitle,
+            body = GenericBody,
+            hint = GenericHint,
+            retryLabel = Retry,
         )
     }
 
@@ -149,9 +162,9 @@ object ShomaraLaunchRecoveryCopy {
      * be a fabrication.
      */
     fun forBackendNotConfigured(): Copy = Copy(
-        title = "ورود هنوز پیکربندی نشده",
-        body = "این نسخه هنوز به سرویس ورود وصل نیست.",
-        hint = "با «شروع از اول» می‌توانی از ابتدا شروع کنی.",
-        retryLabel = "تلاش دوباره",
+        title = NotConfiguredTitle,
+        body = NotConfiguredBody,
+        hint = NotConfiguredHint,
+        retryLabel = Retry,
     )
 }

@@ -1117,3 +1117,12 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **اثر قابل اندازه‌گیری:** ممیزی inline از **۲۴۶** به **۲۱۷** رسید (`build-reports/audit/inline_persian_audit.py`). باقی‌ماندهٔ پرتراکم: `LessonContentWiring` (۲۴، debug)، `ShomaraCatalog` (۲۱)، `ParentBoundary` (۱۴)، `ShomaraFeedback` (۱۳)، `LaunchGate` (۱۲)، `LessonStageChrome` (۱۰).
 - **شواهد:** `ShomaraA11ySweepTest` **۲۸/۲۸** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `020fe6d…`.
 - **بازمانده:** `ParentBoundary`/`LaunchGate`/`LessonStageChrome` (و تصمیم دربارهٔ `ShomaraCatalog`/`ShomaraFeedback` که ممکن است canonical باشد)؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI.
+
+## 2026-11-19 — DT-26 — متن مرز والدین canonical شد + state «قفل موقت» در sweep
+
+- **مرز والدین (۱۴ رشته):** پیام‌های شکست دروازه (`NotConfigured` و `WrongPasscode` — همان چیزی که والد دقیقاً وقتی خطا رخ می‌دهد می‌خواند) و همهٔ برچسب‌های صفحه (`GateTitle`, `GatePrompt`, `LockedOutNotice`, `PasscodeLabel`, `Enter`, `Back`, `LockPolicyHint`, `ReportTitle`, `SignOut`, `ScopeNotice`) به `ShomaraParentStrings` منتقل شدند؛ خط پیشرفت به تابع تبدیل شد. متن **بدون تغییر** — `ShomaraParentBoundaryTest` و بقیهٔ تست‌های ماژول والدین سبز.
+- **LaunchGate:** کشف مهم برای ممیزی — رشته‌های آن **از قبل** داخل `ShomaraLaunchRecoveryCopy` (منبع canonical، «pure so it is unit-testable») بودند و شمارش من آن‌ها را inline حساب می‌کرد. به‌جای جابه‌جایی بی‌فایده، ۱۰ رشته به `const val`های نام‌دار ارتقا یافتند تا در یک نگاه مرور شوند و تست بتواند به آن‌ها ارجاع دهد.
+- **state جدید sweep:** دروازهٔ والدین در حالت **LockedOut** (پس از ۳ تلاش ناموفق) — تأیید می‌شود متن انتظار گفته می‌شود و همان دو کنترل واقعی نام‌دار و ≥۴۸dp می‌مانند. sweep به **۲۹** رسید.
+- **اثر اندازه‌گیری‌شده:** ممیزی inline از **۲۱۷** به **۱۹۴**.
+- **شواهد:** `ShomaraA11ySweepTest` **۲۹/۲۹** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `84ca1ae…`.
+- **بازمانده:** `LessonStageChrome` و بقیهٔ فایل‌های درس؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI.

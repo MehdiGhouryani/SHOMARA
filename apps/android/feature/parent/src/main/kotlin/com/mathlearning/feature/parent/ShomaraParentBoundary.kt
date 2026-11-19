@@ -82,7 +82,7 @@ class ShomaraParentGate(
         if (verifier == null) {
             // Fail-closed: no credential checker wired → entry impossible.
             failures += 1
-            return lockOrFail("ورود والدین هنوز پیکربندی نشده است.", nowMs)
+            return lockOrFail(ShomaraParentStrings.NotConfigured, nowMs)
         }
         state = ShomaraParentGateState.Verifying(failures + 1)
         return if (verifier.invoke(passcode)) {
@@ -91,7 +91,7 @@ class ShomaraParentGate(
             state
         } else {
             failures += 1
-            lockOrFail("گذرواژه درست نیست؛ دوباره تلاش کن.", nowMs)
+            lockOrFail(ShomaraParentStrings.WrongPasscode, nowMs)
         }
     }
 
@@ -111,6 +111,31 @@ class ShomaraParentGate(
 }
 
 /** Adult-only surface contract: sections the parent home may render (no child lesson content). */
+/**
+ * Canonical copy for the guardian boundary. AGENTS §10: the gate's failure messages (which a parent
+ * reads exactly when something went wrong) and every label on the gate and the parent summary live
+ * here, so they can be reviewed as one set and asserted from tests. Text is byte-identical to what
+ * the screen rendered before this extraction.
+ */
+object ShomaraParentStrings {
+    const val GateTitle: String = "بخش والدین"
+    const val GatePrompt: String = "این بخش برای بزرگ‌ترهاست؛ لطفاً گذرواژه را وارد کن."
+    const val LockedOutNotice: String = "چند لحظه صبر کن و دوباره تلاش کن."
+    const val PasscodeLabel: String = "گذرواژه والدین"
+    const val Enter: String = "ورود"
+    const val Back: String = "بازگشت"
+    const val LockPolicyHint: String = "پس از چند تلاش ناموفق، ورود موقتاً قفل می‌شود."
+    const val NotConfigured: String = "ورود والدین هنوز پیکربندی نشده است."
+    const val WrongPasscode: String = "گذرواژه درست نیست؛ دوباره تلاش کن."
+    const val ReportTitle: String = "گزارش والدین"
+    const val SignOut: String = "خروج از حساب"
+    const val ScopeNotice: String = "این سطح فقط خلاصهٔ بزرگسالان نشان می‌دهد و محتوای درس کودک را باز نمی‌کند."
+
+    /** «پیشرفت ثبت‌شده: ۳ از ۲۵ ایستگاه» — digits are Persian by the time they arrive. */
+    fun progressLine(completedFa: String, totalFa: String): String =
+        "پیشرفت ثبت‌شده: " + completedFa + " از " + totalFa + " ایستگاه"
+}
+
 object ShomaraParentSurfaceContract {
     val AllowedSections: List<String> = listOf(
         "progress-report",
@@ -123,7 +148,7 @@ object ShomaraParentSurfaceContract {
 
 /** Local label for the gate's back action (F-23): the string lives in this file because a
  * cross-feature import (parent <- onboarding strings) is forbidden. */
-private const val ParentGateBackLabel: String = "بازگشت"
+private const val ParentGateBackLabel: String = ShomaraParentStrings.Back
 
 @Composable
 fun ShomaraParentGateScreen(
@@ -143,17 +168,17 @@ fun ShomaraParentGateScreen(
     // Batch 2: the column scrolls, so a 200%-font gate can never clip the
     // entry button below the fold on a short window.
     Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
-        Text(text = "بخش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-        ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "این بخش برای بزرگ‌ترهاست؛ لطفاً گذرواژه را وارد کن.")
+        Text(text = ShomaraParentStrings.GateTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraParentStrings.GatePrompt)
         when (val state = gate.state) {
             is ShomaraParentGateState.Failed -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = state.message)
-            is ShomaraParentGateState.LockedOut -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "چند لحظه صبر کن و دوباره تلاش کن.")
+            is ShomaraParentGateState.LockedOut -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraParentStrings.LockedOutNotice)
             else -> {}
         }
         ShomaraTextField(
             value = passcode,
             onValueChange = { passcode = it },
-            label = "گذرواژه والدین",
+            label = ShomaraParentStrings.PasscodeLabel,
             numericLtr = true,
             // The adult credential is masked and announced as a password: a child-facing
             // device is shared, and the passcode must never be legible on screen.
@@ -161,7 +186,7 @@ fun ShomaraParentGateScreen(
             modifier = Modifier.fillMaxWidth(),
         )
         ShomaraButton(
-            text = "ورود",
+            text = ShomaraParentStrings.Enter,
             onClick = {
                 when (gate.verify(passcode = passcode, nowMs = nowMs())) {
                     is ShomaraParentGateState.Authenticated -> onAuthenticated()
@@ -186,7 +211,7 @@ fun ShomaraParentGateScreen(
             )
         }
         // Honest lockout rule, stated before any failure happens.
-        Text(text = "پس از چند تلاش ناموفق، ورود موقتاً قفل می‌شود.", style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
+        Text(text = ShomaraParentStrings.LockPolicyHint, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorMuted)
     }
 }
 
@@ -202,7 +227,7 @@ fun ShomaraParentHome(
     // numbers as the text line, rendered as a bar whose TalkBack
     // announcement uses words, never a percentage or a score.
     Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
-        Text(text = "گزارش والدین", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        Text(text = ShomaraParentStrings.ReportTitle, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         Row(
             modifier = Modifier.fillMaxWidth()
                 // Batch 2 (ADR-0040 R1): the summary card is the one
@@ -217,7 +242,10 @@ fun ShomaraParentHome(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "پیشرفت ثبت‌شده: " + ShomaraDigits.toFa(completedStations) + " از " + ShomaraDigits.toFa(totalStations) + " ایستگاه",
+                text = ShomaraParentStrings.progressLine(
+            ShomaraDigits.toFa(completedStations),
+            ShomaraDigits.toFa(totalStations),
+        ),
                 style = ShomaraTypography.Body,
                 color = ShomaraTokens.ColorInk2,
             )
@@ -228,13 +256,13 @@ fun ShomaraParentHome(
             ),
         )
         ShomaraButton(
-            text = "خروج از حساب",
+            text = ShomaraParentStrings.SignOut,
             onClick = onSignOut,
             variant = ShomaraButtonVariant.Ghost,
             modifier = Modifier.fillMaxWidth(),
         )
         Text(
-            text = "این سطح فقط خلاصهٔ بزرگسالان نشان می‌دهد و محتوای درس کودک را باز نمی‌کند.",
+            text = ShomaraParentStrings.ScopeNotice,
             style = ShomaraTypography.Caption,
             color = ShomaraTokens.ColorMuted,
         )
