@@ -1,4 +1,4 @@
-package com.mathlearning.app.previews
+package com.mathlearning.app.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
