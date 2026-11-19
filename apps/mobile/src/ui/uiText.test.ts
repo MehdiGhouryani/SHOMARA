@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
  * Dev-only screens and the character bible's internal ids are excluded.
  */
 const ROOT = join(__dirname, '..', '..');
-const SKIP = new Set(['animation.tsx', 'SemanticAnimationDemo.tsx']); // dev-only animation lab (hidden from release builds)
+const SKIP = new Set(['animation.tsx']); // dev-only animation lab (hidden from release builds)
 
 function files(dir: string, out: string[] = []): string[] {
   for (const name of readdirSync(dir)) {

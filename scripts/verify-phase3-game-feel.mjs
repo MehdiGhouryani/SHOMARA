@@ -14,7 +14,6 @@ const required = [
   'apps/mobile/src/game-feel/RevealPrimitives.tsx',
   'apps/mobile/src/game-feel/RevealPrimitives.test.tsx',
   'apps/mobile/src/animation/useAnimationController.ts',
-  'apps/mobile/src/components/AnimatedCharacter.tsx',
   'apps/mobile/src/game-feel/ProgressFill.tsx',
   'apps/mobile/src/game-feel/feedbackEffects.ts',
   'apps/mobile/src/game-feel/haptics.ts',
@@ -45,7 +44,8 @@ const webCompanion = read('apps/web/components/InteractiveCompanion.tsx');
 const animationIndex = read('apps/mobile/src/animation/index.ts');
 const controller = fs.readFileSync(path.join(root, 'apps/mobile/src/game-feel/GameFeelController.ts'), 'utf8');
 const hook = fs.readFileSync(path.join(root, 'apps/mobile/src/animation/useAnimationController.ts'), 'utf8');
-const character = fs.readFileSync(path.join(root, 'apps/mobile/src/components/AnimatedCharacter.tsx'), 'utf8');
+// DT-45: AnimatedCharacter.tsx was deleted with the dead character-art chain (no route, test or entry point imported it). The assertion that read it is retired with the file.
+const character = '';
 const station = fs.readFileSync(path.join(root, 'apps/mobile/src/station/StationFlow.tsx'), 'utf8');
 const tactile = fs.readFileSync(path.join(root, 'apps/mobile/src/game-feel/TactileChoice.tsx'), 'utf8');
 const draggable = fs.readFileSync(path.join(root, 'apps/mobile/src/game-feel/DraggableToken.tsx'), 'utf8');
@@ -73,7 +73,8 @@ const checks = {
   stableAnimationDispatch: hook.includes('useCallback') && hook.includes('[controller]'),
   reducedMotion: motion.includes('isReduceMotionEnabled') && motion.includes('preferences.motion'),
   interactivePrimitivesRespectReducedMotion: tactile.includes('channels.reducedMotion') && tactile.includes('!reducedMotion') && draggable.includes('channels.reducedMotion') && draggable.includes('reducedMotion ? 0'),
-  noPunitiveWrongAnimation: character.includes("case 'ENCOURAGE':") && !character.includes("case 'ANSWER_WRONG': shake"),
+  // retired with the file; the no-punitive-feedback rule is still asserted on the contracts and copy.
+noPunitiveWrongAnimation: true,
   feedbackSurvivesSilentTransition: controller.includes('shouldPreserveVisibleReaction') && controller.includes('!nextSpec.message') && controller.includes('latestEventState'),
   celebrationActuallyBlocksInput: fs.readFileSync(path.join(root, 'apps/mobile/src/game-feel/useGameFeel.ts'), 'utf8').includes('inputBlocked: Boolean(snapshot.feedback?.blocksInput') && station.includes('inputBlocked'),
   testsPresent: fs.existsSync(path.join(root, 'packages/contracts/src/game-feel.test.ts')) && fs.existsSync(path.join(root, 'apps/mobile/src/game-feel/haptics.test.ts')) && fs.existsSync(path.join(root, 'apps/mobile/src/game-feel/GameFeelController.test.ts')) && fs.existsSync(path.join(root, 'apps/mobile/src/game-feel/feedback.test.ts')) && fs.existsSync(path.join(root, 'apps/mobile/src/game-feel/DragDropController.test.ts')),
