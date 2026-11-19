@@ -94,8 +94,12 @@ fun ShomaraHomeScreen(
             // actually rendered. With an unresolved snapshot there is no current station, so the
             // Current node keeps the claim and Home still has exactly one primary action.
             currentNodeClaimsPrimaryCta = !hasPathCards,
-            // The chapter card below carries the same facts, so the thin strip would say it twice.
-            showOrientationStrip = !hasPathCards,
+            // DT-78 (a11y contract): the orientation strip stays visible whenever progress is
+            // resolved — pinned above the list, it carries facts the cards do NOT duplicate: the
+            // next-step pointer and the remaining-station count across the whole path. Hiding it
+            // for card states broke both the pinned-strip test and the fresh-state readability
+            // sweep at 200% font.
+            showOrientationStrip = state.progress.isResolved,
             header = if (hasPathCards) {
                 {
                     Column(

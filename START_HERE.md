@@ -12,29 +12,29 @@ current_task: N11-05
 | مورد | مقدار |
 |---|---|
 | شاخهٔ کار | `work/shomara-deep-transformation` |
-| آخرین commit | `99f6e8c` |
-| `origin/main` | `aa2805c` (دست‌نخورده) |
-| sweep دسترس‌پذیری | **۴۸/۴۸** روی `Pixel_6a` |
+| آخرین commit | (پس از commit این دور به‌روز می‌شود) |
+| `origin/main` | `e604100` (ff-only، همگام تا قبل از این دور) |
 | `android:gate` | exit 0 (`ANDROID_BUILD: PASS`) |
 | `harness validate` | VALID (۱۲۹ task) |
-| `verify:static:all` · `verify:repository` · `verify:design-governance` · `verify:design-pack` | همه exit 0 |
-| APK | `2478d9f5…3ec923` |
+| `verify:static:all` | PASS 94/94 |
+| instrumented (دستی، همه) | **۶۶/۶۶ PASS** (Pixel_6a) — اولین اجرای کامل بعد از DT-76/77 |
+| font-scale sweep | ۶/۶ PASS روی امولاتور (360/390/412dp × 1.0/1.3/2.0) |
 
 ## آخرین کارها
 
-- **DT-39** کارت قهرمان شخصیت‌محور در Home (سطح `ColorHomeVioletSoft`، شخصیت `ComponentNodeCurrent + Space16`).
-- **DT-40** پیاده‌سازی کامل دو کامپوننت جاافتادهٔ handoff: `ShomaraChapterProgressCard` (C04) و `ShomaraContinueStationCard` (C05) با **یک** CTA اصلی؛ ۲۵ وکتور تأییدشدهٔ بسته به design system اضافه شد؛ مالکیت CTA از گرهٔ مسیر به کارت منتقل شد.
-- **پاک‌سازی:** ۸۰ سند بی‌ارجاع (۲۰۱→۱۴۱ سند) + ۳۷ فایل تکراری/بی‌مصرف؛ ۱۲ artifact از گیت خارج شد (۱۷۴۲→۱۶۹۴ فایل).
-- **شاهد جعلی حذف شد:** `gallery-ltr.png` و `gallery-rtl.png` بایت‌یکسان بودند؛ شاهد بصری RTL هرگز وجود نداشت.
+- **DT-75** بن‌بست placement رفع شد (resolve محلی با پایهٔ انتخابی)؛ کودک بدون skip به شل می‌رسد.
+- **DT-76** مسیر v3 کامل: ریشهٔ O5 loading همیشگی بسته شد (پروفایل ذخیره‌شده = یادگیرندهٔ واقعی → مسیر ۲۵ ایستگاه رندر می‌شود)؛ تب‌بار آیکون‌دار بنفش (۶ VectorDrawable موجود)؛ کارت featured بنفش («اولین ایستگاه آماده است»); CTA واقعی → شیت ایستگاه. پالت فریم: violet ۱۶٪.
+- **DT-77** صفحات دیگر v3: Scaffold شل روی canvas بنفش (قبلاً ۵۴٪ cream پشت من/تنظیمات)؛ تمرین canvas ۹۰٪؛ من canvas ۷۱٪ + کارت هویت بنفش با نام واقعی؛ تنظیمات canvas ۸۲٪ + دکمهٔ ذخیره بنفش (`Home` variant روی `ShomaraButton`، بدون کامپوننت موازی). legacy-cream در هر سه تب: **۰٪**. font-scale sweep ۶/۶.
+- **DT-78** رگرسیون‌های a11y + race خواندن draft: اولین اجرای کامل instrumented ۸ خطا داد (۵ رگرسیون DT-76: CTA بدون `shomaraPrimaryCta`، لیبل کاشی جا نشدن در font 2.0، strip پنهان؛ ۳ تست کهنه از DT-40). همه رفع شد؛ **باگ واقعی first-run هم پیدا و رفع شد** (خواندن draft فقط در شروع process بود → Loading ابدی تا restart؛ حالا شل هنگام ورود به route دوباره می‌خواند — روی دستگاه با نصب تازه از صفر تأیید شد). instrumented حالا **۶۶/۶۶**.
 
 ## باز و تأییدنشده (صادقانه)
 
-1. **O5** — هویت/پیشرفت واقعی کودک؛ تا حل‌نشدنش Home و Practice با snapshot حل‌نشده کار می‌کنند.
-2. **قفل والدین** — تصمیم مالک: حذف کامل بدون تأیید. نیاز به اصلاح `ADR-0037`/`ADR-0047` و verifierها دارد (اجرا نشده).
-3. **شواهد دستگاه فیزیکی** — اسکرین‌شات/TalkBack/دیپ‌لینک روی دستگاه واقعی گرفته نشده.
-4. **instrumented در CI** — `android:gate` تست‌های instrumented را اجرا نمی‌کند؛ اجرا دستی است.
-5. **دو قرارداد بی‌مصرف** — `AssetResolver` و `AudioAssetResolver` (seam آمادهٔ اتصال، تصمیم مالک).
-6. **بازسازی UI بقیهٔ صفحات** — Home انجام شد؛ Practice/Me/Settings/Onboarding باید با همین معیار handoff بازبینی شوند.
+1. **O5 کامل** — رندر واقعی حل شد، اما ذخیرهٔ پیشرفت بین نشست‌ها (Room projection) هنوز باز است؛ حالت‌های current/completed/perfect مسیر هنوز روی دستگاه جارو نشده‌اند.
+2. **اسپلش/لوگو v3** — پکیج v3 هیچ asset اسپلش ندارد؛ artwork فعلی cream مالک‌تحویلی است. **ورودی مالک لازم** تا canvas عوض شود.
+3. **رنگ خطا/آفلاین در v3** — FeedbackBannerهای state هنوز رنگ v1 دارند؛ پالت handoff رنگ خطا/آفلاین تعریف نمی‌کند (تصمیم طراحی لازم).
+4. **شواهد دستگاه فیزیکی** — اسکرین‌شات/TalkBack/دیپ‌لینک روی دستگاه واقعی گرفته نشده.
+5. **Onboarding v3 — ورودی مالک لازم** — ممیزی کامل انجام شد: صفحات خوش‌آمد/تلفن/کد/پروفایل/placement حول artwork مالک‌تحویلی (mascot، تپه‌ها، برگ‌ها — cream) از نمونه‌های خود مالک ساخته شده‌اند و در فهرست درخواست اولیه (مسیر/تمرین/من/منوها/لوگو/تنظیمات) نبودند. بازرنگ کردن بدون artwork جدید با تصاویر cream می‌جنگد (همان وضعیت اسپلش). تا تصمیم مالک دست‌نخورده می‌ماند.
+6. **instrumented در CI** — `android:gate` تست‌های instrumented را اجرا نمی‌کند؛ اجرا دستی است (این دور کامل اجرا شد).
 
 ## تصمیم‌های مالک (۲۰۲۶-۱۱-۱۹)
 

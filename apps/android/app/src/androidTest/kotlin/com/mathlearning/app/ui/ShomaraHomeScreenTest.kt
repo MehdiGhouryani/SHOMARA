@@ -98,6 +98,11 @@ class ShomaraHomeScreenTest {
 
         val current = ShomaraStationCatalog.station("ST04")
         val currentLabel = stationLabel(current)
+        // Cards-first layout (DT-40/DT-76, owner-approved device walk): the featured cards own
+        // the first frame and the list opens at the top, so the Current node is reached by the
+        // same scroll a child performs. Everything this test guards — wrapping, semantics, the
+        // single emitted intent — then runs against the scrolled node exactly as before.
+        compose.onNodeWithTag("shomara-path-list").performScrollToNode(stationMatcher("ST04"))
         compose.onNodeWithContentDescription(current.workingTitle).assertIsDisplayed()
         compose.onNodeWithContentDescription(current.workingTitle).assert(
             SemanticsMatcher.expectValue(
@@ -133,6 +138,12 @@ class ShomaraHomeScreenTest {
         val station = ShomaraStationCatalog.station("ST07")
         val nextStep = ShomaraHomeStrings.nextStep(station.workingTitle)
         val remaining = ShomaraHomeStrings.remaining(ShomaraDigits.toFa(19))
+
+        // Cards-first layout (DT-40/DT-76): the list opens at the top with the featured cards,
+        // so the Current node is reached by the same scroll a child performs. This test's
+        // contract is that the orientation strip stays pinned and correct through arbitrary
+        // scrolling — not the node's first-frame position.
+        compose.onNodeWithTag("shomara-path-list").performScrollToNode(stationMatcher("ST07"))
 
         // The Current station is immediately actionable…
         compose.onNodeWithContentDescription(station.workingTitle).assertIsDisplayed()
@@ -192,6 +203,9 @@ class ShomaraHomeScreenTest {
 
         state.value = ShomaraHomeUiState(progress = currentProgress.copy(offline = true))
         compose.waitForIdle()
+        // Cards-first layout (DT-40/DT-76): the Current node needs the same scroll a child
+        // performs before its offline state can be asserted.
+        compose.onNodeWithTag("shomara-path-list").performScrollToNode(stationMatcher("ST04"))
         compose.onNodeWithText(ShomaraHomeStrings.Offline).assertIsDisplayed()
         compose.onNodeWithContentDescription(ShomaraStationCatalog.station("ST04").workingTitle).assertIsDisplayed()
         capture("home-offline-current-390dp")
@@ -222,12 +236,15 @@ class ShomaraHomeScreenTest {
         }
     }
 
+    /** Matches the path node of a station by its ContentDescription (the working title). */
+    private fun stationMatcher(stationId: String): SemanticsMatcher = SemanticsMatcher("station $stationId") { node ->
+        node.config.getOrNull(SemanticsProperties.ContentDescription)
+            ?.contains(ShomaraStationCatalog.station(stationId).workingTitle) == true
+    }
+
     private fun assertStationState(stationId: String, expected: ShomaraPathNodeState) {
         val station = ShomaraStationCatalog.station(stationId)
-        val stationMatcher = SemanticsMatcher("station $stationId") { node ->
-            node.config.getOrNull(SemanticsProperties.ContentDescription)?.contains(station.workingTitle) == true
-        }
-        compose.onNodeWithTag("shomara-path-list").performScrollToNode(stationMatcher)
+        compose.onNodeWithTag("shomara-path-list").performScrollToNode(stationMatcher(stationId))
         compose.onNodeWithContentDescription(station.workingTitle)
             .assert(
                 SemanticsMatcher.expectValue(

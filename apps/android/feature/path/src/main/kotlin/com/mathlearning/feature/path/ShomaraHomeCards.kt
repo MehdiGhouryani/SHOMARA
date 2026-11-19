@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
+import com.mathlearning.core.designsystem.shomaraPrimaryCta
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.R
 import com.mathlearning.core.designsystem.ShomaraClay
@@ -203,11 +205,21 @@ internal fun ShomaraContinueStationCard(
                     onClick = onContinue,
                 )
             }
-            // C23 topic tile of the continued station — real station identity, never decoration.
-            ShomaraContinueTopicTile(
-                stationId = stationId,
-                modifier = Modifier.size(ShomaraTokens.ComponentNodeSize),
-            )
+            // C23 topic art of the continued station — icon-only (DT-78). The tile's Caption label
+            // duplicated the station title right beside it AND broke the 200%-font fit oracle:
+            // «شمارش» needs 217px in the fixed 72dp slot. The icon carries the topic identity;
+            // the title column carries the words. Decorative: the card text is the announcement.
+            Box(
+                modifier = Modifier
+                    .size(ShomaraTokens.ComponentNodeSize)
+                    .clearAndSetSemantics {},
+            ) {
+                ShomaraLessonTopicIcon(
+                    topic = ShomaraLessonTopics.topicForStation(stationId),
+                    selected = true,
+                    enabled = true,
+                )
+            }
         }
     }
 }
@@ -216,6 +228,10 @@ internal fun ShomaraContinueStationCard(
  * The single primary action of the continue card. On-violet contrast treatment: a white surface
  * with violet text (4.99:1, PACKAGE_CONTRACT_AUDIT) rather than the shared green button, which
  * would clash with the violet featured surface.
+ *
+ * DT-78 (a11y contract): the action publishes [ShomaraPrimaryCta] exactly like a Primary
+ * [ShomaraButton] does — the sweep counts nodes carrying that key, and a custom surface must not
+ * silently drop the claim. Exactly one primary action per viewport stays enforceable.
  */
 @Composable
 private fun ContinueCardAction(
@@ -227,7 +243,8 @@ private fun ContinueCardAction(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH),
+            .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
+            .semantics { shomaraPrimaryCta = true },
         shape = RoundedCornerShape(ShomaraTokens.RadiusMd),
         color = ShomaraHomeUiTokens.Surface,
         border = BorderStroke(ShomaraTokens.ClaySoftBorderWidth, ShomaraHomeUiTokens.VioletSoft),

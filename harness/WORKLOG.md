@@ -1332,3 +1332,10 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 **شواهد:** ۲۴۰ JVM تست / ۰ خطا؛ android:gate PASS (748 task)؛ static:all 94/94؛ harness VALID. Backlog CSV: ردیف‌های UI-006/007/013/015/017 با exit_evidence واقعی به‌روز شد (NATIVE_PENDING ماند — state matrix کامل جارو نشده؛ صادقانه).
 
 **بازمانده:** FeedbackBannerهای خطا/آفلاین هنوز رنگ v1؛ TalkBack sweep دستگاهی؛ O5 کامل (Room projection).
+
+## DT-78 — رفع رگرسیون‌های a11y + race خواندن draft (2026-11-20)
+
+- اولین اجرای کامل instrumented بعد از DT-76/77: **۶۶ تست، ۸ خطا** (۵ رگرسیون DT-76 + ۳ کهنه از DT-40؛ instrumented در CI نیست و بعد از DT-40 اجرا نشده بود).
+- رفع: CTA کارت ادامه حالا \shomaraPrimaryCta\ منتشر می‌کند؛ آیکون topic در کارت icon-only شد (لیبل در font 2.0 جا نمی‌شد + تکراری بود)؛ strip جهت‌یابی با \isResolved\ همیشه دیده می‌شود؛ ۳ تست کهنه setupشان scroll به node گرفت (assertion‌ها دست‌نخورده).
+- **باگ واقعی first-run**: خواندن draft فقط در شروع process بود → کودکی که onboarding را در همان process تمام می‌کرد به Loading ابدی می‌رسید. رفع: شل هنگام ورود به route دوباره می‌خواند (\ShomaraApp.kt\). روی دستگاه با نصب تازه از صفر تأیید شد.
+- شواهد: instrumented 66/66 exit 0؛ \erify:static:all\ 94/94؛ \ndroid:gate\ exit 0؛ \harness validate\ VALID 129؛ پالت Home fresh روی دستگاه \canvas 68.7 / violet 13.8 / greenSoft 11.8 / cream 0\؛ 360dp و 360dp×font2.0 هم پابرجا (فریم‌ها: dt78-*.png).

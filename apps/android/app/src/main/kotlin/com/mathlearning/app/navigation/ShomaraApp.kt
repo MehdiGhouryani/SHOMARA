@@ -196,6 +196,17 @@ fun ShomaraApp(
             route = AppDestination.SHELL.route,
             deepLinks = listOf(navDeepLink { uriPattern = AppDestination.SHELL.deepLink }),
         ) {
+            // DT-78 (first-run O5 read race): the root read above runs at process start, when a
+            // fresh install holds no draft yet — so a child completing onboarding IN THE SAME
+            // process composed the shell with the stale `false` and Home stayed in Loading
+            // until process death. Re-reading at shell entry closes the gap: the shell is
+            // always composed with the draft's current truth, whether the process is fresh or
+            // long-lived. (Real cross-session progress projection stays open under O5.)
+            LaunchedEffect(profileDraftStore) {
+                val draft = profileDraftStore.read()
+                learnerProfilePresent = !draft?.name.isNullOrBlank()
+                learnerName = draft?.name
+            }
             ShomaraChildShell(
                 onSignOut = {
                     // A sign-out clears the verified credential, then re-enters the launch gate so

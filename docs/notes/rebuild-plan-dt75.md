@@ -129,6 +129,43 @@
 - FeedbackBannerهای state (offline/error/empty) هنوز روی رنگ‌های v1 sky/danger هستند — فقط در
   حالت‌های خطا/آفلاین دیده می‌شوند؛ بازطراحی آن‌ها نیازمند تصمیم رنگ خطا در v3 است (مرحلهٔ بعد).
 
+## شواهد گام ۵ — رفع رگرسیون‌های a11y کشف‌شده + race خواندن draft (DT-78)
+
+اولین اجرای کامل instrumented بعد از DT-76/77 (۶۶ تست) **۸ خطا** نشان داد؛ ۵ تای آن رگرسیون DT-76 بود،
+۳ تای دیگر کهنه از DT-40 (هیچ‌وقت اجرا نشده بودند چون instrumented در CI نیست). همه رفع شدند.
+
+| شاهد | مقدار |
+|---|---|
+| اجرای instrumented (قبل از DT-78، روی e604100) | **۶۶ تست، ۸ خطا** — ۵ خطای رگرسیون DT-76 + ۳ خطای کهنه DT-40 |
+| اجرای instrumented (بعد از DT-78، روی بیلد نهایی) | **۶۶ تست، ۰ خطا** — exit 0 |
+| `verify:static:all` | PASS 94/94 |
+| `android:gate` | exit 0 |
+| `harness validate` | VALID (129 tasks) |
+| سفر fresh-install روی دستگاه (در همان process) | شل resolved: strip + هر دو کارت + متن‌های fresh («اولین ایستگاه آماده است»، «شروع ایستگاه») |
+| پالت Home (fresh) | `canvas ۶۸.۷٪ / violet ۱۳.۸٪ / greenSoft ۱۱.۸٪ / legacy-cream ۰٪` |
+| پالت Home (360dp) | همان ترکیب — بدون تغییر |
+| پالت Home (360dp × font 2.0) | `canvas ۸۵.۹٪ / violet ۵.۰٪ / greenSoft ۲.۴٪ / cream ۰٪` — چیدمان پابرجا |
+| فریم‌های شاهد | `dt78-fresh-home-fixed.png`، `dt78-resume-home-fixed.png`، `dt78-fresh-360dp.png`، `dt78-fresh-360dp-font200.png` |
+
+### رفع‌های DT-78
+
+1. **CTA کارت ادامه semantics گم کرده بود**: `ContinueCardAction` سطح سفارشی بود و `shomaraPrimaryCta`
+   را منتشر نمی‌کرد → تست «expected 1 primary CTA, found 0». حالا همان کلید semantics را مثل
+   `ShomaraButton(Primary)` منتشر می‌کند؛ قرارداد «دقیقاً یک اکشن primary در viewport» قابل اجرا ماند.
+2. **لیبل کاشی topic در font 2.0 جا نمی‌شد**: «شمارش» به ۲۱۷px نیاز داشت در slot ثابت ۷۲dp (۱۸۹px).
+   لیبل با عنوان ایستگاهِ کنارش تکراری هم بود → آیکون topic الان icon-only است (هویت از icon،
+   کلمات از عنوان).
+3. **strip جهت‌یابی دوباره همیشه دیده می‌شود** (`showOrientationStrip = isResolved`): strip داده‌ای دارد
+   که کارت‌ها تکرار نمی‌کنند — «ایستگاه‌های باقی‌مانده» کل مسیر + next-step. پنهان کردنش برای حالت‌های
+   کارت‌دار، تست pinned-strip و readable بودن متن‌ها را می‌شکست.
+4. **race خواندن draft در first-run**: `LaunchedEffect` ریشه فقط در شروع process می‌خواند؛ نصب تازه هنوز
+   draft ندارد → کودکی که onboarding را در همان process تمام می‌کرد، شل را با `learnerProfilePresent=false`
+   منجمد می‌دید (Loading ابدی تا kill). حالا شل هنگام ورود به route دوباره می‌خواند (DT-78،
+   `ShomaraApp.kt`). این اولین سفر هر کودک بود — باگ واقعی، رفع واقعی.
+5. **۳ تست کهنه DT-40** (node جاری در اولین فریم): کارت‌ها طبق handoff مالک فریم اول‌اند و list از بالا
+   باز می‌شود؛ node با همان اسکرول خود کودک پیدا می‌شود. تست‌ها setupشان را گرفتن (scroll به node)؛
+   هر assertion اصلی (pinned strip، wrap/semantics/single-intent، stateهای واقعی) دست‌نخورده اجرا می‌شود.
+
 ## چه چیزی ساخته نمی‌شود (ضد اقدام بیهوده)
 
 - کامپوننت موازی Button/TabBar/PathNode/Progress (Gate 3 v3 صریحاً ممنوع).
