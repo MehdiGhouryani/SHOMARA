@@ -1,7 +1,72 @@
+// Merged by DT-54: error types, checksums and the forbidden-field guard.
+// These declarations shared a folder and a theme but were split across files; Kotlin resolves imports
+// by package, so keeping them together changes nothing at the call site.
+
 package com.mathlearning.core.common.error
 
+import java.security.MessageDigest
 import java.util.UUID
 
+// ---- from AppError.kt ----
+sealed interface AppError {
+    data object Offline : AppError
+    data object Unauthorized : AppError
+    data class Network(val retryable: Boolean) : AppError
+    data class Validation(val field: String? = null) : AppError
+    data class Unknown(val incidentId: String? = null) : AppError
+}
+
+enum class UserMessageKey {
+    OFFLINE,
+    SESSION_EXPIRED,
+    TRY_AGAIN,
+    CHECK_INPUT,
+    UNEXPECTED,
+}
+
+fun AppError.toUserMessageKey(): UserMessageKey = when (this) {
+    AppError.Offline -> UserMessageKey.OFFLINE
+    AppError.Unauthorized -> UserMessageKey.SESSION_EXPIRED
+    is AppError.Network -> UserMessageKey.TRY_AGAIN
+    is AppError.Validation -> UserMessageKey.CHECK_INPUT
+    is AppError.Unknown -> UserMessageKey.UNEXPECTED
+}
+
+// ---- from ContentChecksums.kt ----
+/** Canonical SHA-256 helper for content integrity gates (manifest activation, audio cache). */
+object ContentChecksums {
+    fun sha256Hex(bytes: ByteArray): String =
+        MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
+}
+
+// ---- from ForbiddenFieldGuard.kt ----
+/**
+ * CONTENT-008 boundary — shared by the Room repository implementation (:core:database) and the
+ * unit-test fakes that must model the same contract: forbidden keys never reach the child store.
+ */
+class ForbiddenFieldException(message: String) : Exception(message)
+
+object ForbiddenFieldGuard {
+    /** CONTENT-008: these keys must never enter the child database from any payload. */
+    val FORBIDDEN_KEYS: Set<String> = setOf(
+        "answer", "answers", "answerKey", "answer_key", "correctIndex", "correctAnswer",
+        "evaluatorConfig", "evaluator_config", "pass_threshold", "passThreshold",
+        "nextStep", "reviewer", "reviewerId", "reviewEvidence", "provenance",
+    )
+
+    fun reject(payload: Map<String, String>) {
+        for ((key, value) in payload) {
+            if (FORBIDDEN_KEYS.any { key.equals(it, ignoreCase = true) }) {
+                throw ForbiddenFieldException("forbidden field rejected before persistence: $key")
+            }
+            if (key == "content" && FORBIDDEN_KEYS.any { value.contains(it, ignoreCase = true) }) {
+                throw ForbiddenFieldException("forbidden field embedded in content blob")
+            }
+        }
+    }
+}
+
+// ---- from ShomaraErrorModel.kt ----
 /**
  * ShomaraErrorModel (P3 native infrastructure, ADR-0041) — the canonical three-layer error
  * contract. [AppError] stays the canonical LEAF taxonomy (data-layer vocabulary); this model

@@ -74,7 +74,8 @@ const forbidden = [/answerKey/i, /correctAnswer/i, /google-services\.json/i, /si
 const boundaryGuardFiles = new Set([
   // Built with path.sep so Windows/POSIX separators always match path.relative output.
   ['apps', 'android', 'core', 'model', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'model', 'ContentProjection.kt'].join(path.sep),
-  ['apps', 'android', 'core', 'common', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'common', 'error', 'ForbiddenFieldGuard.kt'].join(path.sep),
+  // DT-54: the guard moved into the merged Errors.kt (it shared a package and a theme with the error types).
+  ['apps', 'android', 'core', 'common', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'common', 'error', 'Errors.kt'].join(path.sep),
 ]);
 const walk = (target) => {
   for (const entry of fs.readdirSync(target, { withFileTypes: true })) {
