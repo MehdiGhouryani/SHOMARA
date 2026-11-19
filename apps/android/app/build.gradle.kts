@@ -40,6 +40,13 @@ android {
     packaging {
         resources.excludes += setOf("/META-INF/AL2.0", "/META-INF/LGPL2.1")
     }
+
+    testOptions {
+        // DT-57: Compose UI tests were instrumented-only, so the accessibility/overflow sweep never ran in CI and
+        // landscape geometry could not be asserted at all. Robolectric renders Compose on the JVM; this flag gives
+        // those tests the real resources they need.
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -78,6 +85,11 @@ dependencies {
     testImplementation(libs.room.runtime)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.kotlinx.coroutines.test)
+    // DT-57: JVM-rendered Compose. These let a UI assertion run in `test` (and therefore in CI) instead of only
+    // under androidTest on a device, which is what made landscape geometry unverifiable.
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
     // N08-15: the launch controller is a coroutine state producer, so its unit tests need a test
     // dispatcher (TestScope/advanceUntilIdle). Test-only dependency; no runtime impact.
     testImplementation(libs.kotlinx.coroutines.test)
