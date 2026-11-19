@@ -71,7 +71,7 @@ for (const route of [
 
 const productSkill = read('docs/DESIGN_RULES.md');
 const screenSkill = read('docs/DESIGN_RULES.md');
-assert.ok(productSkill.includes('skills/shomara-design-system/SKILL.md'), 'product-design skill must route shared UI work');
-assert.ok(screenSkill.includes('skills/shomara-design-system/SKILL.md'), 'screen-execution skill must route shared UI work');
+assert.ok(productSkill.includes('docs/DESIGN_RULES.md § design system/SKILL.md'), 'product-design skill must route shared UI work');
+assert.ok(screenSkill.includes('docs/DESIGN_RULES.md § design system/SKILL.md'), 'screen-execution skill must route shared UI work');
 
 console.log('DESIGN_GOVERNANCE: PASS (17 page families, 20 Native UI work items, 4 inspiration sources, 9 component families, 4 Clay depth tiers)');

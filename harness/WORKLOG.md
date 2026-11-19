@@ -35,7 +35,7 @@
 
 ## 2026-10-28 — DESIGN checkpoint / commit e4035b0
 
-- `skills/shomara-product-design/SKILL.md` و playbook با frontmatter، trigger و workflow قابل اجرا استاندارد شدند.
+- `docs/DESIGN_RULES.md § product design/SKILL.md` و playbook با frontmatter، trigger و workflow قابل اجرا استاندارد شدند.
 - `design/MASTER.md` قرارداد برند و UX Native V3 را ثبت کرد؛ ۱۵ route زنده در route registry نگاشت شدند.
 - `NATIVE_IMPLEMENTATION.md` و verifier بستهٔ طراحی اضافه/تقویت شد؛ checksum منابع اصلی و metadata صوت PASS است.
 - نتیجه: DESIGN منبع ایده‌پردازی آزاد نیست؛ هر UI task باید از route registry، state matrix و review rubric عبور کند.

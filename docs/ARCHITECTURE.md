@@ -28,7 +28,7 @@
 - | README.md | «server-authoritative» | خلاف §1 | **AMENDED** (۱ سطر) | — |
 - | ZCODE.md | flow harness | ندارد | — | KEEP |
 - | PACKAGE_BOUNDARIES_FA.md:26 | «repository مرز local/remote» | خلاف مدل آفلاین | **AMENDED:** هماهنگی Room/DataStore ↔ پکیج bundle | — |
-- | skills/shomara-product-design:27 | «server-authoritative» | خلاف §2 | **AMENDED** (local source authoritative) | — |
+- | docs/DESIGN_RULES.md § product design:27 | «server-authoritative» | خلاف §2 | **AMENDED** (local source authoritative) | — |
 
 _منبع: `docs/notes/ADR_RECONCILIATION_P2_FA.md`_
 
@@ -97,7 +97,7 @@ _منبع: `docs/notes/ANDROID_MODULE_GRAPH.md`_
 - - هیچ deep import از workspaceهای `@math/*` کشف نشد؛ مرز package فعلی سالم است.
 - اعداد authoritative در `harness/dependency-map.json` و audit تکرارپذیر در `tools/dependency-audit.mjs` قرار دارند.
 **مقصد V3**
-- ورودی تصمیم N03 از `skills/shomara-design-system/SKILL.md` و قرارداد componentها از `design/playbook/COMPONENT_READINESS.md` می‌آید. انتخاب‌های الهامی فقط پس از فیلتر `design/INSPIRATION_GUARDRAILS.md` معتبرند.
+- ورودی تصمیم N03 از `docs/DESIGN_RULES.md § design system/SKILL.md` و قرارداد componentها از `design/playbook/COMPONENT_READINESS.md` می‌آید. انتخاب‌های الهامی فقط پس از فیلتر `design/INSPIRATION_GUARDRAILS.md` معتبرند.
 - 1. `packages/design-system/src/tokens.json` موقتاً canonical می‌ماند.
 - 2. schema مستقل برای color/type/space/radius/elevation/motion/touch/illustration ساخته می‌شود.
 - 3. codegen دو خروجی می‌دهد:

@@ -134,14 +134,14 @@
       "consumer": "all implementation agents"
     },
     {
-      "path": "skills/shomara-android-build/**",
+      "path": "docs/DESIGN_RULES.md § build/**",
       "class": "CANONICAL_ACTIVE",
       "owner": "android-build",
       "action": "route SDK/Gradle/CI/debug APK work through fail-closed build evidence",
       "consumer": "N02+ build tasks and coding agents"
     },
     {
-      "path": "skills/shomara-design-system/**",
+      "path": "docs/DESIGN_RULES.md § design system/**",
       "class": "CANONICAL_ACTIVE",
       "owner": "design-system",
       "action": "route token/theme/component work and keep reference progressive",

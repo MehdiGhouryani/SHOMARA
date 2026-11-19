@@ -643,7 +643,7 @@
           "evidence": [
             "design/INSPIRATION_GUARDRAILS.md",
             "design/playbook/COMPONENT_READINESS.md",
-            "skills/shomara-design-system/**",
+            "docs/DESIGN_RULES.md § design system/**",
             "npm run verify:design-governance PASS",
             "npm run verify:project-skills PASS"
           ]
@@ -706,7 +706,7 @@
           "evidence": [
             "scripts/android-build.mjs",
             "scripts/verify-android-build-harness.mjs",
-            "skills/shomara-android-build/SKILL.md",
+            "docs/DESIGN_RULES.md § build/SKILL.md",
             "npm run verify:android-build-harness PASS",
             "npm run android:doctor -- --allow-blocked reproduced BLOCKED_ENV"
           ]
@@ -2736,7 +2736,7 @@
           ],
           "evidence": [
             "Design-system baseline reviewed: canonical tokens remain packages/design-system/src/tokens.json.",
-            "Read skills/shomara-design-system/SKILL.md, design/MASTER.md, design/INSPIRATION_GUARDRAILS.md, COMPONENT_READINESS.md and NATIVE_IMPLEMENTATION.md. No token/component implementation is claimed yet.",
+            "Read docs/DESIGN_RULES.md § design system/SKILL.md, design/MASTER.md, design/INSPIRATION_GUARDRAILS.md, COMPONENT_READINESS.md and NATIVE_IMPLEMENTATION.md. No token/component implementation is claimed yet.",
             "Base token, typography, primitive and accessibility work is independent of authoring the remaining curriculum; content-specific manipulatives remain gated by approved content.",
             "Canonical Clay resolver and state-dependent Card/Button border changes are implemented with regression tests. Core CI and static-core passed on 8ebfa084; token-codegen --check, Harness validate/next, typecheck and Vitest passed.",
             "Android Native run 44188354588 passed Gradle test, lint, :app:compileDebugKotlin and :app:compileDebugAndroidTestKotlin with exit code 0. Visual screenshot/TalkBack/device validation is still pending.",

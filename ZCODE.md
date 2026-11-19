@@ -36,11 +36,11 @@ npm run android:gate
 
 | نوع کار | Skill اجباری |
 |---|---|
-| SDK، Gradle، CI، build و APK | `skills/shomara-android-build/SKILL.md` |
-| hierarchy، journey و UX صفحه | `skills/shomara-product-design/SKILL.md` |
-| token، theme، component و Clay | `skills/shomara-design-system/SKILL.md` |
-| پیاده‌سازی و evidence یک route | `skills/shomara-screen-execution/SKILL.md` |
-| curriculum، audio، CMS و authoring | `skills/shomara-learning-content/SKILL.md` |
+| SDK، Gradle، CI، build و APK | `docs/DESIGN_RULES.md § build/SKILL.md` |
+| hierarchy، journey و UX صفحه | `docs/DESIGN_RULES.md § product design/SKILL.md` |
+| token، theme، component و Clay | `docs/DESIGN_RULES.md § design system/SKILL.md` |
+| پیاده‌سازی و evidence یک route | `docs/DESIGN_RULES.md § screen execution/SKILL.md` |
+| curriculum، audio، CMS و authoring | `docs/DESIGN_RULES.md § content/SKILL.md` |
 
 برای UI، `design/INSPIRATION_GUARDRAILS.md` را پیش از انتخاب style بخوان. هیچ Skill مجاز نیست dependency graph یا gate فعال را دور بزند.
 

@@ -96,7 +96,7 @@ _منبع: `design/INSPIRATION_GUARDRAILS.md`_
 - - Assessment is visually quieter than teaching and practice.
 - - Provide tap/select alternatives for drag interactions.
 - - Never expose answer keys, guardian data, internal errors or sensitive identifiers. The answer key lives only in the local evaluator layer (ADR-0039) and never enters the child lesson projection, the database, logs, or telemetry.
-- - Apply curriculum rules through `skills/shomara-learning-content/SKILL.md`; a draft never overrides the versioned local content package or becomes enabled merely because UI references it.
+- - Apply curriculum rules through `docs/DESIGN_RULES.md § content/SKILL.md`; a draft never overrides the versioned local content package or becomes enabled merely because UI references it.
 **6. Accessibility and RTL**
 - - Minimum control target: 48dp; preferred early-grade manipulative: 72–80dp.
 - - Normal text contrast: at least 4.5:1; large text/control boundaries: at least 3:1.
@@ -214,7 +214,7 @@ _منبع: `design/playbook/COMPONENT_READINESS.md`_
 - - Touch targets generally 48dp minimum; educational active objects per curriculum 72–80dp preferred/required where specified; 16dp separation, 24dp edge inset for ST07 tasks.
 **6. Content integration boundary**
 - UI audit and curriculum import are **separate workstreams**. `content-library/` documents are draft content references. Stage4 has a proposed station-to-book mapping. Stage5 defines sound/motion/15 templates. Stage6 defines an authoring format. Stage7 provides a complete ST07 pilot, **not ST01**. The proposed 5-part P1–P5 model may not equal current StationFlow; mapping require…
-- No content promotion to production without explicit compatibility/validation decisions. Follow `skills/shomara-learning-content/SKILL.md`, `content-library/INTEGRATION_GATE.md` and `content-library/integration/SOURCE_AUDIT.md`.
+- No content promotion to production without explicit compatibility/validation decisions. Follow `docs/DESIGN_RULES.md § content/SKILL.md`, `content-library/INTEGRATION_GATE.md` and `content-library/integration/SOURCE_AUDIT.md`.
 **7. Engineering quality and stop criteria**
 - - Preserve git dirty/untracked including current `design/`, `content-library/`, `skills/` and user plan. Read `git status` prior to modifications, use the phase branch; no force-push.
 - - Per-route changed paths + behavior test + screenshot + verify source; ledger status values `DISCOVERED`, `AUDITED`, `IMPLEMENTED`, `TESTED_WEB`, `TESTED_NATIVE`, `BLOCKED` (not `DONE` on browser-only claims).
@@ -228,7 +228,7 @@ _منبع: `design/playbook/COMPONENT_READINESS.md`_
 - - Verify Android edge-to-edge, predictive back, process recreation, IME and TalkBack; browser parity cannot close these gates.
 - - Update the route ledger with separate behavioral parity, visual review and Native device status.
 **9. Shared component gate**
-- - Load `skills/shomara-design-system/SKILL.md` for any token, theme or shared primitive change.
+- - Load `docs/DESIGN_RULES.md § design system/SKILL.md` for any token, theme or shared primitive change.
 - - Use `COMPONENT_READINESS.md` to define purpose, non-use cases, states, semantics and evidence before code.
 - - Do not solve a page inconsistency by creating a local component when the behavior belongs in the shared system.
 - - Do not generalize a one-page visual experiment into the Design System without at least two valid consumers or an explicit foundation requirement.
@@ -285,9 +285,9 @@ _منبع: `design/playbook/MASTER_EXECUTION.md`_
 - 11. design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv
 - 12. design/playbook/quality/SCREEN_LEDGER.csv
 - 13. Skillهای زیر:
-- - skills/shomara-product-design/SKILL.md
-- - skills/shomara-design-system/SKILL.md
-- - skills/shomara-screen-execution/SKILL.md
+- - docs/DESIGN_RULES.md § product design/SKILL.md
+- - docs/DESIGN_RULES.md § design system/SKILL.md
+- - docs/DESIGN_RULES.md § screen execution/SKILL.md
 - همچنین باید دستورات زیر اجرا شوند:
 - git status --short --branch
 - git log -5 --oneline
@@ -421,7 +421,7 @@ _منبع: `design/playbook/N08R_U0_AUDIT_FA.md`_
 
 **Native implementation contract — Kotlin + Jetpack Compose**
 - Read this file for N02–N10 Android work after `design/MASTER.md` and the relevant page contract.
-- For theme, token or shared component work, `skills/shomara-design-system/SKILL.md` and `COMPONENT_READINESS.md` are also mandatory.
+- For theme, token or shared component work, `docs/DESIGN_RULES.md § design system/SKILL.md` and `COMPONENT_READINESS.md` are also mandatory.
 **Screen structure**
 - Each feature exposes immutable `UiState`, sealed user `Action`/`Intent`, a ViewModel or presenter, and a stateless route-level composable. Composables render state and emit events; they do not call network/database clients or calculate learning truth.
 - Route → ViewModel → UseCase → Repository → local/remote source
@@ -777,7 +777,7 @@ _منبع: `design/playbook/UX_REVIEW_RUBRIC.md`_
 **Mandatory source load**
 - Start at the actual repository root; never assume a machine-specific path.
 - Read repo `AGENTS.md`, `START_HERE.md` and `ZCODE.md`; inspect Git state; run `node tools/harness.mjs validate` and `node tools/harness.mjs next`.
-- Read `skills/shomara-product-design/SKILL.md`, `skills/shomara-screen-execution/SKILL.md`, `design/MASTER.md`, `design/INSPIRATION_GUARDRAILS.md` and relevant page contracts. For token/theme/component work read `skills/shomara-design-system/SKILL.md` and `design/playbook/COMPONENT_READINESS.md`. For content/audio/CMS work read `skills/shomara-learning-content/SKILL.md`. For Nat…
+- Read `docs/DESIGN_RULES.md § product design/SKILL.md`, `docs/DESIGN_RULES.md § screen execution/SKILL.md`, `design/MASTER.md`, `design/INSPIRATION_GUARDRAILS.md` and relevant page contracts. For token/theme/component work read `docs/DESIGN_RULES.md § design system/SKILL.md` and `design/playbook/COMPONENT_READINESS.md`. For content/audio/CMS work read `docs/DESIGN_RULES.md § content/SKILL.md`. For Nat…
 - Run `node design/playbook/quality/validate-pack.mjs`; if it fails, diagnose package files, never silently ignore.
 **The canonical Design Master and tokens beat illustrative examples.** Do not create a parallel design system. Expo V2 components provide behavior and migration evidence; Compose primitives become the final implementation. Historical V1 parity is not the target. Previous commits are not proof of quality.
 **Nonstop bounded delivery loop**
@@ -800,7 +800,7 @@ _منبع: `design/playbook/UX_REVIEW_RUBRIC.md`_
 - - P3 micro-polish after functional gates.
 - No cosmetic redesign may break existing learning flows. No new `lives/hearts/stars/streaks`. No inaccessible drag-only math tasks: allow tap/select alternative. ST07 curriculum-specific UI not to be applied indiscriminately to ST01. Avoid repetitive confetti/loops during solving.
 **CONTENT LIBRARY — separate staged integration, not automatic**
-- Read `skills/shomara-learning-content/SKILL.md` first. It routes to `content-library/INTEGRATION_GATE.md`, `content-library/integration/*.md`, `content-library/derived/*.json` and the exact original source required by the task.
+- Read `docs/DESIGN_RULES.md § content/SKILL.md` first. It routes to `content-library/INTEGRATION_GATE.md`, `content-library/integration/*.md`, `content-library/derived/*.json` and the exact original source required by the task.
 - Import educational material progressively and safely:
 - - Phase C0: exact provenance/metadata validation, check actual repo API schema/authoritative stages, write compatibility matrix.
 - - Phase C1: draft-only typed fixture for one compatible ST07 step/item, feature flag OFF; do not touch production. ST07 pilot ≠ current ST01.
@@ -853,7 +853,7 @@ _منبع: `design/playbook/ZCODE_MASTER_PROMPT.md`_
 - - `BLOCKED_ENV`: required JDK/SDK is absent or invalid; preserve the blocker.
 - - `FAILED`: toolchain was ready but Gradle or APK verification failed; fix the first real failure.
 
-_منبع: `skills/shomara-android-build/SKILL.md`_
+_منبع: `docs/DESIGN_RULES.md § build/SKILL.md`_
 
 ## SHOMARA design system skill
 
@@ -864,7 +864,7 @@ _منبع: `skills/shomara-android-build/SKILL.md`_
 **Required workflow**
 - 1. Read `AGENTS.md`, `START_HERE.md`, run harness `validate` and `next`, and obey the active task dependency graph.
 - 2. Read `design/MASTER.md`, `design/INSPIRATION_GUARDRAILS.md` and `design/playbook/COMPONENT_READINESS.md`.
-- 3. For Compose, read `design/playbook/NATIVE_IMPLEMENTATION.md`; for a route, also load `skills/shomara-screen-execution/SKILL.md` and its page contract.
+- 3. For Compose, read `design/playbook/NATIVE_IMPLEMENTATION.md`; for a route, also load `docs/DESIGN_RULES.md § screen execution/SKILL.md` and its page contract.
 - 4. Inventory existing token consumers before changing schema or generated output.
 - 5. Define purpose, API, state matrix, semantics, RTL/math direction, motion fallback and evidence before implementation.
 - 6. Generate platform outputs from the single canonical token source; never hand-edit generated files.
@@ -881,7 +881,7 @@ _منبع: `skills/shomara-android-build/SKILL.md`_
 **Evidence**
 - Record token diff, generated drift result, state coverage, semantics result, 360/390/412 screenshots, large-text/RTL evidence and remaining human/device approvals. A visually pleasing preview alone is not a gate.
 
-_منبع: `skills/shomara-design-system/SKILL.md`_
+_منبع: `docs/DESIGN_RULES.md § design system/SKILL.md`_
 
 ## Design-system review checklist
 
@@ -908,7 +908,7 @@ _منبع: `skills/shomara-design-system/SKILL.md`_
 - | tested native | emulator/device journey and exact command |
 - Mark unavailable device evidence `NATIVE_PENDING`; never infer it from source or browser output.
 
-_منبع: `skills/shomara-design-system/references/review-checklist.md`_
+_منبع: `docs/DESIGN_RULES.md § design system/references/review-checklist.md`_
 
 ## SHOMARA learning content skill
 
@@ -946,7 +946,7 @@ _منبع: `skills/shomara-design-system/references/review-checklist.md`_
 **Implementation order**
 - Validate the authoring schema and server boundary first. Implement ST07 as a nonproduction draft pilot using T01, T05, T13 and T15. Only after its acceptance gate may the remaining 24 station specifications be produced in the roadmap batches.
 
-_منبع: `skills/shomara-learning-content/SKILL.md`_
+_منبع: `docs/DESIGN_RULES.md § content/SKILL.md`_
 
 ## SHOMARA product design skill
 
@@ -956,11 +956,11 @@ _منبع: `skills/shomara-learning-content/SKILL.md`_
 - Build a Persian, Android-first mathematics learning product. Filter every external inspiration through SHOMARA safety, curriculum, accessibility and brand constraints.
 **Start every task**
 - 1. Read `AGENTS.md`, `START_HERE.md`, then run `node tools/harness.mjs validate` and `node tools/harness.mjs next`.
-- 2. Read `design/MASTER.md`, `design/INSPIRATION_GUARDRAILS.md` and `skills/shomara-screen-execution/SKILL.md`.
+- 2. Read `design/MASTER.md`, `design/INSPIRATION_GUARDRAILS.md` and `docs/DESIGN_RULES.md § screen execution/SKILL.md`.
 - 3. Read `design/playbook/PAGE_UIUX_BLUEPRINT.md`, then only the matching page contract in `design/playbook/pages/` plus its direct dependencies.
 - 4. Reconcile the real route/state with `design/playbook/ROUTE_REGISTRY.md`, `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` and `design/playbook/quality/SCREEN_LEDGER.csv`; never invent a route or implementation status.
-- 5. For tokens, shared components, Clay depth or Compose theme, load `skills/shomara-design-system/SKILL.md`; for Native route work also read `design/playbook/NATIVE_IMPLEMENTATION.md`.
-- 6. For curriculum, audio, CMS metadata or educational content, load `skills/shomara-learning-content/SKILL.md`; never promote an original directly into runtime.
+- 5. For tokens, shared components, Clay depth or Compose theme, load `docs/DESIGN_RULES.md § design system/SKILL.md`; for Native route work also read `design/playbook/NATIVE_IMPLEMENTATION.md`.
+- 6. For curriculum, audio, CMS metadata or educational content, load `docs/DESIGN_RULES.md § content/SKILL.md`; never promote an original directly into runtime.
 **Binding workflow**
 - `DISCOVER → OBSERVE → AUDIT → DESIGN → IMPLEMENT → TEST → CAPTURE → LEDGER`
 - - Treat current Expo V2 as behavioral/migration reference, not the final Native architecture.
@@ -977,7 +977,7 @@ _منبع: `skills/shomara-learning-content/SKILL.md`_
 **Stop and ask**
 - Pause only for product decisions that materially change identity, curriculum, grading, privacy, production data, licensing or release/signing. Safe consistency fixes and implementation inside an approved task do not require another confirmation.
 
-_منبع: `skills/shomara-product-design/SKILL.md`_
+_منبع: `docs/DESIGN_RULES.md § product design/SKILL.md`_
 
 ## SHOMARA screen execution skill
 
@@ -987,11 +987,11 @@ _منبع: `skills/shomara-product-design/SKILL.md`_
 - Implement a Persian, Android-first mathematics product—not a concept mockup. Expo V2 is a temporary behavioral reference; Kotlin/Jetpack Compose is the target.
 **Mandatory read order**
 - 1. Read repository `AGENTS.md`, `START_HERE.md`; inspect branch/dirty files; run harness `validate` and `next`.
-- 2. Read `skills/shomara-product-design/SKILL.md`, `design/MASTER.md` and `design/INSPIRATION_GUARDRAILS.md` for brand and product invariants.
+- 2. Read `docs/DESIGN_RULES.md § product design/SKILL.md`, `design/MASTER.md` and `design/INSPIRATION_GUARDRAILS.md` for brand and product invariants.
 - 3. Read `design/playbook/MASTER_EXECUTION.md`, `design/playbook/UX_REVIEW_RUBRIC.md`, `design/playbook/PAGE_UIUX_BLUEPRINT.md` and `design/playbook/ROUTE_REGISTRY.md` for execution policy.
 - 4. Read only the matching contract(s) in `design/playbook/pages/`.
-- 5. For Compose work read `design/playbook/NATIVE_IMPLEMENTATION.md`; for token/component/theme work load `skills/shomara-design-system/SKILL.md` and `design/playbook/COMPONENT_READINESS.md`.
-- 6. For educational content/audio/CMS changes read `skills/shomara-learning-content/SKILL.md` and only the references it routes to.
+- 5. For Compose work read `design/playbook/NATIVE_IMPLEMENTATION.md`; for token/component/theme work load `docs/DESIGN_RULES.md § design system/SKILL.md` and `design/playbook/COMPONENT_READINESS.md`.
+- 6. For educational content/audio/CMS changes read `docs/DESIGN_RULES.md § content/SKILL.md` and only the references it routes to.
 **Precedence**
 - Safety, approved product decisions, domain contracts and the authoritative local source (bundled package + local evaluator, ADR-0039) > `design/MASTER.md` and canonical tokens > this execution process > page-family layout guidance > content drafts > examples.
 - If binding sources conflict, record exact paths and resolve safely. Never silently invent a requirement or weaken a verifier.
@@ -1021,5 +1021,5 @@ _منبع: `skills/shomara-product-design/SKILL.md`_
 - - Interrupted session: root `ZCODE.md` and canonical `START_HERE.md`; `quality/EXECUTION_CHECKPOINT.md` is historical evidence only.
 - Stop only before a material product/curriculum/privacy/licensing/production/release decision. Continue safe implementation while a relevant task remains executable.
 
-_منبع: `skills/shomara-screen-execution/SKILL.md`_
+_منبع: `docs/DESIGN_RULES.md § screen execution/SKILL.md`_
 

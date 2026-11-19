@@ -9,7 +9,7 @@ const recovery=read('supabase/migrations/0039_skill_aware_recovery_variants.sql'
 const relationsCompletion=read('supabase/migrations/0041_grade1_skill_relations_completion.sql');
 const hard=read('supabase/migrations/0036_deep_integrity_and_projection_hardening.sql');
 const hardV2=read('supabase/migrations/0043_runtime_semantics_v2.sql');
-const pkgPath=path.join(root,'content/dev-packs/g1-st01-v2/package.json');
+const pkgPath=path.join(root,'content-library/dev-packs/g1-st01-v2/package.json');
 const pkgBytes=fs.readFileSync(pkgPath); const pkg=JSON.parse(pkgBytes.toString('utf8')); const checksum=crypto.createHash('sha256').update(pkgBytes).digest('hex');
 const contentVersions=(seed.match(/insert into public\.content_versions/gi)||[]).length;
 const contentArtifacts=(seed.match(/insert into public\.content_artifacts/gi)||[]).length;

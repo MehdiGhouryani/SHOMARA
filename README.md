@@ -39,7 +39,7 @@ npm run android:gate            # unit + lint + compile
 npm run android:assemble:debug  # gate + debug APK + SHA-256 report
 ```
 
-راهنمای کامل در `skills/shomara-android-build/SKILL.md` و `docs/notes/ANDROID_BUILD_ENVIRONMENT.md` است. debug APK معادل release یا device approval نیست.
+راهنمای کامل در `docs/DESIGN_RULES.md § build/SKILL.md` و `docs/notes/ANDROID_BUILD_ENVIRONMENT.md` است. debug APK معادل release یا device approval نیست.
 
 ## baseline کلاینت فعلی
 

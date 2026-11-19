@@ -1820,7 +1820,7 @@ Canonical challenge fields:
 # P05 — ST01 ENGAGEMENT VERTICAL SLICE
 ## Implementation touchpoints
 
-- `content/dev-packs/g1-st01-v2/` and current ST01 package metadata
+- `content-library/dev-packs/g1-st01-v2/` and current ST01 package metadata
 - `apps/mobile/app/station/[stationId]/`
 - `apps/mobile/src/station/StationFlow.tsx`
 - `apps/mobile/src/ui/PracticeHubScreen.tsx` only where shared games are reused
