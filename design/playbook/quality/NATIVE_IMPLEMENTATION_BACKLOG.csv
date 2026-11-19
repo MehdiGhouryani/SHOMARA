@@ -17,5 +17,5 @@ UI-015,U5,profile and me,14,feature:profile,Card/Choice+Progress+Feedback,loadin
 UI-016,U5,avatar workshop,15,feature:profile,Card/Choice+Button+Dialog,owned|equipped|locked|saving|error,RETIRED_AVATAR_REMOVED,ADR-0051,surface removed by owner decision; ADR-0051
 UI-017,U5,settings,15,feature:settings,Card/Choice+AudioControl+Dialog,ready|saving|toggle-fail|restart|error,NATIVE_PENDING,UI-015,persistence+semantics+screenshot+device
 UI-018,U5,guardian surface,15+16,feature:guardian,TextField/OTP+Dialog+Feedback,re-auth|loading|ready|empty|offline|error,RETIRED_GUARDIAN_REMOVED,ADR-0050,surface removed by owner decision; ADR-0050
-UI-019,U6,cross-route system states,16,core:designsystem,Progress+Feedback+Dialog,loading|empty|offline|error|permission|missing-asset|pending-sync,NATIVE_PENDING,UI-001..018,negative-path+semantics+screenshot+device
+UI-019,U6,cross-route system states,16,core:designsystem,Progress+Feedback+Dialog,loading|empty|offline|error|missing-asset|pending-sync,NATIVE_PENDING,UI-001..018,negative-path+semantics+screenshot+device
 UI-020,U6,full child journey,01-17,app,all,fresh|returning|learn|practice|profile|offline|resume|process-death,NATIVE_PENDING,UI-001..019,e2e+TalkBack+200%-font+predictive-back+child-QA

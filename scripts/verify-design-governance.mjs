@@ -77,6 +77,7 @@ assert.ok(
 const dataRows = backlogRows.slice(1).map((row) => row.split(','));
 const STATUS_COLUMN = 7;
 const MODULE_COLUMN = 4;
+const STATES_COLUMN = 6;
 for (const row of dataRows) {
   const id = row[0];
   if (!RETIRED_BY_DECISION.has(id)) continue;
@@ -113,6 +114,32 @@ for (const row of dataRows) {
   assert.ok(
     moduleExists(moduleId),
     `backlog names module "${moduleId}" but it has no build.gradle.kts under apps/android`,
+  );
+}
+
+// DT-65: the backlog listed `permission` as a required cross-route state while the app declares ZERO permissions and
+// uses no permission-gated capability (no camera, recorder, storage, notifications or activity-result contracts).
+// A required state nobody can ever reach is not a plan, it is a chore that looks like progress - and building it
+// would have shipped a screen with no way in.
+//
+// The rule here is two-directional, so the plan can never drift from the manifest in either direction:
+//   - if the manifest declares any permission, the backlog MUST list `permission` among the system states;
+//   - if it declares none, the backlog MUST NOT, because that is either dead UI or an unrecorded capability.
+const manifest = read('apps/android/app/src/main/AndroidManifest.xml');
+const declaresPermission = /<uses-permission\b/.test(manifest);
+const permissionRow = dataRows.find((row) => row[0] === 'UI-019');
+assert.ok(permissionRow, 'backlog lost the UI-019 system-states row');
+const listsPermission = /permission/.test(permissionRow[STATES_COLUMN]);
+if (declaresPermission) {
+  assert.ok(
+    listsPermission,
+    'the manifest declares a permission, so UI-019 must require a `permission` state again',
+  );
+} else {
+  assert.ok(
+    !listsPermission,
+    'UI-019 requires a `permission` state but the manifest declares no permission: dead state, or a capability ' +
+      'that was added without updating the plan',
   );
 }
 
