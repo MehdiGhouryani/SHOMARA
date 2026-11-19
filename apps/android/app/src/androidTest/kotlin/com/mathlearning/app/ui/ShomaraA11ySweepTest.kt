@@ -1,5 +1,11 @@
 ﻿package com.mathlearning.app.ui
 
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -384,6 +390,68 @@ class ShomaraA11ySweepTest {
         assertPrimaryCtaCount("Home/360dp/2x", 1)
     }
 
+    /**
+     * A trustworthy text-fit oracle, replacing the flag that DT-33 trusted and DT-34 disproved.
+     *
+     * It does not ask Compose whether something overflowed. It takes the text, style and the exact
+     * constraints the real layout was given (all readable from `layoutInput`, which is input data
+     * rather than a verdict), re-measures the paragraph with a real [TextMeasurer], and compares the
+     * space the text NEEDS with the space it was given. Two ways to lose: an unbreakable word wider
+     * than the slot (width), or a wrapped block taller than a bounded slot (height).
+     *
+     * Returns the offending label, or null when the text genuinely fits.
+     */
+    private fun textThatCannotFit(measurer: TextMeasurer, node: SemanticsNode): String? {
+        val action = node.config.getOrNull(SemanticsActions.GetTextLayoutResult) ?: return null
+        val results = mutableListOf<TextLayoutResult>()
+        action.action?.invoke(results)
+        val layout = results.firstOrNull() ?: return null
+        val input = layout.layoutInput
+        val label = node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" / ") ?: return null
+        val needed = measurer.measure(
+            text = input.text,
+            style = input.style,
+            constraints = Constraints(maxWidth = input.constraints.maxWidth),
+        )
+        val tooWide = input.constraints.maxWidth != Constraints.Infinity &&
+            needed.size.width > input.constraints.maxWidth
+        val tooTall = input.constraints.maxHeight != Constraints.Infinity &&
+            needed.size.height > input.constraints.maxHeight
+        return if (tooWide || tooTall) {
+            "$label (needs ${needed.size}, slot ${input.constraints.maxWidth}x${input.constraints.maxHeight})"
+        } else {
+            null
+        }
+    }
+
+    @Test
+    fun textFitOracleFlagsATightBoxAndClearsAFreeLabel() {
+        // Calibration first: an oracle that cannot be wrong is worthless, and the previous round
+        // proved exactly how easy that trap is. The squeezed caption MUST be flagged and the
+        // unconstrained one MUST NOT, before the oracle is allowed to judge real screens.
+        var measurer: TextMeasurer? = null
+        compose.setContent {
+            val remembered = rememberTextMeasurer()
+            measurer = remembered
+            ShomaraTheme {
+                Column {
+                    Box(modifier = Modifier.size(24.dp)) {
+                        Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                    }
+                    Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                }
+            }
+        }
+        compose.waitForIdle()
+        val oracle = measurer ?: throw AssertionError("calibration: no TextMeasurer was captured")
+        val flags = compose.onAllNodesWithText("آواتار و تنظیمات", useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .map { textThatCannotFit(oracle, it) }
+        assertEquals("calibration: expected two measured text nodes, got $flags", 2, flags.size)
+        assertNotNull("calibration: the squeezed caption was NOT flagged", flags.first())
+        assertNull("calibration: the free caption WAS flagged: ${flags.last()}", flags.last())
+    }
+
     @Test
     fun hasVisualOverflowIsNotAClippingOracle() {
         // DT-34 retraction, kept as a guard so nobody rebuilds the broken check: in this Compose
@@ -688,6 +756,20 @@ class ShomaraA11ySweepTest {
         totalStations = 25,
     )
 
+/**
+ * Measured text-fit budget at 360dp / 2x, produced by the CALIBRATED oracle (textThatCannotFit),
+ * not by Compose's `hasVisualOverflow` flag — that flag was disproved in DT-34. Seeded at zero on
+ * purpose: the first run reports the true counts, and the numbers may only ever go down after that.
+ */
+private val CLIPPED_BUDGET: Map<String, Int> = mapOf(
+    "Home" to 0,
+    "Me" to 0,
+    "PracticeHub" to 0,
+    "Settings" to 0,
+    "ParentHome" to 0,
+    "OnboardingProfile" to 0,
+)
+
 private object FakeSettingsStore : ShomaraSettingsStore {
         override val state: Flow<ShomaraSettingsSnapshot> = MutableStateFlow(ShomaraSettingsSnapshot.Defaults)
 
@@ -810,7 +892,10 @@ private object FakeSettingsStore : ShomaraSettingsStore {
      * exactly what hides on a big device and cuts text off on a small one.
      */
     private fun assertFitsAtNarrowWidth(screen: String, content: @Composable () -> Unit) {
+        var measurer: TextMeasurer? = null
         compose.setContent {
+            val remembered = rememberTextMeasurer()
+            measurer = remembered
             CompositionLocalProvider(LocalDensity provides Density(density = 2.625f, fontScale = 2f)) {
                 ShomaraTheme {
                     Box(modifier = Modifier.width(360.dp)) {
@@ -828,6 +913,19 @@ private object FakeSettingsStore : ShomaraSettingsStore {
         assertTrue(
             "$label: ${overflowing.size} node(s) overflow the 360dp viewport",
             overflowing.isEmpty(),
+        )
+        // The calibrated text-fit oracle (see textThatCannotFit) judges whether text lost something
+        // at this size. Unlike the flag withdrawn in DT-34, this one was proven to report both
+        // "clipped" and "fits" on controlled inputs before it was pointed at a real screen.
+        val oracle = measurer ?: throw AssertionError("$label: no TextMeasurer was captured")
+        val clipped = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .mapNotNull { textThatCannotFit(oracle, it) }
+        val budget = CLIPPED_BUDGET[screen]
+            ?: throw AssertionError("$label: no recorded text-fit budget for '$screen'")
+        assertTrue(
+            "$label: ${clipped.size} label(s) cannot fit (budget $budget) -> $clipped",
+            clipped.size <= budget,
         )
     }
 

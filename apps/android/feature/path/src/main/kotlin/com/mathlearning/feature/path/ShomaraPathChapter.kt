@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -51,7 +52,14 @@ internal fun ShomaraChapterBand(chapter: Int, progress: ShomaraPathProgress) {
     ) {
         Box(
             modifier = Modifier
-                .size(ShomaraTokens.Space40)
+                // DT-35: a fixed 40dp square clipped the chapter digit at large text — the
+                // calibrated oracle measured it needing 119px of height in a 105px slot at 2x
+                // (40dp x 2.625 px/dp). A min size keeps the band geometry identical at 1x and
+                // lets the badge grow instead of cutting the one number the band exists to show.
+                .defaultMinSize(
+                    minWidth = ShomaraTokens.Space40,
+                    minHeight = ShomaraTokens.Space40,
+                )
                 .background(bandAccent, RoundedCornerShape(ShomaraTokens.RadiusMd))
                 .clearAndSetSemantics {},
             contentAlignment = Alignment.Center,
