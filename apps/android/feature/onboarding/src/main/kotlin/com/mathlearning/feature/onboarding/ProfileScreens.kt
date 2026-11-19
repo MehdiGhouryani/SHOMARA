@@ -1,69 +1,40 @@
 package com.mathlearning.feature.onboarding
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
 import com.mathlearning.core.designsystem.ShomaraCard
-import com.mathlearning.core.designsystem.ShomaraCardLogic
-import com.mathlearning.core.designsystem.ShomaraCardState
-import com.mathlearning.core.designsystem.ShomaraClay
-import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
-import com.mathlearning.core.designsystem.ShomaraProfileDrawables
 import com.mathlearning.core.designsystem.ShomaraTokens
-import com.mathlearning.core.designsystem.rememberShomaraTapGuard
 import com.mathlearning.core.designsystem.ShomaraTextField
 import com.mathlearning.core.designsystem.ShomaraTypography
-import com.mathlearning.core.model.ShomaraGradeCatalog
-import com.mathlearning.core.model.ShomaraGradeOption
 
 /**
  * Page 02-profile — the profile step, reproduced from the owner's sample
@@ -167,26 +138,6 @@ internal object ShomaraProfileLayout {
     const val FrontCurveStrokeWidthFraction: Float = 5f / 878f
 }
 
-/**
- * Leaf greens. The owner SVGs use three fresh light-green shades per leaf
- * cluster (#C1E9A5 / #A1DB8A / #81CD79 and neighbours); the v2 tokens have
- * no mid-green, so the two darker shades are tints of the primary token
- * over the cream canvas. The device screenshot must confirm they read like
- * the mockup; if they read grey, a mid-green token is a later ADR, not a
- * silent hex. The SVG opacity (.7-.8 on the darkest layer) is folded into
- * the tint.
- */
-private val LeafLight: Color = ShomaraTokens.ColorPrimarySoft
-private val LeafMid: Color = ShomaraTokens.ColorPrimary.copy(alpha = 0.35f)
-private val LeafDark: Color = ShomaraTokens.ColorPrimary.copy(alpha = 0.45f)
-
-/** Bottom-hill bands: one pale green, stepped alphas so the five SVG bands
- * stay distinct (the SVG's .78 opacity on the front band is folded in). */
-private val HillBand1: Color = ShomaraTokens.ColorPrimarySoft
-private val HillBand2: Color = ShomaraTokens.ColorPrimarySoft.copy(alpha = 0.85f)
-private val HillBand3: Color = ShomaraTokens.ColorPrimarySoft.copy(alpha = 0.7f)
-private val HillBand4: Color = ShomaraTokens.ColorPrimarySoft.copy(alpha = 0.9f)
-private val HillBand5: Color = ShomaraTokens.ColorPrimarySoft.copy(alpha = 0.75f)
 
 @Composable
 fun ShomaraProfileScreen(
@@ -274,310 +225,6 @@ fun ShomaraProfileScreen(
     }
 }
 
-/**
- * The hero: clouds + back hills + leaves + rays + the mascot WebP peeking
- * over the front curve, layered in that order (the front curve is drawn
- * last, so it covers the mascot's lower body). All art is decorative.
- */
-@Composable
-private fun ShomaraProfileHero(modifier: Modifier = Modifier) {
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val heroWidth = maxWidth
-        val heroHeight = heroWidth / ShomaraProfileLayout.HeroAspectRatio
-        Box(
-            modifier = Modifier
-                .size(width = heroWidth, height = heroHeight)
-                .clearAndSetSemantics {},
-        ) {
-            // Clouds first (bottom of the stack).
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::cloudTopLeftPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.CloudTopLeftX,
-                        y = heroHeight * ShomaraProfileLayout.CloudTopLeftY,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.CloudTopLeftWidth,
-                        height = heroWidth * ShomaraProfileLayout.CloudTopLeftWidth * (130f / 220f),
-                    ),
-            )
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::cloudTopRightPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.CloudTopRightX,
-                        y = heroHeight * ShomaraProfileLayout.CloudTopRightY,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.CloudTopRightWidth,
-                        height = heroWidth * ShomaraProfileLayout.CloudTopRightWidth * (115f / 190f),
-                    ),
-            )
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::cloudBottomLeftPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.CloudBottomLeftX,
-                        y = heroHeight * ShomaraProfileLayout.CloudBottomLeftY,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.CloudBottomLeftWidth,
-                        height = heroWidth * ShomaraProfileLayout.CloudBottomLeftWidth * (145f / 225f),
-                    ),
-            )
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::cloudBottomRightPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.CloudBottomRightX,
-                        y = heroHeight * ShomaraProfileLayout.CloudBottomRightY,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.CloudBottomRightWidth,
-                        height = heroWidth * ShomaraProfileLayout.CloudBottomRightWidth * (115f / 190f),
-                    ),
-            )
-            // Back hills, bottom-anchored, behind the mascot.
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::heroHillBackLeftPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.HeroHillWidth,
-                        height = heroWidth * ShomaraProfileLayout.HeroHillWidth * (180f / 320f),
-                    ),
-            )
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::heroHillBackRightPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.HeroHillWidth,
-                        height = heroWidth * ShomaraProfileLayout.HeroHillWidth * (150f / 320f),
-                    ),
-            )
-            // Top leaves, at the hero's left/right edges.
-            ShomaraProfileLeaves(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.LeavesTopLeftX,
-                        y = heroHeight * ShomaraProfileLayout.LeavesTopLeftY,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.LeavesTopLeftWidth,
-                        height = heroWidth * ShomaraProfileLayout.LeavesTopLeftWidth * (150f / 180f),
-                    ),
-                first = ShomaraProfileShapes::leavesTopLeft1Path,
-                second = ShomaraProfileShapes::leavesTopLeft2Path,
-                third = ShomaraProfileShapes::leavesTopLeft3Path,
-            )
-            ShomaraProfileLeaves(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.LeavesTopRightX,
-                        y = heroHeight * ShomaraProfileLayout.LeavesTopRightY,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.LeavesTopRightWidth,
-                        height = heroWidth * ShomaraProfileLayout.LeavesTopRightWidth * (175f / 175f),
-                    ),
-                first = ShomaraProfileShapes::leavesTopRight1Path,
-                second = ShomaraProfileShapes::leavesTopRight2Path,
-                third = ShomaraProfileShapes::leavesTopRight3Path,
-            )
-            // Yellow rays, upper right of the mascot.
-            Canvas(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.RaysX,
-                        y = heroHeight * ShomaraProfileLayout.RaysY,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.RaysWidth,
-                        height = heroWidth * ShomaraProfileLayout.RaysWidth * (115f / 90f),
-                    ),
-            ) {
-                drawPath(
-                    path = ShomaraProfileShapes.raysPath(size.width, size.height),
-                    color = ShomaraTokens.ColorAmber,
-                    style = Stroke(
-                        width = size.width * ShomaraProfileLayout.RaysStrokeWidthFraction,
-                        cap = StrokeCap.Round,
-                    ),
-                )
-            }
-            // The mascot (owner WebP, with bow, as-is). ContentScale.Fit on
-            // the exact 1.5 aspect box, so no crop and no distortion.
-            Image(
-                painter = painterResource(ShomaraProfileDrawables.MascotWithBow),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = heroWidth * ShomaraProfileLayout.MascotXFraction,
-                        y = heroHeight * ShomaraProfileLayout.MascotYFraction,
-                    )
-                    .size(
-                        width = heroWidth * ShomaraProfileLayout.MascotWidthFraction,
-                        height = heroWidth * ShomaraProfileLayout.MascotWidthFraction / ShomaraProfileLayout.MascotAspectRatio,
-                    ),
-            )
-            // Front curve last: it covers the mascot's lower body, so the
-            // mascot reads as peeking over the hill.
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::heroFrontCurve1Path,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .size(width = heroWidth, height = heroWidth * (355f / 878f)),
-            )
-            Canvas(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .size(width = heroWidth, height = heroWidth * (355f / 878f)),
-            ) {
-                drawPath(
-                    path = ShomaraProfileShapes.heroFrontCurve2Path(size.width, size.height),
-                    color = ShomaraTokens.ColorAmberSoft,
-                    style = Stroke(
-                        width = size.width * ShomaraProfileLayout.FrontCurveStrokeWidthFraction,
-                        cap = StrokeCap.Round,
-                    ),
-                )
-            }
-        }
-    }
-}
-
-/**
- * Draws one generated path, built for the Canvas's drawn size. The path
- * builder is a function reference (e.g. ShomaraProfileShapes::cloudTopLeftPath)
- * because the pixel size is only known inside the draw scope.
- */
-@Composable
-private fun ShomaraProfileShapeCanvas(
-    buildPath: (width: Float, height: Float) -> Path,
-    color: Color,
-    modifier: Modifier = Modifier,
-) {
-    Canvas(modifier = modifier) {
-        drawPath(path = buildPath(size.width, size.height), color = color)
-    }
-}
-
-/** A three-layer leaf cluster, drawn back to front (light, mid, dark). */
-@Composable
-private fun ShomaraProfileLeaves(
-    first: (width: Float, height: Float) -> Path,
-    second: (width: Float, height: Float) -> Path,
-    third: (width: Float, height: Float) -> Path,
-    modifier: Modifier = Modifier,
-) {
-    Canvas(modifier = modifier) {
-        drawPath(path = first(size.width, size.height), color = LeafLight)
-        drawPath(path = second(size.width, size.height), color = LeafMid)
-        drawPath(path = third(size.width, size.height), color = LeafDark)
-    }
-}
-
-/**
- * The bottom background layer: bottom clouds, the five-band bottom hills,
- * and the bottom leaves flanking the CTA. Decorative; drawn behind the
- * content and the CTA.
- */
-@Composable
-private fun ShomaraProfileBottomBackground(modifier: Modifier = Modifier) {
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val layerWidth = maxWidth
-        val layerHeight = layerWidth * ShomaraProfileLayout.BottomBackgroundHeightFraction
-        Box(
-            modifier = Modifier
-                .size(width = layerWidth, height = layerHeight)
-                .clearAndSetSemantics {},
-        ) {
-            // Bottom clouds, above the hills.
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::cloudBottomLeftPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = layerWidth * ShomaraProfileLayout.BottomCloudLeftX,
-                        y = layerHeight * ShomaraProfileLayout.BottomCloudLeftY,
-                    )
-                    .size(
-                        width = layerWidth * ShomaraProfileLayout.BottomCloudLeftWidth,
-                        height = layerWidth * ShomaraProfileLayout.BottomCloudLeftWidth * (145f / 225f),
-                    ),
-            )
-            ShomaraProfileShapeCanvas(
-                buildPath = ShomaraProfileShapes::cloudBottomRightPath,
-                color = ShomaraTokens.ColorSurfaceAlt,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(
-                        x = layerWidth * ShomaraProfileLayout.BottomCloudRightX,
-                        y = layerHeight * ShomaraProfileLayout.BottomCloudRightY,
-                    )
-                    .size(
-                        width = layerWidth * ShomaraProfileLayout.BottomCloudRightWidth,
-                        height = layerWidth * ShomaraProfileLayout.BottomCloudRightWidth * (115f / 190f),
-                    ),
-            )
-            // Bottom hills: all five bands share one viewBox, so one Canvas.
-            Canvas(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .size(width = layerWidth, height = layerWidth * (195f / 878f)),
-            ) {
-                drawPath(path = ShomaraProfileShapes.bottomHills1Path(size.width, size.height), color = HillBand1)
-                drawPath(path = ShomaraProfileShapes.bottomHills2Path(size.width, size.height), color = HillBand2)
-                drawPath(path = ShomaraProfileShapes.bottomHills3Path(size.width, size.height), color = HillBand3)
-                drawPath(path = ShomaraProfileShapes.bottomHills4Path(size.width, size.height), color = HillBand4)
-                drawPath(path = ShomaraProfileShapes.bottomHills5Path(size.width, size.height), color = HillBand5)
-            }
-            // Bottom leaves, flanking the CTA.
-            ShomaraProfileLeaves(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .size(
-                        width = layerWidth * ShomaraProfileLayout.LeavesBottomLeftWidth,
-                        height = layerWidth * ShomaraProfileLayout.LeavesBottomLeftWidth * (215f / 170f),
-                    ),
-                first = ShomaraProfileShapes::leavesBottomLeft1Path,
-                second = ShomaraProfileShapes::leavesBottomLeft2Path,
-                third = ShomaraProfileShapes::leavesBottomLeft3Path,
-            )
-            ShomaraProfileLeaves(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .offset(x = layerWidth * ShomaraProfileLayout.LeavesBottomRightX)
-                    .size(
-                        width = layerWidth * ShomaraProfileLayout.LeavesBottomRightWidth,
-                        height = layerWidth * ShomaraProfileLayout.LeavesBottomRightWidth * (230f / 170f),
-                    ),
-                first = ShomaraProfileShapes::leavesBottomRight1Path,
-                second = ShomaraProfileShapes::leavesBottomRight2Path,
-                third = ShomaraProfileShapes::leavesBottomRight3Path,
-            )
-        }
-    }
-}
 
 /**
  * The name field. The design system now owns an icon slot (`ShomaraTextField(leading = …)`), so the
@@ -618,111 +265,6 @@ private fun ShomaraProfileNameField(
     )
 }
 
-/** The grade grid: 2 columns x 3 rows, RTL order (G1/G2, G3/G4, G5/G6). */
-@Composable
-private fun ShomaraProfileGradeGrid(
-    draft: ShomaraProfileDraft,
-    onDraftChange: (ShomaraProfileDraft) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
-    ) {
-        // The first child of each Row is on the right in RTL, so chunking
-        // G1..G6 in pairs gives the sample's order.
-        for (pair in ShomaraGradeCatalog.Options.chunked(2)) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
-            ) {
-                for (grade in pair) {
-                    ShomaraProfileGradeCard(
-                        grade = grade,
-                        selected = draft.gradeId == grade.id,
-                        onSelect = { onDraftChange(draft.copy(gradeId = grade.id)) },
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-            }
-        }
-    }
-}
-
-/**
- * One grade card: title only, centred. The selected card carries the pale
- * green background and the green border (owner: no check mark). Selection
- * is never colour alone for TalkBack: the card announces it through the
- * card's own label («انتخاب‌شده») + selected=true, the same pattern as
- * [ShomaraChoiceTile].
- *
- * This is a page-local card, not [ShomaraCard]: the shared card renders a
- * white background in its Selected state, and the sample's selected card is
- * pale green. Everything else (depth, border widths, radii, tap guard,
- * state label) is the shared component's.
- */
-@Composable
-private fun ShomaraProfileGradeCard(
-    grade: ShomaraGradeOption,
-    selected: Boolean,
-    onSelect: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val tapGuard = rememberShomaraTapGuard()
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
-    val depth = if (pressed) ShomaraClayDepth.Hint else ShomaraClayDepth.Soft
-    Box(
-        modifier = modifier
-            // Owner: the grade cards run ~22% smaller than the shared row
-            // height so the whole grid + CTA fit without scrolling (>=48dp
-            // touch target preserved).
-            .defaultMinSize(minHeight = ShomaraTokens.ComponentGradeCardH)
-            .shadow(ShomaraClay.specFor(depth).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .background(
-                if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface,
-                RoundedCornerShape(ShomaraTokens.RadiusLg),
-            )
-            .border(
-                width = if (selected) ShomaraTokens.ClayAnswerTileBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
-                color = if (selected) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine,
-                shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
-            )
-            .semantics(mergeDescendants = true) {
-                role = Role.RadioButton
-                if (selected) {
-                    stateDescription = ShomaraCardLogic.stateLabelFor(ShomaraCardState.Selected)
-                    this.selected = true
-                }
-            }
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                role = Role.RadioButton,
-            ) {
-                if (tapGuard.beginLatched()) {
-                    try {
-                        onSelect()
-                    } finally {
-                        tapGuard.end()
-                    }
-                }
-            }
-            .padding(horizontal = ShomaraTokens.Space12, vertical = ShomaraTokens.Space8),
-        contentAlignment = Alignment.Center,
-    ) {
-        // Owner: the cards show the short grade name («پایه اول») — the
-        // shared «ابتدایی» suffix is dropped on THIS card only, so all six
-        // cards read uniform; the catalog title stays canonical elsewhere.
-        Text(
-            text = grade.title.removeSuffix("ابتدایی").trim(),
-            style = ShomaraTypography.Body,
-            color = ShomaraTokens.ColorInk,
-            textAlign = TextAlign.Center,
-            maxLines = 2,
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
-}
 
 /**
  * The page-02 CTA: the same pill and drawn arrow as pages 01/03, plus loading and the page-local

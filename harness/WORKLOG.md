@@ -1059,3 +1059,10 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **گسترش sweep به ۹ صفحه:** شیت ایستگاه (سطح بین Home و درس) و خانهٔ والدین اضافه شدند؛ هر دو از نظر نام‌گذاری و کف ۴۸dp پاک بودند — این هم یک یافتهٔ صادقانه است، نه همهٔ sweepها نقص پیدا نمی‌کنند.
 - **شواهد:** `ShomaraA11ySweepTest` **۹/۹** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`)؛ APK بدون تغییر بایت‌به‌بایت نسبت به دور قبل (`ec4e3f45…`) چون فقط کد تست اضافه شد.
 - **بازمانده:** O5 باز؛ شکستن `ProfileScreens` (۸۳۵ خط) و `OnboardingHost` (۶۲۷ خط)؛ capture و TalkBack walkthrough `NATIVE_PENDING`؛ 7/29 Linux parity.
+
+## 2026-11-19 — DT-19 — شکستن فایل ۸۳۵ خطی پروفایل به سه فایل موضوعی
+
+- **مسئله:** `ProfileScreens.kt` به ۸۳۵ خط رسیده بود و سه موضوع بی‌ربط را در خود داشت: صفحهٔ منطقی (state/CTA/فیلد نام)، هنر hero (لایه‌های SVG روی canvas، ~۳۵۰ خط)، و گرید انتخاب پایه. هر ویرایش کوچک روی صفحه، دیف را در میان صدها خط ترسیم گم می‌کرد.
+- **انجام:** با مرزهای تأییدشدهٔ اعلان‌ها جدا شد — `ProfileHero.kt` (۳۵۳ خط: رنگ‌های برگ/تپه، hero، canvas، برگ‌ها، پس‌زمینهٔ پایین)، `ProfileGradeGrid.kt` (۱۴۵ خط: گرید و کارت پایه)، `ProfileScreens.kt` (۳۷۷ خط: صفحه، فیلد نام، CTA، تعیین سطح). سه نماد که اکنون بین فایلی استفاده می‌شوند از `private` به `internal` رفتند (`ShomaraProfileHero`، `ShomaraProfileBottomBackground`، `ShomaraProfileGradeGrid`) — بدون تغییر رفتار. import هر فایل بعد از جابه‌جایی هرس شد.
+- **تأیید:** `feature:onboarding` ۹۲/۹۲ واحد (بدون تغییر)؛ روی `Pixel_6a`: `ShomaraA11ySweepTest` ۹/۹ و `ShomaraOnboardingGatesTest` ۶/۶؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK SHA-256 `2b24a61…`.
+- **بازمانده:** `OnboardingHost.kt` (۶۲۷ خط) نوبت بعد؛ O5 باز؛ capture/TalkBack `NATIVE_PENDING`.
