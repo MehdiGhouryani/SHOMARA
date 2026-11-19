@@ -1,4 +1,4 @@
-﻿package com.mathlearning.app.ui
+package com.mathlearning.app.ui
 
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.text.TextMeasurer
@@ -42,7 +42,6 @@ import com.mathlearning.core.designsystem.ShomaraChildTabs
 import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraPrimaryCta
 import com.mathlearning.core.designsystem.ShomaraTheme
-import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
 import com.mathlearning.core.network.LessonGateway
 import com.mathlearning.feature.lesson.ShomaraLessonHost
@@ -96,8 +95,7 @@ class ShomaraA11ySweepTest {
         compose.setContent {
             ShomaraTheme {
                 ShomaraSettingsScreen(
-                    state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false),
-                    onAvatarSelect = {},
+                    state = ShomaraSettingsState(reducedMotion = false),
                     onReducedMotionChange = {},
                     onSave = {},
                 )
@@ -111,9 +109,8 @@ class ShomaraA11ySweepTest {
         compose.setContent {
             ShomaraTheme {
                 ShomaraSettingsScreen(
-                    state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false)
+                    state = ShomaraSettingsState(reducedMotion = false)
                         .withReducedMotion(true),
-                    onAvatarSelect = {},
                     onReducedMotionChange = {},
                     onSave = {},
                 )
@@ -128,8 +125,7 @@ class ShomaraA11ySweepTest {
         compose.setContent {
             ShomaraTheme {
                 ShomaraSettingsScreen(
-                    state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false).withReducedMotion(true).startSave(),
-                    onAvatarSelect = {},
+                    state = ShomaraSettingsState(reducedMotion = false).withReducedMotion(true).startSave(),
                     onReducedMotionChange = {},
                     onSave = {},
                 )
@@ -144,8 +140,7 @@ class ShomaraA11ySweepTest {
         compose.setContent {
             ShomaraTheme {
                 ShomaraSettingsScreen(
-                    state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false).withReducedMotion(true).onSaveFailure(message),
-                    onAvatarSelect = {},
+                    state = ShomaraSettingsState(reducedMotion = false).withReducedMotion(true).onSaveFailure(message),
                     onReducedMotionChange = {},
                     onSave = {},
                 )
@@ -162,7 +157,6 @@ class ShomaraA11ySweepTest {
                 ShomaraMeScreen(
                     facts = ShomaraMeFacts(
                         childName = "آریا",
-                        avatar = ShomaraAvatarCatalog.option("sun"),
                         completedStations = 3,
                         totalStations = 25,
                     ),
@@ -398,15 +392,15 @@ class ShomaraA11ySweepTest {
             ShomaraTheme {
                 Column {
                     Box(modifier = Modifier.size(24.dp)) {
-                        Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                        Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
                     }
-                    Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                    Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
                 }
             }
         }
         compose.waitForIdle()
         val oracle = measurer ?: throw AssertionError("calibration: no TextMeasurer was captured")
-        val flags = compose.onAllNodesWithText("آواتار و تنظیمات", useUnmergedTree = true)
+        val flags = compose.onAllNodesWithText(ShomaraSettingsStrings.PreferencesSection, useUnmergedTree = true)
             .fetchSemanticsNodes()
             .map { textThatCannotFit(oracle, it) }
         assertEquals("calibration: expected two measured text nodes, got $flags", 2, flags.size)
@@ -426,13 +420,13 @@ class ShomaraA11ySweepTest {
             ShomaraTheme {
                 Column {
                     Box(modifier = Modifier.size(24.dp)) {
-                        Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                        Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
                     }
-                    Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                    Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
                 }
             }
         }
-        val flags = compose.onAllNodesWithText("آواتار و تنظیمات", useUnmergedTree = true)
+        val flags = compose.onAllNodesWithText(ShomaraSettingsStrings.PreferencesSection, useUnmergedTree = true)
             .fetchSemanticsNodes()
             .map { node ->
                 val results = mutableListOf<TextLayoutResult>()
@@ -542,7 +536,6 @@ class ShomaraA11ySweepTest {
             ShomaraMeScreen(
                 facts = ShomaraMeFacts(
                     childName = "آریا",
-                    avatar = ShomaraAvatarCatalog.option("sun"),
                     completedStations = 3,
                     totalStations = 25,
                 ),
@@ -574,8 +567,7 @@ class ShomaraA11ySweepTest {
     fun settingsFitsAt360dpWithDoubleText() {
         assertFitsAtNarrowWidth("Settings") {
             ShomaraSettingsScreen(
-                state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false),
-                onAvatarSelect = {},
+                state = ShomaraSettingsState(reducedMotion = false),
                 onReducedMotionChange = {},
                 onSave = {},
             )
@@ -788,7 +780,6 @@ class ShomaraA11ySweepTest {
 
     private val MeFacts: ShomaraMeFacts = ShomaraMeFacts(
         childName = "آریا",
-        avatar = ShomaraAvatarCatalog.option("sun"),
         completedStations = 3,
         totalStations = 25,
     )

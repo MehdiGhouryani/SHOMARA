@@ -2,11 +2,9 @@ package com.mathlearning.feature.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -23,7 +21,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -35,30 +32,23 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
-import com.mathlearning.core.model.ShomaraAvatarCatalog
 
 /**
- * Avatar/settings surface (family 15): real preference toggles and the canonical avatar grid.
- * Save state: dirty/saving/saved/error(+toggle-fail revert). No fake toggles, no destructive
- * action without confirm.
+ * Settings surface (family 15): the real reduced-motion preference and its save state.
+ *
+ * ADR-0051 (owner decision, 2026-11-19): the child avatar preset grid was removed. The
+ * dirty/saving/saved/error machine and the "no fake success, no fake toggle" contract are unchanged;
+ * with no avatar to select, the motion toggle is the only editable preference.
  */
 enum class ShomaraSettingsSaveState { Clean, Dirty, Saving, Saved, Error }
 
 data class ShomaraSettingsState(
-    val avatarId: String,
     val reducedMotion: Boolean,
     val save: ShomaraSettingsSaveState = ShomaraSettingsSaveState.Clean,
     val errorText: String? = null,
 ) {
-    init {
-        require(avatarId in ShomaraAvatarCatalog.Options.map { it.id }) { "unknown avatar $avatarId" }
-    }
-
     val canSave: Boolean
         get() = save == ShomaraSettingsSaveState.Dirty
-
-    fun withAvatar(avatarId: String): ShomaraSettingsState =
-        if (avatarId == this.avatarId) this else copy(avatarId = avatarId, save = ShomaraSettingsSaveState.Dirty)
 
     fun withReducedMotion(enabled: Boolean): ShomaraSettingsState =
         if (enabled == this.reducedMotion) this else copy(reducedMotion = enabled, save = ShomaraSettingsSaveState.Dirty)
@@ -78,25 +68,25 @@ data class ShomaraSettingsState(
      * BUG 3 (found on device 2026-11-05) — re-seed rule for the host wiring. The host seeds
      * this screen from the settings store, but `collectAsStateWithLifecycle` delivers the
      * `Defaults` placeholder synchronously at first composition and the real stored value only
-     * later. A seed-once flag therefore consumed the placeholder ("sun") and the later real
-     * emission ("moon") was ignored, so re-entering Settings showed "sun" although the store
-     * held "moon" and the save banner had said "ذخیره شد.". The rule is: re-seed from the
-     * store on every emission WHILE THE SCREEN IS STILL UNTOUCHED (Clean) — the user has made
-     * no edit yet, so the store is the only truth. Once the user edits (Dirty / Saving /
+     * later. A seed-once flag therefore consumed the placeholder and the later real emission
+     * was ignored, so re-entering Settings showed the default although the store held the
+     * child's saved choice and the save banner had said "ذخیره شد.". The rule is: re-seed from
+     * the store on every emission WHILE THE SCREEN IS STILL UNTOUCHED (Clean) — the user has
+     * made no edit yet, so the store is the only truth. Once the user edits (Dirty / Saving /
      * Saved / Error) the screen state is authoritative and a later emission — including the
      * echo of our own save — must never overwrite the in-flight edit.
      */
-    fun reseededFrom(avatarId: String, reducedMotion: Boolean): ShomaraSettingsState =
+    fun reseededFrom(reducedMotion: Boolean): ShomaraSettingsState =
         if (save == ShomaraSettingsSaveState.Clean) {
-            ShomaraSettingsState(avatarId = avatarId, reducedMotion = reducedMotion)
+            ShomaraSettingsState(reducedMotion = reducedMotion)
         } else {
             this
         }
 }
 
 object ShomaraSettingsStrings {
-    const val Title: String = "آواتار و تنظیمات"
-    const val AvatarSection: String = "آواتار من"
+    // ADR-0051: the avatar preset is gone, so the title no longer names avatars.
+    const val Title: String = "تنظیمات"
     /** Heading of the preference rows. It must not repeat [Title], or TalkBack reads it twice. */
     const val PreferencesSection: String = "تنظیم‌های برنامه"
     const val ReducedMotionLabel: String = "حرکت کمتر"
@@ -112,46 +102,23 @@ object ShomaraSettingsStrings {
     const val Save: String = "ذخیره"
     const val SavedMessage: String = "ذخیره شد."
     const val SaveFailed: String = "ذخیره نشد؛ دوباره تلاش کن."
-    const val SelectedSuffix: String = "انتخاب‌شده"
     const val ToggleOn: String = "روشن"
     const val ToggleOff: String = "خاموش"
-
-    /** Selected-avatar line: label comes from the real catalog, so it can never drift. */
-    fun selectedAvatar(labelFa: String): String = "آواتار انتخاب‌شده: $labelFa"
 }
 
 @Composable
 fun ShomaraSettingsScreen(
     state: ShomaraSettingsState,
-    onAvatarSelect: (String) -> Unit,
     onReducedMotionChange: (Boolean) -> Unit,
     onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Stage 4, family 15, parent/settings dial 2/2/5: calm and textual.
-    // Inset stays 16dp, not 24dp, by arithmetic: the avatar grid is
-    // 4 x 72dp tiles + 3 x 8dp gaps = 312dp, which would exactly fill a
-    // 360dp screen at 24dp insets with no slack. 16dp is the adaptive
-    // reduction, still a v2 token, and it is recorded here, not hidden.
-    // Checklist (family 15 acceptance, 200% font): the column scrolls, so the
-    // avatar grid + toggles + save button can never clip on a small screen.
+    // The inset stays 16dp — the v2 adaptive inset for this page (a token, not a magic
+    // number). The column scrolls, so at 200% font the toggles and the save button can
+    // never clip on a small screen.
     Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space16), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Text(text = ShomaraSettingsStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-        Text(text = ShomaraSettingsStrings.AvatarSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-        // Stage 5, 200%-font fix: the row fills the width and each tile
-        // takes an equal weight with a MINIMUM height of 72dp instead of
-        // a fixed 72dp size, so at 200% font the tile grows taller rather
-        // than clipping its label. Width at 360dp stays ~76dp (360 - 32
-        // insets - 24 gaps, / 4), so no target drops below 48dp.
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8)) {
-            for (option in ShomaraAvatarCatalog.Options) {
-                val equipped = option.id == state.avatarId
-                AvatarTile(option = option, equipped = equipped, onEquip = onAvatarSelect)
-            }
-        }
-        // Selected state is stated in plain text, never carried by
-        // colour or border width alone.
-        Text(text = ShomaraSettingsStrings.selectedAvatar(ShomaraAvatarCatalog.option(state.avatarId).label), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
         Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         ToggleRow(
             label = ShomaraSettingsStrings.ReducedMotionLabel,
@@ -176,43 +143,6 @@ fun ShomaraSettingsScreen(
             // narrow wrap-content button in a scrolling column.
             modifier = Modifier.fillMaxWidth(),
         )
-    }
-}
-
-@Composable
-private fun RowScope.AvatarTile(option: com.mathlearning.core.model.ShomaraAvatarOption, equipped: Boolean, onEquip: (String) -> Unit) {
-    val container = if (equipped) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface
-    val border = if (equipped) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine
-    Column(
-        modifier = Modifier
-            .weight(1f)
-            .heightIn(min = ShomaraTokens.ComponentNodeSize)
-            // Batch 2 (ADR-0040 R1): the equipped tile is the one Featured
-            // surface of this viewport; the other tiles render Soft depth.
-            .shadow(ShomaraClay.specFor(if (equipped) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .border(
-                if (equipped) ShomaraTokens.ClayFeaturedBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
-                border,
-                RoundedCornerShape(ShomaraTokens.RadiusMd),
-            )
-            // الف-۰۲: one TalkBack stop per tile — the visible ✓ and the label merge into
-            // this tile's node («خورشیدی — انتخاب‌شده، دکمه») instead of three stops.
-            .semantics(mergeDescendants = true) {
-                role = Role.Button
-                contentDescription = if (equipped) option.label + " — " + ShomaraSettingsStrings.SelectedSuffix else option.label
-                stateDescription = if (equipped) ShomaraSettingsStrings.SelectedSuffix else ""
-            }
-            .clickable(role = Role.Button) { onEquip(option.id) }
-            .padding(ShomaraTokens.Space8),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        // Visible tick, not colour alone: the selected tile shows it.
-        if (equipped) {
-            Text(text = "✓", style = ShomaraTypography.Title, color = ShomaraTokens.ColorPrimaryDark)
-        }
-        Text(text = option.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk)
     }
 }
 

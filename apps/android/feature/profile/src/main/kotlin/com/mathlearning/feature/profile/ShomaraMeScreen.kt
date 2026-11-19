@@ -29,8 +29,6 @@ import com.mathlearning.core.designsystem.ShomaraCharacterSlot
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraPagePlaceholder
-import com.mathlearning.core.model.ShomaraAvatarCatalog
-import com.mathlearning.core.model.ShomaraAvatarOption
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
@@ -42,8 +40,8 @@ import com.mathlearning.core.designsystem.ShomaraTypography
 /** Me-tab state matrix (family 14): loading/ready/empty/offline/error. */
 /**
  * Canonical copy for the Me screen. AGENTS §10: every user-visible line lives here instead of as an
- * inline literal in the renderer — the same rule the practice hub now follows. Text is byte-identical
- * to what the screen rendered before this extraction.
+ * inline literal in the renderer — the same rule the practice hub now follows. The strings are the
+ * ones this screen rendered when they were extracted; ADR-0051 later renamed only the settings row.
  */
 object ShomaraMeStrings {
     const val Title: String = "من"
@@ -51,8 +49,8 @@ object ShomaraMeStrings {
     const val ErrorFallback: String = "مشکلی پیش آمد."
     const val Loading: String = "در حال آوردن پروفایل…"
     const val Empty: String = "پروفایل هنوز کامل نشده؛ از مسیر ادامه بده."
-    const val AvatarPrefix: String = "آواتار من: "
-    const val SettingsLabel: String = "آواتار و تنظیمات"
+    // ADR-0051: the avatar preset is gone, so the destination is just «تنظیمات».
+    const val SettingsLabel: String = "تنظیمات"
     const val SettingsDescription: String = "ظاهر و تنظیم‌های واقعی"
 
     /** «۳ از ۲۵ ایستگاه کامل شده» — digits are already Persian by the time they arrive. */
@@ -65,7 +63,6 @@ enum class ShomaraMeState { Loading, Ready, Empty, Offline, Error }
 /** Real facts only — rendered verbatim from caller/server data (no synthetic badges or streaks). */
 data class ShomaraMeFacts(
     val childName: String,
-    val avatar: ShomaraAvatarOption,
     val completedStations: Int,
     val totalStations: Int,
 ) {
@@ -76,23 +73,6 @@ data class ShomaraMeFacts(
 
     fun progressLine(): String =
         ShomaraMeStrings.progressLine(ShomaraDigits.toFa(completedStations), ShomaraDigits.toFa(totalStations))
-}
-
-/**
- * Stage 5 wiring resolver (family 14): the Me tab shows the PERSISTED
- * avatar choice, not the catalog default. The settings store already
- * validates ids; an unknown id (e.g. a catalog change) falls back to
- * the default instead of crashing the Me surface. This is the pure
- * function the "moon survives relaunch" test covers; the host reads
- * the same store, so a saved choice flows host -> facts -> label.
- */
-object ShomaraMeAvatarWiring {
-    fun resolve(persistedAvatarId: String): ShomaraAvatarOption =
-        try {
-            ShomaraAvatarCatalog.option(persistedAvatarId)
-        } catch (e: IllegalArgumentException) {
-            ShomaraAvatarCatalog.option(ShomaraAvatarCatalog.defaultId)
-        }
 }
 
 object ShomaraMeLogic {
@@ -143,18 +123,13 @@ fun ShomaraMeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     // One real character WebP, small and static, decorative only.
-                    // It is a guide, NOT the avatar: the avatar system stays the
-                    // abstract preset below, and the two systems are not merged.
+                    // It is a guide illustration, not an avatar: the avatar preset feature
+                    // was removed by owner decision (ADR-0051) and this cameo stays.
                     // Pose 1 only, from the 4 shipped drawables; no pose invented.
                     ShomaraCharacterImage(character = ShomaraCharacter.Main, poseId = 1, slot = ShomaraCharacterSlot.Inline, decorative = true)
                     Column {
                         Text(text = f.childName, style = ShomaraTypography.Title, color = ShomaraTokens.ColorPrimaryDark)
                         Text(text = f.progressLine(), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
-                        // Stage 5: the shell host now passes the persisted
-                        // settings choice (see ShomaraMeAvatarWiring), so this
-                        // label is the saved choice once the store has emitted
-                        // its first real value, not a hard-coded default.
-                        Text(text = ShomaraMeStrings.AvatarPrefix + f.avatar.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
                     }
                 }
                 // Batch 2 (goal-card structure, ADR-0040 §5 — allowed for
@@ -178,7 +153,7 @@ fun ShomaraMeScreen(
             ShomaraPagePlaceholder()
         }
         // N08 §4 dead end fixed: this row used to live INSIDE the Ready branch, so a child
-        // whose profile is not complete yet had no way to reach avatar/settings at all — the
+        // whose profile is not complete yet had no way to reach settings at all — the
         // surface existed but was unreachable. Settings is a valid destination in every state.
         // F-20: the description is plain Persian — no Latin word inside a Persian sentence.
         MeRow(label = ShomaraMeStrings.SettingsLabel, description = ShomaraMeStrings.SettingsDescription, onClick = onOpenSettings)

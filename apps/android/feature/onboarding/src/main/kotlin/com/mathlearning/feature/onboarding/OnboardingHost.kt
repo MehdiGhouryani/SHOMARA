@@ -35,7 +35,6 @@ import com.mathlearning.core.designsystem.ShomaraProgressBar
 import com.mathlearning.core.designsystem.ShomaraProgressState
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /**
@@ -115,14 +114,13 @@ object ShomaraOnboardingProgress {
  * Holder for the whole onboarding journey (N04-07): one plain state holder drives the real
  * navigation host. Network calls go through [ShomaraAuthSession]; every negative path lands in
  * a warm banner and never advances the flow.
+ *
+ * ADR-0051: the holder no longer takes the settings store. It existed only to mirror the child's
+ * avatar choice into Settings/Me, and the avatar preset feature was removed by owner decision.
  */
 class ShomaraOnboardingStateHolder(
     val session: ShomaraAuthSession?,
     private val draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
-    // The settings store is the single source the Me tab and the Settings screen read.
-    // Null means "no settings persistence configured" (tests and store-less hosts);
-    // production always passes the real store from the app container.
-    private val settingsStore: com.mathlearning.core.datastore.ShomaraSettingsStore? = null,
 ) {
     var flow by mutableStateOf(ShomaraOnboardingFlow())
     var phone by mutableStateOf("")
@@ -140,7 +138,7 @@ class ShomaraOnboardingStateHolder(
     suspend fun restoreDraft() {
         val snapshot = draftStore?.read() ?: return
         val draft = runCatching {
-            ShomaraProfileDraft(name = snapshot.name, avatarId = snapshot.avatarId, gradeId = snapshot.gradeId)
+            ShomaraProfileDraft(name = snapshot.name, gradeId = snapshot.gradeId)
         }.getOrNull() ?: return
         profileDraft = draft
         saveState = ShomaraProfileSaveState.resumed(draft)
@@ -149,7 +147,7 @@ class ShomaraOnboardingStateHolder(
 
     suspend fun persistDraft() {
         val active = draftStore ?: return
-        if (profileDraft.isResumable) active.save(com.mathlearning.core.datastore.ShomaraProfileDraftSnapshot(profileDraft.name, profileDraft.avatarId, profileDraft.gradeId))
+        if (profileDraft.isResumable) active.save(com.mathlearning.core.datastore.ShomaraProfileDraftSnapshot(profileDraft.name, profileDraft.gradeId))
         else active.clear()
     }
 
@@ -236,34 +234,15 @@ class ShomaraOnboardingStateHolder(
      * the profile step with the failure banner and can retry — the flow never advances on
      * a failed save. (A null draft store means no persistence is configured — tests and
      * store-less hosts — so there is no write to wait for; production always passes a store.)
+     *
+     * ADR-0051: the second write that mirrored the avatar into the settings store is gone with the
+     * avatar preset feature; this save now has exactly one subject, the profile draft.
      */
     suspend fun saveProfile(onComplete: () -> Unit) {
         if (!saveState.canSubmit) return
         saveState = saveState.startSave()
         try {
             persistDraft()
-            // The profile avatar is the child's avatar everywhere, not only in the draft:
-            // mirror it into the settings store (the single source the Me tab and the
-            // Settings screen read). Before this mirror, "moon" chosen here was written
-            // only under the `shomara_profile_avatar` draft key while Settings reads the
-            // `shomara_settings_avatar` key, so onboarding moon never arrived in
-            // Settings/Me. The draft keeps name/grade; the settings store keeps avatar
-            // + reduced motion. The current motion preference is preserved — the mirror
-            // replaces only the avatar, so a profile save can never clobber a motion
-            // choice made in Settings. Inside the same try: if the mirror fails, the
-            // profile is NOT marked saved and the flow does not advance — the user stays
-            // on the profile step with the failure banner and can retry (both writes are
-            // idempotent: the draft is re-saved with the same values, the mirror
-            // re-writes the same snapshot).
-            settingsStore?.let { store ->
-                val current = store.state.first()
-                store.save(
-                    com.mathlearning.core.datastore.ShomaraSettingsSnapshot(
-                        avatarId = profileDraft.avatarId,
-                        reducedMotion = current.reducedMotion,
-                    ),
-                )
-            }
         } catch (throwable: Throwable) {
             saveState = saveState.onSaveFailure()
             return
@@ -299,11 +278,9 @@ class ShomaraOnboardingStateHolder(
 fun rememberOnboardingStateHolder(
     session: ShomaraAuthSession?,
     draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
-    settingsStore: com.mathlearning.core.datastore.ShomaraSettingsStore? = null,
 ): ShomaraOnboardingStateHolder = rememberSaveable(
     session,
     draftStore,
-    settingsStore,
     // F-26: the typed phone survives process death — the holder is state, not a plain
     // remember, and the Saver persists only the phone (never the OTP code: a code must
     // never be restored across death). The session/store are constructor inputs, not
@@ -316,14 +293,14 @@ fun rememberOnboardingStateHolder(
         save = { holder -> ShomaraOnboardingRestore.encode(holder.phone, holder.flow.step) },
         restore = { saved ->
             val (savedPhone, savedStep) = ShomaraOnboardingRestore.decode(saved)
-            ShomaraOnboardingStateHolder(session = session, draftStore = draftStore, settingsStore = settingsStore)
+            ShomaraOnboardingStateHolder(session = session, draftStore = draftStore)
                 .also {
                     it.phone = savedPhone
                     it.flow = it.flow.advanceTo(savedStep)
                 }
         },
     ),
-) { ShomaraOnboardingStateHolder(session = session, draftStore = draftStore, settingsStore = settingsStore) }
+) { ShomaraOnboardingStateHolder(session = session, draftStore = draftStore) }
 
 /**
  * Real navigation host (N04-07): renders the current onboarding step from the flow state and
@@ -340,10 +317,9 @@ fun ShomaraOnboardingHost(
     onAuthenticated: () -> Unit,
     modifier: Modifier = Modifier,
     draftStore: com.mathlearning.core.datastore.ShomaraProfileDraftStore? = null,
-    settingsStore: com.mathlearning.core.datastore.ShomaraSettingsStore? = null,
     simulatedAuth: Boolean = false,
 ) {
-    val holder = rememberOnboardingStateHolder(session, draftStore, settingsStore)
+    val holder = rememberOnboardingStateHolder(session, draftStore)
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboardManager.current
     androidx.compose.runtime.LaunchedEffect(holder.flow.step) {

@@ -6,9 +6,9 @@ import org.junit.Test
 /**
  * N08 §4: guard that settings stays reachable in EVERY state of the Me surface.
  *
- * The measured defect: the "آواتار و تنظیمات" row was rendered INSIDE the `ShomaraMeState.Ready`
+ * The measured defect: the «تنظیمات» row was rendered INSIDE the `ShomaraMeState.Ready`
  * branch, so a child whose profile is not complete (or offline/loading/error) had no way to reach
- * avatar or settings — the destination existed and was wired, but unreachable. On device the Me tab
+ * settings — the destination existed and was wired, but unreachable. On device the Me tab
  * for a fresh child showed only the empty banner and the guardian row.
  *
  * The row now renders outside the `when`, so these assertions describe a contract rather than a

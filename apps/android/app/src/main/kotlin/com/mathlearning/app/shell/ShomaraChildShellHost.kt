@@ -200,19 +200,12 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Me.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Me.deepLink }),
                 ) {
-                    // Stage 5 (global hardening): Me avatar now comes from the
-                    // persisted settings store, not the catalog default. The
-                    // store validates ids and falls back to the default on
-                    // corrupt/unknown data, so resolve() here cannot throw
-                    // for a stored value. Before this change every child
-                    // always saw "sun" in Me, even after choosing "moon".
-                    val persistedMe by settingsStore.state.collectAsStateWithLifecycle(
-                        initialValue = ShomaraSettingsSnapshot.Defaults,
-                    )
+                    // ADR-0051: the avatar preset was removed, so the Me tab renders identity +
+                    // real progress only. The settings store is still the source of the
+                    // reduced-motion preference (read on the settings route below).
                     val facts = childName?.let {
                         com.mathlearning.feature.profile.ShomaraMeFacts(
                             childName = it,
-                            avatar = com.mathlearning.feature.profile.ShomaraMeAvatarWiring.resolve(persistedMe.avatarId),
                             completedStations = completedStations,
                             totalStations = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT,
                         )
@@ -231,15 +224,14 @@ fun ShomaraChildShell(
                     // The screen's own state machine is authoritative (Clean -> Dirty -> Saving ->
                     // Saved/Error). An earlier version of this wiring bypassed it by rebuilding the
                     // state from the store snapshot and calling startSave(), which requires Dirty;
-                    // tapping an avatar then threw "save started from an invalid state" and killed
-                    // the app. The machine is now driven in order.
+                    // an edit then threw "save started from an invalid state" and killed the app.
+                    // The machine is now driven in order.
                     val persisted by settingsStore.state.collectAsStateWithLifecycle(
                         initialValue = ShomaraSettingsSnapshot.Defaults,
                     )
                     var screenState by remember {
                         mutableStateOf(
                             ShomaraSettingsState(
-                                avatarId = persisted.avatarId,
                                 reducedMotion = persisted.reducedMotion,
                             ),
                         )
@@ -248,33 +240,32 @@ fun ShomaraChildShell(
                     // guard that used to sit here consumed the PLACEHOLDER, not the first real
                     // emission. `collectAsStateWithLifecycle(initialValue = Defaults)` delivers
                     // Defaults synchronously at first composition, so this effect's first run
-                    // always saw "sun", set the flag, and the later real emission ("moon") was
-                    // ignored — re-entering Settings showed "sun" although the store held
-                    // "moon" and the save banner had said "ذخیره شد.". The screen is therefore
-                    // re-seeded from the store on every emission WHILE IT IS STILL UNTOUCHED
-                    // (see ShomaraSettingsState.reseededFrom): a Clean screen has no in-flight
-                    // edit, so the store is the only truth; once the user edits, the screen
-                    // state is authoritative and later emissions — including the echo of our
-                    // own save — must not overwrite it. The `remember` seed above still starts
-                    // from the placeholder, so the first frame may briefly show the default
-                    // before the real emission lands; the settled value is the stored one.
+                    // always saw the default, set the flag, and the later real emission was
+                    // ignored — re-entering Settings showed the default although the store held
+                    // the child's saved choice and the save banner had said "ذخیره شد.". The
+                    // screen is therefore re-seeded from the store on every emission WHILE IT IS
+                    // STILL UNTOUCHED (see ShomaraSettingsState.reseededFrom): a Clean screen has
+                    // no in-flight edit, so the store is the only truth; once the user edits, the
+                    // screen state is authoritative and later emissions — including the echo of
+                    // our own save — must not overwrite it. The `remember` seed above still
+                    // starts from the placeholder, so the first frame may briefly show the
+                    // default before the real emission lands; the settled value is the stored one.
                     LaunchedEffect(persisted) {
                         screenState = screenState.reseededFrom(
-                            avatarId = persisted.avatarId,
                             reducedMotion = persisted.reducedMotion,
                         )
                     }
                     val scope = rememberCoroutineScope()
 
-                    // Persist a chosen value, driving the real state machine.
-                    fun persist(avatarId: String, reducedMotion: Boolean) {
+                    // Persist the preference, driving the real state machine.
+                    fun persist(reducedMotion: Boolean) {
                         if (!screenState.canSave) return // already Saving: ignore a second tap
                         val saving = screenState.startSave()
                         screenState = saving
                         scope.launch {
                             screenState = try {
                                 settingsStore.save(
-                                    ShomaraSettingsSnapshot(avatarId = avatarId, reducedMotion = reducedMotion),
+                                    ShomaraSettingsSnapshot(reducedMotion = reducedMotion),
                                 )
                                 saving.onSaveSuccess()
                             } catch (throwable: Throwable) {
@@ -287,20 +278,15 @@ fun ShomaraChildShell(
 
                     ShomaraSettingsScreen(
                         state = screenState,
-                        onAvatarSelect = { avatarId ->
-                            // withAvatar marks Dirty (or returns unchanged if it is the same id).
-                            screenState = screenState.withAvatar(avatarId)
-                            persist(screenState.avatarId, screenState.reducedMotion)
-                        },
                         onReducedMotionChange = { enabled ->
                             screenState = screenState.withReducedMotion(enabled)
-                            persist(screenState.avatarId, screenState.reducedMotion)
+                            persist(screenState.reducedMotion)
                         },
                         onSave = {
-                            // Retained for the screen contract: values are already persisted on
-                            // selection, so this only acknowledges the last result.
+                            // Retained for the screen contract: the value is already persisted on
+                            // toggle, so this only acknowledges the last result.
                             if (screenState.save == ShomaraSettingsSaveState.Dirty) {
-                                persist(screenState.avatarId, screenState.reducedMotion)
+                                persist(screenState.reducedMotion)
                             }
                         },
                     )

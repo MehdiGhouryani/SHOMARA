@@ -1,7 +1,5 @@
 package com.mathlearning.feature.onboarding
 
-import com.mathlearning.core.model.ShomaraAvatarCatalog
-import com.mathlearning.core.model.ShomaraAvatarOption
 import com.mathlearning.core.model.ShomaraGradeCatalog
 import com.mathlearning.core.model.ShomaraGradeOption
 import com.mathlearning.core.model.ShomaraLaunchState
@@ -43,9 +41,11 @@ object ShomaraFlowUiLogic {
 enum class FlowEvent { LaunchFresh, LaunchWithSavedDraft, BackPressed, SaveStarted, SaveFailed, NetworkFailed }
 
 /**
- * Profile draft (UI-004/UI-005): avatar selection from the canonical catalog, grade selection
- * from the canonical catalog, and warm validation. Incomplete drafts are resumable across
- * process death.
+ * Profile draft (UI-004/UI-005): grade selection from the canonical catalog and warm validation.
+ * Incomplete drafts are resumable across process death.
+ *
+ * ADR-0051 (owner decision, 2026-11-19): the child avatar preset was removed, so the draft carries
+ * only the name and the grade; there is no avatar id to validate, resume, or mirror.
  *
  * Grade rule (owner decision 2026-11-06, page 02-profile): ALL six grades are selectable —
  * availability no longer gates selection or draft construction. The catalog's `available`
@@ -57,17 +57,12 @@ enum class FlowEvent { LaunchFresh, LaunchWithSavedDraft, BackPressed, SaveStart
  */
 data class ShomaraProfileDraft(
     val name: String = "",
-    val avatarId: String = ShomaraAvatarCatalog.defaultId,
     val gradeId: String = ShomaraGradeCatalog.activeDefaultId,
 ) {
     init {
         // Unknown ids only: availability no longer gates selection (owner decision 2026-11-06).
         require(ShomaraGradeCatalog.option(gradeId).id == gradeId) { "unknown grade $gradeId" }
-        require(ShomaraAvatarCatalog.option(avatarId).id == avatarId) { "unknown avatar $avatarId" }
     }
-
-    val avatar: ShomaraAvatarOption
-        get() = ShomaraAvatarCatalog.option(avatarId)
 
     val grade: ShomaraGradeOption
         get() = ShomaraGradeCatalog.option(gradeId)
@@ -87,9 +82,7 @@ data class ShomaraProfileDraft(
 
     /** Resumable: a draft with any user-entered progress is worth keeping across restarts. */
     val isResumable: Boolean
-        get() = name.isNotBlank() || avatarId != ShomaraAvatarCatalog.defaultId
-
-    fun withAvatar(avatarId: String): ShomaraProfileDraft = copy(avatarId = avatarId)
+        get() = name.isNotBlank()
 
     companion object {
         fun gradeLabel(gradeId: String): String = ShomaraGradeCatalog.option(gradeId).title

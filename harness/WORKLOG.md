@@ -1292,3 +1292,11 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **پاکیزگی خروجی تولیدشده (تأیید):** `git ls-files` صفر فایل `build/` یا `generated/` نشان داد و `git check-ignore` تأیید کرد `apps/android/.gitignore` الگوی `**/build/` را می‌گیرد. یعنی AGENTS §4 در این بخش رعایت می‌شود.
 - **شواهد:** `ShomaraA11ySweepTest` **۴۸/۴۸** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK بدون تغییر `f3c2cb4…` (فقط تست اضافه شد).
 - **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
+
+## DT-46 / DT-47 — حذف بخش والدین و پاکسازی عمیق (2026-11-19)
+
+**DT-46 — والدین (ADR-0050).** ماژول pps/android/feature/parent، ParentPinManager، تست semantics دروازه و ۵ تابع تست sweep حذف شدند؛ include(":feature:parent")، مسیر shell/parent، ردیف «بخش والدین» و پارامتر onOpenParent از همهٔ call siteها برداشته شد. دروازه با erifier = null نصب می‌شد، یعنی درِ قفل‌شده بدون کلید: کودک را می‌بست و محافظتی نمی‌داد. شواهد: ndroid:gate PASS (779 task)، static:all 92/92، harness validate VALID.
+
+**DT-47 — پاکسازی عمیق.** اسکن سطح-نماد (نه نام فایل) سه فایل با صفر ارجاع پیدا کرد: ContentResolvers.kt (AssetResolver/AudioAssetResolver)، FakeAppLogger.kt، ShomaraChallengeIntro.kt. سه فایل که همان اسکن «مرده» می‌خواندشان عمداً نگه داشته شدند: TemplateRegistry.kt (تست ShomaraTemplateAdaptersTest از آن import می‌کند)، فایل‌های @Preview در debug، و تست testDebug. پوشهٔ تکراری previews/ (یک فایل، package ...app.previews) در preview/ ادغام شد. ۳۶ تصویر بستهٔ handoff (۶۱۲KB) هم حذف شد. آمار: ۱۲۷۸ → ۱۲۳۲ فایل، ۱۶٫۹ → ۱۶٫۲MB.
+
+**درس ثبت‌شده:** شمارش «۱۴۳ فایل مردهٔ Kotlin» در دورهای قبل نامعتبر بود، چون نام فایل را می‌گشت نه نماد را. معیار درست، رجوع به اعلان‌های همان فایل است.

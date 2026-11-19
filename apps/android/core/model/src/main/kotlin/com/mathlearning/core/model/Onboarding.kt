@@ -54,25 +54,6 @@ object ShomaraGradeCatalog {
     val activeDefaultId: String = "G1"
 }
 
-/**
- * Canonical child avatar presets mirrored from `packages/contracts/src/onboarding.ts`
- * (CHILD_AVATAR_PRESETS). Colors live in the design-system token surface, not here.
- */
-data class ShomaraAvatarOption(
-    val id: String,
-    val label: String,
-)
-
-object ShomaraAvatarCatalog {
-    val Options: List<ShomaraAvatarOption> = listOf(
-        ShomaraAvatarOption("sun", "خورشیدی"),
-        ShomaraAvatarOption("leaf", "برگ"),
-        ShomaraAvatarOption("cloud", "ابری"),
-        ShomaraAvatarOption("moon", "ماه"),
-    )
-
-    fun option(avatarId: String): ShomaraAvatarOption =
-        Options.firstOrNull { it.id == avatarId } ?: throw IllegalArgumentException("unknown avatar $avatarId")
-
-    val defaultId: String = Options.first().id
-}
+// ADR-0051 (owner decision, 2026-11-19): child avatar presets were removed from the app, so this
+// model intentionally no longer mirrors CHILD_AVATAR_PRESETS from `packages/contracts`. The shared
+// contract is unchanged by that decision — only the Android model stopped consuming it.

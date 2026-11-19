@@ -25,6 +25,7 @@
 | ADR-0047 | Local identity, Parent PIN, and privacy foundation (P10) — **Parent PIN superseded by ADR-0050** | Contracts/backup policy accepted for P10; as-built 2026-11-18: foundation only — identity, durable Parent PIN, ParentGate, full erasure NOT wired |
 | ADR-0049 | Design System Library: ClaySurface, LessonKit, PathKit, preview gallery (P13) | ACCEPTED as library infrastructure; superseded in part 2026-11-19 (Home/Path rebuild) |
 | ADR-0050 | حذف کامل بخش والدین و قفل والدین | Accepted (2026-11-19) |
+| ADR-0051 | حذف presetهای آواتار کودک | Accepted (2026-11-19) |
 
 ---
 
@@ -241,3 +242,12 @@
 - پیامد فنی: ماژول `apps/android/feature:parent`، کلاس `ShomaraParentBoundary`، `ParentPinManager` (PBKDF2) و تست‌های آن‌ها حذف شدند؛ ورودی «بخش والدین» از صفحهٔ «من» و مسیر آن از shell فرزند برداشته شد؛ assertionهای verifier که فقط همین دروازه را می‌سنجیدند بازنشسته شدند (با یادداشت، نه با تضعیف بقیهٔ بررسی‌ها).
 - هزینهٔ پذیرفته‌شده: دیگر هیچ دروازهٔ بزرگسال در دستگاه وجود ندارد، پس تنظیمات و گزارش پیشرفت بدون تأیید بزرگ‌تر باز می‌شوند. این ریسک آگاهانه پذیرفته شد تا UI کودک ساده بماند.
 - **Rejected / trade-off:** نگه‌داشتن gate به‌صورت fail-closed رد شد؛ همان حالت «قفل بی‌کلید» بود که تجربه را می‌بست بدون آنکه امنیتی اضافه کند.
+
+### ADR-0051 — حذف presetهای آواتار کودک
+
+- **Status:** Accepted (owner instruction, 2026-11-19)
+- تصمیم: هیچ مجموعهٔ آواتار انتخابی (خورشیدی/برگ/ابری/ماه) وجود ندارد. کودک یک شخصیت ثابت دارد و صفحهٔ تنظیمات/من هیچ انتخاب آواتاری نشان نمی‌دهد.
+- پیامد فنی: `ShomaraAvatarCatalog` و `ShomaraAvatarOption` از مدل حذف شدند، `avatarId` از لایهٔ ذخیره‌سازی و وضعیت تنظیمات برداشته شد، گرید انتخاب در Settings، ردیف «آواتار من» و `ShomaraMeAvatarWiring` در صفحهٔ من حذف شدند، و تست‌هایی که تنها موضوعشان آواتار بود حذف شدند.
+- آنچه حذف نشد: تصویر شخصیت در کارت قهرمان صفحهٔ خانه (cameo شخصیت «Main») — این تصویرسازی شخصیت است، نه انتخاب آواتار.
+- هزینهٔ پذیرفته‌شده: کودک دیگر نمی‌تواند نمای شخصی خود را عوض کند؛ در عوض سطح انتخاب بی‌محتوا حذف می‌شود و UI خلوت‌تر می‌ماند.
+- **Rejected / trade-off:** نگه‌داشتن چهار preset با یک انتخاب پیش‌فرض رد شد؛ همان پیچیدگی را نگه می‌داشت بدون آنکه ارزش محصولی اضافه کند.

@@ -199,7 +199,7 @@ class ShomaraLaunchControllerTest {
 
     @Test
     fun `a surviving profile draft resumes the journey without authenticating`() = runTest {
-        val draft = FakeDraftStore(ShomaraProfileDraftSnapshot(name = "سارا", avatarId = "A1", gradeId = "G1"))
+        val draft = FakeDraftStore(ShomaraProfileDraftSnapshot(name = "سارا", gradeId = "G1"))
         val controller = controller(this, FakeStore(), draft = draft)
         controller.startOnce()
         advanceUntilIdle()

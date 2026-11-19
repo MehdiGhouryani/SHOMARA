@@ -6,31 +6,34 @@ import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** N05-05 settings reducer tests: dirty/saving/saved/error, toggle-fail revert, restart. */
+/**
+ * N05-05 settings reducer tests: dirty/saving/saved/error, toggle-fail revert, restart.
+ *
+ * ADR-0051 (owner decision, 2026-11-19): the avatar preset was removed, so the settings state
+ * carries only the reduced-motion preference. The check that existed only to reject an unknown
+ * avatar id was deleted with the catalog; every remaining assertion keeps its original strength.
+ */
 class ShomaraSettingsTest {
 
     @Test
-    fun `avatar and motion edits mark the state dirty`() {
-        val clean = ShomaraSettingsState(avatarId = "sun", reducedMotion = false)
+    fun `motion edits mark the state dirty`() {
+        val clean = ShomaraSettingsState(reducedMotion = false)
         assertEquals(ShomaraSettingsSaveState.Clean, clean.save)
         assertFalse(clean.canSave)
-        val dirtyAvatar = clean.withAvatar("leaf")
-        assertEquals(ShomaraSettingsSaveState.Dirty, dirtyAvatar.save)
-        assertTrue(dirtyAvatar.canSave)
         val dirtyMotion = clean.withReducedMotion(true)
         assertEquals(ShomaraSettingsSaveState.Dirty, dirtyMotion.save)
+        assertTrue(dirtyMotion.canSave)
     }
 
     @Test
     fun `same-value edits are no-ops - no dirty churn`() {
-        val clean = ShomaraSettingsState(avatarId = "sun", reducedMotion = true)
-        assertEquals(clean, clean.withAvatar("sun"))
+        val clean = ShomaraSettingsState(reducedMotion = true)
         assertEquals(clean, clean.withReducedMotion(true))
     }
 
     @Test
     fun `save lifecycle is dirty then saving then saved`() {
-        var state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false).withAvatar("moon")
+        var state = ShomaraSettingsState(reducedMotion = false).withReducedMotion(true)
         state = state.startSave()
         assertEquals(ShomaraSettingsSaveState.Saving, state.save)
         assertFalse(state.canSave)
@@ -41,7 +44,7 @@ class ShomaraSettingsTest {
 
     @Test
     fun `toggle-fail reverts cleanly with a warm error and can retry`() {
-        var state = ShomaraSettingsState(avatarId = "sun", reducedMotion = false).withReducedMotion(true).startSave()
+        var state = ShomaraSettingsState(reducedMotion = false).withReducedMotion(true).startSave()
         state = state.onSaveFailure(ShomaraSettingsStrings.SaveFailed)
         assertEquals(ShomaraSettingsSaveState.Error, state.save)
         assertEquals(ShomaraSettingsStrings.SaveFailed, state.errorText)
@@ -51,19 +54,17 @@ class ShomaraSettingsTest {
 
     @Test
     fun `save from clean state is rejected`() {
-        val clean = ShomaraSettingsState(avatarId = "sun", reducedMotion = false)
+        val clean = ShomaraSettingsState(reducedMotion = false)
         assertThrows(IllegalArgumentException::class.java) { clean.startSave() }
     }
 
-    @Test
-    fun `unknown avatar is rejected at construction`() {
-        assertThrows(IllegalArgumentException::class.java) { ShomaraSettingsState(avatarId = "dragon", reducedMotion = false) }
-    }
+    // ADR-0051: the `unknown avatar is rejected at construction` check was removed with the avatar
+    // catalog it validated against — with no avatar field there is no id left to reject.
 
     @Test
     fun `reduced motion toggle maps to the design-system reducedMotion contract`() {
         // The toggle's value IS the reducedMotion flag consumed by progress/components.
-        val state = ShomaraSettingsState(avatarId = "sun", reducedMotion = true)
+        val state = ShomaraSettingsState(reducedMotion = true)
         assertTrue(state.reducedMotion)
     }
 
@@ -73,20 +74,8 @@ class ShomaraSettingsTest {
         // the page title twice and the section had no distinct name. Canonical strings only.
         assertTrue(ShomaraSettingsStrings.PreferencesSection.isNotBlank())
         assertTrue(ShomaraSettingsStrings.PreferencesSection != ShomaraSettingsStrings.Title)
-        assertTrue(ShomaraSettingsStrings.AvatarSection != ShomaraSettingsStrings.Title)
-        assertTrue(ShomaraSettingsStrings.PreferencesSection != ShomaraSettingsStrings.AvatarSection)
     }
 
-    @Test
-    fun `selected avatar line is built from the real catalog label`() {
-        val option = com.mathlearning.core.model.ShomaraAvatarCatalog.option(ShomaraAvatarCatalogDefaultId)
-        assertEquals(
-            "آواتار انتخاب‌شده: " + option.label,
-            ShomaraSettingsStrings.selectedAvatar(option.label),
-        )
-    }
-
-    private companion object {
-        val ShomaraAvatarCatalogDefaultId = com.mathlearning.core.model.ShomaraAvatarCatalog.defaultId
-    }
+    // ADR-0051: the `selected avatar line is built from the real catalog label` check was removed
+    // with the avatar preset feature — the selected-avatar line no longer exists to be built.
 }
