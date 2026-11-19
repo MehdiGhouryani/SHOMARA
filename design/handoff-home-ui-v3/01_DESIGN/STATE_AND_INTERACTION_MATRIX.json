@@ -1,0 +1,69 @@
+{
+  "pageStates": [
+    "fresh",
+    "current",
+    "completed",
+    "perfect",
+    "locked",
+    "offline",
+    "loading",
+    "empty",
+    "error",
+    "restore-scroll"
+  ],
+  "nodeStates": [
+    {
+      "id": "fresh",
+      "semantics": "آمادهٔ شروع",
+      "visual": "warm surface + start marker"
+    },
+    {
+      "id": "current",
+      "semantics": "ایستگاه فعلی؛ آمادهٔ ادامه",
+      "visual": "single violet featured node"
+    },
+    {
+      "id": "completed",
+      "semantics": "تکمیل‌شده",
+      "visual": "green surface + check"
+    },
+    {
+      "id": "perfect",
+      "semantics": "با عملکرد کامل تکمیل‌شده",
+      "visual": "completed + subtle secondary ring"
+    },
+    {
+      "id": "locked",
+      "semantics": "قفل‌شده؛ به‌همراه علت کامل",
+      "visual": "neutral lock + reason"
+    }
+  ],
+  "interactionRules": {
+    "doubleTap": "shared tap guard/idempotent ViewModel action",
+    "lockedTap": "when an explanation/detail exists, keep the node operable and announce full lock reason; do not expose disabled semantics",
+    "currentTap": "one action route to exact station start/resume",
+    "completedTap": "open review only if domain route exists",
+    "tabReselect": "keep route selected; no duplicate stack entry",
+    "restoreScroll": "keyed by chapter and station; restore after content measurement",
+    "singleFeatured": "at most one Current node and one featured surface per decision viewport",
+    "nav": "exactly Path/Practice/Me child tabs; route is owned by the app coordinator; reselect creates no duplicate stack entry",
+    "futureNodes": "Use the domain node state (normally Locked or Fresh); do not add a synthetic Upcoming domain state."
+  },
+  "motion": {
+    "press": "reduce elevation/edge, do not change layout bounds",
+    "route": "short fade/slide only if reduced motion off",
+    "success": "only after authoritative evaluator result; no coins or random drops"
+  },
+  "failure": {
+    "noCurrent": "render exact fresh/placement route state from domain; do not infer first station",
+    "offline": "offline is normal; only show local content-unavailable when needed",
+    "missingAsset": "honest fallback with retry/back if real action",
+    "invalidProgress": "do not show guessed percentages; surface data error to developer diagnostics and child-friendly UI"
+  },
+  "performance": {
+    "stableLazyKeys": "stationId",
+    "connector": "reuse ShomaraPathGraph deterministic geometry; draw behind nodes",
+    "recomposition": "hoist state and avoid repository/evaluator work in composition",
+    "bitmap": "load only visible/needed approved WebP poses"
+  }
+}

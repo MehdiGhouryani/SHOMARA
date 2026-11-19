@@ -23,9 +23,9 @@ class InMemoryOutboxRepository(private val progress: ProgressRepository = InMemo
     val rows = LinkedHashMap<String, OutboxOperation>()
     val completedKeys = mutableListOf<String>()
 
-    override suspend fun enqueue(operation: OutboxOperation) {
-        rows[operation.idempotencyKey] = operation
-    }
+    // Same shape as the Room implementation: one write, two names. A fake that drifts from the real repository
+    // hides the drift in tests, which is the one place it must not hide.
+    override suspend fun enqueue(operation: OutboxOperation) = update(operation)
 
     override suspend fun update(operation: OutboxOperation) {
         rows[operation.idempotencyKey] = operation

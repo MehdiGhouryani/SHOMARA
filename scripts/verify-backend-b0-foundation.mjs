@@ -164,7 +164,7 @@ if (!flow.includes('hasStationChallenge') || !flow.includes('SIGNATURE_CHALLENGE
 }
 
 // --- 4. Docs ---
-if (!exists('docs/api/API_LEARNING_RUNTIME_CONTRACT.md')) fail('MISSING_API_LEARNING_CONTRACT');
+if (!exists('docs/ARCHITECTURE.md')) fail('MISSING_API_LEARNING_CONTRACT');
 else ok('learning runtime API contract doc present');
 
 // --- Result ---

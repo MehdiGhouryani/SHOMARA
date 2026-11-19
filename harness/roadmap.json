@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "project": "SHOMARA",
-  "updatedAt": "2026-11-07T00:00:00.000Z",
-  "currentPhase": "N08R",
-  "currentTask": "N08R-10",
+  "updatedAt": "2026-11-19",
+  "currentPhase": "N11",
+  "currentTask": "N11-05",
   "statusValues": [
     "TODO",
     "READY",
@@ -20,24 +20,11 @@
     "docs/README.md",
     "docs/roadmap/SHOMARA_NATIVE_ROADMAP_FA.md",
     "docs/roadmap/PHASE_CHECKLISTS_FA.md",
-    "docs/architecture/REPOSITORY_MAP_FA.md",
-    "docs/architecture/PACKAGE_BOUNDARIES_FA.md",
-    "docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md",
-    "docs/architecture/ANDROID_MODULE_GRAPH.md",
-    "docs/architecture/ANDROID_BUILD_ENVIRONMENT.md",
-    "docs/adr/ADR-0036-android-native-foundation.md",
-    "skills/shomara-product-design/SKILL.md",
-    "skills/shomara-android-build/SKILL.md",
-    "skills/shomara-design-system/SKILL.md",
-    "skills/shomara-screen-execution/SKILL.md",
-    "skills/shomara-learning-content/SKILL.md",
-    "design/MASTER.md",
-    "design/INSPIRATION_GUARDRAILS.md",
-    "design/playbook/PAGE_UIUX_BLUEPRINT.md",
-    "design/playbook/COMPONENT_READINESS.md",
-    "design/playbook/NATIVE_IMPLEMENTATION.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DECISIONS.md",
+    "docs/DESIGN_RULES.md",
     "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv",
-    "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md",
+    "docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md",
     "content-library/INTEGRATION_GATE.md",
     "content-library/integration/SOURCE_AUDIT.md",
     "content-library/integration/PHASE_INTEGRATION.md",
@@ -45,8 +32,7 @@
     "harness/roadmap.json",
     "harness/file-ledger.json",
     "harness/dependency-map.json",
-    "harness/WORKLOG.md",
-    "design/playbook/N08R_MISSION_FA.md"
+    "harness/WORKLOG.md"
   ],
   "commandAllowlist": [
     "git status",
@@ -76,7 +62,7 @@
       "phase": "N03",
       "title": "بازبینی مالک روی Design System V3 و سه صفحهٔ نماینده",
       "status": "APPROVED",
-      "evidence": "مالک با دستور مستقیم در نشست 2026-10-31 (goal: Commit N03-06/07 with owner HG-02 sign-off) بستهٔ Design System V3 را تصویب کرد؛ گیت‌های ماشینی (56/56 JVM، android:gate، 88/88 static، صفر raw token) سبز؛ screenshot/device روی Path/Auth/Lesson همچنان NATIVE_PENDING و در docs/design/NATIVE_COMPONENT_READINESS_N03.md پیگیری می‌شود."
+      "evidence": "مالک با دستور مستقیم در نشست 2026-10-31 (goal: Commit N03-06/07 with owner HG-02 sign-off) بستهٔ Design System V3 را تصویب کرد؛ گیت‌های ماشینی (56/56 JVM، android:gate، 88/88 static، صفر raw token) سبز؛ screenshot/device روی Path/Auth/Lesson همچنان NATIVE_PENDING و در docs/notes/NATIVE_COMPONENT_READINESS_N03.md پیگیری می‌شود."
     },
     {
       "id": "HG-03",
@@ -320,7 +306,7 @@
             "قواعد dependency Native ثبت شده"
           ],
           "evidence": [
-            "docs/architecture/**",
+            "docs/notes/**",
             "harness/file-ledger.json"
           ]
         },
@@ -371,7 +357,7 @@
             "V1/V2 retirement order ثبت شده"
           ],
           "evidence": [
-            "docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md",
+            "docs/notes/DESIGN_SYSTEM_MIGRATION_FA.md",
             "packages/design-system/src/tokens.json retained as transitional canonical source"
           ]
         },
@@ -428,7 +414,7 @@
             "Node 22 build/typecheck and 65 files / 502 tests PASS",
             "repository/release/dependency gates PASS",
             "static 76/81; five Chromium gates BLOCKED_ENV",
-            "docs/delivery/SHOMARA_N01_CHECKPOINT.md"
+            "docs/notes/SHOMARA_N01_CHECKPOINT.md"
           ]
         }
       ]
@@ -443,7 +429,7 @@
         "apps/android/**",
         ".github/workflows/**",
         "docs/adr/**",
-        "docs/architecture/**",
+        "docs/notes/**",
         "docs/roadmap/**",
         "docs/delivery/**",
         "docs/README.md",
@@ -528,7 +514,7 @@
           ],
           "evidence": [
             "apps/android app + core:common + core:model + core:testing",
-            "docs/architecture/ANDROID_MODULE_GRAPH.md"
+            "docs/notes/ANDROID_MODULE_GRAPH.md"
           ]
         },
         {
@@ -608,7 +594,7 @@
             "npm run android:gate PASS (exit 0, 2026-10-31, local machine: JDK 17 Temurin + D:\\SDK with platforms;android-37)",
             "first real Gradle run surfaced a genuine lint error (themes.xml windowLightNavigationBar requires API 27 with minSdk 24); fixed with values-v27/themes.xml qualifier, then gate PASS",
             "npm run android:doctor READY (exit 0)",
-            "module graph documented (docs/architecture/ANDROID_MODULE_GRAPH.md)",
+            "module graph documented (docs/notes/ANDROID_MODULE_GRAPH.md)",
             "npm run verify:android-foundation PASS",
             "deterministic Android environment preflight",
             "CI installs platforms;android-37 explicitly (stable channel)",
@@ -657,7 +643,7 @@
           "evidence": [
             "design/INSPIRATION_GUARDRAILS.md",
             "design/playbook/COMPONENT_READINESS.md",
-            "skills/shomara-design-system/**",
+            "docs/DESIGN_RULES.md § design system/**",
             "npm run verify:design-governance PASS",
             "npm run verify:project-skills PASS"
           ]
@@ -698,7 +684,7 @@
           "evidence": [
             "design/playbook/PAGE_UIUX_BLUEPRINT.md",
             "design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv",
-            "docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md",
+            "docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md",
             "npm run verify:design-governance PASS"
           ]
         },
@@ -720,7 +706,7 @@
           "evidence": [
             "scripts/android-build.mjs",
             "scripts/verify-android-build-harness.mjs",
-            "skills/shomara-android-build/SKILL.md",
+            "docs/DESIGN_RULES.md § build/SKILL.md",
             "npm run verify:android-build-harness PASS",
             "npm run android:doctor -- --allow-blocked reproduced BLOCKED_ENV"
           ]
@@ -859,7 +845,16 @@
           "evidence": [
             "ShomaraDesignSystemCatalog.kt: deterministic light-theme fixtures for all nine component families with LTR math inside RTL",
             "ShomaraCatalogMatrixTest: 360/390/412dp x 1.0f/2.0f font-scale matrix coverage verified on JVM (4 tests; module total 56/56)",
-            "honest split: rendered screenshots at real widths are a Paparazzi/device gate and stay NATIVE_PENDING (plugin not available offline; dependency decision is the owner's) - recorded in docs/design/NATIVE_COMPONENT_READINESS_N03.md"
+            "honest split: rendered screenshots at real widths are a Paparazzi/device gate and stay NATIVE_PENDING (plugin not available offline; dependency decision is the owner's) - recorded in docs/notes/NATIVE_COMPONENT_READINESS_N03.md",
+            "DT-27 (2026-11-19): the design-system gallery had zero consumers - the activity that hosted it was deleted in the round-1 cleanup - so it was shipping dead UI in release builds while its fixtures still documented this task. It moved to src/debug instead of being deleted (evidence preserved) or left in main (release bloat); ShomaraCatalogMatrix stays in src/main because ShomaraCatalogMatrixTest asserts it. Structural proof from the class outputs: compileReleaseKotlin emits only ShomaraCatalogMatrix.class, while compileDebugKotlin also emits ShomaraCatalogGalleryKt.class and ComposableSingletons$ShomaraCatalogGalleryKt.class. :core:designsystem compiles on both variants and its JVM tests pass.",
+            "DT-33 (2026-11-19): AGENTS §6 asks for 360/390/412dp widths AND text zoom, but the sweep had only ever rendered at the device's own width and 1.0x. The shared helper assertFitsAtNarrowWidth now renders six routed pages at 360dp with fontScale 2.0 (the binding extreme) and checks both the a11y contract and text overflow. The first overflow check was USELESS and was replaced rather than kept: bounds stay inside the viewport because Compose clips, so nothing ever failed. Reading TextLayoutResult.hasVisualOverflow instead exposed a real defect — 37 text nodes are clipped at 2x (Home 8, Settings 11, Me 7, PracticeHub 7, OnboardingProfile 2, ParentHome 2), which hits exactly the users who rely on system font scaling. The mechanism was measured, not guessed: every clipped node reported didWidth=true, didHeight=false, lines=1 with layout.size == node.size, i.e. fixed-WIDTH containers too narrow at 2x for even one word (there is no maxLines anywhere in feature/path). Because a structural reflow of the path is a larger change than this round should risk, the check ships as a measured per-screen RATCHET that may only go down, with all 37 labels named in the KDoc. It was proven non-vacuous by tightening Home's budget from 8 to 7 and watching the test fail, then restoring it. Sweep is at 39 cases.",
+            "DT-34 (2026-11-19) RETRACTION of DT-33: the clipping instrument was itself broken. While trying to FIX the 37 \"clipped\" labels, three hypotheses were tested with data. (1) Fixed container width: making the Settings avatar grid two columns at large font made the count WORSE (11 -> 12), so the hypothesis was rejected and the change reverted. (2) A lineHeight that does not scale: the tokens are sp-based (30/26/20) and do scale, rejected. (3) The instrument: a calibration test rendered one Caption squeezed into a 24dp box and the same caption unconstrained — TextLayoutResult.hasVisualOverflow reported TRUE for BOTH, so in this Compose version that flag is not a clipping oracle. Consequence: DT-33's 37-node register was a false positive and was WITHDRAWN, not patched — the CLIPPED_TEXT_BUDGET ratchet and its per-label table are gone, the bounds check (weak but sound) is back, and the calibration test is kept as hasVisualOverflowIsNotAClippingOracle so nobody rebuilds an a11y assertion on that flag. Both experimental production changes (ShomaraPathChapter badge, ShomaraSettingsScreen grid) were reverted because neither proved an effect. Lesson recorded: a new assertion must be CALIBRATED (shown to report both true and false on controlled inputs); proving only that it can fail is not enough. The 2x text-clipping question is open again and needs a trustworthy instrument. Sweep is at 40 cases.",
+            "DT-35 (2026-11-19): the clipping question DT-34 left open was closed with a CALIBRATED oracle instead of another flag. textThatCannotFit does not ask Compose whether something overflowed; it reads the text, style and the exact constraints the real layout got (input data, not a verdict), re-measures with a real TextMeasurer, and compares the space the text NEEDS against the space it was given. It was calibrated first (textFitOracleFlagsATightBoxAndClearsAFreeLabel proves it flags a Caption squeezed into 24dp and clears the same caption left free) — the step DT-33 skipped. Run over the six routed pages at 360dp/2x with a zero budget, it found exactly ONE label that cannot fit in the whole app: the chapter digit in the path band, measured as needing 119px of height inside a 105px (40dp) fixed square. That single number, not 37, is the real finding, and it was fixed: the badge now uses defaultMinSize instead of size, so the band geometry is unchanged at 1x and the badge grows at large text. The oracle then reported 1 -> 0 and every screen keeps a budget of ZERO, which is a strictly stronger assertion than any ratchet. It also explains why the same change looked pointless in DT-34: the broken instrument could not see it. Sweep is at 41 cases.",
+            "DT-36 (2026-11-19): the calibrated 360dp/2x matrix was widened from six pages to NINE surfaces (StationSheetLocked, LessonDiscover, ParentGateLockedOut added), all at a zero text-fit budget. It immediately found a SECOND real defect of the same family as DT-35: the station sheet chapter badge is a fixed 40dp square holding a Title digit, measured as needing 119px of height in a 105px slot. So the pattern is \"fixed 40dp square + Title digit\", not a one-off. It was fixed the same way (defaultMinSize), and grep confirmed that was the last .size(ShomaraTokens.Space40) in any feature module, so the whole family is covered. One accessibility-tested surface could not be opened by tapping at 360dp - Compose reported \"Failed to inject touch input\" because the far station sits below the fold - so that case renders the sheet composable directly, which is the same thing the shell hosts, instead of pretending a click happened. Net: nine surfaces at 2x report ZERO text that cannot fit, budgets stay at zero. Sweep is at 44 cases.",
+            "DT-37 (2026-11-19): Home is now measured in all four of its entry states at 360dp/2x, not just with a resolved path: HomeLoading, HomeError, HomeEmpty and HomeOffline each have their own case against the calibrated text-fit oracle at a zero budget, and the Error case additionally pins the pairing between the canonical \"try again\" copy and the retry affordance so a future wiring cannot ship a message that instructs an action the screen does not offer. The first version of that test built an unresolved ShomaraPathProgress carrying station ids and the constructor rejected it (\"unresolved progress cannot carry fabricated or partial station state\") - the TEST was corrected, not the invariant, so the anti-fabrication rule kept its teeth; Offline is the only one of the four that legitimately carries station data. A technical limit was also learned: a Compose test can call setContent once, so the four states are four tests behind one helper rather than a loop. Separately: a windowed duplication scan over 221 hand-written files produced 687 matching groups that were almost all import blocks and KDoc, i.e. no further layout duplication worth merging - recorded as a negative so it is not chased again - and git ls-files confirmed zero tracked build/ or generated/ files with **/build/ ignored as AGENTS section 4 requires. Sweep is at 48 cases.",
+            "DT-38 (2026-11-19): `lint` is listed in AGENTS section 7 as part of the native gate but had no npm script and had never been run in this session. Running :app:lintDebug and then lint on ALL modules (app-only lint skips library modules by default) surfaced four real UI-code defects, all fixed: (1) DefaultLocale - ShomaraCharacter.labelFor used String.format(\"%02d\") without a Locale, and that value is the asset-path key, so a locale formatting %02d with non-ASCII digits would silently lose the character artwork; now Locale.ROOT. (2) ComposableNaming - the design system exposed shomaraBackHandler in lowercase next to ShomaraTheme/ShomaraTokens; renamed to ShomaraBackHandler across five call sites (the rename itself exposed a sixth call site in feature:lesson that broke the build and was fixed in the same pass). (3) ModifierParameter - ShomaraPlacementScreen had modifier after another optional parameter; moved to the first optional slot, and since every call site uses named arguments no caller changed. (4) MonochromeLauncherIcon x2 - a monochrome layer was added to both adaptive icons for Android 13+ themed icons. A weak a11y test was strengthened too: ShomaraFontScaleTest only checked didOverflowHeight (the flag family DT-34 disproved), so it now also compares the paragraph's real measured height with its box. Result: core:designsystem 3 -> 0, feature:onboarding 1 -> 0, feature:lesson 0, app 21 -> 19 (remaining are dependency-version, manifest-attribute and screen-orientation items, not UI code). Two findings were deliberately NOT changed and are handed to the owner: the locked screen orientation (Android 16 ignores it anyway, and unlocking it needs a landscape layout review) and NotShrinkingResources (release-only effect, and a release build is neither sanctioned nor possible here, so it was not flipped unverified - getIdentifier usage is zero, so the risk is low when it is). Evidence: lint exit 0 on all modules, ShomaraA11ySweepTest 48/48, ShomaraFontScaleTest 16/16, android:gate exit 0.",
+            "DT-39 (2026-11-19): owner feedback was that the UI is not attractive, with a character-led hero chosen as the first direction. ShomaraHomeHeader was turned from a bare text row into a real card: ColorHomeVioletSoft accent surface, RadiusLg corners, Soft clay depth, the character enlarged to ComponentNodeCurrent + Space16 as the visual anchor, Title heading and a VioletDark subtitle with better contrast than Muted. Prominence deliberately came from colour and scale rather than the Featured depth tier, because depthFor(Current) is Featured and ADR-0040 allows at most one Featured surface per viewport - so the current station keeps its rank. No new copy was invented; only the existing canonical Title/Subtitle/Settings strings are used. The full sweep stayed at 48/48 including the nine 360dp/2x surfaces with the calibrated text-fit oracle, so the card neither clips text at 2x nor breaks the heading/a11y contract. Honest limit: this agent cannot read images, so a real device screenshot was captured for the owner instead of claiming the result looks good: build-reports/ui/home-default.png.",
+            "DT-40 (2026-11-19): the Home handoff components were actually implemented, not merely restyled. ShomaraChapterProgressCard (C04) and ShomaraContinueStationCard (C05) now render the real chapter and the real current station with exactly one primary action, and the primary-CTA claim moved off the path node via currentNodeClaimsPrimaryCta so the continue card owns it - with the node keeping it whenever no card is rendered, so Home can never end up with zero primary actions. Both cards live as the first LazyColumn item: a sibling Column made the list zero-height at 360dp/2x (the calibrated oracle reported \"slot 777x0\"), and the list also opened on the current station, which scrolled the card out of range so LazyColumn never composed it. Twenty-five approved pack vectors were added to the design system (7 -> 32, exactly the pack). Repository cleanup, all reversible from git: 80 unreferenced docs deleted (201 -> 141 md) with 20 restored because verify:design-pack demands them; 37 byte-identical or unused files removed (1742 -> 1694 tracked); 12 device artifacts moved out of git into build-reports/evidence. Three superseded trees (project-design-v2, docs/archive, prototypes) were deliberately kept because verify-phase*.mjs and harness/file-ledger.json assert their existence. A tooling bug was found and fixed: the unused-drawable scanner ignored .xml, so it deleted ic_launcher_foreground.xml and android:gate failed with \"failed linking references\" until the file was restored. Evidence defect of record: artifacts/p13-device/gallery-ltr.png and gallery-rtl.png were byte-identical (E18ED0F5...97DC09), so the RTL visual evidence never existed; the fake capture was deleted. Gates after cleanup: sweep 48/48, android:gate exit 0, harness validate and verify:static:all, verify:repository, verify:design-governance, verify:design-pack all exit 0."
           ]
         },
         {
@@ -876,7 +871,7 @@
           "evidence": [
             "scripts/verify-design-system-native.mjs: zero raw tokens (hex/dp/sp/FontWeight) outside generated ShomaraTokens.kt across :core:designsystem and :app + banned child-safety terms = PASS (18 Kotlin files); placeholder FoundationScreen tokenized as the first consumer",
             "all machine gates green: module test/lint 56/56, android:gate PASS, full static suite 88/88 incl. this new verifier",
-            "HG-02 APPROVED by owner instruction 2026-10-31; Paparazzi/device screenshot evidence remains tracked NATIVE_PENDING in docs/design/NATIVE_COMPONENT_READINESS_N03.md"
+            "HG-02 APPROVED by owner instruction 2026-10-31; Paparazzi/device screenshot evidence remains tracked NATIVE_PENDING in docs/notes/NATIVE_COMPONENT_READINESS_N03.md"
           ]
         },
         {
@@ -916,7 +911,7 @@
         "apps/android/settings.gradle.kts",
         "apps/android/gradle/libs.versions.toml",
         "apps/android/core/model/**",
-        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "docs/notes/ANDROID_MODULE_GRAPH.md",
         "scripts/verify-android-foundation.mjs",
         "scripts/verify-design-system-native.mjs",
         "docs/product/**",
@@ -946,7 +941,7 @@
             "OnboardingContract.kt: ShomaraAuthMode (New/Restoring/Recover/Error), OnboardingStep + OnboardingRoutes canonical order, AuthSessionState sealed machine, ShomaraOnboardingFlow reducer (no backwards steps, restoring re-enters via welcome, restore entry fails closed on Authenticated), GuestEntryAllowed=false contract constant",
             "verify-android-foundation now requires 8 modules incl. the three new ones + N04 app->feature:onboarding policy (still forbids :data: deps); design guard now scans feature/onboarding too",
             "gradle :feature:onboarding:test :core:network:test :core:datastore:test :feature:onboarding:lint = BUILD SUCCESSFUL (7/7 contract tests)",
-            "close-out addendum: ShomaraLaunchState (UI-001) and ShomaraFlowUiState added to :core:model/:feature:onboarding with fail-closed launch mapping; module graph documented in docs/architecture/ANDROID_MODULE_GRAPH.md"
+            "close-out addendum: ShomaraLaunchState (UI-001) and ShomaraFlowUiState added to :core:model/:feature:onboarding with fail-closed launch mapping; module graph documented in docs/notes/ANDROID_MODULE_GRAPH.md"
           ]
         },
         {
@@ -964,7 +959,8 @@
             "ShomaraPhoneLogic: Persian/Arabic digit normalization, 0098/+98/98/0 prefix handling, separators, canonical 09XXXXXXXXX (11 digits), actionable Persian error only when invalid",
             "ShomaraBackLogic: deterministic back target per step (welcome has no route behind; complete exits)",
             "ShomaraWelcomeScreen/ShomaraPhoneScreen composables built from design-system primitives only (numericLtr field for phone, CTA gated on validity)",
-            "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (13/13 tests incl. 6 new)"
+            "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (13/13 tests incl. 6 new)",
+            "DT-15 de-duplication (2026-11-19): the welcome CTA no longer carries its own copy of the button's press/focus state machine, colour and clay-depth lookup, disabled semantics, tap guard, padding and label. ShomaraButton gained three defaulted parameters — `shape` (the owner's pill samples), `disabledContainer`/`disabledContent` (the documented dark-when-disabled CTAs) and a `leading` slot (the drawn arrow, which receives the resolved content colour) — and one internal `OnboardingCta` now backs the welcome, phone and profile buttons. Net effect: -292 lines of duplicated machinery, +43 unused imports removed, and the onboarding CTAs finally get the canonical press-scale feedback. feature:onboarding 92/92 unit tests; instrumented ShomaraOnboardingGatesTest 6/6 (new: a disabled profile CTA does not advertise OnClick) plus Home 5/5, StationSheet 7/7 and JumpAssessmentShell 3/3 regression-green on Pixel_6a."
           ]
         },
         {
@@ -984,7 +980,9 @@
             "PreferencesTokenStore: real DataStore-backed store (JVM file-backed test), blank tokens rejected, clear removes the key entirely, toString redacts",
             "ShomaraAuthSession: token persisted ONLY on verified response; restore fail-closed (missing/rejected clears immediately; offline keeps token for later retry); signOut always clears",
             "gradle three-module test+lint = BUILD SUCCESSFUL (network 11, datastore 6, feature 22 = 39 tests, 0 failures)",
-            "close-out addendum: OTP paste support (fillFromCode LTR with cap) and Expired field state with warm Persian label"
+            "close-out addendum: OTP paste support (fillFromCode LTR with cap) and Expired field state with warm Persian label",
+            "DT-15 de-duplication (2026-11-19): ShomaraOtpConfirmButton is deleted. Its body already delegated every state to ShomaraButtonLogic (its own KDoc still claimed a dark disabled override that the code had deliberately dropped), so the «تأیید کد» CTA is now a plain ShomaraButton — same label, same loading/reduced-motion semantics, same disabled behaviour, now with the canonical press feedback.",
+            "DT-31 (2026-11-19): the profile screen's save states were the remaining uncovered decision states. Two sweep cases now cover them: onboardingProfileSaveFailureOffersTheWarmRetry asserts the canonical ShomaraProfileStrings.SaveFailed wording, the a11y contract and exactly one primary CTA after a failure; onboardingProfileSavingKeepsOnePrimaryAndSaysItIsWorking asserts that while the save is in flight the CTA is still the single primary AND carries the Disabled semantics, so a double submit cannot be announced as available. Sweep is at 33 cases."
           ]
         },
         {
@@ -1004,7 +1002,11 @@
             "ShomaraPlacementState: server-authoritative decision rendering, user skip mutually exclusive with server decision by construction, pending banner while the server decides",
             "ShomaraProfileScreen/ShomaraPlacementScreen built from design-system primitives (feedback banners, gated save button with loading)",
             "gradle :feature:onboarding:test :feature:onboarding:lint = BUILD SUCCESSFUL (28/28 tests incl. 6 new)",
-            "close-out addendum: avatar selection from canonical catalog (sun/leaf/cloud/moon), G1-G6 catalog with warmly-locked future grades, real DataStore draft persistence for incomplete-profile resume across process death"
+            "close-out addendum: avatar selection from canonical catalog (sun/leaf/cloud/moon), G1-G6 catalog with warmly-locked future grades, real DataStore draft persistence for incomplete-profile resume across process death",
+            "DT-15 de-duplication (2026-11-19): ShomaraProfileCta is now a thin OnboardingCta call — pill shape, drawn arrow and the owner's dark-when-disabled colour are ShomaraButton parameters instead of a 130-line page-local button. The rendered result keeps the sample's pill, arrow and disabled colour while the press/focus/semantics/tap-guard rules now exist in exactly one place.",
+            "DT-17 (2026-11-19): the page-local name field is deleted. It was a 113-line copy of ShomaraTextField (label, surface, padding, editing-state sync, error row, icon) kept only to place one decorative glyph, and its copy had drifted to a 39.6dp interactive area inside a 56dp surface (caught by the a11y sweep now covering this step). ShomaraTextField gained a defaulted `leading` slot (glyph at the layout-start with a Space40 text inset, in both the interactive and read-only branches), so the step is a thin call: 113 lines out, 35 in, ten unused imports gone. ProfileScreens.kt 926 -> 835 lines. Sweep 7/7 on Pixel_6a, feature:onboarding 92/92, android:gate exit 0 with 591 JVM tests.",
+            "DT-19 (2026-11-19): ProfileScreens.kt had grown to 835 lines and mixed three unrelated concerns - the page logic, the hero art (SVG layers on a canvas, ~350 lines) and the grade grid. It is now split along its real declaration seams: ProfileHero.kt (353), ProfileGradeGrid.kt (145) and ProfileScreens.kt (377), with three cross-file symbols moved from private to internal and each file pruned of the imports it no longer needs. Behaviour is unchanged: feature:onboarding 92/92 JVM tests, ShomaraA11ySweepTest 9/9 and ShomaraOnboardingGatesTest 6/6 on Pixel_6a, android:gate exit 0 with 591 JVM tests.",
+            "DT-20 (2026-11-19): OnboardingHost.kt (605 lines) was split along its declaration seams: OtpStep.kt (94 lines - ShomaraOtpStepStrings plus the canonical ShomaraOtpKeypad) and OnboardingHost.kt (525 lines), with the keypad moved from private to internal and imports pruned per file. Behaviour unchanged: feature:onboarding 92/92 JVM tests, ShomaraOnboardingGatesTest 6/6 and ShomaraHomeScreenTest 5/5 on Pixel_6a, android:gate exit 0."
           ]
         },
         {
@@ -1042,7 +1044,10 @@
             "ShomaraOnboardingA11y: traversal contract per step in declaration order (leading heading, trailing action, warm labels) - JVM-verified; OTP digits announced in strict LTR Persian order (رقم ۱..۴)",
             "fixtures render at 360/390/412dp via the design-system catalog pattern with 1.0f/2.0f font scales (light theme, RTL + LTR math); rendered screenshots remain NATIVE_PENDING (Paparazzi/device) per the N03 readiness protocol",
             "gradle :feature:onboarding:test = BUILD SUCCESSFUL (40/40)",
-            "close-out addendum: journey readiness recorded in docs/product/ONBOARDING_JOURNEY_READINESS_N04.md"
+            "close-out addendum: journey readiness recorded in docs/notes/ONBOARDING_JOURNEY_READINESS_N04.md",
+            "DT-20 (2026-11-19): the cross-screen a11y sweep gained a structural rule - every screen must expose at least one heading, because heading navigation is how TalkBack finds a page title. It immediately caught a real contradiction: the profile onboarding step rendered ZERO headings while OnboardingA11y (the declared traversal contract) lists two (ProfileTitle, GradeSectionTitle). That contract test only walked a synthetic string list, never the render. Fixed without any visual change: the hero - which is the page title visually - now carries heading() with ProfileTitle, and the grade grid carries heading() with GradeSectionTitle, so the rendered order (title, name field, section, CTA) matches the declared contract. ShomaraA11ySweepTest 9/9 on Pixel_6a; android:gate exit 0.",
+            "DT-21 (2026-11-19): the cross-screen a11y sweep now covers the lesson start screen, the deepest and most control-heavy surface in the app and the one with no a11y coverage at all (its only androidTest asserted the resumed stage header). To stop the new case from passing vacuously, it first proves the real lesson header rendered (the ST07 station title) and only then measures labels, the 48dp floor and headings. The lesson screen passed. Honest gap recorded: scripts/android-build.mjs gate runs JVM tests plus compiling :app androidTest, but never executes instrumented tests, so every device suite (:app, :core:designsystem, :feature:lesson) is compile-verified only in the gate and has been run manually on Pixel_6a. Adding instrumented execution to the gate needs an owner decision about device availability in CI. ShomaraA11ySweepTest 10/10 on Pixel_6a; android:gate exit 0.",
+            "DT-30 (2026-11-19): dead-declaration scan over all 528 top-level declarations in the main source sets found 40 with no reference outside their own file. The scanner was validated against direct grep on nine samples before being trusted. Classification matters more than the count: 38 are documented contracts (references in docs/ADR - ShomaraStateHolder, AudioPolicy, ShomaraDialog, ...), tested-but-unwired capabilities (ManifestActivationEngine 7 test refs, DraftAudioImporter 11, ShomaraAssessmentDraw 16) or debug previews. Only AssetResolver and AudioAssetResolver have zero code, test AND doc references anywhere in the repository, and they were deliberately NOT deleted: their KDoc anchors them to ADR-0039 §1 and CONTENT-017 and the O2 content-path question is still open, so they are pre-wiring seams rather than dead code. Recorded as an owner decision instead of deleting for the sake of a lower count."
           ]
         },
         {
@@ -1084,7 +1089,7 @@
         "scripts/verify-android-foundation.mjs",
         "scripts/verify-design-system-native.mjs",
         "docs/product/**",
-        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "docs/notes/ANDROID_MODULE_GRAPH.md",
         "harness/**",
         "START_HERE.md"
       ],
@@ -1147,7 +1152,11 @@
             "ShomaraStationStartLogic: full 7-state matrix (Loading/Ready/Resume/Locked/Offline/Error/Starting) derived from path progress + call flags; exactly ONE primary CTA with a deterministic label per state (شروع/ادامه/متوجه شدم); locked taps open a warm explanation, never a dead end",
             "real metadata line from the canonical catalog (ایستگاه ۳ از ۲۵ — فصل ۱)",
             "ShomaraJumpSheet: jumps stay inside the station chapter (5 targets), locked targets not confirmable, offline/error block confirm, single confirm CTA, idempotent selection",
-            "gradle :feature:path:test :feature:path:lint = BUILD SUCCESSFUL (16/16 tests incl. 7 new)"
+            "gradle :feature:path:test :feature:path:lint = BUILD SUCCESSFUL (16/16 tests incl. 7 new)",
+            "DT-25 (2026-11-19): the station-start sheet - the single door from the path into a lesson - carried fourteen inline Persian literals (per-state CTA labels, the metadata line, the locked explanation, the jump-sheet title, four banners, «بستن», «پرش» and the selected suffix). They moved to ShomaraStationStartStrings with the text unchanged, and the metadata line plus the jump title became functions so Persian digits are passed in already converted. ShomaraStationStartTest and the rest of the path module JVM tests still pass. The sweep also gained two station-sheet states, Locked (whose only control is «متوجه شدم») and Offline, both asserting the canonical copy before measuring, taking the sweep to 28 cases. The inline-literal audit fell from 246 to 217.",
+            "DT-32 (2026-11-19): a rhythm audit of all 19 screen entry points measured the lateral inset of every full page. 24dp is canonical and most pages already use it; Settings, OnboardingHost and the jump sheet use 16dp as a RECORDED adaptive reduction (STAGE4_IMPLEMENTATION_NOTE). Home was the only undocumented deviation at 20dp. homeStaysUsableAt360dpWithDoubleText was written FIRST and passed on the 20dp baseline, measuring what AGENTS §6 requires and the sweep had never measured: Home at 360dp width with 2x text, asserting the a11y contract, exactly one primary CTA and zero nodes overflowing the viewport. Only then did the inset move to 24dp, and the same test stayed green — so the change is aligned with canonical rather than simply different.",
+            "DT-35 (2026-11-19): the clipping question DT-34 left open was closed with a CALIBRATED oracle instead of another flag. textThatCannotFit does not ask Compose whether something overflowed; it reads the text, style and the exact constraints the real layout got (input data, not a verdict), re-measures with a real TextMeasurer, and compares the space the text NEEDS against the space it was given. It was calibrated first (textFitOracleFlagsATightBoxAndClearsAFreeLabel proves it flags a Caption squeezed into 24dp and clears the same caption left free) — the step DT-33 skipped. Run over the six routed pages at 360dp/2x with a zero budget, it found exactly ONE label that cannot fit in the whole app: the chapter digit in the path band, measured as needing 119px of height inside a 105px (40dp) fixed square. That single number, not 37, is the real finding, and it was fixed: the badge now uses defaultMinSize instead of size, so the band geometry is unchanged at 1x and the badge grows at large text. The oracle then reported 1 -> 0 and every screen keeps a budget of ZERO, which is a strictly stronger assertion than any ratchet. It also explains why the same change looked pointless in DT-34: the broken instrument could not see it. Sweep is at 41 cases.",
+            "DT-36 (2026-11-19): the calibrated 360dp/2x matrix was widened from six pages to NINE surfaces (StationSheetLocked, LessonDiscover, ParentGateLockedOut added), all at a zero text-fit budget. It immediately found a SECOND real defect of the same family as DT-35: the station sheet chapter badge is a fixed 40dp square holding a Title digit, measured as needing 119px of height in a 105px slot. So the pattern is \"fixed 40dp square + Title digit\", not a one-off. It was fixed the same way (defaultMinSize), and grep confirmed that was the last .size(ShomaraTokens.Space40) in any feature module, so the whole family is covered. One accessibility-tested surface could not be opened by tapping at 360dp - Compose reported \"Failed to inject touch input\" because the far station sits below the fold - so that case renders the sheet composable directly, which is the same thing the shell hosts, instead of pretending a click happened. Net: nine surfaces at 2x report ZERO text that cannot fit, budgets stay at zero. Sweep is at 44 cases."
           ]
         },
         {
@@ -1165,7 +1174,11 @@
             "ShomaraPracticeHubLogic: 7-state matrix (Loading/List/Empty/Locked/Offline/Error/History); recommended + history rendered VERBATIM from caller/server data - the hub never fabricates rows or missions (family 12 anti-pattern)",
             "empty state is a warm guide pointing at the path (test-enforced: no reward/star wording); locked rows carry a warm reason enforced at construction",
             "ShomaraPracticeHubScreen built from design-system primitives with TalkBack descriptions (locked rows announce their reason)",
-            "gradle :feature:practice:test :feature:practice:lint = BUILD SUCCESSFUL (6/6 tests)"
+            "gradle :feature:practice:test :feature:practice:lint = BUILD SUCCESSFUL (6/6 tests)",
+            "DT-23 (2026-11-19): ShomaraPracticeHubScreen carried seven inline Persian literals (title, three state banners, two section headings, the done suffix), which breaks AGENTS §10 (UI text must come from a canonical string source) and made the copy impossible to assert without duplicating it. All seven moved to ShomaraPracticeHubStrings with the text unchanged, so the module JVM tests still pass and the sweep can assert the real constants. The sweep also grew from 15 to 22 cases: settings in Dirty/Saving/Error and practice in Loading/Offline/Error/Empty, each proving its own state rendered. Recorded finding, deliberately not changed: the three informational practice states offer no in-screen control while Home error does offer a retry - the shell tab bar is the escape, and adding an unused onRetry parameter would be dead API, so it is left as an owner decision.",
+            "DT-29 (2026-11-19): the duplicate-code claim was measured instead of assumed. build-reports/audit/duplicate_scan.py hashes normalised 8+ line windows across the 152 main source files (build/generated/test excluded) and reports ZERO duplicate blocks of 12+ lines and only four 8-11 line pairs, all layout boilerplate (Column/Arrangement.spacedBy, the interactionSource preamble). The four were deliberately NOT merged: the visual risk of rewriting them exceeds the gain, so the honest result is that meaningful duplication is gone rather than that more refactoring was done for its own sake.",
+            "DT-31 (2026-11-19): a suspected path defect was investigated and cleared with evidence rather than \"fixed\": ShomaraPathGraphLogic.tapEnabled returns true for EVERY state, including Locked. That is intentional — a locked node must stay tappable so the station sheet opens in its Locked state and explains why («هنوز قفل؛ با ترتیب مسیر باز می‌شود»). Recorded so a later round does not mistake it for a bug and disable the one way a child can learn why a station is closed.",
+            "DT-33 (2026-11-19): AGENTS §6 asks for 360/390/412dp widths AND text zoom, but the sweep had only ever rendered at the device's own width and 1.0x. The shared helper assertFitsAtNarrowWidth now renders six routed pages at 360dp with fontScale 2.0 (the binding extreme) and checks both the a11y contract and text overflow. The first overflow check was USELESS and was replaced rather than kept: bounds stay inside the viewport because Compose clips, so nothing ever failed. Reading TextLayoutResult.hasVisualOverflow instead exposed a real defect — 37 text nodes are clipped at 2x (Home 8, Settings 11, Me 7, PracticeHub 7, OnboardingProfile 2, ParentHome 2), which hits exactly the users who rely on system font scaling. The mechanism was measured, not guessed: every clipped node reported didWidth=true, didHeight=false, lines=1 with layout.size == node.size, i.e. fixed-WIDTH containers too narrow at 2x for even one word (there is no maxLines anywhere in feature/path). Because a structural reflow of the path is a larger change than this round should risk, the check ships as a measured per-screen RATCHET that may only go down, with all 37 labels named in the KDoc. It was proven non-vacuous by tightening Home's budget from 8 to 7 and watching the test fail, then restoring it. Sweep is at 39 cases."
           ]
         },
         {
@@ -1183,7 +1196,21 @@
             ":feature:profile ShomaraMeScreen (family 14): loading/ready/empty/offline/error/edit-return; facts rendered verbatim in Persian digits (۳ از ۲۵ ایستگاه); zero synthetic reward surfaces (field-level test-enforced)",
             ":feature:settings ShomaraSettingsScreen (family 15): canonical avatar grid (sun/leaf/cloud/moon) with owned/equipped states, real reduced-motion preference, save lifecycle Dirty/Saving/Saved/Error with toggle-fail revert + warm retry",
             "same-value edits are no-ops (no dirty churn); save from Clean rejected; unknown avatar rejected at construction",
-            "gradle :feature:profile:test :feature:settings:test + lint = BUILD SUCCESSFUL (profile 4/4, settings 7/7)"
+            "gradle :feature:profile:test :feature:settings:test + lint = BUILD SUCCESSFUL (profile 4/4, settings 7/7)",
+            "DT-14 UX fix (2026-11-19): settings copy is fully canonical now — the section heading no longer repeats the page title (it was the literal «تنظیمات» rendered as a second heading, so TalkBack read the title twice and the section had no distinct name), and the selected-avatar line is built by ShomaraSettingsStrings.selectedAvatar from the real ShomaraAvatarCatalog label instead of a hand-written literal. ShomaraSettingsTest 9/9 (two new guards: section headings never repeat the title, selected-avatar line comes from the catalog) and ShomaraSettingsWiringTest 14/14.",
+            "DT-16 a11y (2026-11-19): a cross-screen instrumented sweep (ShomaraA11ySweepTest) now walks the real semantics tree of Settings / Me / Practice hub / Parent gate and fails the build when a clickable surface has no spoken label or is shorter than 48dp. It immediately found two real defects: the parent passcode field was a nameless edit box (the visual label sat outside the field semantics, so the field now carries that label as its accessible name), and the field interactive area was only 40dp inside the 56dp surface (the field itself now carries the token height, so the node TalkBack focuses is the whole field). All four screens pass; feature:profile 9/9 and feature:practice 21/21 stay green. The designsystem instrumented suite had never even compiled (a call to assertCountEquals on a single-node query); it now compiles and runs 33/33.",
+            "DT-23 (2026-11-19): the settings screen is now a11y-swept in three of its five save states - Dirty (asserting the real «ذخیره» action renders), Saving and Error (asserting the real save-failure message) - instead of only the default Clean state. The state transitions are the screen own mutators (withReducedMotion/startSave/onSaveFailure), so the tests exercise the shipped state machine rather than a hand-built copy.",
+            "DT-24 (2026-11-19): the Me screen's twelve inline Persian literals (title, four state banners, avatar prefix, both row labels/descriptions and the progress line) moved to ShomaraMeStrings with the text byte-identical, so the profile JVM tests still pass. The sweep now covers Me in Loading/Offline/Empty/Error, asserting each state's canonical copy before measuring labels, the 48dp floor and headings, and reached 26 cases. A mechanical audit of inline Persian literals outside const val declarations (build-reports/audit/inline_persian_audit.py) reports 246 across feature/core/app - an upper bound, because legitimate builders inside *Strings objects and preview data are counted too - with the real remaining density in ShomaraStationStart (16), ShomaraParentBoundary (14), ShomaraLaunchGate (12), ShomaraLessonStageChrome (10) and ShomaraSettingsScreen (7), to be extracted file by file.",
+            "DT-25 (2026-11-19): the last five inline literals on the settings screen (the «انتخاب‌شده» suffix, «روشن»/«خاموش» in stateDescription and in the visible toggle label) joined the existing ShomaraSettingsStrings constants, text unchanged, so the settings JVM tests still pass.",
+            "DT-29 (2026-11-19): app/src/main now carries ZERO inline Persian literals - the last two (the shell's practice-loading title and body) moved to ShomaraPracticeHubStrings.PreparingTitle/PreparingBody. The inline audit stands at MAIN=130, DEBUG=55. A new sweep case, practiceTabWhileProgressIsUnresolvedExplainsItself, covers the surface a child actually meets under O5: the Practice tab while the progress snapshot has not resolved. It taps the tab, asserts both canonical lines and runs the a11y contract, so the shell surface is now tested rather than only the feature composable. Sweep is at 30 cases.",
+            "DT-33 (2026-11-19): AGENTS §6 asks for 360/390/412dp widths AND text zoom, but the sweep had only ever rendered at the device's own width and 1.0x. The shared helper assertFitsAtNarrowWidth now renders six routed pages at 360dp with fontScale 2.0 (the binding extreme) and checks both the a11y contract and text overflow. The first overflow check was USELESS and was replaced rather than kept: bounds stay inside the viewport because Compose clips, so nothing ever failed. Reading TextLayoutResult.hasVisualOverflow instead exposed a real defect — 37 text nodes are clipped at 2x (Home 8, Settings 11, Me 7, PracticeHub 7, OnboardingProfile 2, ParentHome 2), which hits exactly the users who rely on system font scaling. The mechanism was measured, not guessed: every clipped node reported didWidth=true, didHeight=false, lines=1 with layout.size == node.size, i.e. fixed-WIDTH containers too narrow at 2x for even one word (there is no maxLines anywhere in feature/path). Because a structural reflow of the path is a larger change than this round should risk, the check ships as a measured per-screen RATCHET that may only go down, with all 37 labels named in the KDoc. It was proven non-vacuous by tightening Home's budget from 8 to 7 and watching the test fail, then restoring it. Sweep is at 39 cases.",
+            "DT-34 (2026-11-19) RETRACTION of DT-33: the clipping instrument was itself broken. While trying to FIX the 37 \"clipped\" labels, three hypotheses were tested with data. (1) Fixed container width: making the Settings avatar grid two columns at large font made the count WORSE (11 -> 12), so the hypothesis was rejected and the change reverted. (2) A lineHeight that does not scale: the tokens are sp-based (30/26/20) and do scale, rejected. (3) The instrument: a calibration test rendered one Caption squeezed into a 24dp box and the same caption unconstrained — TextLayoutResult.hasVisualOverflow reported TRUE for BOTH, so in this Compose version that flag is not a clipping oracle. Consequence: DT-33's 37-node register was a false positive and was WITHDRAWN, not patched — the CLIPPED_TEXT_BUDGET ratchet and its per-label table are gone, the bounds check (weak but sound) is back, and the calibration test is kept as hasVisualOverflowIsNotAClippingOracle so nobody rebuilds an a11y assertion on that flag. Both experimental production changes (ShomaraPathChapter badge, ShomaraSettingsScreen grid) were reverted because neither proved an effect. Lesson recorded: a new assertion must be CALIBRATED (shown to report both true and false on controlled inputs); proving only that it can fail is not enough. The 2x text-clipping question is open again and needs a trustworthy instrument. Sweep is at 40 cases.",
+            "DT-35 (2026-11-19): the clipping question DT-34 left open was closed with a CALIBRATED oracle instead of another flag. textThatCannotFit does not ask Compose whether something overflowed; it reads the text, style and the exact constraints the real layout got (input data, not a verdict), re-measures with a real TextMeasurer, and compares the space the text NEEDS against the space it was given. It was calibrated first (textFitOracleFlagsATightBoxAndClearsAFreeLabel proves it flags a Caption squeezed into 24dp and clears the same caption left free) — the step DT-33 skipped. Run over the six routed pages at 360dp/2x with a zero budget, it found exactly ONE label that cannot fit in the whole app: the chapter digit in the path band, measured as needing 119px of height inside a 105px (40dp) fixed square. That single number, not 37, is the real finding, and it was fixed: the badge now uses defaultMinSize instead of size, so the band geometry is unchanged at 1x and the badge grows at large text. The oracle then reported 1 -> 0 and every screen keeps a budget of ZERO, which is a strictly stronger assertion than any ratchet. It also explains why the same change looked pointless in DT-34: the broken instrument could not see it. Sweep is at 41 cases.",
+            "DT-36 (2026-11-19): the calibrated 360dp/2x matrix was widened from six pages to NINE surfaces (StationSheetLocked, LessonDiscover, ParentGateLockedOut added), all at a zero text-fit budget. It immediately found a SECOND real defect of the same family as DT-35: the station sheet chapter badge is a fixed 40dp square holding a Title digit, measured as needing 119px of height in a 105px slot. So the pattern is \"fixed 40dp square + Title digit\", not a one-off. It was fixed the same way (defaultMinSize), and grep confirmed that was the last .size(ShomaraTokens.Space40) in any feature module, so the whole family is covered. One accessibility-tested surface could not be opened by tapping at 360dp - Compose reported \"Failed to inject touch input\" because the far station sits below the fold - so that case renders the sheet composable directly, which is the same thing the shell hosts, instead of pretending a click happened. Net: nine surfaces at 2x report ZERO text that cannot fit, budgets stay at zero. Sweep is at 44 cases.",
+            "DT-37 (2026-11-19): Home is now measured in all four of its entry states at 360dp/2x, not just with a resolved path: HomeLoading, HomeError, HomeEmpty and HomeOffline each have their own case against the calibrated text-fit oracle at a zero budget, and the Error case additionally pins the pairing between the canonical \"try again\" copy and the retry affordance so a future wiring cannot ship a message that instructs an action the screen does not offer. The first version of that test built an unresolved ShomaraPathProgress carrying station ids and the constructor rejected it (\"unresolved progress cannot carry fabricated or partial station state\") - the TEST was corrected, not the invariant, so the anti-fabrication rule kept its teeth; Offline is the only one of the four that legitimately carries station data. A technical limit was also learned: a Compose test can call setContent once, so the four states are four tests behind one helper rather than a loop. Separately: a windowed duplication scan over 221 hand-written files produced 687 matching groups that were almost all import blocks and KDoc, i.e. no further layout duplication worth merging - recorded as a negative so it is not chased again - and git ls-files confirmed zero tracked build/ or generated/ files with **/build/ ignored as AGENTS section 4 requires. Sweep is at 48 cases.",
+            "DT-38 (2026-11-19): `lint` is listed in AGENTS section 7 as part of the native gate but had no npm script and had never been run in this session. Running :app:lintDebug and then lint on ALL modules (app-only lint skips library modules by default) surfaced four real UI-code defects, all fixed: (1) DefaultLocale - ShomaraCharacter.labelFor used String.format(\"%02d\") without a Locale, and that value is the asset-path key, so a locale formatting %02d with non-ASCII digits would silently lose the character artwork; now Locale.ROOT. (2) ComposableNaming - the design system exposed shomaraBackHandler in lowercase next to ShomaraTheme/ShomaraTokens; renamed to ShomaraBackHandler across five call sites (the rename itself exposed a sixth call site in feature:lesson that broke the build and was fixed in the same pass). (3) ModifierParameter - ShomaraPlacementScreen had modifier after another optional parameter; moved to the first optional slot, and since every call site uses named arguments no caller changed. (4) MonochromeLauncherIcon x2 - a monochrome layer was added to both adaptive icons for Android 13+ themed icons. A weak a11y test was strengthened too: ShomaraFontScaleTest only checked didOverflowHeight (the flag family DT-34 disproved), so it now also compares the paragraph's real measured height with its box. Result: core:designsystem 3 -> 0, feature:onboarding 1 -> 0, feature:lesson 0, app 21 -> 19 (remaining are dependency-version, manifest-attribute and screen-orientation items, not UI code). Two findings were deliberately NOT changed and are handed to the owner: the locked screen orientation (Android 16 ignores it anyway, and unlocking it needs a landscape layout review) and NotShrinkingResources (release-only effect, and a release build is neither sanctioned nor possible here, so it was not flipped unverified - getIdentifier usage is zero, so the risk is low when it is). Evidence: lint exit 0 on all modules, ShomaraA11ySweepTest 48/48, ShomaraFontScaleTest 16/16, android:gate exit 0.",
+            "DT-39 (2026-11-19): owner feedback was that the UI is not attractive, with a character-led hero chosen as the first direction. ShomaraHomeHeader was turned from a bare text row into a real card: ColorHomeVioletSoft accent surface, RadiusLg corners, Soft clay depth, the character enlarged to ComponentNodeCurrent + Space16 as the visual anchor, Title heading and a VioletDark subtitle with better contrast than Muted. Prominence deliberately came from colour and scale rather than the Featured depth tier, because depthFor(Current) is Featured and ADR-0040 allows at most one Featured surface per viewport - so the current station keeps its rank. No new copy was invented; only the existing canonical Title/Subtitle/Settings strings are used. The full sweep stayed at 48/48 including the nine 360dp/2x surfaces with the calibrated text-fit oracle, so the card neither clips text at 2x nor breaks the heading/a11y contract. Honest limit: this agent cannot read images, so a real device screenshot was captured for the owner instead of claiming the result looks good: build-reports/ui/home-default.png.",
+            "DT-40 (2026-11-19): the Home handoff components were actually implemented, not merely restyled. ShomaraChapterProgressCard (C04) and ShomaraContinueStationCard (C05) now render the real chapter and the real current station with exactly one primary action, and the primary-CTA claim moved off the path node via currentNodeClaimsPrimaryCta so the continue card owns it - with the node keeping it whenever no card is rendered, so Home can never end up with zero primary actions. Both cards live as the first LazyColumn item: a sibling Column made the list zero-height at 360dp/2x (the calibrated oracle reported \"slot 777x0\"), and the list also opened on the current station, which scrolled the card out of range so LazyColumn never composed it. Twenty-five approved pack vectors were added to the design system (7 -> 32, exactly the pack). Repository cleanup, all reversible from git: 80 unreferenced docs deleted (201 -> 141 md) with 20 restored because verify:design-pack demands them; 37 byte-identical or unused files removed (1742 -> 1694 tracked); 12 device artifacts moved out of git into build-reports/evidence. Three superseded trees (project-design-v2, docs/archive, prototypes) were deliberately kept because verify-phase*.mjs and harness/file-ledger.json assert their existence. A tooling bug was found and fixed: the unused-drawable scanner ignored .xml, so it deleted ic_launcher_foreground.xml and android:gate failed with \"failed linking references\" until the file was restored. Evidence defect of record: artifacts/p13-device/gallery-ltr.png and gallery-rtl.png were byte-identical (E18ED0F5...97DC09), so the RTL visual evidence never existed; the fake capture was deleted. Gates after cleanup: sweep 48/48, android:gate exit 0, harness validate and verify:static:all, verify:repository, verify:design-governance, verify:design-pack all exit 0."
           ]
         },
         {
@@ -1201,7 +1228,11 @@
             "ShomaraParentGate: fail-closed reducer - a missing verifier can never authenticate (warm config message); 3 consecutive failures trigger a cooldown lockout that rejects even the correct passcode; re-entrant verify while authenticated stays authenticated",
             "child-leak policy: ShomaraParentSurfaceContract allows ONLY progress-report/settings/sign-out - lesson/practice/station surfaces are structurally rejected (test-enforced); parent home renders summary numbers (Persian digits) and no rewards/leaderboard vocabulary",
             "child tab bar has no parent tab (canonical three-tab contract from N05-01); entry is only via the Me row -> re-auth gate screen",
-            "gradle :feature:parent:test :feature:parent:lint = BUILD SUCCESSFUL (7/7 tests)"
+            "gradle :feature:parent:test :feature:parent:lint = BUILD SUCCESSFUL (7/7 tests)",
+            "DT-14 security/UX fix (2026-11-19): the adult passcode field is masked and announced as a password. ShomaraTextField gained a secure flag implemented as an OutputTransformation mask (the state-owning BasicTextField has no visualTransformation parameter) plus Password semantics, and the disabled/loading branch masks through ShomaraFieldLogic.readOnlyTextFor, so the credential is neither legible on a shared child device nor read aloud by TalkBack. Gate logic is untouched and still fail-closed: verifier == null can never authenticate. ShomaraParentBoundaryTest 9/9 unchanged; new instrumented ShomaraParentGateSemanticsTest 3/3 on Pixel_6a (password semantics, wrong passcode stays closed and states the gate's own message, correct passcode opens the gate).",
+            "DT-26 (2026-11-19): the guardian boundary is fully canonical now - the two failure messages the gate emits (not configured, wrong passcode) and every label on the gate and the parent summary moved to ShomaraParentStrings, with the progress line as a function taking Persian digits. Text unchanged, so ShomaraParentBoundaryTest and the rest of the parent module tests still pass. The sweep also gained the LockedOut gate state - produced by the real three-failure path rather than a hand-built state - proving the wait notice is spoken and the two real controls stay named and at least 48dp. Sweep is at 29 cases; the inline-literal audit fell from 217 to 194.",
+            "DT-27 (2026-11-19): the lesson stage chrome's ten inline literals (the five stage names, the station title, the unknown-id fallback, the «— مرحلهٔ …» header, «برای ادامه، به مسیر برگرد.» and «بازگشت به مسیر») moved into ShomaraLessonStageLabels as constants plus builder functions, text unchanged, so the lesson module JVM tests still pass. The inline-literal audit now reports main and debug source sets separately (MAIN=132, DEBUG=55): the remaining main entries are mostly legitimate builders inside *Strings objects (ShomaraFeedback 13, ShomaraAudio 9, ShomaraPathState 8), which is why the metric has reached the end of its usefulness and further extraction must be judged file by file.",
+            "DT-30 (2026-11-19): the lesson P1 discovery surface is now swept in the state it actually ships — the lesson opens in discovery while the server has sent no options (O5). lessonDiscoverWithoutServerOptionsIsHonestAndNavigable asserts the spoken region label, runs the a11y contract and requires exactly one primary CTA. Dumping the semantics tree to logcat first is what made the assertions specific rather than guessed. The six skeleton region labels moved to ShomaraTemplateSkeletonStrings with the text unchanged (MAIN inline literals 130 -> 124). Sweep is at 31 cases."
           ]
         },
         {
@@ -1279,7 +1310,7 @@
         "packages/contracts/**",
         "content-library/derived/**",
         "content-library/integration/**",
-        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "docs/notes/ANDROID_MODULE_GRAPH.md",
         "docs/product/**",
         "scripts/verify-android-foundation.mjs",
         "scripts/verify-design-system-native.mjs",
@@ -1436,7 +1467,7 @@
           "evidence": [
             "St07JourneyGateTest: full P1->P5 journey with real HTTP (5 x 201 ADVANCE), mid-lesson server interruption with checkpoint save, retry WITHOUT advancing the attempt index, resume EXACTLY at the checkpoint (FIFO idempotency-key assertions: P1, retry=same-key, P2-replay)",
             "nonProductionDraft=true / STAGED_PILOT immutable constants; productionRejected() returns true for every non-ENABLED lifecycle",
-            "8 CONTENT dispositions recorded in content-library/derived/source-audit.json (originals untouched) + docs/product/LEARNING_PLAYER_READINESS_N06.md",
+            "8 CONTENT dispositions recorded in content-library/derived/source-audit.json (originals untouched) + docs/notes/LEARNING_PLAYER_READINESS_N06.md",
             ":app wired: LESSON destination with deep link mathlearning://lesson/{stationId}; shell path tap navigates into :feature:lesson and returns to the shell on completion/confirmed exit; gateway+checkpoints flow through AppContainer",
             "gradle :app:compileDebugKotlin :app:testDebugUnitTest :feature:lesson:test = BUILD SUCCESSFUL (56 tests, 0 failures)"
           ]
@@ -1525,7 +1556,7 @@
         "packages/offline-sync/**",
         "content-library/derived/**",
         "content-library/integration/**",
-        "docs/architecture/ANDROID_MODULE_GRAPH.md",
+        "docs/notes/ANDROID_MODULE_GRAPH.md",
         "docs/content/**",
         "docs/product/**",
         "scripts/verify-android-foundation.mjs",
@@ -1664,7 +1695,7 @@
           "evidence": [
             ":core:database and :sync wired into :app via AppContainer (localDatabase + outboxSyncEngine; transport retriable until backend lands - I2)",
             "module graph updated to the N07 16-module graph",
-            "readiness recorded honestly in docs/content/OFFLINE_CMS_AUDIO_READINESS_N07.md (JVM-verified vs NATIVE_PENDING device/connectedCheck/real-backend)",
+            "readiness recorded honestly in docs/notes/OFFLINE_CMS_AUDIO_READINESS_N07.md (JVM-verified vs NATIVE_PENDING device/connectedCheck/real-backend)",
             "offline journey gate = sync journey test evidence above"
           ]
         },
@@ -1727,7 +1758,7 @@
         "supabase/migrations/**",
         "content-library/derived/**",
         "content-library/integration/**",
-        "docs/architecture/**",
+        "docs/notes/**",
         "docs/qa/**",
         "docs/product/**",
         "design/playbook/quality/**",
@@ -1774,7 +1805,8 @@
           "evidence": [
             "apps/android/core/designsystem/src/androidTest/.../ShomaraInteractiveSemanticsTest.kt (10 instrumented tests)",
             "harness/WORKLOG.md M13: TalkBack 15.0.0 real gesture walkthrough — spoken announcements + double-tap activation verified on welcome/phone/tabs/settings/lesson-exit; pid stable, no FATAL",
-            "English TTS engine limitation recorded: pronunciation fidelity of Persian is CONTENT-006 (narrator) domain, not a UI defect"
+            "English TTS engine limitation recorded: pronunciation fidelity of Persian is CONTENT-006 (narrator) domain, not a UI defect",
+            "DT-28 (2026-11-19): AGENTS §6 «in every state there is exactly one clear primary CTA» was prose — nothing in the semantics tree said which action a screen considers primary, so only a reviewer could check it. A Primary-variant ShomaraButton now publishes ShomaraPrimaryCta (a SemanticsPropertyKey<Boolean>) and nothing else does, which makes the rule machine-checkable. Measuring the 29 swept states found a real gap rather than a clean sheet: Home in its Ready state published zero primary actions, because Home's decision is the Current station node on the path rather than a button — that node now declares the flag too. The first run then failed with «StationSheet: 2 primary CTAs», which turned out to be a cross-window comparison: the sheet is a ModalBottomSheet dialog window and TalkBack traps focus inside it, so the rule was corrected to at most one primary per WINDOW (hasAnyAncestor(isDialog())) instead of being dropped. Final measurement: no surface offers competing primaries; the states with zero are informational (Me*, Practice/*, Home Loading/Empty/Offline, ParentHome, OnboardingPlacement) or deliberately Ghost (the locked and offline station sheets). The sweep stays at 29/29 and Home now asserts exactly one."
           ]
         },
         {
@@ -2575,6 +2607,258 @@
             "install smoke test"
           ],
           "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "N11",
+      "title": "Deep Product & Engineering Transformation",
+      "status": "IN_PROGRESS",
+      "branch": "work/shomara-deep-transformation",
+      "goal": "بازنگری و تکمیل محصول SHOMARA از منبع حقیقت محصول/یادگیری تا معماری، persistence، محتوا، design system، Home، lesson، سایر صفحات، QA، cutover و release؛ بدون تغییر main یا branch مبنا و بدون جعل داده، تصمیم مالک یا شواهد.",
+      "allowedPaths": [
+        "apps/android/**",
+        "apps/mobile/**",
+        "apps/web/**",
+        "packages/**",
+        "content-library/authoring/**",
+        "tools/content-pipeline/**",
+        "design/**",
+        "docs/notes/**",
+        "docs/adr/**",
+        "docs/delivery/**",
+        "harness/**",
+        "scripts/**",
+        ".github/workflows/**",
+        "START_HERE.md"
+      ],
+      "gates": [
+        "node tools/harness.mjs validate",
+        "node tools/harness.mjs next",
+        "npm ci",
+        "npm run verify:repository",
+        "npm run verify:static:all",
+        "npx vitest run",
+        "npm run android:gate",
+        "git diff --check"
+      ],
+      "tasks": [
+        {
+          "id": "N11-00",
+          "title": "Repository audit, baseline, branch and decision register",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [],
+          "acceptance": [
+            "audit all product/runtime/architecture/content/design/release evidence from exact P14b SHA",
+            "create isolated work branch and preserve main + source branch",
+            "record KEEP/REVISE/RETIRE/OPEN/SUPERSEDED with source evidence, risks and migration effect",
+            "reconcile START_HERE and machine roadmap with the active transformation branch"
+          ],
+          "evidence": [
+            "work branch created at exact 6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c; source branch and main were not modified",
+            "remote audit covered repository history, Android composition root, Room repositories, learning engine, Home, content pipeline and P15 release report",
+            "decision register created at docs/notes/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md",
+            "local git worktree status and local command exit codes unavailable in this session; CI evidence remains pending"
+          ],
+          "blocker": "Remote source audit is complete, but local worktree/Gradle/device evidence is not available from this execution environment."
+        },
+        {
+          "id": "N11-01",
+          "title": "Product discovery, child learning model and owner decision reconciliation",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N11-00"
+          ],
+          "acceptance": [
+            "map child, parent and content-author journeys and identify source of truth per state",
+            "separate approved product policy from engineering proposals",
+            "record the owner-approved fully-offline/no-server decision and classify Phone/OTP as Phase-2 migration debt; keep O3/O5/O6 unresolved without changing owner decisions",
+            "document curriculum, evaluator and asset evidence gaps"
+          ],
+          "evidence": [
+            "O1/O2/O3/O5/O6/O7 remain OPEN or OPEN-PROPOSED exactly as the Owner Decision Register records",
+            "ADR-0039 is accepted by owner (2026-11-05): no server, bundled local package + local evaluator, no Phone/OTP in final product; remove OTP/token/session in Phase 2 after O5. O3 gateway shape and O5 single-vs-multi local profile remain OPEN.",
+            "content pipeline baseline: 25 stations, ST07 draft/pilot, 24 NOT_AUTHORED, 53 missing audio binaries, 36 missing image tokens, zero registered real assets; human review/rights not evidenced"
+          ],
+          "blocker": "O1/O2/O3/O5/O6/O7 owner decisions and external authored/reviewed/licensed curriculum/media remain; offline-only product policy itself is already approved by ADR-0039."
+        },
+        {
+          "id": "N11-02",
+          "title": "Architecture, composition root, persistence and lifecycle correctness",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N11-01"
+          ],
+          "acceptance": [
+            "make lesson session + attempt persistence atomic and retry-safe under concurrent duplicate keys",
+            "wire real repositories through the app composition root; remove silent null wiring for required dependencies",
+            "introduce a real identity-backed Home progress read model only after profile/identity policy is approved",
+            "run Room Robolectric, unit, lint and Android compile gates; update evidence with actual exit codes"
+          ],
+          "evidence": [
+            "Room attempt DAO now uses INSERT OR IGNORE; repository now writes session and attempt in one transaction with key ownership validation",
+            "container.lessonRecords now flows MainActivity -> ShomaraApp -> LessonHost; required root dependency replaces nullable default",
+            "Home placeholder summary/zero counter and redundant Continue CTA removed because no verified child identity is wired; path graph and Station Start Sheet retained",
+            "GitHub Android Native workflow run 44158203235: environment READY (JDK 17, Android compile SDK 37); `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon` exit code 0.",
+            "Home progress now defaults to unresolved; only an explicit resolved snapshot or emptyResolved() may render Fresh. Root deep links and the station sheet wait for resolution. Practice also remains Loading.",
+            "Android Native run 44188354588 on 8ebfa084ec32b4a3d8fb8333427c1aa140797e34: JDK 17 + SDK 37 READY; Gradle command including test, lint, app compile and Android-test-source compile exited 0; BUILD SUCCESSFUL. The artifact did not publish a test count.",
+            "Latest verified Android Native run 44191580216 on branch head 7dd835a80f0cde920b34f24a6b06932f5d6942b9: preflight PASS (JDK 17, Android SDK 37); `./gradlew test lint :app:compileDebugKotlin :app:compileDebugAndroidTestKotlin --stacktrace --no-daemon` exitCode 0; gate report status PASS, 822 actionable tasks (533 executed, 289 cached). No APK generated and no on-device tests run.",
+            "Home path is unresolved by default; only a resolved local-child snapshot or explicit emptyResolved() can present Fresh. Home/Practice stay in Loading while O5 identity/progress wiring is absent; deep-link and station-sheet presentation is deferred."
+          ],
+          "blocker": "O5 remains OPEN. Local child identity and Room progress are not wired; however the path defaults to unresolved and remains Loading rather than falsely marking ST01 Fresh. No profile schema is added before the owner decision."
+        },
+        {
+          "id": "N11-03",
+          "title": "Content engineering, evaluator/package and curriculum production",
+          "status": "BLOCKED",
+          "dependsOn": [
+            "N11-02"
+          ],
+          "acceptance": [
+            "finalize O1/O2 only with owner approval and document the evaluator/package threat model",
+            "transcribe and validate every station using the authored content contracts and immutable source originals",
+            "deliver real audio/images with provenance, rights and human review evidence",
+            "promote content only through the seven-step promotion lifecycle"
+          ],
+          "blocker": "O1/O2 remain owner decisions; 24 stations are not authored; ST07 media, human review and rights evidence are missing. Fully-offline/no-server product policy is already approved by ADR-0039 and is not a blocker."
+        },
+        {
+          "id": "N11-04",
+          "title": "Design system and shared interaction foundation",
+          "status": "DONE_WITH_BLOCKER",
+          "dependsOn": [
+            "N11-02"
+          ],
+          "acceptance": [
+            "reconcile canonical tokens/codegen/Compose components and retire duplicate overrides only after consumer proof",
+            "complete accessibility and responsive specs for typography, colors, motion, touch targets and RTL",
+            "run canonical design-system and generated-drift gates"
+          ],
+          "evidence": [
+            "Design-system baseline reviewed: canonical tokens remain packages/design-system/src/tokens.json.",
+            "Read docs/DESIGN_RULES.md § design system/SKILL.md, design/MASTER.md, design/INSPIRATION_GUARDRAILS.md, COMPONENT_READINESS.md and NATIVE_IMPLEMENTATION.md. No token/component implementation is claimed yet.",
+            "Base token, typography, primitive and accessibility work is independent of authoring the remaining curriculum; content-specific manipulatives remain gated by approved content.",
+            "Canonical Clay resolver and state-dependent Card/Button border changes are implemented with regression tests. Core CI and static-core passed on 8ebfa084; token-codegen --check, Harness validate/next, typecheck and Vitest passed.",
+            "Android Native run 44188354588 passed Gradle test, lint, :app:compileDebugKotlin and :app:compileDebugAndroidTestKotlin with exit code 0. Visual screenshot/TalkBack/device validation is still pending.",
+            "Android Native run 44191580216 on branch head 7dd835a passed Gradle test, lint, app compile and :app:compileDebugAndroidTestKotlin (exit 0). Four Compose test files emit deprecated createComposeRule warnings; tests compile, but no device/instrumentation execution was performed.",
+            "On branch head 7dd835a, CI core PASS (build packages, typecheck:all, Vitest), static-core PASS (Harness validate/next, token-codegen --check, verify:static:core). visual-and-static remains fail solely at parity: 7/29; verify:static:all reports 93/94."
+          ],
+          "blocker": "NATIVE_PENDING: screenshot catalog 360/390/412dp + 200% font, Compose semantics/TalkBack, Persian IME and real-device review. Approved Vazirmatn TTF still requires owner supply. Visual parity baseline retains 7 failing specimens; do not change golden/tolerance without a deliberate, reviewed design decision."
+        },
+        {
+          "id": "N11-05",
+          "title": "Home and learning path — identity-backed, single-action experience",
+          "status": "IN_PROGRESS",
+          "dependsOn": [
+            "N11-04"
+          ],
+          "acceptance": [
+            "build one immutable UiState and ViewModel/UseCase/Repository read path backed by approved local identity and verified progress",
+            "preserve path graph as primary journey; define exactly one primary action per state",
+            "restore summary/continue UI only when it represents real distinct data/action",
+            "test loading/empty/offline/error/current/locked/completed/resume plus RTL, TalkBack and 200% font"
+          ],
+          "evidence": [
+            "Removed Home hardcoded grade/chapter, false zero-progress count and duplicate Continue CTA; winding path and Station Start Sheet remain primary.",
+            "Progress is unresolved by default; only a resolved local child snapshot can show Fresh/Current/Locked. Deep links and Station Start Sheet wait until resolution.",
+            "Practice tab shows Loading until progress resolves rather than marking every activity Locked. Compose tests cover unresolved practice and deferred deep links.",
+            "No identity-backed ViewModel/UseCase/Room progress pipeline exists yet because O5 is OPEN and no child_profiles table is approved.",
+            "Practice parity issue fixed in apps/mobile/src/practice/views/PracticeView.tsx: duplicate trailing lock removed while badge lock retained. Current run 44191579879 reports Practice PASS at 0.4683% (1388/296400), compared with 0.5040% before fix.",
+            "Compact replay button source updated at 7dd835a: compact label is single-line and does not shrink. Actual/golden now both visually render one line; parity remains 0.7994% (88/11008) vs max 0.5%, concentrated on text/icon pixels, so not marked PASS.",
+            "Current parity failures on 7dd835a: phone 0.5052%, button-amber 0.3246% (max 0.15), guide-07 0.9209% (max 0.15), chip-06 2.6282% (max 0.15), chip-icon-clock-06 0.6655%, button-replay-07 0.7994%, profile 0.5402%. `practice` passes. No golden or maxDiffPercent changed.",
+            "Historical main CI runs 40687075654 (2026-10-28) and 43088599553 (2026-11-11) both reported total parity FAIL (8/29); current branch is 7/29. Historical logs explicitly showed Practice at the 0.50% boundary; the individual identities of all historical failures are not fully preserved in the logs, so no claim is made that all six other current failures are identical.",
+            "Active Home shell header now has 24dp horizontal inset + 12dp vertical spacing and heading semantics; Path Graph heading/mascot can be disabled by the shell to avoid duplicate title/character while preserving remaining count and next-step summary.",
+            "Consumer proof over 38 Native app/path Kotlin source/test files found the separate ShomaraHomePathScreen and ShomaraHomeUiState had no external consumers. Retired both, removed unused Progress/Continue/NodeLabel cards and pruned local Home aliases; retained only ShomaraHomeHeader used by active shell. Deletions recorded in harness/file-ledger.json.",
+            "Added Compose instrumentation assertion that active Home renders exactly one 'مسیر یادگیری' heading and retains the remaining-stations summary. Android/CI gate for this latest cleanup is pending.",
+            "Path state precedence: ShomaraPathGraphLogic.resolveEntryState preserves explicit Error/Empty, keeps Loading explicit, and prevents Offline or null caller state from exposing a list while progress is unresolved. Resolved Offline remains a real offline path. Added four matrix assertions in ShomaraPathGraphTest; 33/33 path graph tests PASS.",
+            "Android Native run 44308240426 on SHA bc9c1b8 PASS: JDK17/Android SDK37; 81 XML suites / 583 tests / 0 failures / 0 errors / 0 skipped; lint, :app:compileDebugKotlin and :app:compileDebugAndroidTestKotlin all successful. Profile suites: ParentPinManagerTest 7/7, PrivacyAndDiagnosticsTest 6/6.",
+            "ADR-0047 as-built corrected: current tree has ParentPinManager interface + in-memory test store only; no durable PinStore, LocalProfileManager/ProfileSlotStore or ParentGate verifier wiring. Active ParentGate remains verifier=null (fail-closed). PrivacyDataController is generic injected stores/dirs with tests, not app-composed. No in-app parent erasure feature is claimed.",
+            "ParentPinManager hardening covers input/derived buffer clearing, malformed-record fail-closed, record validity and real persisted lockout reset assertions. 210k PBKDF2-HMAC-SHA256 is now explicitly labeled legacy v1 only; current OWASP prefers Argon2id and lists PBKDF2-HMAC-SHA256 600k when FIPS is required. KDF decision/target-device benchmark/versioned migration remain open before wiring.",
+            "PrivacyDataController now treats a failed recursive directory delete that leaves the directory present as a failure; the wipe continues and test proves the residual directory is not counted as cleared.",
+            "Latest Path resolver tests passed in Android run 44308240426. Newer documentation-only commits are running a separate CI gate; no code change followed the tested SHA except the Path precedence implementation already included in bc9c1b8.",
+            "Stage-3 handoff ZIP was opened with SHA-256 22dc8a8f0be3de1e47f4db8ebab5f2a230af7d3a54b17e088d018bbf1c04c3ee; 114/114 internal checksums passed. Only shomara_garden_path_footer.webp was newly installed; existing handoff vectors were already byte-identical and preview mockups were not used as runtime evidence.",
+            "Native Home is now composed by stateless ShomaraHomeScreen/ShomaraHomeUiState and ShomaraHomeAction, wired by ShomaraChildShellHost. ShomaraPathGraph was split into state/geometry, chapter and node files without replacing the graph geometry or Station Start Sheet ownership.",
+            "Current Home evidence: ShomaraPathGraphTest 36/36; instrumented ShomaraHomeScreenTest 4/4 on Pixel_6a emulator (360/390/412dp, Persian RTL, 100/200% font, semantics and 48dp assertions); ShomaraStationSheetTest 7/7. Nine real instrumented Compose PNGs were pulled to build-reports/android/home-screenshots-stage3/compose-evidence.",
+            "Local gates after implementation: npm run android:gate PASS (exit 0; 81 XML suites / 586 JVM tests / 0 failures/errors/skips; lint and both app Kotlin compiles); verify:static:all PASS 94/94; design governance PASS; repository harness PASS with local Node 24.22.1 vs pinned 22.22.0 warning; token codegen check and native design guard PASS.",
+            "DT-13 Home/Path rebuild: the orientation strip (chapter, next step, real remaining count, progress bar) is pinned ABOVE the LazyColumn instead of being the first list row, so a returning child who opens on a mid-path Current station now sees both the actionable station and its full orientation. Instrumented regression test orientationStripStaysPinnedAboveTheListOnAMidPathStation renders ST07 as Current and proves the strip is still displayed after scrolling to ST25.",
+            "List index model now counts only path rows: chapterBandIndexForChapter gives chapter 1 band index 0 with stride STATIONS_PER_CHAPTER + 2, headerItemIndexForChapter is removed, and the geometry tests were re-aligned (PathGraphTest 40/40).",
+            "Semantics and depth: the orientation progress bar exposes only progressBarRangeInfo while the visible remaining-count line owns the wording, so TalkBack no longer announces the same sentence twice. depthFor(state) was migrated from the retired PathKit contract into the real renderer (Current = Featured only, Locked = Flat, rest = Soft) and is unit-tested together with label text contrast >= 4.5:1 on both canvases and face-mark contrast >= 3:1 for 5 states x 5 chapters.",
+            "Consumer-proven deletion in DT-13: 25 drawables with zero Kotlin/XML references (13,848 bytes), PathKit.kt (a parallel path renderer whose emoji marks and amber Current node contradicted the shipped violet focal node), DesignSystemGalleryActivity.kt (absent from every manifest with zero consumers, so its documented adb launch could never work) and LessonAttemptRecorder.kt (zero consumers); Previews.kt moved from the main to the debug source set; ShomaraJumpTest.kt renamed to ShomaraJumpAssessment.kt with its test file. Everything is recoverable from Git history.",
+            "ShomaraStateSurface gained applySystemInsets (default true): shell tabs that already sit inside a Scaffold pass false, removing double status/navigation padding on the Practice loading state. The Current-station anchor bubble is now derived from real progress (currentBubbleLabel) so a mid-path station is never labelled as a start.",
+            "Current evidence after DT-13: npm run android:gate exit 0 (81 XML suites / 588 JVM tests / 0 failures/errors/skips; lint and both app Kotlin compiles); ShomaraPathGraphTest 40/40; ClayContractTest 3/3; instrumented ShomaraHomeScreenTest 5/5 and ShomaraStationSheetTest 7/7 on Pixel_6a; 10 real instrumented Compose PNGs in build-reports/android/home-screenshots-stage4/compose-evidence; verify:static:all 94/94 plus design governance, design pack and repository harness all exit 0.",
+            "DT-22 (2026-11-19): Home is now measured in five states (current plus Loading, Offline, Error, Empty) instead of one, and every state case first asserts that state really rendered (its canonical copy is on screen) so an ignored input can never pass. That guard found a real defect: Home has two channels for \"we are offline\" - progress.offline and entryState = Offline - but the banner was wired only to the first, so a caller that just knew the network was down left the child on a normal-looking path with no notice (the path graph itself treats Offline as a no-op). The banner condition now honours either signal, with the same canonical string and no invented copy, and two separate tests cover each channel. ShomaraA11ySweepTest 15/15 on Pixel_6a; android:gate exit 0 with 591 JVM tests.",
+            "DT-26 (2026-11-19): audit correction worth recording - the launch recovery copy was already canonical (ShomaraLaunchRecoveryCopy, documented as \"pure so it is unit-testable\"), and the mechanical inline-literal counter was counting it as inline. Instead of a pointless move, its ten strings were lifted to named constants so the app first screen can be reviewed as one list and asserted from a test."
+          ],
+          "blocker": "O5 remains OPEN; no durable local active-child identity/progress projection exists. Parent PIN has no durable PinStore and ParentGate remains fail-closed; PrivacyDataController has no production store/directory adapters or in-app deletion flow. KDF selection requires target-device benchmark and versioned migration. Home/Practice stay unresolved until owner-approved local identity is wired. TalkBack gesture walkthrough, physical-device review, device deep-link execution and 7/29 Linux web parity failures remain open; no golden/threshold weakened."
+        },
+        {
+          "id": "N11-06",
+          "title": "Lesson player — authoritative evaluator and complete learning loop",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-05"
+          ],
+          "acceptance": [
+            "converge duplicate guided and core evaluator paths after O1/O2 approval",
+            "wire P1-P5 state, session checkpoint/resume, attempt recording, feedback and result through immutable UI state",
+            "never infer correctness, mastery or Station Pass in Compose and never persist/expose answer keys",
+            "test all enabled interaction templates using real approved package content"
+          ]
+        },
+        {
+          "id": "N11-07",
+          "title": "Remaining child, parent, settings and system surfaces",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-06"
+          ],
+          "acceptance": [
+            "complete all registered child/parent/settings routes against the route and state contracts",
+            "wire Parent PIN and privacy deletion using real persisted dependencies without weakening fail-closed behavior",
+            "complete empty/loading/offline/error/back/resume/process-death and accessibility coverage"
+          ]
+        },
+        {
+          "id": "N11-08",
+          "title": "Integrated UX, accessibility, regression and real-device QA",
+          "status": "TODO",
+          "dependsOn": [
+            "N11-07"
+          ],
+          "acceptance": [
+            "run all child/parent journeys and regression suite on 360/390/412dp and 200% font",
+            "verify TalkBack, RTL, keyboard/IME, reduced motion, process death, persistence and offline cold start",
+            "capture real emulator/physical-device screenshots and traces with APK/SHA/device metadata",
+            "update screen ledger and worklog with actual evidence and unresolved blockers"
+          ]
+        },
+        {
+          "id": "N11-09",
+          "title": "Legacy cleanup and route-by-route native cutover",
+          "status": "DEFERRED",
+          "dependsOn": [
+            "N11-08"
+          ],
+          "acceptance": [
+            "prove feature parity and real consumer absence for each legacy route before retirement",
+            "archive superseded documentation/assets safely and preserve protected source originals",
+            "remove V1/Expo and obsolete verifiers only after migration evidence and rollback path exist"
+          ]
+        },
+        {
+          "id": "N11-10",
+          "title": "Security, privacy, performance and release readiness",
+          "status": "BLOCKED",
+          "dependsOn": [
+            "N11-09"
+          ],
+          "acceptance": [
+            "complete privacy/data-safety review, dependency/security checks and real device performance budget",
+            "produce approved content package and verified signing setup outside source control",
+            "pass release compile, signed artifact verification, target API and store declarations",
+            "owner reviews and approves final release gate; no release publication without HG-05"
+          ],
+          "blocker": "Upstream phases, approved content, O1/O2/O5 and owner HG-05, signed external keystore, physical-device benchmark and TalkBack evidence are not complete."
         }
       ]
     }

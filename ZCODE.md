@@ -28,19 +28,19 @@ npm run android:doctor
 npm run android:gate
 ```
 
-`BLOCKED_ENV` را با static PASS جایگزین نکن. قرارداد محیط در `docs/architecture/ANDROID_BUILD_ENVIRONMENT.md` است.
+`BLOCKED_ENV` را با static PASS جایگزین نکن. قرارداد محیط در `docs/notes/ANDROID_BUILD_ENVIRONMENT.md` است.
 
-برای ادامه از چت جدید، ابتدا `docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md` را بخوان. قرارداد نهایی ۱۷ خانواده صفحه در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و صف اجرای ۲۰ work item در `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` است. تا سبزشدن واقعی `N02-07` هیچ ردیف `NATIVE_PENDING` را به IMPLEMENTED/TESTED تغییر نده و N03 را شروع نکن.
+برای ادامه از چت جدید، ابتدا `docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md` را بخوان. قرارداد نهایی ۱۷ خانواده صفحه در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و صف اجرای ۲۰ work item در `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` است. تا سبزشدن واقعی `N02-07` هیچ ردیف `NATIVE_PENDING` را به IMPLEMENTED/TESTED تغییر نده و N03 را شروع نکن.
 
 ## routing مهارت‌ها
 
 | نوع کار | Skill اجباری |
 |---|---|
-| SDK، Gradle، CI، build و APK | `skills/shomara-android-build/SKILL.md` |
-| hierarchy، journey و UX صفحه | `skills/shomara-product-design/SKILL.md` |
-| token، theme، component و Clay | `skills/shomara-design-system/SKILL.md` |
-| پیاده‌سازی و evidence یک route | `skills/shomara-screen-execution/SKILL.md` |
-| curriculum، audio، CMS و authoring | `skills/shomara-learning-content/SKILL.md` |
+| SDK، Gradle، CI، build و APK | `docs/DESIGN_RULES.md § build/SKILL.md` |
+| hierarchy، journey و UX صفحه | `docs/DESIGN_RULES.md § product design/SKILL.md` |
+| token، theme، component و Clay | `docs/DESIGN_RULES.md § design system/SKILL.md` |
+| پیاده‌سازی و evidence یک route | `docs/DESIGN_RULES.md § screen execution/SKILL.md` |
+| curriculum، audio، CMS و authoring | `docs/DESIGN_RULES.md § content/SKILL.md` |
 
 برای UI، `design/INSPIRATION_GUARDRAILS.md` را پیش از انتخاب style بخوان. هیچ Skill مجاز نیست dependency graph یا gate فعال را دور بزند.
 

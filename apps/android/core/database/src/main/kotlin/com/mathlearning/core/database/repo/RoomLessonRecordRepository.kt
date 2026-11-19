@@ -13,11 +13,49 @@ class RoomLessonRecordRepository(private val db: ShomaraLearningDatabase) : Less
     private val attemptDao = db.lessonAttemptDao()
 
     /**
-     * Session upsert-if-absent + attempt insert in ONE transaction (owner P6 mission).
-     * Idempotent by attemptKey: a replayed key inserts nothing and returns false.
+     * Session upsert-if-absent + attempt insert in ONE transaction.
+     * Idempotent by attemptKey: a replayed key is a no-op and returns false.
      */
     override suspend fun recordAttempt(session: LessonSessionRecord, attempt: RecordedAttempt): Boolean {
-        val alreadyRecorded = db.withTransaction {
+        require(session.sessionId == attempt.sessionId) {
+            "attempt sessionId must match the session being recorded"
+        }
+
+        return db.withTransaction {
+            val existing = attemptDao.byAttemptKey(attempt.attemptKey)
+            if (existing != null) {
+                check(existing.sessionId == attempt.sessionId) {
+                    "attemptKey is already owned by a different lesson session"
+                }
+                return@withTransaction false
+            }
+
+            val insertedId = attemptDao.insert(
+                LessonAttemptEntity(
+                    sessionId = attempt.sessionId,
+                    encounterId = attempt.encounterId,
+                    stage = attempt.stage,
+                    attemptKey = attempt.attemptKey,
+                    interactionId = attempt.interactionId,
+                    outcome = attempt.outcome,
+                    evaluatorVersion = attempt.evaluatorVersion,
+                    recordedAtMs = attempt.recordedAtMs,
+                ),
+            )
+
+            // INSERT OR IGNORE is the final guard if another writer won the unique-key race
+            // between the read and insert. Re-read and validate ownership before treating it
+            // as an idempotent replay.
+            if (insertedId == -1L) {
+                val raced = checkNotNull(attemptDao.byAttemptKey(attempt.attemptKey)) {
+                    "attempt insert was ignored without a matching idempotency row"
+                }
+                check(raced.sessionId == attempt.sessionId) {
+                    "attemptKey is already owned by a different lesson session"
+                }
+                return@withTransaction false
+            }
+
             if (sessionDao.byId(session.sessionId) == null) {
                 sessionDao.upsert(
                     LessonSessionEntity(
@@ -34,24 +72,8 @@ class RoomLessonRecordRepository(private val db: ShomaraLearningDatabase) : Less
             } else {
                 sessionDao.setLifecycle(session.sessionId, session.lifecycle, session.updatedAtMs)
             }
-            attemptDao.byAttemptKey(attempt.attemptKey) != null
+            true
         }
-        if (alreadyRecorded) return false
-        db.withTransaction {
-            attemptDao.insert(
-                LessonAttemptEntity(
-                    sessionId = attempt.sessionId,
-                    encounterId = attempt.encounterId,
-                    stage = attempt.stage,
-                    attemptKey = attempt.attemptKey,
-                    interactionId = attempt.interactionId,
-                    outcome = attempt.outcome,
-                    evaluatorVersion = attempt.evaluatorVersion,
-                    recordedAtMs = attempt.recordedAtMs,
-                ),
-            )
-        }
-        return true
     }
 
     override suspend fun session(sessionId: String): LessonSessionRecord? = sessionDao.byId(sessionId)?.toDomain()

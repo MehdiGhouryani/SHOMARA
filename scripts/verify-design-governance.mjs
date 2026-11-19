@@ -10,7 +10,7 @@ const read = (relative) => {
   return fs.readFileSync(file, 'utf8');
 };
 
-const guardrails = read('design/INSPIRATION_GUARDRAILS.md');
+const guardrails = read('docs/DESIGN_RULES.md');
 for (const source of ['Duolingo', 'AVA', 'UI/UX Pro Max', 'Claymorphism']) {
   assert.ok(guardrails.includes(source), `inspiration policy missing ${source}`);
 }
@@ -20,7 +20,7 @@ for (const rule of ['adopt / adapt / reject', 'design dials', 'anti-pattern', 'R
 assert.ok(guardrails.includes('منبع حقیقت بصری'), 'canonical precedence must be explicit');
 assert.ok(guardrails.includes('dependency'), 'external dependency boundary must be explicit');
 
-const readiness = read('design/playbook/COMPONENT_READINESS.md');
+const readiness = read('docs/DESIGN_RULES.md');
 for (const family of [
   'Button', 'TextField/OTP', 'Card/Choice', 'Feedback', 'Progress',
   'TopBar/TabBar', 'Dialog/Sheet', 'AudioControl', 'Manipulative',
@@ -35,11 +35,11 @@ for (const tier of ['flat', 'hint', 'soft', 'featured']) {
 }
 assert.ok(readiness.includes('NATIVE_PENDING'), 'Native evidence boundary is missing');
 
-const master = read('design/MASTER.md');
+const master = read('docs/DESIGN_RULES.md');
 assert.ok(master.includes('design/INSPIRATION_GUARDRAILS.md'), 'design master must route inspiration decisions');
 assert.ok(master.includes('design/playbook/COMPONENT_READINESS.md'), 'design master must route component readiness');
 
-const blueprint = read('design/playbook/PAGE_UIUX_BLUEPRINT.md');
+const blueprint = read('docs/DESIGN_RULES.md');
 for (let id = 1; id <= 17; id += 1) {
   const pageId = String(id).padStart(2, '0');
   assert.ok(blueprint.includes(`| ${pageId} |`), `page UI/UX blueprint missing family ${pageId}`);
@@ -54,13 +54,100 @@ assert.equal(backlogRows.length, 21, 'Native implementation backlog must contain
 for (const id of ['UI-001', 'UI-020']) {
   assert.ok(backlog.includes(id), `Native implementation backlog missing ${id}`);
 }
-assert.ok(backlogRows.slice(1).every((row) => row.includes('NATIVE_PENDING')), 'unimplemented UI backlog rows must remain NATIVE_PENDING');
+// DT-59: two rows describe surfaces the owner removed on purpose (the guardian area, ADR-0050, and the avatar
+// workshop, ADR-0051). They stay as rows so the work id sequence and the count stay stable, but they must be marked
+// retired rather than pretending to be pending native work. The retired set is pinned, so it cannot quietly grow:
+// retiring more UI work requires editing this list on purpose, not editing a cell.
+const RETIRED_BY_DECISION = new Map([
+  ['UI-016', 'RETIRED_AVATAR_REMOVED'],
+  ['UI-018', 'RETIRED_GUARDIAN_REMOVED'],
+]);
+assert.ok(
+  backlogRows.slice(1).every(
+    (row) => row.includes('NATIVE_PENDING') || [...RETIRED_BY_DECISION.values()].some((status) => row.includes(status)),
+  ),
+  'unimplemented UI backlog rows must remain NATIVE_PENDING (only ADR-0050/ADR-0051 surfaces may be retired)',
+);
 
-const routeRegistry = read('design/playbook/ROUTE_REGISTRY.md');
+
+// DT-59: two rows describe surfaces the owner removed on purpose (the guardian area, ADR-0050, and the avatar
+// workshop, ADR-0051). They stay as rows so the work id sequence and the count stay stable, but they must be marked
+// retired rather than pretending to be pending native work. The retired set is pinned, so it cannot quietly grow:
+// retiring more UI work requires editing this list on purpose, not editing a cell.
+const dataRows = backlogRows.slice(1).map((row) => row.split(','));
+const STATUS_COLUMN = 7;
+const MODULE_COLUMN = 4;
+const STATES_COLUMN = 6;
+for (const row of dataRows) {
+  const id = row[0];
+  if (!RETIRED_BY_DECISION.has(id)) continue;
+  assert.equal(
+    row[STATUS_COLUMN],
+    RETIRED_BY_DECISION.get(id),
+    `${id} must stay marked as retired by its ADR, not as pending work`,
+  );
+}
+const retiredSeen = dataRows
+  .filter((row) => (row[STATUS_COLUMN] ?? '').startsWith('RETIRED_'))
+  .map((row) => row[0]);
+assert.deepEqual(
+  retiredSeen.sort(),
+  [...RETIRED_BY_DECISION.keys()].sort(),
+  'only the surfaces removed by ADR-0050/ADR-0051 may be retired in the backlog',
+);
+
+// DT-59: the backlog used to name ten modules that do not exist (feature:auth, feature:placement,
+// feature:child-shell, feature:learning-player x6, feature:guardian). A planning document that resolves to no code
+// is worse than no document: it makes an unimplemented surface look scheduled. Every named module must exist.
+const moduleExists = (moduleId) => {
+  const segments = moduleId.split(':');
+  const file = segments.length === 1
+    ? `apps/android/${segments[0]}/build.gradle.kts`
+    : `apps/android/${segments[0]}/${segments[1]}/build.gradle.kts`;
+  return fs.existsSync(path.join(root, file));
+};
+for (const row of dataRows) {
+  const moduleId = row[MODULE_COLUMN];
+  // A retired row is a historical record: its module may legitimately be gone (feature:guardian was deleted with
+  // the guardian surface itself). Live rows must resolve to a module that exists today.
+  if (RETIRED_BY_DECISION.has(row[0])) continue;
+  assert.ok(
+    moduleExists(moduleId),
+    `backlog names module "${moduleId}" but it has no build.gradle.kts under apps/android`,
+  );
+}
+
+// DT-65: the backlog listed `permission` as a required cross-route state while the app declares ZERO permissions and
+// uses no permission-gated capability (no camera, recorder, storage, notifications or activity-result contracts).
+// A required state nobody can ever reach is not a plan, it is a chore that looks like progress - and building it
+// would have shipped a screen with no way in.
+//
+// The rule here is two-directional, so the plan can never drift from the manifest in either direction:
+//   - if the manifest declares any permission, the backlog MUST list `permission` among the system states;
+//   - if it declares none, the backlog MUST NOT, because that is either dead UI or an unrecorded capability.
+const manifest = read('apps/android/app/src/main/AndroidManifest.xml');
+const declaresPermission = /<uses-permission\b/.test(manifest);
+const permissionRow = dataRows.find((row) => row[0] === 'UI-019');
+assert.ok(permissionRow, 'backlog lost the UI-019 system-states row');
+const listsPermission = /permission/.test(permissionRow[STATES_COLUMN]);
+if (declaresPermission) {
+  assert.ok(
+    listsPermission,
+    'the manifest declares a permission, so UI-019 must require a `permission` state again',
+  );
+} else {
+  assert.ok(
+    !listsPermission,
+    'UI-019 requires a `permission` state but the manifest declares no permission: dead state, or a capability ' +
+      'that was added without updating the plan',
+  );
+}
+
+const routeRegistry = read('docs/DESIGN_RULES.md');
 assert.ok(routeRegistry.includes('PAGE_UIUX_BLUEPRINT.md'), 'route registry must route the page UI/UX blueprint');
 assert.ok(routeRegistry.includes('NATIVE_IMPLEMENTATION_BACKLOG.csv'), 'route registry must route the Native implementation backlog');
 
-const designSkill = read('skills/shomara-design-system/SKILL.md');
+const designSkill = read('docs/DESIGN_RULES.md');
 for (const route of [
   'design/INSPIRATION_GUARDRAILS.md',
   'design/playbook/COMPONENT_READINESS.md',
@@ -69,9 +156,9 @@ for (const route of [
   assert.ok(designSkill.includes(route), `design-system skill missing route: ${route}`);
 }
 
-const productSkill = read('skills/shomara-product-design/SKILL.md');
-const screenSkill = read('skills/shomara-screen-execution/SKILL.md');
-assert.ok(productSkill.includes('skills/shomara-design-system/SKILL.md'), 'product-design skill must route shared UI work');
-assert.ok(screenSkill.includes('skills/shomara-design-system/SKILL.md'), 'screen-execution skill must route shared UI work');
+const productSkill = read('docs/DESIGN_RULES.md');
+const screenSkill = read('docs/DESIGN_RULES.md');
+assert.ok(productSkill.includes('docs/DESIGN_RULES.md § design system/SKILL.md'), 'product-design skill must route shared UI work');
+assert.ok(screenSkill.includes('docs/DESIGN_RULES.md § design system/SKILL.md'), 'screen-execution skill must route shared UI work');
 
 console.log('DESIGN_GOVERNANCE: PASS (17 page families, 20 Native UI work items, 4 inspiration sources, 9 component families, 4 Clay depth tiers)');

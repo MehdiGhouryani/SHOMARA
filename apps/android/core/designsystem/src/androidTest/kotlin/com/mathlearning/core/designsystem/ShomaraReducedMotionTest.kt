@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -92,9 +93,18 @@ class ShomaraReducedMotionTest {
             config.contains(androidx.compose.ui.semantics.SemanticsProperties.StateDescription),
         )
         stateDescription.value = config[androidx.compose.ui.semantics.SemanticsProperties.StateDescription]
+        // ADR-0040: the announcement is the deterministic word band for this fraction — never a
+        // percentage or a score, because the child is the one hearing it. Pinning the real string
+        // is stricter than looking for one word and catches a drift to numbers.
+        assertEquals(
+            ShomaraProgressLogic.announcementFor(ShomaraProgressState(fraction = 0.4f)),
+            stateDescription.value,
+        )
         assertTrue(
-            "announcement should mention progress, got '${stateDescription.value}'",
-            stateDescription.value.contains("پیشرفت"),
+            "announcement must stay word-based, got '${stateDescription.value}'",
+            stateDescription.value.isNotEmpty() &&
+                stateDescription.value.none { it in '0'..'9' } &&
+                !stateDescription.value.contains("%"),
         )
     }
 

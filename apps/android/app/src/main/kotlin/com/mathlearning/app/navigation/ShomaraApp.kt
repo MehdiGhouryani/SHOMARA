@@ -65,11 +65,25 @@ fun ShomaraApp(
     settingsStore: ShomaraSettingsStore,
     simulatedAuth: Boolean = false,
     backendConfigured: Boolean = false,
-    // P14: the durable attempt recorder (debug wiring; release passes null — fail-closed).
-    lessonRecordRepository: com.mathlearning.core.model.repository.LessonRecordRepository? = null,
+    // P14/P6: the real Room-backed attempt recorder is required at the composition root.
+    // Release still ships no draft lesson content/evaluator; debug preview taps use the same durable boundary.
+    lessonRecordRepository: com.mathlearning.core.model.repository.LessonRecordRepository,
 ) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
+    // DT-76/77 (O5 first step, honest): a saved complete profile IS the local learner. Reading it
+    // resolves the shell's progress snapshot to the truth of a fresh child — an empty completed
+    // set with no current station — so the path renders real Fresh/Locked states instead of the
+    // permanent Loading an unresolved snapshot produced. The same read hands the Me tab the
+    // child's real name, so the identity card is the saved learner, not a null guess.
+    // Real cross-session progress (Room projection) stays open under O5.
+    var learnerProfilePresent by rememberSaveable { mutableStateOf(false) }
+    var learnerName by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(profileDraftStore) {
+        val draft = profileDraftStore.read()
+        learnerProfilePresent = !draft?.name.isNullOrBlank()
+        learnerName = draft?.name
+    }
     // R-05/R-08 — lesson-entry handshake with the shell. The flags are rememberSaveable so a
     // process death mid-lesson restores the same entry mode (the child already passed the
     // sheet); they are cleared on exit to the shell, never while the lesson is live.
@@ -115,9 +129,6 @@ fun ShomaraApp(
             ShomaraOnboardingHost(
                 session = authSession,
                 draftStore = profileDraftStore,
-                // The profile avatar must land in the settings store (the single source
-                // the Me tab and the Settings screen read), not only in the draft store.
-                settingsStore = settingsStore,
                 simulatedAuth = simulatedAuth,
                 onStepRoute = { stepRoute ->
                     // P0 FIX: this used to call navController.navigate(stepRoute) for every
@@ -185,6 +196,17 @@ fun ShomaraApp(
             route = AppDestination.SHELL.route,
             deepLinks = listOf(navDeepLink { uriPattern = AppDestination.SHELL.deepLink }),
         ) {
+            // DT-78 (first-run O5 read race): the root read above runs at process start, when a
+            // fresh install holds no draft yet — so a child completing onboarding IN THE SAME
+            // process composed the shell with the stale `false` and Home stayed in Loading
+            // until process death. Re-reading at shell entry closes the gap: the shell is
+            // always composed with the draft's current truth, whether the process is fresh or
+            // long-lived. (Real cross-session progress projection stays open under O5.)
+            LaunchedEffect(profileDraftStore) {
+                val draft = profileDraftStore.read()
+                learnerProfilePresent = !draft?.name.isNullOrBlank()
+                learnerName = draft?.name
+            }
             ShomaraChildShell(
                 onSignOut = {
                     // A sign-out clears the verified credential, then re-enters the launch gate so
@@ -216,6 +238,16 @@ fun ShomaraApp(
                 lessonGateway = lessonGateway,
                 lessonCheckpoints = lessonCheckpoints,
                 settingsStore = settingsStore,
+                // DT-76: a saved learner profile resolves the snapshot to the honest fresh-child
+                // truth (empty progress, no current station). Without a profile the shell keeps
+                // the unresolved Loading — never a fabricated Fresh.
+                pathProgress = if (learnerProfilePresent) {
+                    com.mathlearning.feature.path.ShomaraPathProgress.emptyResolved()
+                } else {
+                    com.mathlearning.feature.path.ShomaraPathProgress.unresolved()
+                },
+                // DT-77: the Me identity card renders the saved learner, never a null guess.
+                childName = learnerName,
             )
         }
         composable(

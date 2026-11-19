@@ -82,9 +82,11 @@ const appState = read('apps/mobile/src/state/appStateCore.ts');
   assert.match(appState, /schemaVersion > SCHEMA_VERSION\) return \{ ok: false, reason: 'NEWER_VERSION' \}/);
 }
 assert.match(appState, /preferences/);
-const animation = read('apps/mobile/src/components/AnimatedCharacter.tsx');
 // P03 centralized the motion gate: characters must use the shared hook, which honors the in-app preference.
-assert.match(animation, /useReducedMotionPreference/);
+// DT-45: AnimatedCharacter.tsx was deleted with the dead character-art chain, so the check now asserts the
+// hook's own source (motionPreferences.ts) instead of a string inside a retired component.
+const motionPreferences = read('apps/mobile/src/game-feel/motionPreferences.ts');
+assert.match(motionPreferences, /useReducedMotionPreference/);
 assert.match(read('apps/mobile/src/game-feel/motionPreferences.ts'), /preferences\.motion/);
 
 // Production-facing auth must persist a token through SecureStore.

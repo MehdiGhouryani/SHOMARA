@@ -1,6 +1,6 @@
 # UI v1 primitives (ADR-0035)
 
-Reproduces the approved pages in `docs/design-handoff-2026-10/pages-v1/`. Screens compose these;
+Reproduces the approved pages in `design/handoff-2026-10/pages-v1/`. Screens compose these;
 they never write colors, sizes or fonts of their own. Legacy components in `../design-system/`
 stay until every screen is migrated (removed in Stage U8).
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,6 +56,33 @@ import com.mathlearning.core.model.StationNodeMeta
 /** Station-start state matrix (family 07): loading/ready/resume/replay/locked/offline/error/starting. */
 enum class ShomaraStationStartState { Loading, Ready, Resume, Replay, Locked, Offline, Error, Starting }
 
+/**
+ * Canonical copy for the station-start sheet and the jump sheet. AGENTS §10: every user-visible
+ * line lives here instead of as an inline literal — the sheet is the single door from the path into
+ * a lesson, so its words must be reviewable as one set and assertable from tests.
+ */
+object ShomaraStationStartStrings {
+    const val Start: String = "شروع"
+    const val Resume: String = "ادامه"
+    const val Replay: String = "تمرین دوباره"
+    const val LockedAcknowledge: String = "متوجه شدم"
+    const val LockedExplanation: String = "این ایستگاه هنوز باز نشده؛ ایستگاه فعلی مسیر را کامل کن تا باز شود."
+    const val Offline: String = "اینترنت وصل نیست؛ بعداً ادامه می‌دهیم."
+    const val JumpOffline: String = "اینترنت وصل نیست؛ پرش فعلاً ممکن نیست."
+    const val ErrorFallback: String = "مشکلی پیش آمد."
+    const val Preparing: String = "در حال آماده‌سازی…"
+    const val Starting: String = "در حال شروع…"
+    const val Close: String = "بستن"
+    const val Jump: String = "پرش"
+    const val SelectedSuffix: String = "؛ انتخاب شد"
+
+    /** «ایستگاه ۷ از ۲۵ — فصل …» — digits are Persian by the time they arrive. */
+    fun metadataLine(ordinalFa: String, totalFa: String, chapterLabel: String): String =
+        "ایستگاه " + ordinalFa + " از " + totalFa + " — " + chapterLabel
+
+    fun jumpTitle(chapterLabel: String): String = "پرش داخل " + chapterLabel
+}
+
 object ShomaraStationStartLogic {
     fun stateFor(
         meta: StationNodeMeta,
@@ -78,11 +106,11 @@ object ShomaraStationStartLogic {
 
     /** Exactly ONE primary CTA; its label is deterministic per state (family 07 anti-pattern: repeated CTA). */
     fun ctaLabel(state: ShomaraStationStartState): String? = when (state) {
-        ShomaraStationStartState.Ready -> "شروع"
-        ShomaraStationStartState.Resume -> "ادامه"
+        ShomaraStationStartState.Ready -> ShomaraStationStartStrings.Start
+        ShomaraStationStartState.Resume -> ShomaraStationStartStrings.Resume
         // R-08: the replay label reuses the node's own words («تمرین دوباره») — no new text.
-        ShomaraStationStartState.Replay -> "تمرین دوباره"
-        ShomaraStationStartState.Locked -> "متوجه شدم"
+        ShomaraStationStartState.Replay -> ShomaraStationStartStrings.Replay
+        ShomaraStationStartState.Locked -> ShomaraStationStartStrings.LockedAcknowledge
         else -> null
     }
 
@@ -90,9 +118,13 @@ object ShomaraStationStartLogic {
         state == ShomaraStationStartState.Ready || state == ShomaraStationStartState.Resume || state == ShomaraStationStartState.Replay || state == ShomaraStationStartState.Locked
 
     fun metadataLine(meta: StationNodeMeta): String =
-        "ایستگاه ${ShomaraDigits.toFa(meta.ordinal)} از ${ShomaraDigits.toFa(ShomaraStationCatalog.STATION_COUNT)} — ${meta.chapterLabel}"
+        ShomaraStationStartStrings.metadataLine(
+            ShomaraDigits.toFa(meta.ordinal),
+            ShomaraDigits.toFa(ShomaraStationCatalog.STATION_COUNT),
+            meta.chapterLabel,
+        )
 
-    fun lockedExplanation(): String = "این ایستگاه هنوز باز نشده؛ ایستگاه فعلی مسیر را کامل کن تا باز شود."
+    fun lockedExplanation(): String = ShomaraStationStartStrings.LockedExplanation
 }
 
 /**
@@ -125,7 +157,7 @@ object ShomaraJumpSheetLogic {
     }
 
     fun titleFor(stationId: String): String =
-        "پرش داخل ${ShomaraChapterCatalog.labelFor(ShomaraStationCatalog.chapterOf(stationId))}"
+        ShomaraStationStartStrings.jumpTitle(ShomaraChapterCatalog.labelFor(ShomaraStationCatalog.chapterOf(stationId)))
 }
 
 @Composable
@@ -209,7 +241,13 @@ fun ShomaraStationStartSheet(
             // and the metadata line already announce everything.
             Box(
                 modifier = Modifier
-                    .size(ShomaraTokens.Space40)
+                    // DT-36: same family as the path band badge (DT-35). A fixed 40dp square cut
+                    // the chapter digit at 2x - the calibrated oracle measured it needing 119px of
+                    // height in a 105px slot - so the badge keeps its 40dp minimum and grows.
+                    .defaultMinSize(
+                        minWidth = ShomaraTokens.Space40,
+                        minHeight = ShomaraTokens.Space40,
+                    )
                     .background(heroAccent, RoundedCornerShape(ShomaraTokens.RadiusMd))
                     .clearAndSetSemantics {},
                 contentAlignment = Alignment.Center,
@@ -218,11 +256,11 @@ fun ShomaraStationStartSheet(
             }
         }
         when (state) {
-            ShomaraStationStartState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ بعداً ادامه می‌دهیم.")
-            ShomaraStationStartState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: "مشکلی پیش آمد.")
+            ShomaraStationStartState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraStationStartStrings.Offline)
+            ShomaraStationStartState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: ShomaraStationStartStrings.ErrorFallback)
             ShomaraStationStartState.Locked -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraStationStartLogic.lockedExplanation())
             ShomaraStationStartState.Loading, ShomaraStationStartState.Starting ->
-                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = if (state == ShomaraStationStartState.Loading) "در حال آماده‌سازی…" else "در حال شروع…")
+                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = if (state == ShomaraStationStartState.Loading) ShomaraStationStartStrings.Preparing else ShomaraStationStartStrings.Starting)
             else -> {}
         }
         val cta = ShomaraStationStartLogic.ctaLabel(state)
@@ -240,13 +278,15 @@ fun ShomaraStationStartSheet(
                 },
                 enabled = ShomaraStationStartLogic.ctaEnabled(state),
                 loading = state == ShomaraStationStartState.Starting,
-                variant = if (state == ShomaraStationStartState.Locked) ShomaraButtonVariant.Ghost else ShomaraButtonVariant.Primary,
+                // DT-77 (handoff v3): the station sheet is a home surface, so its primary CTA
+                // speaks the home violet; Locked keeps the quiet Ghost dismiss.
+                variant = if (state == ShomaraStationStartState.Locked) ShomaraButtonVariant.Ghost else ShomaraButtonVariant.Home,
             )
         }
         // Exactly one dismissing action when locked: the "متوجه شدم" CTA
         // above already dismisses, so a second "بستن" button would duplicate it.
         if (state != ShomaraStationStartState.Locked) {
-            ShomaraButton(modifier = Modifier.fillMaxWidth(), text = "بستن", onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
+            ShomaraButton(modifier = Modifier.fillMaxWidth(), text = ShomaraStationStartStrings.Close, onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
         }
     }
 }
@@ -273,7 +313,7 @@ fun ShomaraJumpSheet(
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
     ) {
         Text(text = ShomaraJumpSheetLogic.titleFor(titleStationId), style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
-        if (state.offline) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ پرش فعلاً ممکن نیست.")
+        if (state.offline) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraStationStartStrings.JumpOffline)
         if (state.errorText != null) ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = state.errorText)
         // F-17: tapping a locked target does not select it — it shows the warm locked
         // explanation in the sheet's own banner, so the child learns why instead of
@@ -300,7 +340,7 @@ fun ShomaraJumpSheet(
                         // Stage 5 TalkBack: every jump target announces its
                         // state, not only the selected one.
                         stateDescription = ShomaraPathGraphLogic.stateLabelFor(target.nodeState) +
-                            if (selected) "؛ انتخاب شد" else ""
+                            if (selected) ShomaraStationStartStrings.SelectedSuffix else ""
                     }
                     .clickable(role = Role.Button) {
                         if (target.nodeState == ShomaraPathNodeState.Locked) {
@@ -333,11 +373,12 @@ fun ShomaraJumpSheet(
             }
         }
         ShomaraButton(
-            text = "پرش",
+            text = ShomaraStationStartStrings.Jump,
             onClick = { state.selectedId?.let(onConfirm) },
             enabled = state.canConfirm,
-            variant = ShomaraButtonVariant.Primary,
+            // DT-77 (handoff v3): home violet primary for the home-surface sheet.
+            variant = ShomaraButtonVariant.Home,
         )
-        ShomaraButton(text = "بستن", onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
+        ShomaraButton(text = ShomaraStationStartStrings.Close, onClick = onDismiss, variant = ShomaraButtonVariant.Ghost)
     }
 }

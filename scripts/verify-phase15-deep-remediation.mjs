@@ -44,7 +44,7 @@ must(content.includes('supabaseRestSelect') && content.includes('dbManifest') &&
 const manifestRoute=read('apps/web/app/api/v1/content/manifest/route.ts'); must(manifestRoute.includes('const principal = await requireRequestPrincipal(request)') && manifestRoute.includes('principal.accessToken'), 'Content manifest route binds the authenticated principal before using its token');
 must(gates.includes("MATH_ADULT_PROJECTION_REPO") && gates.includes("MATH_ASSIGNMENT_REPO"), 'Adult/Assignment production remains fail-closed until real repositories exist');
 
-const pkgPath=path.join(root,'content/dev-packs/g1-st01-v2/package.json');
+const pkgPath=path.join(root,'content-library/dev-packs/g1-st01-v2/package.json');
 const pkgBytes=fs.readFileSync(pkgPath); const pkg=JSON.parse(pkgBytes.toString('utf8')); const checksum=crypto.createHash('sha256').update(pkgBytes).digest('hex');
 must(pkg.packageVersion==='1.2.0-staging' && pkg.items.length===20, 'ST01 package remains pinned to 12 logical + 8 skill-aware hidden variants');
 must(read('supabase/migrations/0040_recovery_package_version.sql').includes(checksum), 'Package checksum remains pinned after content boundary changes');

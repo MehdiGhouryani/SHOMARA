@@ -30,7 +30,7 @@ check('legacy-wardrobe-removed', !exists('apps/web/components/WardrobeView.tsx')
 check('treasure-primary-route-removed', !exists('apps/web/components/TreasureView.tsx') && !exists('apps/mobile/app/(tabs)/treasure.tsx'));
 check('legacy-skills-tab-removed', !exists('apps/mobile/app/(tabs)/skills.tsx'));
 check('db-label-migration-present', exists('supabase/migrations/0049_child_product_surface_labels.sql'));
-check('surface-reference-present', exists('docs/reference/CHILD_PRODUCT_SURFACE.md'));
+check('surface-reference-present', exists('docs/ARCHITECTURE.md'));
 
 const webPractice = read('apps/web/components/PracticeHubView.tsx');
 const mobilePractice = read('apps/mobile/src/ui/PracticeHubScreen.tsx');

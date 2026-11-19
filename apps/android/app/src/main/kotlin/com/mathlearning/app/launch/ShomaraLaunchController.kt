@@ -92,6 +92,7 @@ class ShomaraLaunchController(
         scope.launch {
             if (retry) _retrying.value = true
             if (_state.value != ShomaraLaunchState.Resolving) _state.value = ShomaraLaunchState.Resolving
+            clearDraftReadFailure()
             val observation = withContext(ioDispatcher) { observe() }
             val resumed = withContext(ioDispatcher) { hasResumableDraft() }
             _state.value = ShomaraLaunchResolver.resolve(observation = observation, hasResumableDraft = resumed)
@@ -123,7 +124,31 @@ class ShomaraLaunchController(
     }
 
     private suspend fun hasResumableDraft(): Boolean =
-        runCatching { draftStore.read() != null }.getOrDefault(false)
+        // DT-56: this used to be `runCatching { ... }.getOrDefault(false)`, which reported a CORRUPT or
+        // unreadable draft store as "the child has no draft". The child was then sent to the start of
+        // onboarding while a draft sat on disk, and nothing anywhere said why. A failure to read is not
+        // evidence of absence: it is reported through [draftReadFailure] and still resolves to "no resume",
+        // so the launch is not blocked - but it is no longer silent.
+        try {
+            draftStore.read() != null
+        } catch (error: Exception) {
+            draftReadFailure = error
+            false
+        }
+
+    /**
+     * The last draft-read failure, or null when the read succeeded. Exposed so a caller (or a test) can tell
+     * "there is no draft" apart from "the draft could not be read" - the distinction the old `runCatching`
+     * erased. Deliberately not part of [state]: an unreadable draft must not change where the child lands,
+     * only what is known about it.
+     */
+    var draftReadFailure: Exception? = null
+        private set
+
+    /** Test seam: the resolution reads the draft exactly once per run, so this must be cleared per run. */
+    internal fun clearDraftReadFailure() {
+        draftReadFailure = null
+    }
 }
 
 /** The launch surfaces, in one place so the app and the tests agree on the mapping. */

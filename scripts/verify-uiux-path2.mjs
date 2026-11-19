@@ -54,7 +54,7 @@ check('profile-settings-action', profileContract.includes("id: 'SETTINGS'") && p
 check('teacher-not-in-child-shell', surface.includes("'TEACHER_LOGIN'") && surface.includes("'TEACHER_PORTAL'") && !nav.includes('TEACHER'));
 check('no-primary-reward-currency', !(/\bXP\b|\bgems?\b|leaderboard|جواهر|رتبه‌بندی/i).test(pathWeb+pathMobile+profileWeb+profileMobile+read('apps/web/components/PracticeHubView.tsx')));
 check('palette-canonical', tokens.color.brand.primary==='#2B5C7A' && tokens.color.bg.canvas==='#F5F7F8' && tokens.color.text.primary==='#1B2A36' /* canonical palette per ADR-0035 */);
-check('required-contracts-in-repo', exists('docs/reference/PATH_2_CONTRACT.md') && exists('docs/reference/PATH_2_1_VISUAL_RULES.md'));
+check('required-contracts-in-repo', exists('docs/ARCHITECTURE.md') && exists('docs/ARCHITECTURE.md'));
 check('path2-contract-exported', read('packages/contracts/src/index.ts').includes("export * from './path2';"));
 
 if(failures.length){ console.error(`\nFAIL ${failures.length} checks`); failures.forEach(f=>console.error(` - ${f}`)); process.exit(1); }

@@ -24,20 +24,18 @@ import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.designsystem.ShomaraBottomSheet
 import com.mathlearning.core.designsystem.ShomaraTab
 import com.mathlearning.core.designsystem.ShomaraTabBar
-import com.mathlearning.core.designsystem.shomaraBackHandler
-import com.mathlearning.feature.parent.ShomaraParentGate
-import com.mathlearning.feature.parent.ShomaraParentGateScreen
-import com.mathlearning.feature.parent.ShomaraParentHome
+import com.mathlearning.core.designsystem.ShomaraEntryState
+import com.mathlearning.core.designsystem.ShomaraStateSurface
+import com.mathlearning.core.designsystem.ShomaraBackHandler
+import com.mathlearning.feature.path.ShomaraHomeAction
+import com.mathlearning.feature.path.ShomaraHomeScreen
+import com.mathlearning.feature.path.ShomaraHomeUiState
 import com.mathlearning.feature.path.ShomaraPathProgress
-import com.mathlearning.feature.path.ShomaraHomeHeader
-import com.mathlearning.feature.path.ShomaraChapterProgressCard
-import com.mathlearning.feature.path.ShomaraContinueStationCard
-import com.mathlearning.feature.path.ShomaraHomeProgressUi
 import com.mathlearning.core.model.ShomaraStationCatalog
-import com.mathlearning.feature.path.ShomaraPathScreen
 import com.mathlearning.feature.path.ShomaraStationStartSheet
 import com.mathlearning.feature.practice.ShomaraPracticeCatalog
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
+import com.mathlearning.feature.practice.ShomaraPracticeHubStrings
 import com.mathlearning.feature.profile.ShomaraMeScreen
 import com.mathlearning.feature.settings.ShomaraSettingsSaveState
 import com.mathlearning.feature.settings.ShomaraSettingsScreen
@@ -50,14 +48,16 @@ import kotlinx.coroutines.launch
  * (each tab keeps its own back-stack entry with saveState/restoreState, so switching tabs and
  * returning never loses scroll or selection). Back is deterministic via [ShomaraShellLogic].
  *
- * Tab content renders the real feature surfaces (N05-02..N05-06). Progress-aware parameters are
- * wired from server truth in N06; the path renders the caller-provided progress verbatim.
+ * Tab content renders the real feature surfaces (N05-02..N05-06). The path renders a caller-provided
+ * resolved snapshot. After ADR-0039, the intended source is the active
+ * local child profile + Room projection; O5/profile persistence is not wired yet, so the root currently
+ * supplies an unresolved snapshot and the path/practice surfaces remain in Loading instead of fabricating Fresh/Locked.
  */
 @Composable
 fun ShomaraChildShell(
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
-    pathProgress: ShomaraPathProgress = ShomaraPathProgress(),
+    pathProgress: ShomaraPathProgress = ShomaraPathProgress.unresolved(),
     childName: String? = null,
     completedStations: Int = 0,
     reducedMotion: Boolean = false,
@@ -81,12 +81,14 @@ fun ShomaraChildShell(
     // opens the sheet for that station; only the sheet's «شروع/ادامه» CTA navigates to the
     // lesson. Before, the tap navigated straight to `lesson/$id` — the lock was bypassed
     // and the sheet had no caller at all.
-    var selectedStationId by rememberSaveable { mutableStateOf(initialStationId) }
+    // Queue the deep link through its route argument; do not pre-open hidden sheet state.
+    // While progress is unresolved, Back must not consume a sheet that is not visible yet.
+    var selectedStationId by rememberSaveable { mutableStateOf<String?>(null) }
     // R-05: a deep-linked station arrives after the first composition (the app sets the
     // pending id, then navigates here). The sheet opens for it exactly once; the pending
     // id is consumed so dismissing the sheet does not reopen it.
-    LaunchedEffect(initialStationId) {
-        if (initialStationId != null) {
+    LaunchedEffect(initialStationId, pathProgress.isResolved) {
+        if (initialStationId != null && pathProgress.isResolved && selectedStationId == null) {
             selectedStationId = initialStationId
             onInitialStationConsumed()
         }
@@ -113,7 +115,7 @@ fun ShomaraChildShell(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val onTabRoute = backStackEntry?.destination?.route in ShomaraShellTab.entries.map { it.route }
     val backTarget = if (onTabRoute) ShomaraShellLogic.backTarget(currentTab) else null
-    shomaraBackHandler(enabled = selectedStationId != null || backTarget != null) {
+    ShomaraBackHandler(enabled = selectedStationId != null || backTarget != null) {
         if (selectedStationId != null) {
             selectedStationId = null
         } else {
@@ -124,9 +126,22 @@ fun ShomaraChildShell(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        // DT-77 (handoff v3): the whole child shell speaks the home visual language — the
+        // scaffold canvas is the home lavender, so every tab and the settings route sit on
+        // the same canvas; screens no longer need to out-paint the legacy cream theme.
+        containerColor = com.mathlearning.core.designsystem.ShomaraTokens.ColorHomeCanvas,
         bottomBar = {
             ShomaraTabBar(
-                tabs = ShomaraShellLogic.canonicalTabs().map { ShomaraTab(id = it.route, label = it.label) },
+                // DT-76 (handoff C13): each tab carries its canonical active/inactive nav icon —
+                // the six VectorDrawables from the v3 handoff asset pack.
+                tabs = ShomaraShellLogic.canonicalTabs().map { tab ->
+                    ShomaraTab(
+                        id = tab.route,
+                        label = tab.label,
+                        activeIconRes = ShomaraShellNavIcons.activeFor(tab),
+                        inactiveIconRes = ShomaraShellNavIcons.inactiveFor(tab),
+                    )
+                },
                 selectedId = currentTab.route,
                 onSelected = { route ->
                     goToTab(ShomaraShellLogic.select(currentTab, ShomaraShellTab.fromRoute(route)))
@@ -143,101 +158,73 @@ fun ShomaraChildShell(
                     route = ShomaraShellTab.Path.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Path.deepLink }),
                 ) {
-                    // P14b (handoff v3): the new Home header, progress card and continue card
-                    // sit ABOVE the existing path graph — the zigzag geometry, node states and
-                    // chapter bands are the existing ShomaraPathScreen, unchanged.
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        // A. Home header (handoff v3: title + Main character + settings)
-                        ShomaraHomeHeader(
-                            title = "مسیر یادگیری",
-                            subtitle = "قدم‌به‌قدم جلو می‌ریم",
-                            onSettings = { navController.navigate("shell/settings") },
-                            characterSlot = {
-                                com.mathlearning.core.designsystem.ShomaraCharacterImage(
-                                    character = com.mathlearning.core.designsystem.ShomaraCharacter.Main,
-                                    poseId = 1,
-                                    slot = com.mathlearning.core.designsystem.ShomaraCharacterSlot.Inline,
-                                )
-                            },
-                        )
-                        // B. Chapter progress card (from real progress, Persian digits)
-                        ShomaraChapterProgressCard(
-                            gradeLabel = "پایهٔ اول",
-                            chapterTitle = "عددهای ۱ و ۲",
-                            progress = ShomaraHomeProgressUi(
-                                completed = completedStations,
-                                total = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT,
-                                spokenLabel = com.mathlearning.core.designsystem.ShomaraDigits.toFa(completedStations) +
-                                    " از " + com.mathlearning.core.designsystem.ShomaraDigits.toFa(com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT),
-                            ),
-                        )
-                        // C. Continue/current station card
-                        pathProgress.currentStationId?.let { currentId ->
-                            ShomaraContinueStationCard(
-                                eyebrow = "از آخرین نقطه ادامه بده",
-                                title = com.mathlearning.core.model.ShomaraStationCatalog.station(currentId).workingTitle,
-                                supportingText = null,
-                                actionLabel = "ادامه",
-                                onContinue = { selectedStationId = currentId },
-                            )
-                        }
-                        // D. The REAL path graph — zigzag geometry, node states, chapter bands unchanged
-                        ShomaraPathScreen(
-                            progress = pathProgress,
-                            onStationTap = { selectedStationId = it },
-                            modifier = Modifier.weight(1f),
-                        )
+                    val homeState = remember(pathProgress) {
+                        ShomaraHomeUiState(progress = pathProgress)
                     }
+                    ShomaraHomeScreen(
+                        state = homeState,
+                        onAction = { action ->
+                            when (action) {
+                                ShomaraHomeAction.OpenSettings -> navController.navigate("shell/settings")
+                                is ShomaraHomeAction.OpenStation -> selectedStationId = action.stationId
+                                // Home has no retry callback until a real identity/progress loader exists.
+                                ShomaraHomeAction.Retry -> Unit
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
                 composable(
                     route = ShomaraShellTab.Practice.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Practice.deepLink }),
                 ) {
-                    // N08 §4: this used to pass emptyList()/emptyList(), so the tab could ONLY ever
-                    // render the empty state. The list now derives from the canonical 25-station
-                    // catalog plus the child's real progress: reached stations are practiseable,
-                    // unreached ones appear LOCKED with a warm reason (never fabricated practice).
-                    val practiceItems = remember(pathProgress) {
-                        ShomaraPracticeCatalog.itemsFor(
-                            completedStationIds = pathProgress.completedStationIds,
-                            currentStationId = pathProgress.currentStationId,
+                    // Practice eligibility is a projection of this child's resolved local
+                    // progress. Do not render every item as LOCKED while identity/progress is
+                    // still loading: that would mislabel a returning child as a first-run learner.
+                    if (!pathProgress.isResolved) {
+                        // The shell Scaffold already applied the window insets, so this state
+                        // surface must not add a second status/navigation padding.
+                        ShomaraStateSurface(
+                            state = ShomaraEntryState.Loading,
+                            title = ShomaraPracticeHubStrings.PreparingTitle,
+                            body = ShomaraPracticeHubStrings.PreparingBody,
+                            applySystemInsets = false,
+                        )
+                    } else {
+                        val practiceItems = remember(pathProgress) {
+                            ShomaraPracticeCatalog.itemsFor(
+                                completedStationIds = pathProgress.completedStationIds,
+                                currentStationId = pathProgress.currentStationId,
+                            )
+                        }
+                        val practiceRecent = remember(pathProgress) {
+                            ShomaraPracticeCatalog.recentFor(pathProgress.completedStationIds)
+                        }
+                        ShomaraPracticeHubScreen(
+                            items = practiceItems,
+                            recent = practiceRecent,
+                            // F-01: a practice tap opens the same station sheet as a path tap —
+                            // the sheet is the one door into a lesson, never a direct navigation.
+                            onItemTap = { selectedStationId = it },
                         )
                     }
-                    val practiceRecent = remember(pathProgress) {
-                        ShomaraPracticeCatalog.recentFor(pathProgress.completedStationIds)
-                    }
-                    ShomaraPracticeHubScreen(
-                        items = practiceItems,
-                        recent = practiceRecent,
-                        // F-01: a practice tap opens the same station sheet as a path tap —
-                        // the sheet is the one door into a lesson, never a direct navigation.
-                        onItemTap = { selectedStationId = it },
-                    )
                 }
                 composable(
                     route = ShomaraShellTab.Me.route,
                     deepLinks = listOf(navDeepLink { uriPattern = ShomaraShellTab.Me.deepLink }),
                 ) {
-                    // Stage 5 (global hardening): Me avatar now comes from the
-                    // persisted settings store, not the catalog default. The
-                    // store validates ids and falls back to the default on
-                    // corrupt/unknown data, so resolve() here cannot throw
-                    // for a stored value. Before this change every child
-                    // always saw "sun" in Me, even after choosing "moon".
-                    val persistedMe by settingsStore.state.collectAsStateWithLifecycle(
-                        initialValue = ShomaraSettingsSnapshot.Defaults,
-                    )
+                    // ADR-0051: the avatar preset was removed, so the Me tab renders identity +
+                    // real progress only. The settings store is still the source of the
+                    // reduced-motion preference (read on the settings route below).
                     val facts = childName?.let {
                         com.mathlearning.feature.profile.ShomaraMeFacts(
                             childName = it,
-                            avatar = com.mathlearning.feature.profile.ShomaraMeAvatarWiring.resolve(persistedMe.avatarId),
                             completedStations = completedStations,
                             totalStations = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT,
                         )
                     }
                     ShomaraMeScreen(
                         facts = facts,
-                        onOpenParent = { navController.navigate("shell/parent") },
                         onOpenSettings = { navController.navigate("shell/settings") },
                     )
                 }
@@ -250,15 +237,14 @@ fun ShomaraChildShell(
                     // The screen's own state machine is authoritative (Clean -> Dirty -> Saving ->
                     // Saved/Error). An earlier version of this wiring bypassed it by rebuilding the
                     // state from the store snapshot and calling startSave(), which requires Dirty;
-                    // tapping an avatar then threw "save started from an invalid state" and killed
-                    // the app. The machine is now driven in order.
+                    // an edit then threw "save started from an invalid state" and killed the app.
+                    // The machine is now driven in order.
                     val persisted by settingsStore.state.collectAsStateWithLifecycle(
                         initialValue = ShomaraSettingsSnapshot.Defaults,
                     )
                     var screenState by remember {
                         mutableStateOf(
                             ShomaraSettingsState(
-                                avatarId = persisted.avatarId,
                                 reducedMotion = persisted.reducedMotion,
                             ),
                         )
@@ -267,33 +253,32 @@ fun ShomaraChildShell(
                     // guard that used to sit here consumed the PLACEHOLDER, not the first real
                     // emission. `collectAsStateWithLifecycle(initialValue = Defaults)` delivers
                     // Defaults synchronously at first composition, so this effect's first run
-                    // always saw "sun", set the flag, and the later real emission ("moon") was
-                    // ignored — re-entering Settings showed "sun" although the store held
-                    // "moon" and the save banner had said "ذخیره شد.". The screen is therefore
-                    // re-seeded from the store on every emission WHILE IT IS STILL UNTOUCHED
-                    // (see ShomaraSettingsState.reseededFrom): a Clean screen has no in-flight
-                    // edit, so the store is the only truth; once the user edits, the screen
-                    // state is authoritative and later emissions — including the echo of our
-                    // own save — must not overwrite it. The `remember` seed above still starts
-                    // from the placeholder, so the first frame may briefly show the default
-                    // before the real emission lands; the settled value is the stored one.
+                    // always saw the default, set the flag, and the later real emission was
+                    // ignored — re-entering Settings showed the default although the store held
+                    // the child's saved choice and the save banner had said "ذخیره شد.". The
+                    // screen is therefore re-seeded from the store on every emission WHILE IT IS
+                    // STILL UNTOUCHED (see ShomaraSettingsState.reseededFrom): a Clean screen has
+                    // no in-flight edit, so the store is the only truth; once the user edits, the
+                    // screen state is authoritative and later emissions — including the echo of
+                    // our own save — must not overwrite it. The `remember` seed above still
+                    // starts from the placeholder, so the first frame may briefly show the
+                    // default before the real emission lands; the settled value is the stored one.
                     LaunchedEffect(persisted) {
                         screenState = screenState.reseededFrom(
-                            avatarId = persisted.avatarId,
                             reducedMotion = persisted.reducedMotion,
                         )
                     }
                     val scope = rememberCoroutineScope()
 
-                    // Persist a chosen value, driving the real state machine.
-                    fun persist(avatarId: String, reducedMotion: Boolean) {
+                    // Persist the preference, driving the real state machine.
+                    fun persist(reducedMotion: Boolean) {
                         if (!screenState.canSave) return // already Saving: ignore a second tap
                         val saving = screenState.startSave()
                         screenState = saving
                         scope.launch {
                             screenState = try {
                                 settingsStore.save(
-                                    ShomaraSettingsSnapshot(avatarId = avatarId, reducedMotion = reducedMotion),
+                                    ShomaraSettingsSnapshot(reducedMotion = reducedMotion),
                                 )
                                 saving.onSaveSuccess()
                             } catch (throwable: Throwable) {
@@ -306,48 +291,28 @@ fun ShomaraChildShell(
 
                     ShomaraSettingsScreen(
                         state = screenState,
-                        onAvatarSelect = { avatarId ->
-                            // withAvatar marks Dirty (or returns unchanged if it is the same id).
-                            screenState = screenState.withAvatar(avatarId)
-                            persist(screenState.avatarId, screenState.reducedMotion)
-                        },
                         onReducedMotionChange = { enabled ->
                             screenState = screenState.withReducedMotion(enabled)
-                            persist(screenState.avatarId, screenState.reducedMotion)
+                            persist(screenState.reducedMotion)
                         },
                         onSave = {
-                            // Retained for the screen contract: values are already persisted on
-                            // selection, so this only acknowledges the last result.
+                            // Retained for the screen contract: the value is already persisted on
+                            // toggle, so this only acknowledges the last result.
                             if (screenState.save == ShomaraSettingsSaveState.Dirty) {
-                                persist(screenState.avatarId, screenState.reducedMotion)
+                                persist(screenState.reducedMotion)
                             }
                         },
                     )
                 }
-                composable(route = "shell/parent") {
-                    val gate = remember { ShomaraParentGate(verifier = null) } // fail-closed until the owner wires credentials
-                    var authenticated by rememberSaveable { mutableStateOf(false) }
-                    if (authenticated) {
-                        ShomaraParentHome(completedStations = completedStations, totalStations = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT, onSignOut = onSignOut)
-                    } else {
-                        ShomaraParentGateScreen(
-                            gate = gate,
-                            onAuthenticated = { authenticated = true },
-                            // F-03b: the gate clock is the real clock (the screen's default is
-                            // already real; the shell states it explicitly so the wiring is visible).
-                            nowMs = { System.currentTimeMillis() },
-                            // F-23: an on-screen way back to the child shell.
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-                }
+                // DT-46: the parent area, its gate and its PIN were removed by owner decision. The child
+                // shell has no adult destination, so there is no route to protect and nothing to unlock.
             }
             // F-01: the station-start sheet — the one door into a lesson. The sheet owns its
             // own heading, so the bottom sheet renders with a null title (no doubled heading).
             // A locked station's CTA dismisses; only Ready/Resume navigate to the lesson, and
             // Replay navigates with the replay flag (R-08).
             val sheetStationId = selectedStationId
-            if (sheetStationId != null) {
+            if (sheetStationId != null && pathProgress.isResolved) {
                 ShomaraBottomSheet(
                     title = null,
                     onDismiss = { selectedStationId = null },

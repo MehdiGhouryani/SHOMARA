@@ -29,7 +29,7 @@ function files(dir: string, out: string[] = []): string[] {
     const p = join(dir, name);
     if (name === 'node_modules' || name === 'assets' || name === 'plugins') continue;
     if (statSync(p).isDirectory()) files(p, out);
-    else if (name.endsWith('.tsx') && !['animation.tsx', 'SemanticAnimationDemo.tsx'].includes(name)) out.push(p);
+    else if (name.endsWith('.tsx') && !['animation.tsx'].includes(name)) out.push(p);
   }
   return out;
 }

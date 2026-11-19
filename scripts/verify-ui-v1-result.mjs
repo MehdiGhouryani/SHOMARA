@@ -49,7 +49,7 @@ check('strings:page-12', strings.includes('چهار سؤال کوتاه. این 
 const manifest = JSON.parse(read('apps/mobile/parity/manifest.json'));
 for (const [id, page] of [['stage-result', '11'], ['challenge-intro', '12']]) {
   const e = manifest.find((x) => x.id === id);
-  check(`parity:${id}`, Boolean(e) && e.page === page && e.maxDiffPercent <= 0.5 && exists(`docs/design-handoff-2026-10/pages-v1/goldens/${page}.png`));
+  check(`parity:${id}`, Boolean(e) && e.page === page && e.maxDiffPercent <= 0.5 && exists(`design/handoff-2026-10/pages-v1/goldens/${page}.png`));
 }
 check('flow:covers-full-path', read('scripts/flow-station-run.mjs').includes("open('play-pass')") && read('scripts/flow-station-run.mjs').includes('شمارش‌گر') && read('scripts/flow-station-run.mjs').includes('شروع چالش'));
 

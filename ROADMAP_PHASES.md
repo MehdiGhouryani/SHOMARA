@@ -1723,7 +1723,7 @@ Read and extend, rather than replace:
 - `apps/mobile/src/station/macro.ts`
 - `packages/learning-runtime/`
 - `packages/contracts/src/lesson.ts`, `learning.ts`, `content.ts`
-- `docs/source/math_learning_product_game_engagement_quest_reward_v0_28_completed_v0_31.md`
+- `docs/notes/math_learning_product_game_engagement_quest_reward_v0_28_completed_v0_31.md`
 - `docs/source/math_learning_product_session_runtime_learning_rules_v0_29_completed_v0_31.md`
 
 
@@ -1820,11 +1820,11 @@ Canonical challenge fields:
 # P05 — ST01 ENGAGEMENT VERTICAL SLICE
 ## Implementation touchpoints
 
-- `content/dev-packs/g1-st01-v2/` and current ST01 package metadata
+- `content-library/dev-packs/g1-st01-v2/` and current ST01 package metadata
 - `apps/mobile/app/station/[stationId]/`
 - `apps/mobile/src/station/StationFlow.tsx`
 - `apps/mobile/src/ui/PracticeHubScreen.tsx` only where shared games are reused
-- `docs/source/math_learning_product_station01_vertical_slice_v0_30_completed_v0_31.md`
+- `docs/notes/math_learning_product_station01_vertical_slice_v0_30_completed_v0_31.md`
 - `docs/source/math_learning_product_grade1_skill_graph_v0_27_completed_v0_31.md`
 
 
@@ -2871,11 +2871,11 @@ Read these when they are relevant to a phase:
 
 - `docs/source/math_learning_product_animation_visual_runtime_v0_32.md`
 - `docs/source/math_learning_product_content_contract_v0_28_completed_v0_31.md`
-- `docs/source/math_learning_product_game_engagement_quest_reward_v0_28_completed_v0_31.md`
+- `docs/notes/math_learning_product_game_engagement_quest_reward_v0_28_completed_v0_31.md`
 - `docs/source/math_learning_product_grade1_skill_graph_v0_27_completed_v0_31.md`
 - `docs/source/math_learning_product_parent_teacher_experience_v0_31.md`
 - `docs/source/math_learning_product_session_runtime_learning_rules_v0_29_completed_v0_31.md`
-- `docs/source/math_learning_product_station01_vertical_slice_v0_30_completed_v0_31.md`
+- `docs/notes/math_learning_product_station01_vertical_slice_v0_30_completed_v0_31.md`
 
 ## Current child UX / product contracts
 

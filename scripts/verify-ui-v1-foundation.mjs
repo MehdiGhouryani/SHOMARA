@@ -65,11 +65,11 @@ check('assets-sizes', webps.every((n) => sizes.includes(`'${n}'`)));
 
 // 6) Parity manifest is consistent with goldens, rectangles and the specimen registry
 const manifest = JSON.parse(read('apps/mobile/parity/manifest.json'));
-const rects = JSON.parse(read('docs/design-handoff-2026-10/pages-v1/goldens/rects.json'));
+const rects = JSON.parse(read('design/handoff-2026-10/pages-v1/goldens/rects.json'));
 const registry = read('apps/mobile/parity/specimens/index.tsx');
 let manifestOk = true;
 for (const s of manifest) {
-  const ok = exists(`docs/design-handoff-2026-10/pages-v1/goldens/${s.page}.png`) && Boolean(rects[s.page]?.[s.selector]?.[s.index]) && (registry.includes(`'${s.id}'`) || registry.includes(`${s.id}:`));
+  const ok = exists(`design/handoff-2026-10/pages-v1/goldens/${s.page}.png`) && Boolean(rects[s.page]?.[s.selector]?.[s.index]) && (registry.includes(`'${s.id}'`) || registry.includes(`${s.id}:`));
   if (!ok) { manifestOk = false; failures.push(`parity-specimen:${s.id} is missing its golden, rectangle or registry entry`); }
 }
 check('parity-manifest-consistent', manifestOk, `${manifest.length} specimens`);

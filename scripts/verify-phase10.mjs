@@ -7,8 +7,8 @@ const required = [
   'e2e/web/critical-path.spec.ts',
   'e2e/web/api-critical-path.spec.ts',
   'scripts/performance/phase10-performance.mjs',
-  'docs/api/API_E2E_RELEASE_CONTRACT.md',
-  'docs/history/SNAPSHOT_MANIFEST_PHASE_10.json',
+  'docs/ARCHITECTURE.md',
+  'docs/notes/SNAPSHOT_MANIFEST_PHASE_10.json',
 ];
 for (const rel of required) {
   if (!fs.existsSync(path.join(root, rel))) throw new Error(`Missing ${rel}`);

@@ -8,7 +8,7 @@ const allSql = migrations.map((m) => read(`supabase/migrations/${m}`)).join('\n'
 const seed = read('supabase/migrations/0017_seed_registry.sql');
 const executableSeed = read('supabase/migrations/0035_grade1_staging_seed.sql');
 const recoverySeed = read('supabase/migrations/0039_skill_aware_recovery_variants.sql');
-const stationSource = read('docs/source/math_learning_product_station01_vertical_slice_v0_30_completed_v0_31.md');
+const stationSource = read('docs/notes/math_learning_product_station01_vertical_slice_v0_30_completed_v0_31.md');
 const policySource = read('packages/learning-runtime/src/policies.ts');
 const rpcSource = read('supabase/migrations/0033_runtime_integrity_hardening.sql') + '\n' + read('supabase/migrations/0036_deep_integrity_and_projection_hardening.sql') + '\n' + read('supabase/migrations/0043_runtime_semantics_v2.sql') + '\n' + read('supabase/migrations/0044_runtime_check_group_ordering.sql');
 

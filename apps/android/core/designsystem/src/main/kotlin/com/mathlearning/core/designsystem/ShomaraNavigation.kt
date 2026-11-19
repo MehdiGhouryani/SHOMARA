@@ -1,5 +1,6 @@
 package com.mathlearning.core.designsystem
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -49,6 +52,13 @@ data class ShomaraTab(
     val label: String,
     val locked: Boolean = false,
     val lockReason: String? = null,
+    /**
+     * DT-76 (handoff C13): optional icon pair for the child bottom bar. The active/inactive pair is
+     * data so the bar stays route-agnostic — the shell maps its three destinations to the canonical
+     * nav drawables. Null keeps the text-only rendering for existing callers (tests, gallery).
+     */
+    val activeIconRes: Int? = null,
+    val inactiveIconRes: Int? = null,
 ) {
     init {
         if (locked) require(!lockReason.isNullOrEmpty()) { "locked tabs must announce why they are locked" }
@@ -76,9 +86,15 @@ object ShomaraTabLogic {
         else -> tapped.id
     }
 
+    /**
+     * DT-76 (handoff v3): the child bottom bar speaks the home visual language — active pill is
+     * home violetSoft with violetDark text (6.04:1), inactive is the white surface with muted ink.
+     * The legacy primarySoft/primaryDark pair stays untouched for any non-home consumer of the same
+     * logic; only the bar's own colors moved to the home palette.
+     */
     fun colorsFor(isSelected: Boolean): Pair<Color, Color> =
-        if (isSelected) ShomaraTokens.ColorPrimarySoft to ShomaraTokens.ColorPrimaryDark
-        else ShomaraTokens.ColorSurface to ShomaraTokens.ColorInk2
+        if (isSelected) ShomaraTokens.ColorHomeVioletSoft to ShomaraTokens.ColorHomeVioletDark
+        else ShomaraTokens.ColorHomeSurface to ShomaraTokens.ColorHomeMuted
 }
 
 @Composable
@@ -92,15 +108,14 @@ fun ShomaraTabBar(
     // E-05: a hairline above the tab row separates the bar from the content scrolling under
     // it — the bar reads as a surface, not a loose strip on the canvas.
     Column(modifier = modifier.fillMaxWidth()) {
-        HorizontalDivider(color = ShomaraTokens.ColorLine)
+        HorizontalDivider(color = ShomaraTokens.ColorHomeBorder)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                // Batch 2 (ADR-0040 R1): the tab bar is a tactile surface, so it
-                // renders its clay depth (Soft) instead of sitting flat on the canvas.
-                // The elevation comes from the clay spec, never the raw token.
+                // DT-76 (handoff v3): the child bottom bar speaks the home visual language —
+                // white surface on the lavender canvas. The elevation comes from the clay spec.
                 .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
-                .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
+                .background(ShomaraTokens.ColorHomeSurface, RoundedCornerShape(ShomaraTokens.RadiusLg))
                 .padding(ShomaraTokens.Space4),
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
         ) {
@@ -108,6 +123,7 @@ fun ShomaraTabBar(
                 val isSelected = tab.id == selectedId
                 val (container, content) = ShomaraTabLogic.colorsFor(isSelected)
                 val label = ShomaraTabLogic.stateLabelFor(tab, isSelected)
+                val iconRes = if (isSelected) tab.activeIconRes else tab.inactiveIconRes
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -132,7 +148,20 @@ fun ShomaraTabBar(
                         .padding(ShomaraTokens.Space8),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(text = tab.label, style = ShomaraTypography.Body, color = content)
+                    if (iconRes != null) {
+                        // DT-76: icon-first tab item (handoff C13). The drawables carry their own
+                        // active/inactive colors, so no runtime tint overrides the designed pairs.
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Image(
+                                painter = painterResource(iconRes),
+                                contentDescription = null,
+                                modifier = Modifier.size(ShomaraTokens.Space24),
+                            )
+                            Text(text = tab.label, style = ShomaraTypography.Caption, color = content)
+                        }
+                    } else {
+                        Text(text = tab.label, style = ShomaraTypography.Body, color = content)
+                    }
                 }
             }
         }

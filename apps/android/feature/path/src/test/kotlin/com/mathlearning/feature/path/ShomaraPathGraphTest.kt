@@ -1,6 +1,8 @@
 package com.mathlearning.feature.path
 
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraTokens
+import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.model.ShomaraChapterCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
 import org.junit.Assert.assertEquals
@@ -17,10 +19,11 @@ class ShomaraPathGraphTest {
         completedStationIds = setOf("ST01", "ST02", "ST03"),
         perfectStationIds = setOf("ST02"),
         currentStationId = "ST04",
+        isResolved = true,
     )
 
     @Test
-    fun `node states map from server-provided progress only`() {
+    fun `node states map from caller-provided resolved progress only`() {
         assertEquals(ShomaraPathNodeState.Completed, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), progress))
         assertEquals(ShomaraPathNodeState.Perfect, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST02"), progress))
         assertEquals(ShomaraPathNodeState.Current, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST04"), progress))
@@ -101,8 +104,75 @@ class ShomaraPathGraphTest {
     // ---- Phase A: Fresh is reachable, never a fake Current ----
 
     @Test
+    fun `unresolved progress always stays loading even when offline is requested`() {
+        val unresolved = ShomaraPathProgress()
+
+        assertEquals(
+            ShomaraEntryState.Loading,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, null),
+        )
+        assertEquals(
+            ShomaraEntryState.Loading,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Offline),
+        )
+    }
+
+    @Test
+    fun `explicit content errors and empty states are preserved before progress resolves`() {
+        val unresolved = ShomaraPathProgress()
+
+        assertEquals(
+            ShomaraEntryState.Error,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Error),
+        )
+        assertEquals(
+            ShomaraEntryState.Empty,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Empty),
+        )
+        assertEquals(
+            ShomaraEntryState.Loading,
+            ShomaraPathGraphLogic.resolveEntryState(unresolved, ShomaraEntryState.Loading),
+        )
+    }
+
+    @Test
+    fun `resolved offline path remains available and keeps its offline state`() {
+        val resolvedOffline = ShomaraPathProgress.emptyResolved().copy(offline = true)
+
+        assertEquals(
+            ShomaraEntryState.Offline,
+            ShomaraPathGraphLogic.resolveEntryState(resolvedOffline, ShomaraEntryState.Offline),
+        )
+        assertEquals(
+            null,
+            ShomaraPathGraphLogic.resolveEntryState(resolvedOffline, null),
+        )
+    }
+
+    @Test
+    fun `unresolved progress is not confused with an initialized new learner`() {
+        val unresolved = ShomaraPathProgress()
+        assertTrue(!unresolved.isResolved)
+        assertEquals(null, ShomaraPathGraphLogic.freshStationId(unresolved))
+        assertEquals(null, ShomaraPathGraphLogic.nextStepStation(unresolved))
+        assertEquals(
+            ShomaraPathNodeState.Locked,
+            ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), unresolved),
+        )
+        assertEquals("آمادهٔ شروع", ShomaraPathGraphLogic.stateLabelFor(ShomaraPathNodeState.Fresh))
+
+        // An explicit, resolved empty snapshot remains a genuine first-run path.
+        val initializedNewLearner = ShomaraPathProgress.emptyResolved()
+        assertEquals("ST01", ShomaraPathGraphLogic.freshStationId(initializedNewLearner))
+        assertEquals(
+            ShomaraPathNodeState.Fresh,
+            ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), initializedNewLearner),
+        )
+    }
+
+    @Test
     fun `fresh is reachable for ST01 when no current station is placed`() {
-        val unplaced = ShomaraPathProgress()
+        val unplaced = ShomaraPathProgress.emptyResolved()
         assertEquals(ShomaraPathNodeState.Fresh, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST01"), unplaced))
         assertEquals(ShomaraPathNodeState.Locked, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST02"), unplaced))
         // Exactly one Fresh node, zero Current nodes: "no data arrived" never hides as "all locked".
@@ -114,7 +184,7 @@ class ShomaraPathGraphTest {
 
     @Test
     fun `fresh follows the first uncompleted station when current is missing`() {
-        val gap = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST02", "ST03"))
+        val gap = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST02", "ST03"), isResolved = true)
         assertEquals(ShomaraPathNodeState.Fresh, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST04"), gap))
         assertEquals(ShomaraPathNodeState.Locked, ShomaraPathGraphLogic.stateFor(ShomaraStationCatalog.station("ST05"), gap))
         assertEquals("ST04", ShomaraPathGraphLogic.freshStationId(gap))
@@ -130,23 +200,24 @@ class ShomaraPathGraphTest {
     @Test
     fun `next step is the current station, otherwise the fresh station, otherwise none`() {
         assertEquals("ST04", ShomaraPathGraphLogic.nextStepStation(progress)?.id)
-        assertEquals("ST01", ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress())?.id)
+        assertEquals("ST01", ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress.emptyResolved())?.id)
         val allDone = ShomaraPathProgress(
             completedStationIds = (1..25).map { "ST%02d".format(it) }.toSet(),
+            isResolved = true,
         )
         assertEquals(null, ShomaraPathGraphLogic.nextStepStation(allDone))
     }
 
     @Test
     fun `offline freezes the anchor so no next-step line is derived`() {
-        assertEquals(null, ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress(offline = true)))
+        assertEquals(null, ShomaraPathGraphLogic.nextStepStation(ShomaraPathProgress(offline = true, isResolved = true)))
     }
 
     // ---- Phase A: honest counts (unknown ids never inflate progress) ----
 
     @Test
     fun `per-chapter counts and remaining count only known station ids`() {
-        val withUnknown = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST99"))
+        val withUnknown = ShomaraPathProgress(completedStationIds = setOf("ST01", "ST99"), isResolved = true)
         assertEquals(24, ShomaraPathGraphLogic.remainingCount(withUnknown))
         assertEquals(1, ShomaraPathGraphLogic.completedInChapter(1, withUnknown))
         assertEquals(0, ShomaraPathGraphLogic.completedInChapter(2, withUnknown))
@@ -166,21 +237,27 @@ class ShomaraPathGraphTest {
     // ---- N08R-06: deterministic zigzag geometry (Duolingo-style winding path) ----
 
     @Test
-    fun `zigzag offsets alternate sides every row and stay within the token amplitude`() {
-        val amplitude = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
+    fun `winding path samples a sine so nodes spread over three columns and never stack`() {
         val contentWidth = 312.dp // 360dp screen minus the 24dp side insets
+        val columns = mutableSetOf<Int>()
         var previousSign = 0f
         for (globalIndex in 0..24) {
             val offset = ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex, isRtl = false, contentWidth = contentWidth)
-            assertTrue(abs(offset.value) <= amplitude.value)
             // Never on the centre line: every node visibly leaves the axis (no vertical list).
-            assertTrue(offset.value != 0f)
+            assertTrue("offset must leave the axis (index $globalIndex)", offset.value != 0f)
+            val amplitude = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
+            assertTrue("offset within amplitude (index $globalIndex)", abs(offset.value) <= amplitude.value)
+            columns.add((offset.value * 100f).toInt()) // 0.01dp buckets
             val sign = if (offset.value > 0f) 1f else -1f
             if (previousSign != 0f) {
                 assertEquals("nodes must alternate sides (index $globalIndex)", -previousSign, sign)
             }
             previousSign = sign
         }
+        // DT-79: the old two-column zigzag (magnitudes 1.0/0.55) is gone; the sine puts
+        // nodes on a LEFT / CENTER / RIGHT spread (center appears at the sine's zero
+        // crossings... here extremes only, but the offset values differ per row).
+        assertTrue("expected more than two distinct node columns, got $columns", columns.size > 2)
         // Deterministic: the same input yields the same offset.
         assertEquals(
             ShomaraPathGraphLogic.zigzagOffsetDp(7, isRtl = false, contentWidth = contentWidth),
@@ -199,30 +276,30 @@ class ShomaraPathGraphTest {
     }
 
     @Test
-    fun `zigzag amplitude clamps on narrow content so nodes never cut at the edge`() {
-        // 312dp content: the full token amplitude fits.
-        assertEquals(
-            (ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8).value,
-            ShomaraPathGraphLogic.zigzagAmplitudeDp(312.dp).value,
-            0.001f,
-        )
+    fun `winding offsets clamp on narrow content so nodes never cut at the edge`() {
+        val contentWidth = 312.dp // 360dp screen minus the 24dp side insets
+        // The full token amplitude fits: the outer columns sit inside the content width.
+        val full = ShomaraPathGraphLogic.zigzagOffsetDp(0, isRtl = false, contentWidth = contentWidth)
+        val columnHalf = (ShomaraTokens.Space40 * 4).value / 2f
+        assertTrue(full.value + columnHalf <= 312f / 2f)
         // A narrow 240dp screen (192dp content) clamps below the token amplitude, and the
         // offset label column still stays fully inside the content width.
-        val clamped = ShomaraPathGraphLogic.zigzagAmplitudeDp(192.dp)
+        val clamped = ShomaraPathGraphLogic.zigzagOffsetDp(0, isRtl = false, contentWidth = 192.dp)
         assertTrue(clamped.value < (ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8).value)
-        val columnHalf = (ShomaraTokens.Space40 * 4).value / 2f
         assertTrue(clamped.value + columnHalf <= 192f / 2f)
     }
 
     @Test
-    fun `connector enters at the previous node offset so the line chains across items`() {
-        val contentWidth = 312.dp
-        for (globalIndex in 1..24) {
-            assertEquals(
-                ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex - 1, isRtl = false, contentWidth = contentWidth),
-                ShomaraPathGraphLogic.connectorEnterOffsetDp(globalIndex, isRtl = false, contentWidth = contentWidth),
-            )
-        }
+    fun `connector stroke reaches the next node circle center`() {
+        // DT-79: the stroke's bottom extension must cover the full distance from the item
+        // bottom to the NEXT node's circle center: label block + paddings. The formula is
+        // token-based, so it tracks font-scale-independent geometry.
+        val expected = ShomaraTokens.Space24 + ShomaraTokens.ComponentNodeSize / 2f + ShomaraTokens.Space8
+        assertEquals(expected, ShomaraPathGraphLogic.connectorBottomDp())
+        // Sanity: it is strictly longer than the old fixed 32dp tip that stopped at the
+        // circle's edge, and shorter than one full row (never bleeds into the row after next).
+        assertTrue(ShomaraPathGraphLogic.connectorBottomDp().value > ShomaraTokens.Space32.value)
+        assertTrue(ShomaraPathGraphLogic.connectorBottomDp().value < 152f)
     }
 
     @Test
@@ -252,22 +329,71 @@ class ShomaraPathGraphTest {
     @Test
     fun `item indices follow the lazy list model with chapter dividers`() {
         // E-02: each chapter is band + 5 nodes + 1 divider (chapters 1-4); chapter 5 has no divider.
-        assertEquals(1, ShomaraPathGraphLogic.headerItemIndexForChapter(1))
-        assertEquals(8, ShomaraPathGraphLogic.headerItemIndexForChapter(2))
-        assertEquals(29, ShomaraPathGraphLogic.headerItemIndexForChapter(5))
-        assertEquals(2, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST01")))
-        assertEquals(6, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST05")))
-        assertEquals(9, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST06")))
-        assertEquals(34, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST25")))
+        // The orientation strip is pinned OUTSIDE the list, so no header row is counted and
+        // chapter 1's band is index 0.
+        assertEquals(0, ShomaraPathGraphLogic.chapterBandIndexForChapter(1))
+        assertEquals(7, ShomaraPathGraphLogic.chapterBandIndexForChapter(2))
+        assertEquals(28, ShomaraPathGraphLogic.chapterBandIndexForChapter(5))
+        assertEquals(1, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST01")))
+        assertEquals(5, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST05")))
+        assertEquals(8, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST06")))
+        assertEquals(33, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST25")))
     }
 
     @Test
-    fun `restore scroll targets the saved chapter header`() {
+    fun `restore scroll targets the saved chapter band`() {
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(null))
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(1))
-        assertEquals(8, ShomaraPathGraphLogic.restoredFirstVisibleIndex(2))
-        assertEquals(29, ShomaraPathGraphLogic.restoredFirstVisibleIndex(5))
+        assertEquals(7, ShomaraPathGraphLogic.restoredFirstVisibleIndex(2))
+        assertEquals(28, ShomaraPathGraphLogic.restoredFirstVisibleIndex(5))
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(9))
+    }
+
+    @Test
+    fun `current anchor bubble starts only at a real beginning and continues otherwise`() {
+        // Copy follows real progress: «شروع» on a first run, «ادامه» once anything is completed.
+        assertEquals("شروع", ShomaraPathGraphLogic.currentBubbleLabel(ShomaraPathProgress.emptyResolved()))
+        assertEquals("شروع", ShomaraPathGraphLogic.currentBubbleLabel(ShomaraPathProgress.unresolved()))
+        assertEquals("ادامه", ShomaraPathGraphLogic.currentBubbleLabel(progress))
+    }
+
+    @Test
+    fun `depth encodes availability so it never contradicts the state label`() {
+        // Migrated contract: the Current station is the only raised node, a locked station is
+        // flat (nothing to press into), and every other state is a soft surface.
+        assertEquals(ShomaraClayDepth.Featured, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Current))
+        assertEquals(ShomaraClayDepth.Flat, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Locked))
+        assertEquals(ShomaraClayDepth.Soft, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Fresh))
+        assertEquals(ShomaraClayDepth.Soft, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Completed))
+        assertEquals(ShomaraClayDepth.Soft, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Perfect))
+        assertEquals(1, ShomaraPathNodeState.entries.count { ShomaraPathGraphLogic.depthFor(it) == ShomaraClayDepth.Featured })
+    }
+
+    @Test
+    fun `node labels keep the 4 to 5 to 1 text floor on the path canvas`() {
+        // The label block is drawn on the canvas colour, not on the node face: the station line
+        // uses Ink and the state line uses Ink2. Both are small text, so the floor is 4.5:1.
+        // Home passes ColorHomeCanvas and the standalone default is ColorCanvas — cover both.
+        for (canvas in listOf(ShomaraTokens.ColorCanvas, ShomaraTokens.ColorHomeCanvas)) {
+            listOf(ShomaraTokens.ColorInk, ShomaraTokens.ColorInk2).forEach { text ->
+                val ratio = contrastRatio(text, canvas)
+                assertTrue("node label text contrast $ratio must be >= 4.5", ratio >= 4.5)
+            }
+        }
+    }
+
+    @Test
+    fun `node face marks keep the 3 to 1 non-text floor in every state and chapter`() {
+        for (chapter in 1..5) {
+            for (state in ShomaraPathNodeState.entries) {
+                val colors = ShomaraPathGraphLogic.colorsFor(state, chapter)
+                val ratio = contrastRatio(colors.content, colors.container)
+                assertTrue(
+                    "chapter $chapter $state glyph contrast $ratio must be >= 3.0",
+                    ratio >= 3.0,
+                )
+            }
+        }
     }
 
     @Test
@@ -282,14 +408,15 @@ class ShomaraPathGraphTest {
     fun `current node ring fraction is the chapter completion from the same progress set`() {
         // Fixture progress: ST01-ST03 completed in chapter 1, ST04 current.
         assertEquals(0.6f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), progress), 0.001f)
-        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST01"), ShomaraPathProgress()), 0.001f)
+        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST01"), ShomaraPathProgress.emptyResolved()), 0.001f)
         val chapterDone = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05"),
             currentStationId = "ST06",
+            isResolved = true,
         )
         assertEquals(1f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST06"), chapterDone), 0.001f)
         // Unknown ids never inflate the ring: the ring is a chapter fraction, never a lesson value.
-        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), ShomaraPathProgress(completedStationIds = setOf("ST99"))), 0.001f)
+        assertEquals(0f, ShomaraPathGraphLogic.ringFractionFor(ShomaraStationCatalog.station("ST04"), ShomaraPathProgress(completedStationIds = setOf("ST99"), isResolved = true)), 0.001f)
     }
 
     @Test
@@ -336,5 +463,41 @@ class ShomaraPathGraphTest {
     fun `chapter accents stay pairwise distinct`() {
         val accents = (1..5).map { ShomaraPathGraphLogic.chapterBandColors(it).second }
         assertEquals(5, accents.toSet().size)
+    }
+
+    @Test
+    fun `current node uses the canonical home focal colors in every chapter`() {
+        for (chapter in 1..5) {
+            val colors = ShomaraPathGraphLogic.colorsFor(ShomaraPathNodeState.Current, chapter)
+            assertEquals(ShomaraTokens.ColorHomeViolet, colors.container)
+            assertEquals(ShomaraTokens.ColorHomeVioletDark, colors.edge)
+            assertEquals(ShomaraTokens.ColorHomeOnViolet, colors.content)
+        }
+    }
+
+    @Test
+    fun `initial scroll reveals the real next station unless a saved chapter wins`() {
+        assertEquals(
+            0,
+            ShomaraPathGraphLogic.initialFirstVisibleIndex(null, ShomaraPathProgress.emptyResolved()),
+        )
+        assertEquals(
+            ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST04")),
+            ShomaraPathGraphLogic.initialFirstVisibleIndex(null, progress),
+        )
+        assertEquals(
+            ShomaraPathGraphLogic.restoredFirstVisibleIndex(3),
+            ShomaraPathGraphLogic.initialFirstVisibleIndex(3, progress),
+        )
+    }
+
+    @Test
+    fun `home defaults cannot expose fabricated fresh progress or retry`() {
+        val state = ShomaraHomeUiState()
+        assertFalse(state.progress.isResolved)
+        assertFalse(state.retryAvailable)
+        assertEquals(ShomaraEntryState.Loading, ShomaraPathGraphLogic.resolveEntryState(state.progress, state.entryState))
+        assertTrue(state.progress.completedStationIds.isEmpty())
+        assertEquals(null, state.progress.currentStationId)
     }
 }

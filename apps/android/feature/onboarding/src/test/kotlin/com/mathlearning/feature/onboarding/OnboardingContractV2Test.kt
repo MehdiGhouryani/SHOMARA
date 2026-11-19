@@ -5,7 +5,6 @@ import com.mathlearning.core.datastore.ShomaraProfileDraftStore
 import com.mathlearning.core.designsystem.ShomaraOtpFieldState
 import com.mathlearning.core.designsystem.ShomaraOtpLogic
 import com.mathlearning.core.designsystem.ShomaraOtpState
-import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraGradeCatalog
 import com.mathlearning.core.model.ShomaraLaunchState
 import kotlinx.coroutines.test.runTest
@@ -15,7 +14,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** MEGA N04 close-out: launch mapping, flow UI states, OTP paste/expired, avatar, resume. */
+/** MEGA N04 close-out: launch mapping, flow UI states, OTP paste/expired, grade, resume. */
 class OnboardingContractV2Test {
 
     @Test
@@ -72,17 +71,9 @@ class OnboardingContractV2Test {
         assertEquals(ShomaraOtpFieldState.Focused, ShomaraOtpLogic.stateFor(renewed, focused = true, enabled = true, busy = false))
     }
 
-    @Test
-    fun `avatar catalog mirrors the contracts and validates selection`() {
-        assertEquals(listOf("sun", "leaf", "cloud", "moon"), ShomaraAvatarCatalog.Options.map { it.id })
-        assertEquals("خورشیدی", ShomaraAvatarCatalog.option("sun").label)
-        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) { ShomaraAvatarCatalog.option("dragon") }
-        val draft = ShomaraProfileDraft(name = "آریا").withAvatar("leaf")
-        assertEquals("برگ", draft.avatar.label)
-        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
-            ShomaraProfileDraft(name = "آریا", avatarId = "dragon")
-        }
-    }
+    // ADR-0051: the `avatar catalog mirrors the contracts and validates selection` test was removed
+    // with the avatar preset feature — the catalog, the option type and the draft's avatar id no
+    // longer exist, so there is nothing left for that check to mirror or validate.
 
     @Test
     fun `grade catalog locks future grades warmly`() {
@@ -119,13 +110,13 @@ class OnboardingContractV2Test {
     @Test
     fun `draft store snapshot persists round-trip`() = runTest {
         val store = InMemoryDraftStore()
-        store.save(ShomaraProfileDraftSnapshot("آریا", "leaf", "G1"))
+        store.save(ShomaraProfileDraftSnapshot("آریا", "G1"))
         assertEquals("آریا", store.read()?.name)
-        assertEquals("leaf", store.read()?.avatarId)
+        assertEquals("G1", store.read()?.gradeId)
         store.clear()
         assertNull(store.read())
         // Empty-name snapshots are refused by the real store contract.
-        val refused = runCatching { store.save(ShomaraProfileDraftSnapshot("", "sun", "G1")) }
+        val refused = runCatching { store.save(ShomaraProfileDraftSnapshot("", "G1")) }
         assertTrue(refused.exceptionOrNull() is IllegalArgumentException)
     }
 }

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 const root=process.cwd();
-// Re-baselined 2026-10-04 (P02-A): teacher web pages were intentionally retired (docs/reference/ADULT_SURFACE.md);
+// Re-baselined 2026-10-04 (P02-A): teacher web pages were intentionally retired (docs/ARCHITECTURE.md);
 // teacher APIs are preserved for a possible separate Teacher product and remain required below.
 // packages/adult-projections/dist is a post-build artifact: run `npm run build:packages` first.
 const required=[
@@ -20,7 +20,7 @@ const required=[
  'apps/web/app/api/v1/teacher/students/[learningIdentityId]/observations/route.ts',
  'supabase/migrations/0025_teacher_observations.sql',
  'supabase/migrations/0026_phase8_projection_views.sql',
- 'docs/api/API_ADULT_PROJECTION_CONTRACT.md',
+ 'docs/ARCHITECTURE.md',
 ];
 for(const rel of required) if(!fs.existsSync(path.join(root,rel))) throw new Error(`Missing ${rel}`);
 const obs=fs.readFileSync(path.join(root,'supabase/migrations/0025_teacher_observations.sql'),'utf8');

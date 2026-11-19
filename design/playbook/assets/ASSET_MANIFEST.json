@@ -1,0 +1,669 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "SHOMARA_HOME_UI_HANDOFF_v3",
+  "assetCount": 69,
+  "runtimeFormats": {
+    "android": "VectorDrawable XML + optional WebP",
+    "designSource": "SVG"
+  },
+  "policy": "SVG is the editable source; Android VectorDrawable is the runtime resource. Character art stays at its official project source to preserve provenance and avoid duplicate binaries.",
+  "assets": [
+    {
+      "path": "02_ASSETS/android/drawable/shomara_lesson_addition.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 620,
+      "sha256": "622288bbb36a1ec636f58e47a70b8bc4da7d405b7e4278209a08f02e89e636f5",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_lesson_counting.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 481,
+      "sha256": "2b5eb68d0820c3e2000cefe85cd9f305cc7076264863b0de2f9a7e2edf7920b2",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_lesson_patterns.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 584,
+      "sha256": "90256c99405ae010acbe5860f8076a07b34873cb7e2808175bc2592b95f09aae",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_lesson_shapes.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 498,
+      "sha256": "8293caa321db80080b6c085a2394ee4ee81fafcc6fb0b6c5c7969423a56feaa6",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_nav_me_active.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 459,
+      "sha256": "572a5f0e53104fd8cdc4be3c26fdbea943b3687288e78f1fd2df3c6850f6b252",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_nav_me_inactive.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 459,
+      "sha256": "d9200f2f0f2b7f974fbbb21c69e88fb23e915854115e8106c66c25fc33b431f9",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_nav_path_active.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 876,
+      "sha256": "5d5418c5b0f17550b74c41e54ec9f6f7d4e966522702d5301a0f80dbfae4e165",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_nav_path_inactive.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 876,
+      "sha256": "b8704489c9e394676b3c45d8efb9d1eb3a0fd5d0baee8da3dcfb93185d51260f",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_nav_practice_active.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 521,
+      "sha256": "9210da5d2850d14e16685990cb3767bca21ae776372f1081674a38417055671e",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_nav_practice_inactive.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 521,
+      "sha256": "c20e2731d29c777bf5bc3e5438aa68c22e0d10770777dd0009b9d46b57a6b91a",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_node_completed.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 433,
+      "sha256": "56af67ee202a1ab3c0bbaae7893ec57c70fff11daff62e0cdafcc38dc97420f7",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_node_current.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 435,
+      "sha256": "8d0d665b349d84d10cfec969dd491404682cbf8651976bcd1b19bc75b28e1d18",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_node_fresh.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 876,
+      "sha256": "f4266d24c92a685db5159b9a9cbfa8d27bd7f7c06c09cb3bb17d69bc0155284b",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_node_locked.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 487,
+      "sha256": "14622781858583a2ef9b5411f6283fb64205391a24ea5e0387b7a1bd9691180f",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_node_perfect.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 869,
+      "sha256": "77b380e8f9b1e40490c695edb40c4b52f6e4e1e5cf88d3b82db4335422f62886",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_state_empty.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 851,
+      "sha256": "cc9a690902ade668484eb90302fc0a32441826ca058d673e02d6153327c14bde",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_state_error.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 675,
+      "sha256": "ce1d63029debf017bcc01922a0cf3b8f7afc18cdbd772544cc77f32bda86f4dc",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_state_offline.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 642,
+      "sha256": "7fc22dd5190dba2f3a3451120df1b129ca50e439ccbe2056a740f142e6e569ef",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_state_success.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 609,
+      "sha256": "c03e34cb346793d50800bc1b2e8de0d0458f61f3af089bba4be60024c5a850b8",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_arrow.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 402,
+      "sha256": "8df55ba8a84c6c89670d7d79f82a58187ed380c2bffead4b1911404935871f51",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_book.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 441,
+      "sha256": "8fe31b281b229446e65abf2baef887f0fe61bc1cc9f88bceb93ff2586951faa0",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_bookmark.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 406,
+      "sha256": "bab06ebe6447487123215e7c424f909cde9ee0d6b6270d8b2248de7cf78caa19",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_check.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 390,
+      "sha256": "ed78ff1052c75194732889e4468ae486a6e23f45cb5b3abbd7c91ffed7253a76",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_chevron_left.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 391,
+      "sha256": "fa518ba38b6782ccf5e6bf7014766d60e85f89cac783fa665a2755cc2191f0f9",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_chevron_right.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 391,
+      "sha256": "d80c18e2af2a8b194caa0cfd5e5fe16930d81c4c8e61cafb961b37ea10e71c15",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_close.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 395,
+      "sha256": "a0caa6b65abfa8f889bc650cf0c15174fc3f8c1f63bd34415be2713c3d3da407",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_help.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 738,
+      "sha256": "e955a6f6fa908650e82ad02f12ad71dd095f1676cbdf9bf2f818cd5ae867661d",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_lock.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 461,
+      "sha256": "8c980fa791799af21cc3936e9f3b0500891c9eca08432fbd96522f7aca84e1c3",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_menu.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 412,
+      "sha256": "b0c71123c563282472e220b33d87d9cbe52b282a6074a49f8f16836918425a5e",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_play.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 370,
+      "sha256": "c5fd957811a0ccbe3f40885fd68a9164ff724abbf2c645ec75c83a377742df4f",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_search.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 428,
+      "sha256": "e23ff18f00cefebe735c833390965120790ae04c618935750e784dd9b0a23089",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/android/drawable/shomara_ui_settings.xml",
+      "format": "XML",
+      "mimeType": "application/xml",
+      "bytes": 512,
+      "sha256": "536fe0b6563aa1c92b5bd11790bd54ed42485feb60a31728a2da44dc881a0a98",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/backgrounds/garden_path_footer.webp",
+      "format": "WEBP",
+      "mimeType": "image/webp",
+      "bytes": 29970,
+      "sha256": "27461fea3497d1cda606783cbddad65b4d977475324241024a60c3806b5c1dcf",
+      "bundled": true,
+      "width": 1440,
+      "height": 480,
+      "mode": "RGBA",
+      "hasAlpha": true,
+      "category": "decorative-background-optional"
+    },
+    {
+      "path": "02_ASSETS/svg/lessons/lesson_addition.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 430,
+      "sha256": "9dae34e84c149e8961d6da563dd6357bec246f3dc9dc572ead5bb5430fc056b4",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/svg/lessons/lesson_counting.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 432,
+      "sha256": "7f0c97360dd717c6609befda475a75acf01f0166964915b98ec89c55eadfc34d",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/svg/lessons/lesson_patterns.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 449,
+      "sha256": "01dd5d8af1b76fe6723d6e5591519a0738f311e9789464be4ee5e716c35fc60a",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/svg/lessons/lesson_shapes.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 402,
+      "sha256": "3cc005c56f98f0f0047b60f9121a3026764d9a153b17795ae9ae64b415b628fa",
+      "bundled": true,
+      "category": "lesson-topic"
+    },
+    {
+      "path": "02_ASSETS/svg/navigation/nav_me_active.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 468,
+      "sha256": "1f075cfe7260dc63d5c12df82d67d5c647c15798387762602cf44c8a6f45dee8",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/svg/navigation/nav_me_inactive.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 470,
+      "sha256": "1f544356d57535fc5c8986194253e268a5dbefe1744eda7edea5cfcfcf6630e3",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/svg/navigation/nav_path_active.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 690,
+      "sha256": "9481815515c9467bd6bc2e1b7396b61c4039e549c96be6cb0ddba05d1ddf2479",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/svg/navigation/nav_path_inactive.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 692,
+      "sha256": "de498a83ba4876d437ed2b0adf3e749f2c8acb6a0bed3e8d9aa2f2d2ee7151af",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/svg/navigation/nav_practice_active.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 571,
+      "sha256": "7284083d828d5abf26941391b15f69d366e2faa14099f18e3fcaa05cbf2c1fd7",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/svg/navigation/nav_practice_inactive.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 573,
+      "sha256": "cfdce229a3257e5962c4c7a2a62d3ba05bb505b5f9cd6b35c5c1358672ea7642",
+      "bundled": true,
+      "category": "navigation"
+    },
+    {
+      "path": "02_ASSETS/svg/nodes/node_completed.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 459,
+      "sha256": "128c965fbab570be1a50aeb69cc523be9f385fb2cd4f345ec18c39319e308478",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/svg/nodes/node_current.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 487,
+      "sha256": "c96c581bc821dbd9d3eb62b98db02759b8391ab1e68d3f7fde3e5593e7d48d0b",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/svg/nodes/node_fresh.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 496,
+      "sha256": "26e5a89ecd87dd7a6f716baea4a2fb14ab1eec1ed663b6b3a286ec0f82decd53",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/svg/nodes/node_locked.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 595,
+      "sha256": "d171665d8220d8618985b0f8bd3fb51c791c60bf024cf41fdc3f0d46cc09357c",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/svg/nodes/node_perfect.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 530,
+      "sha256": "1b0099f85c5c96935fdc3339ee85691deea21ba98646a46037f6e323ca0d0884",
+      "bundled": true,
+      "category": "path-node-state"
+    },
+    {
+      "path": "02_ASSETS/svg/states/state_empty.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 522,
+      "sha256": "cdfb6d8deee3f11c821f9c9f343988ab51fb22776437de67e4d12974114c0d77",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/svg/states/state_error.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 476,
+      "sha256": "b9f91d4915e32d8cc3365da4ed17988570d70edd044d0209bf31f744c26a7216",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/svg/states/state_offline.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 470,
+      "sha256": "30f590a8c1bfb5ca258739f08ffa433432696193db110196e65e35dcc65f5c84",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/svg/states/state_success.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 451,
+      "sha256": "578aa09f3200db02a750a45a0d07c0ab949fc87f93f41d464a02631531c61f99",
+      "bundled": true,
+      "category": "empty-error-success-offline-state"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/card_highlight.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 274,
+      "sha256": "456caeee0557ff8b5754a3eee1c18871ceeaf5c30842c052a8f711187714defa",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/chapter_ribbon.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 625,
+      "sha256": "ae217e190ac9fb2b616b11ba9a7b17b0f62e9298ae674858b10bd2e96b1ed402",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/garden_path_footer.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 637,
+      "sha256": "fc9f45ec96c4a2ff6112434ec113e90333d7dd0d4232d8cab9c26348140aaf49",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/progress_track.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 303,
+      "sha256": "3cf4265f2d613323e5cd7bbcac38b62903ef809c77e5f28f2e6476f2946ea389",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_arrow.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 416,
+      "sha256": "b64d5946abab1da658978166beabc22f10493b4e20782c6f4268cc7b0daf6903",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_book.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 468,
+      "sha256": "f3fdb8d372614982be3220eb6d74158d9a14a7d34d4d0bca05c30f72891f4240",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_bookmark.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 420,
+      "sha256": "40b8519061cd9142c24f3917c097b0fe626c79fdf9fa2fbfadb6b5624ea8a722",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_check.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 405,
+      "sha256": "2e37f1427c7a7481e8065edfaa9929e9174cdfec741cfbccdbe7227d94b713d6",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_chevron_left.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 215,
+      "sha256": "30e2f75a50b9aa4522801bbc0e7c027cd73a6fc67029f2d61d12115647e25fb8",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_chevron_right.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 215,
+      "sha256": "ba48216ca50ad3d1bbc1770d6198940eadee9d4bb0eb4c97075e35b06a883c7c",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_close.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 412,
+      "sha256": "02685f96a0435b8c0c92a8d62175270b40510ae73baff1cc0ae1b011e698e328",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_help.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 369,
+      "sha256": "d50b06e812bb39e4ee759724590216a52569f4ec85044258619fb17125c33875",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_lock.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 466,
+      "sha256": "e5d3259f87a2d69b9dbe87d434e012dddbec41230259e1ae2e7514efb7175bbd",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_menu.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 236,
+      "sha256": "baccf812ca9dec05015cbe544fd26cfd56840af5809f3fd3abb7ffcfac94b5f7",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_play.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 354,
+      "sha256": "c25200457ec6458c71d00aa2df96a72014baa61cb87747255d27bde2be636a50",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_search.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 431,
+      "sha256": "35bdb62529f4621e68ef6fa25cfede7b15d74b56b85ff5b36b4a2ba8c22ae731",
+      "bundled": true,
+      "category": "ui-icon"
+    },
+    {
+      "path": "02_ASSETS/svg/ui/ui_settings.svg",
+      "format": "SVG",
+      "mimeType": "image/svg+xml",
+      "bytes": 517,
+      "sha256": "a8636a1eb09c591ff50f34e75b82d1a6d6825e11865ee8991a670080399f1a34",
+      "bundled": true,
+      "category": "ui-icon"
+    }
+  ],
+  "projectCharacterReferences": [
+    {
+      "id": "main-front",
+      "path": "apps/android/core/designsystem/src/main/res/drawable-nodpi/shomara_char_main_01.webp",
+      "bundled": false,
+      "reason": "already shipped in project Native resources"
+    },
+    {
+      "id": "main-wave",
+      "path": "apps/android/core/designsystem/src/main/res/drawable-nodpi/shomara_char_main_10.webp",
+      "bundled": false,
+      "reason": "already shipped in project Native resources"
+    },
+    {
+      "id": "number-front",
+      "path": "apps/android/core/designsystem/src/main/res/drawable-nodpi/shomara_char_number_01.webp",
+      "bundled": false,
+      "reason": "already shipped in project Native resources"
+    },
+    {
+      "id": "number-pointing",
+      "path": "apps/android/core/designsystem/src/main/res/drawable-nodpi/shomara_char_number_17.webp",
+      "bundled": false,
+      "reason": "already shipped in project Native resources"
+    },
+    {
+      "id": "fandogh-front",
+      "path": "design/handoff-2026-10/assets/characters/Fandogh/Fandogh_01_front_app_800.webp",
+      "bundled": false,
+      "reason": "official project handoff source; install_fandogh_native.py copies if absent"
+    }
+  ]
+}

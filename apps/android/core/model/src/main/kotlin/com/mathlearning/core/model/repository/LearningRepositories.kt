@@ -26,7 +26,11 @@ data class StoredStationPackage(
     val payload: Map<String, String>,
 )
 
-/** Last SERVER-VERIFIED station/chapter status (offline-first read source for the path). */
+/**
+ * Legacy server-verified station/chapter projection from the pre-ADR-0039 architecture.
+ * It is retained for migration compatibility only and is NOT the current Home source.
+ * Phase 1 replaces it with local-evaluator progress keyed by childProfileId after O1/O2/O5.
+ */
 data class ProgressProjection(
     val learningIdentityId: String,
     val stationId: String,
@@ -85,9 +89,9 @@ interface OutboxRepository {
     suspend fun quarantinedCount(): Int
 
     /**
-     * Accepted-send epilogue in ONE transaction: upsert the SERVER-VERIFIED progress projection
-     * (Server-Wins) and remove the completed outbox operation — a crash between the two must be
-     * impossible. `projection == null` (no identity in the response) still removes the operation.
+     * Legacy server-outbox epilogue retained during migration: upsert the pre-ADR-0039 projection
+     * and remove the accepted operation in ONE transaction. ADR-0039 retires runtime server transport
+     * in Phase 2 after O3/O5; this projection must not be wired to the live offline Home.
      */
     suspend fun completeAccepted(projection: ProgressProjection?, idempotencyKey: String)
 }

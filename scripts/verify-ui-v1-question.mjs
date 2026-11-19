@@ -43,7 +43,7 @@ check('view-reuses-lesson-chrome', view.includes('LessonTopBar') && view.include
 const manifest = JSON.parse(read('apps/mobile/parity/manifest.json'));
 for (const [id, page] of [['question', '08'], ['correct', '09'], ['retry', '10']]) {
   const e = manifest.find((x) => x.id === id);
-  check(`parity:${id}`, Boolean(e) && e.page === page && e.maxDiffPercent <= 0.5 && exists(`docs/design-handoff-2026-10/pages-v1/goldens/${page}.png`));
+  check(`parity:${id}`, Boolean(e) && e.page === page && e.maxDiffPercent <= 0.5 && exists(`design/handoff-2026-10/pages-v1/goldens/${page}.png`));
 }
 
 // ---- U5b wiring (D-001 to D-003) ----

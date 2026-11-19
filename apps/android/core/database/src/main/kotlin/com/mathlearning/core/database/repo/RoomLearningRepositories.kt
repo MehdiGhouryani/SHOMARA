@@ -98,10 +98,10 @@ class RoomProgressRepository(private val db: ShomaraLearningDatabase) : Progress
 class RoomOutboxRepository(private val db: ShomaraLearningDatabase) : OutboxRepository {
     private val dao: OutboxOperationDao = db.outboxOperationDao()
 
-    override suspend fun enqueue(operation: OutboxOperation) {
-        ForbiddenFieldGuard.reject(operation.payload)
-        dao.upsert(operation.toEntity())
-    }
+    // The guard runs on every write path, so it lives in exactly one place: `update` is the write, and `enqueue`
+    // is that write under the name the queue's callers use. Two copies of the same three statements could drift,
+    // and the guard is the one statement in this class that must never be missing.
+    override suspend fun enqueue(operation: OutboxOperation) = update(operation)
 
     override suspend fun update(operation: OutboxOperation) {
         ForbiddenFieldGuard.reject(operation.payload)

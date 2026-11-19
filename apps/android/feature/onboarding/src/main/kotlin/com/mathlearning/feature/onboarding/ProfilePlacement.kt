@@ -19,6 +19,10 @@ object ShomaraProfileStrings {
     const val PlacementSkip: String = "فعلاً رد می‌کنم"
     const val PlacementPending: String = "در حال آماده‌سازی نقطهٔ شروع…"
     const val PlacementTitle: String = "نقطهٔ شروع را پیدا کنیم"
+    /** DT-75: primary CTA once a local placement decision exists (offline-first, ADR-0039). */
+    const val PlacementStart: String = "شروع مسیر"
+    /** DT-75: the locally resolved start point copy (the chosen grade's beginning). */
+    val PlacementLocalStartTemplate: String = "از ابتدای مسیر %s شروع می‌کنیم"
 }
 
 /** Pure save reducer: bounded warm retries, state kept verbatim for resubmission. */
@@ -62,8 +66,17 @@ data class ShomaraProfileSaveState(
 }
 
 /**
- * Grade placement: the DECISION is server-authoritative; the client only reports the user's
- * skip choice and renders whatever the server returns (placement is never guessed client-side).
+ * Grade placement (DT-75, revision of the server-authoritative note).
+ *
+ * The original contract waited for a server decision that no endpoint has ever produced, which
+ * made `isPending` an infinite spinner (AGENTS §6 violation) and — in a release build with no
+ * skip affordance — a permanent dead end between the profile step and the child shell. ADR-0039
+ * governs here: the child's path has NO network dependency, so placement resolves LOCALLY.
+ *
+ * The local resolution is not a guess of mastery (that stays with the versioned local evaluator):
+ * it reads the grade the child explicitly picked in the profile step and starts at that grade's
+ * beginning — exactly what the domain's fresh/noCurrent state already renders. A server decision,
+ * if one ever exists, still wins: `withServerDecision` remains the explicit override.
  */
 data class ShomaraPlacementState(
     val serverDecision: String? = null,
@@ -79,7 +92,18 @@ data class ShomaraPlacementState(
     val isSkipped: Boolean
         get() = skippedByUser
 
+    val hasDecision: Boolean
+        get() = serverDecision != null
+
     fun withServerDecision(decision: String): ShomaraPlacementState = copy(serverDecision = decision, skippedByUser = false)
+
+    /**
+     * DT-75 local resolution for the offline-first build: the start point is the chosen grade's
+     * beginning. Pure — the caller supplies the label so this stays testable without a catalog.
+     * Idempotent: an existing decision (server or local) is never overwritten by a re-resolve.
+     */
+    fun resolveLocally(gradeLabel: String): ShomaraPlacementState =
+        if (isPending) withServerDecision(ShomaraProfileStrings.PlacementLocalStartTemplate.format(gradeLabel)) else this
 
     companion object {
         fun skip(): ShomaraPlacementState = ShomaraPlacementState(skippedByUser = true)

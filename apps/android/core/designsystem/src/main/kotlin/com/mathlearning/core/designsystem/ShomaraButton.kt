@@ -23,6 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.role
@@ -81,7 +84,21 @@ class ShomaraTapGuard(
 /** Button state matrix: default/pressed/focused/disabled/loading (COMPONENT_READINESS Button row). */
 enum class ShomaraButtonState { Default, Pressed, Focused, Disabled, Loading }
 
-enum class ShomaraButtonVariant { Primary, Secondary, Ghost }
+enum class ShomaraButtonVariant { Primary, Secondary, Ghost, Home }
+
+/**
+ * AGENTS §6 rule «in every state there is exactly one clear primary CTA» was prose only: nothing in
+ * the semantics tree said which action a screen considers primary, so no test could check it and
+ * reviewers counted by eye. A Primary-variant [ShomaraButton] now publishes this flag, which lets
+ * the instrumented sweep count primary CTAs per state and fail when two actions compete for the
+ * decision — or when a decision state offers none.
+ *
+ * It is additive: no label, role or state description changes, so assistive technology and the
+ * existing semantics assertions are unaffected.
+ */
+val ShomaraPrimaryCta = SemanticsPropertyKey<Boolean>("ShomaraPrimaryCta")
+
+var SemanticsPropertyReceiver.shomaraPrimaryCta by ShomaraPrimaryCta
 
 /** Pure button logic — JVM-testable; the composable is a thin renderer of this contract. */
 object ShomaraButtonLogic {
@@ -100,6 +117,10 @@ object ShomaraButtonLogic {
         else -> if (variant == ShomaraButtonVariant.Ghost) ShomaraClayDepth.Flat else ShomaraClayDepth.Soft
     }
 
+    /** Ghost intentionally stays flat but keeps a visible one-pixel outline as a touch affordance. */
+    fun borderWidthFor(variant: ShomaraButtonVariant, state: ShomaraButtonState) =
+        if (variant == ShomaraButtonVariant.Ghost) ShomaraTokens.ClayHintBorderWidth
+        else ShomaraClay.specFor(clayDepth(variant, state)).borderWidth
     /** (container, content) pairs resolve only through generated tokens. */
     fun colors(variant: ShomaraButtonVariant, state: ShomaraButtonState): Pair<Color, Color> {
         val quiet = state == ShomaraButtonState.Disabled || state == ShomaraButtonState.Loading
@@ -107,6 +128,13 @@ object ShomaraButtonLogic {
             ShomaraButtonVariant.Primary ->
                 if (quiet) ShomaraTokens.ColorPrimarySoft to ShomaraTokens.ColorMuted
                 else ShomaraTokens.ColorPrimary to ShomaraTokens.ColorWhite
+            // DT-77 (handoff v3): the home-language primary — violet fill, on-violet label
+            // (4.99:1), quiet states in violetSoft/home-muted. Same clay depth and geometry as
+            // Primary; only the color mapping differs. The legacy garden Primary stays for the
+            // lesson surfaces still on the old theme — no silent global restyle.
+            ShomaraButtonVariant.Home ->
+                if (quiet) ShomaraTokens.ColorHomeVioletSoft to ShomaraTokens.ColorHomeMuted
+                else ShomaraTokens.ColorHomeViolet to ShomaraTokens.ColorHomeOnViolet
             ShomaraButtonVariant.Secondary ->
                 if (quiet) ShomaraTokens.ColorSurfaceAlt to ShomaraTokens.ColorMuted
                 else ShomaraTokens.ColorPrimarySoft to ShomaraTokens.ColorPrimaryDark
@@ -152,6 +180,25 @@ fun ShomaraButton(
     // indicator is motion the child asked to reduce. Defaults to the composition-wide flag
     // so a caller cannot forget to pass it.
     reducedMotion: Boolean = LocalShomaraReducedMotion.current,
+    /**
+     * Surface shape. [ShomaraTokens.RadiusMd] is the app-wide default. The onboarding CTAs are
+     * pills because the owner's handoff samples are pills; the shape is a parameter instead of
+     * four copy-pasted button implementations that reimplemented this composable.
+     */
+    shape: Shape = RoundedCornerShape(ShomaraTokens.RadiusMd),
+    /**
+     * Page-local disabled colours, for the documented owner decision that the onboarding CTAs stay
+     * dark-green while the field is still empty. Null keeps the shared quiet mapping, so no
+     * existing caller changes.
+     */
+    disabledContainer: Color? = null,
+    disabledContent: Color? = null,
+    /**
+     * Drawn decoration pinned to the physical start edge (the onboarding arrow). It is placed
+     * inside the button's Box so it never shifts the centred label, and it receives the resolved
+     * content colour so a drawn mark can never drift from its label colour.
+     */
+    leading: (@Composable (Color) -> Unit)? = null,
 ) {
     val pressed by interactionSource.collectIsPressedAsState()
     val focused by interactionSource.collectIsFocusedAsState()
@@ -162,7 +209,14 @@ fun ShomaraButton(
         focused -> ShomaraButtonState.Focused
         else -> ShomaraButtonState.Default
     }
-    val (container, content) = ShomaraButtonLogic.colors(variant, state)
+    // A page-local disabled pair wins only for the Disabled state: every other state keeps the
+    // shared mapping, so an override can never leak into the interactive feedback.
+    val disabledPair = if (disabledContainer != null && disabledContent != null) disabledContainer to disabledContent else null
+    val (container, content) = if (state == ShomaraButtonState.Disabled && disabledPair != null) {
+        disabledPair
+    } else {
+        ShomaraButtonLogic.colors(variant, state)
+    }
     val depth = ShomaraButtonLogic.clayDepth(variant, state)
     val semanticsLabel = when (state) {
         ShomaraButtonState.Disabled -> "غیرفعال"
@@ -190,20 +244,23 @@ fun ShomaraButton(
                 reducedMotion = reducedMotion,
             )
             .defaultMinSize(minWidth = ShomaraButtonLogic.MinTouchTarget, minHeight = ShomaraButtonLogic.minHeight())
-            .shadow(depthElevation, RoundedCornerShape(ShomaraTokens.RadiusMd))
-            .background(container, RoundedCornerShape(ShomaraTokens.RadiusMd))
+            .shadow(depthElevation, shape)
+            .background(container, shape)
             // E-03: a Ghost button is flat by design, but flat must not mean edgeless — it
             // carries a hairline border in the line token so the touchable area stays visible
             // against the canvas. The depth stays Flat (ADR-0040 R1).
             .then(
                 if (variant == ShomaraButtonVariant.Ghost) {
-                    Modifier.border(ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ColorLine, RoundedCornerShape(ShomaraTokens.RadiusMd))
+                    Modifier.border(ShomaraButtonLogic.borderWidthFor(variant, state), ShomaraTokens.ColorLine, shape)
                 } else Modifier
             )
             .semantics(mergeDescendants = true) {
                 role = Role.Button
                 if (state == ShomaraButtonState.Disabled) disabled()
                 if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
+                // Only the Primary/Home variants claim the decision; Secondary/Ghost deliberately do
+                // not, so a screen cannot accidentally advertise two primary actions.
+                if (variant == ShomaraButtonVariant.Primary || variant == ShomaraButtonVariant.Home) shomaraPrimaryCta = true
             }
             .let {
                 if (interactive) {
@@ -249,6 +306,9 @@ fun ShomaraButton(
                 textAlign = TextAlign.Center,
                 maxLines = ShomaraButtonLogic.MaxLabelLines,
             )
+        }
+        if (leading != null) {
+            Box(modifier = Modifier.align(Alignment.CenterStart)) { leading(content) }
         }
     }
 }

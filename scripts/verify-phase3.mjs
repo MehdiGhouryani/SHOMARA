@@ -7,7 +7,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
 const required = [
   'supabase/migrations/0022_content_delivery.sql',
-  'docs/api/API_CONTENT_DELIVERY_CONTRACT.md',
+  'docs/ARCHITECTURE.md',
   'packages/content-delivery/src/index.ts',
   'apps/mobile/src/content/ContentManager.ts',
   'apps/web/app/api/v1/content/manifest/route.ts',
@@ -19,8 +19,8 @@ const sql = fs.readFileSync(path.join(root, 'supabase/migrations/0022_content_de
 for (const token of ['content_packages','content_package_items','content_manifests','content_manifest_items','assignment_required_packages']) {
   if (!sql.includes(`create table if not exists public.${token}`)) errors.push(`Missing table ${token}`);
 }
-const pack = path.join(root, 'content/dev-packs/g1-st01-v1/package.json');
-const next = path.join(root, 'content/dev-packs/g1-st01-v1/next-stub.json');
+const pack = path.join(root, 'content-library/dev-packs/g1-st01-v1/package.json');
+const next = path.join(root, 'content-library/dev-packs/g1-st01-v1/next-stub.json');
 for (const file of [pack, next]) {
   if (!fs.existsSync(file)) errors.push(`Missing fixture ${file}`);
   else crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');

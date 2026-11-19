@@ -19,15 +19,16 @@ const required = [
   'apps/android/app/src/main/AndroidManifest.xml',
   'apps/android/core/common/build.gradle.kts',
   'apps/android/core/model/build.gradle.kts',
-  'apps/android/core/testing/build.gradle.kts',
-  'docs/adr/ADR-0036-android-native-foundation.md',
-  'docs/architecture/ANDROID_MODULE_GRAPH.md',
-  'docs/architecture/ANDROID_BUILD_ENVIRONMENT.md',
+  // DT-49: :core:testing held only FakeAppLogger.kt and nothing depended on it; the module was removed
+  // rather than kept as an empty shell, so its build file is no longer a required path.
+  'docs/DECISIONS.md',
+  'docs/ARCHITECTURE.md',
+  'docs/ARCHITECTURE.md',
   '.github/workflows/android-native.yml',
   'scripts/verify-android-environment.mjs',
   'scripts/android-build.mjs',
   'scripts/verify-android-build-harness.mjs',
-  'skills/shomara-android-build/SKILL.md',
+  'docs/DESIGN_RULES.md',
 ];
 
 for (const file of required) assert.ok(fs.existsSync(path.join(root, file)), `missing ${file}`);
@@ -41,7 +42,7 @@ assert.ok(!appManifest.includes('<uses-permission'), 'the child app declares ZER
 
 const settings = read('apps/android/settings.gradle.kts');
 // N03-02: :core:designsystem is a required compiled module (ShomaraTokens/ShomaraTheme).
-for (const module of [':app', ':core:common', ':core:designsystem', ':core:contentpackage', ':core:learning', ':core:datastore', ':core:model', ':core:network', ':core:testing', ':feature:onboarding']) {
+for (const module of [':app', ':core:common', ':core:designsystem', ':core:contentpackage', ':core:learning', ':core:datastore', ':core:model', ':core:network', ':feature:onboarding']) {
   assert.ok(settings.includes(`include("${module}")`), `module not included: ${module}`);
 }
 assert.match(settings, /RepositoriesMode\.FAIL_ON_PROJECT_REPOS/);
@@ -73,7 +74,8 @@ const forbidden = [/answerKey/i, /correctAnswer/i, /google-services\.json/i, /si
 const boundaryGuardFiles = new Set([
   // Built with path.sep so Windows/POSIX separators always match path.relative output.
   ['apps', 'android', 'core', 'model', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'model', 'ContentProjection.kt'].join(path.sep),
-  ['apps', 'android', 'core', 'common', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'common', 'error', 'ForbiddenFieldGuard.kt'].join(path.sep),
+  // DT-54: the guard moved into the merged Errors.kt (it shared a package and a theme with the error types).
+  ['apps', 'android', 'core', 'common', 'src', 'main', 'kotlin', 'com', 'mathlearning', 'core', 'common', 'error', 'Errors.kt'].join(path.sep),
 ]);
 const walk = (target) => {
   for (const entry of fs.readdirSync(target, { withFileTypes: true })) {

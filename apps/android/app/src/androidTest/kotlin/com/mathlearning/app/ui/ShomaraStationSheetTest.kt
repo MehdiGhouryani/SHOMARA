@@ -1,13 +1,18 @@
 package com.mathlearning.app.ui
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import com.mathlearning.app.shell.ShomaraChildShell
 import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
 import com.mathlearning.core.datastore.ShomaraSettingsStore
@@ -70,16 +75,86 @@ class ShomaraStationSheetTest {
         }
     }
 
+    private fun scrollToStation(title: String) {
+        val stationMatcher = SemanticsMatcher("station titled $title") { node ->
+            node.config.getOrNull(SemanticsProperties.ContentDescription)?.contains(title) == true
+        }
+        composeRule.onNodeWithTag("shomara-path-list").performScrollToNode(stationMatcher)
+    }
+
+    @Test
+    fun homeShowsOneHeadingAndKeepsPathSummaryVisible() {
+        setShell(ShomaraPathProgress.emptyResolved(), mutableListOf())
+
+        composeRule.onAllNodesWithText("مسیر یادگیری").assertCountEquals(1)
+        composeRule.onNodeWithText("ایستگاه‌های باقی‌مانده: ۲۵").assertIsDisplayed()
+    }
+
+    @Test
+    fun unresolvedProgressShowsLoadingAndOpensDeferredDeepLinkOnlyAfterResolution() {
+        val started = mutableListOf<String>()
+        val consumed = mutableListOf<String>()
+        val progress = mutableStateOf(ShomaraPathProgress.unresolved())
+
+        composeRule.setContent {
+            ShomaraChildShell(
+                onSignOut = {},
+                pathProgress = progress.value,
+                settingsStore = FakeSettingsStore(),
+                onStartStation = { started += it },
+                initialStationId = "ST07",
+                onInitialStationConsumed = { consumed += "ST07" },
+            )
+        }
+
+        composeRule.onNodeWithText("در حال آماده‌سازی مسیر").assertIsDisplayed()
+        composeRule.onAllNodesWithText("شروع").assertCountEquals(0)
+        composeRule.runOnIdle {
+            assertTrue("a lesson must not start before the local identity/progress snapshot exists", started.isEmpty())
+            assertTrue("the deep link must remain pending until the snapshot resolves", consumed.isEmpty())
+        }
+
+        // Resolving a real local snapshot may open the queued station sheet exactly once.
+        composeRule.runOnIdle {
+            progress.value = ShomaraPathProgress(
+                completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
+                currentStationId = "ST07",
+                isResolved = true,
+            )
+        }
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText("شروع").assertIsDisplayed()
+        composeRule.runOnIdle {
+            assertTrue(started.isEmpty())
+            assertEquals(listOf("ST07"), consumed)
+        }
+    }
+
+    @Test
+    fun practiceTabWaitsForResolvedProgressInsteadOfShowingFalseLockedItems() {
+        val started = mutableListOf<String>()
+        setShell(progress = ShomaraPathProgress(), started = started)
+
+        composeRule.onNodeWithText("تمرین").performClick()
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText("در حال آماده‌سازی تمرین‌ها").assertIsDisplayed()
+        composeRule.onAllNodesWithText("شروع").assertCountEquals(0)
+        composeRule.runOnIdle { assertTrue(started.isEmpty()) }
+    }
+
     @Test
     fun stationTapOpensTheStartSheetAndOnlyItsCtaNavigates() {
         val started = mutableListOf<String>()
         val readyProgress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
             currentStationId = "ST07",
+            isResolved = true,
         )
         setShell(readyProgress, started)
 
-        composeRule.onNodeWithContentDescription(st07Title).performScrollTo().performClick()
+        scrollToStation(st07Title)
+        composeRule.onNodeWithContentDescription(st07Title).performClick()
         composeRule.waitForIdle()
 
         // The sheet opened — and the tap alone navigated nowhere.
@@ -100,10 +175,12 @@ class ShomaraStationSheetTest {
         val lockedProgress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02"),
             currentStationId = "ST03",
+            isResolved = true,
         )
         setShell(lockedProgress, started)
 
-        composeRule.onNodeWithContentDescription(st07Title).performScrollTo().performClick()
+        scrollToStation(st07Title)
+        composeRule.onNodeWithContentDescription(st07Title).performClick()
         composeRule.waitForIdle()
 
         // The Locked sheet opens with the locked explanation — and the tap navigated nowhere.
@@ -128,6 +205,7 @@ class ShomaraStationSheetTest {
         val readyProgress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
             currentStationId = "ST07",
+            isResolved = true,
         )
         setShell(readyProgress, started, initialStationId = "ST07", consumed = consumed)
 
@@ -152,11 +230,13 @@ class ShomaraStationSheetTest {
         val progress = ShomaraPathProgress(
             completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
             currentStationId = "ST07",
+            isResolved = true,
         )
         setShell(progress, started, replayed = replayed)
 
         val st01Title: String = ShomaraStationCatalog.station("ST01").workingTitle
-        composeRule.onNodeWithContentDescription(st01Title).performScrollTo().performClick()
+        scrollToStation(st01Title)
+        composeRule.onNodeWithContentDescription(st01Title).performClick()
         composeRule.waitForIdle()
 
         // The completed station's sheet offers «تمرین دوباره» — the node's own words —

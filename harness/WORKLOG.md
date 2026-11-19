@@ -31,11 +31,11 @@
 - gates: Node 22.22 build/typecheck PASS؛ Vitest 65 file / 502 test PASS؛ repository، release و dependency verifier PASS.
 - static: 76/81 PASS؛ پنج flow/parity gate فقط به‌علت Chromium unavailable در وضعیت `BLOCKED_ENV` باقی ماند.
 - outcome: `N01 DONE_WITH_BLOCKER`؛ هیچ threshold یا assertion تضعیف نشد.
-- handoff: manifest تحویل در `docs/delivery/SHOMARA_N01_CHECKPOINT.md`؛ task بعدی `N02-01` در انتظار HG-01 مالک برای applicationId/minSdk.
+- handoff: manifest تحویل در `docs/notes/SHOMARA_N01_CHECKPOINT.md`؛ task بعدی `N02-01` در انتظار HG-01 مالک برای applicationId/minSdk.
 
 ## 2026-10-28 — DESIGN checkpoint / commit e4035b0
 
-- `skills/shomara-product-design/SKILL.md` و playbook با frontmatter، trigger و workflow قابل اجرا استاندارد شدند.
+- `docs/DESIGN_RULES.md § product design/SKILL.md` و playbook با frontmatter، trigger و workflow قابل اجرا استاندارد شدند.
 - `design/MASTER.md` قرارداد برند و UX Native V3 را ثبت کرد؛ ۱۵ route زنده در route registry نگاشت شدند.
 - `NATIVE_IMPLEMENTATION.md` و verifier بستهٔ طراحی اضافه/تقویت شد؛ checksum منابع اصلی و metadata صوت PASS است.
 - نتیجه: DESIGN منبع ایده‌پردازی آزاد نیست؛ هر UI task باید از route registry، state matrix و review rubric عبور کند.
@@ -95,7 +95,7 @@
 - design: برای هر خانواده outcome، focal object، CTA، Clay depth، state matrix و reject اختصاصی در `PAGE_UIUX_BLUEPRINT.md` قفل شد؛ ترتیب U0–U6 dependencies را از foundation تا cross-route QA مشخص می‌کند.
 - execution: ۲۰ work item در `NATIVE_IMPLEMENTATION_BACKLOG.csv` با module/components/states/blocker/exit evidence ثبت شد و همگی تا شواهد واقعی `NATIVE_PENDING` باقی ماندند.
 - governance: همهٔ ۱۷ page contract، route registry، Design Master، دو Skill اجرایی، docs index، design verifier، file ledger و resume protocol به blueprint/backlog canonical متصل شدند.
-- handoff: `docs/delivery/SHOMARA_FINAL_CHAT_HANDOFF.md` برای ادامهٔ مستقل از تاریخچهٔ چت ایجاد شد؛ N02 اکنون ۱۰/۱۱ و فقط `N02-07` محیطی مسدود است.
+- handoff: `docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md` برای ادامهٔ مستقل از تاریخچهٔ چت ایجاد شد؛ N02 اکنون ۱۰/۱۱ و فقط `N02-07` محیطی مسدود است.
 - gates: harness/design/skills/repository PASS؛ package build و typecheck هر ۹ workspace PASS؛ Vitest برابر ۶۵ فایل/۵۰۲ تست؛ static همان ۸۱/۸۶ و پنج failure فقط Chromium؛ Android preflight همان SDK 37 blocker را بازتولید کرد.
 - boundary: هیچ Native route، APK/AAB، audio asset یا production content ساخته/فعال نشد؛ N03 تا compile/lint/unit واقعی شروع نمی‌شود.
 
@@ -137,7 +137,7 @@
 
 ## 2026-10-31 — N02-07 / N02 closure + stage 4B cleanup — DIFF_READY, uncommitted
 
-- closure: `N02-07` BLOCKED → DONE و فاز `N02` IN_PROGRESS → DONE در `harness/roadmap.json`، بر اساس شواهد همان اجرا: `npm run android:gate` = PASS (exit 0) با JDK 17 Temurin و `D:\SDK`/platform 37، رفع خطای lint واقعی `themes.xml` با qualifier `values-v27`، `android:doctor` = READY، و module graph ثبت‌شده در `docs/architecture/ANDROID_MODULE_GRAPH.md`. debug APK عمداً ساخته نشد (متن task مجوز نداد)؛ N03 شروع نشد و فقط با go-ahead مالک از `N03-01` باز می‌شود.
+- closure: `N02-07` BLOCKED → DONE و فاز `N02` IN_PROGRESS → DONE در `harness/roadmap.json`، بر اساس شواهد همان اجرا: `npm run android:gate` = PASS (exit 0) با JDK 17 Temurin و `D:\SDK`/platform 37، رفع خطای lint واقعی `themes.xml` با qualifier `values-v27`، `android:doctor` = READY، و module graph ثبت‌شده در `docs/notes/ANDROID_MODULE_GRAPH.md`. debug APK عمداً ساخته نشد (متن task مجوز نداد)؛ N03 شروع نشد و فقط با go-ahead مالک از `N03-01` باز می‌شود.
 - verifier: `scripts/verify-phase5.mjs` اکنون خروجی generated Gradle (`build`، `.gradle`) را از اسکن Unity مستثنا می‌کند (منبع در برابر artifact؛ AGENTS §4) — gate دیگر نیازی به پاک‌سازی دستی `build/` ندارد.
 - cleanup: شواهد اجرا از `docs/archive/evidence/2026-10-31/` به خارج از repo منتقل شد: `/tmp/shomara-evidence-2026-10-31` (grounding-report، final-report، ci-honesty-inventory و ۳۳ فایل baseline) تا dependency-map فقط فایل‌های واقعی repo را ببیند؛ `.zcode/` (ابزار عامل محلی) به `.gitignore` افزوده شد؛ ارجاع START_HERE به‌روز شد.
 - evidence note: مسیر قبلی `docs/archive/evidence/2026-10-31/` در دو entry قبلی همین WORKLOG مذکور است؛ مسیر معتبر فعلی `/tmp/shomara-evidence-2026-10-31` است (append-only حفظ شد).
@@ -190,7 +190,7 @@
 
 - `ShomaraDesignSystemCatalog`: fixture قطعی light theme برای هر ۹ خانواده (RTL رابط + LTR ریاضی)؛ ماتریس ۳۶۰/۳۹۰/۴۱۲ × font scale 1/2 با تست JVM (۴ تست؛ مجموع ماژول ۵۶/۵۶). Screenshot واقعی صادقانه NATIVE_PENDING ماند (Paparazzi در cache آفلاین موجود نبود؛ افزودن plugin تصمیم مالک است).
 - `scripts/verify-design-system-native.mjs`: گیت صفر raw token (hex/dp/sp/FontWeight خارج از ShomaraTokens.kt) روی :core:designsystem و :app + ممنوعه‌های ایمنی کودک؛ اولین اجرا دو literal خام در FoundationScreen.kt (placeholder N02) گرفت که توکنیزه شد و `:app` به `:core:designsystem` وابسته شد؛ PASS (۱۸ فایل Kotlin).
-- ثبت صادقانه: `docs/design/NATIVE_COMPONENT_READINESS_N03.md` — جدول ۹ خانواده با تفکیک JVM/semantics/catalog از screenshot/device.
+- ثبت صادقانه: `docs/notes/NATIVE_COMPONENT_READINESS_N03.md` — جدول ۹ خانواده با تفکیک JVM/semantics/catalog از screenshot/device.
 - closure: N03-06 = DONE؛ N03-07 = DONE_WITH_BLOCKER (HG-02 امضای مالک + شواهد device/paparazzi)؛ فاز N03 = DONE_WITH_BLOCKER (8/8)؛ harness next = N04-01.
 - boundary: هیچ commit برای این milestone انجام نشد (DIFF_READY)؛ N04 شروع نشد.
 
@@ -236,11 +236,11 @@
 ## 2026-10-31 — MEGA-STAGE N04 close-out — deltas beyond the completed phase — atomic commit (DIFF_READY)
 
 - audit: هدف تکراری بود؛ همهٔ اقلام اصلی (HG-02، ۷ task، سه ماژول، APK، 88/88) قبلاً انجام و commit شده بودند؛ فقط دلتاهای واقعی اجرا شد.
-- module graph: `docs/architecture/ANDROID_MODULE_GRAPH.md` به گرام N04 (۸ ماژول + مرزها) به‌روز شد؛ allowedPaths آن سند + `core:model/**` را مجاز کرد.
+- module graph: `docs/notes/ANDROID_MODULE_GRAPH.md` به گرام N04 (۸ ماژول + مرزها) به‌روز شد؛ allowedPaths آن سند + `core:model/**` را مجاز کرد.
 - `:core:model`: `ShomaraLaunchState` (UI-001: Resolving/NewUser/RestoringSession/RecoverIncompleteProfile/Offline/Error)، `ShomaraGradeCatalog` (G1..G6 آینه‌ی contracts؛ G2+ قفل با توضیح گرم «به‌زودی»)، `ShomaraAvatarCatalog` (sun/leaf/cloud/moon) — آینه‌ی `packages/contracts/src/onboarding.ts`.
 - `:feature:onboarding`: نگه‌داشت launch→mode (fail-closed)، `ShomaraFlowUiState` (FirstRun/Resume/Back/Saving/Error)، OTP paste (`fillFromCode` LTR سقف‌دار) + حالت Expired با برچسب گرم (پاک‌شدن در ورود بعدی)، انتخاب آواتار، resume draft با DataStore واقعی (`PreferencesProfileDraftStore`) و `OnboardingRoutes.stepFor` برای process-death؛ host و app به draftStore وصل شدند.
 - guard: `verify-design-system-native.mjs` اکنون کل `apps/android/feature` (منابع production، بدون src/test) را اسکن می‌کند — PASS (۲۶ فایل).
-- readiness: `docs/product/ONBOARDING_JOURNEY_READINESS_N04.md` با تفکیک صادقانهٔ اثبات‌شده/NATIVE_PENDING.
+- readiness: `docs/notes/ONBOARDING_JOURNEY_READINESS_N04.md` با تفکیک صادقانهٔ اثبات‌شده/NATIVE_PENDING.
 - evidence: feature 50 + model 2 + designsystem 56 تست JVM سبز؛ `:app:compileDebugKotlin` PASS.
 
 ## 2026-11-01 — N05 شروع — M1/M2: wiring + N05-01 child shell — atomic commit
@@ -340,7 +340,7 @@
 
 - `OfflineJourneyTest`: سفر بحرانی کامل (manifest کش‌شده → آفلاین → process death → restore → drain idempotent با همان key → Server-Wins به COMPLETED) + قرنطینه SHA-256 خراب برای manifest و باینری صوت.
 - :app به :core:database و :sync وصل شد (AppContainer: localDatabase + outboxSyncEngine؛ transport تا I2 retriable). module graph به N07 (۱۶ ماژول) به‌روز شد.
-- readiness در `docs/content/OFFLINE_CMS_AUDIO_READINESS_N07.md`. closure: فاز N07 DONE (9/9)؛ pointer → N07-07؛ next = N08-01.
+- readiness در `docs/notes/OFFLINE_CMS_AUDIO_READINESS_N07.md`. closure: فاز N07 DONE (9/9)؛ pointer → N07-07؛ next = N08-01.
 
 ## 2026-11-03 — N08 شروع — M1: تثبیت کار نیمه‌کارهٔ N08-08 + رفع دو شکست گیت — atomic commit
 
@@ -837,8 +837,8 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 ## 2026-11-14 — IPA-P11 (O6 Decision Pack — بدون اجرا) — branch infra/p10-identity-privacy
 
 - **وضعیت O6 صادقانه:** OPEN → طبق مأموریت صریح مالک، **فقط Decision Pack** تهیه شد؛ **هیچ حذف، هیچ گسترش production، هیچ تغییری در runtime کودک** انجام نشد.
-- **Inventory ماشین‌خوان از وضعیت واقعی repo** (`node tools/o6-inventory.mjs` → `docs/architecture/o6-pack/inventory.json`): **۴۹ API route** (فهرست کامل endpoint-by-endpoint با dynamic segmentها) · **۷۴ migration** · **۸ فایل InMemory repo** · child runtime coupling = NONE (اثبات P5/P6/P8).
-- **Decision Pack** (`docs/architecture/O6_DECISION_PACK_FA.md`): سه مسیر اجرایی با کارهای گام‌به‌گام —
+- **Inventory ماشین‌خوان از وضعیت واقعی repo** (`node tools/o6-inventory.mjs` → `docs/notes/o6-pack/inventory.json`): **۴۹ API route** (فهرست کامل endpoint-by-endpoint با dynamic segmentها) · **۷۴ migration** · **۸ فایل InMemory repo** · child runtime coupling = NONE (اثبات P5/P6/P8).
+- **Decision Pack** (`docs/notes/O6_DECISION_PACK_FA.md`): سه مسیر اجرایی با کارهای گام‌به‌گام —
   **A** Retain as authoring service: persistent repos ×۸، Object Storage + signed URLs + checksum، RBAC/RLS/session/CSRF/rate-limit/audit، ۷۴ migration روی Local Supabase + Integration test چهار نقش، backup/restore، deploy separation — بزرگ‌ترین برنامه.
   **B** ⭐ توصیهٔ فنی (غیرمصوب): authoring محلی + export پکیج امضاشده؛ زیرساختش از P7 آماده (pipeline + validator + gate + builder)؛ باقی‌مانده: sign CLI مالک + archive/deprecation + verifier R11؛ retire ترتیبی auth→learning→sync→missions→teacher→admin با consumer-proof؛ ۷۴ migration archive و نگه‌داشت (هیچ SQL پاک نمی‌شود).
   **C** Retire کامل با archive (بازگشت‌ناپذیرترین).
@@ -916,3 +916,442 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **VectorDrawable fix:** strokeColor="none" از shomara_ui_play.xml حذف شد (invalid AAPT attr).
 - **شواهد:** android:gate PASS · static:all 94/94 · repo PASS · APK b9191d94… نصب و اجرا · screenshot artifacts/p14c-home/home-integrated.png.
 - **صادقانه:** P4/P5 projection transcribe نشده؛ T13/T01 ارزیاب ندارند؛ TalkBack real walkthrough دستگاهی pending؛ Home visual handoff تایید نهایی می‌خواهد.
+
+## 2026-11-17 — Deep Transformation / DT-01 — branch work/shomara-deep-transformation
+
+- **Baseline:** exact fork point `infra/p14b-home-ui@6cd0e7ac7e69d6d5a6117f38ccbcb9b2bc69eb8c`; source branch and `main` remain untouched.
+- **Persistence P0:** `LessonAttemptDao.insert` now uses SQLite `IGNORE`; `RoomLessonRecordRepository.recordAttempt` checks session ownership and writes session + attempt in one Room transaction. A duplicate key for the same session is a no-op without session mutation; a cross-session key collision fails closed.
+- **Regression coverage authored:** normal write, duplicate replay without timestamp change, 12 concurrent same-key retries, cross-session collision, mismatched session IDs, close/reopen durability and CONTENT-018 projection. These tests are **written, not run** in this execution environment.
+- **Composition root:** actual `container.lessonRecords` is passed MainActivity → ShomaraApp → LessonHost; the root repository argument is required instead of silently defaulting to null. Release remains without draft content/evaluator, so this is not a production lesson claim.
+- **Home UX correction:** removed hardcoded grade/chapter and default-zero progress summary; removed the Continue card because it opened the same Station Start Sheet as the Current path node. Header, Path graph, station sheet and tab navigation remain. Do not restore summary until identity-backed UiState is available.
+- **Decision register:** `docs/notes/SHOMARA_DEEP_TRANSFORMATION_DECISIONS_FA.md` records KEEP/REVISE/OPEN/SUPERSEDED/BLOCKED, evidence, trade-offs and human gates.
+- **Unverified:** Gradle compile/lint/Robolectric, Android instrumentation, screenshot sweep, TalkBack and physical-device tests. No local project runtime/Android SDK is exposed in this session; no exit codes are fabricated.
+- **External/product blockers:** O1/O2/O3/O5/O6/O7 remain owner decisions; correction: ADR-0039 already approves fully-offline/no-server product; OTP/token/session is legacy migration debt to retire in Phase 2 after O5; 24 stations, ST07 media, human review/rights remain unfulfilled; P15 release status stays BLOCKED.
+- **Code commits:** `ab5bcba`, `6f3a8a9`, `261c6bd`, `d5c9af2`, `ea4a8ed`, `c0a65fb`, `dd91193`.
+
+## 2026-11-17 — DT-02 — Android CI and owner-policy reconciliation
+
+- **Android Native workflow:** run `44158203235`; merge-test commit `143d173aeb587d6735f4700720819ef14922195a`; gate report `build-reports/android/gate.json` = PASS, environment READY, JDK 17 + Android compile SDK 37, preflight exit 0.
+- **Gradle command:** `./gradlew test lint :app:compileDebugKotlin --stacktrace --no-daemon` — exit code 0. Android lint and app `:app:compileDebugKotlin` passed in the same gate.
+- **Test evidence:** 81 XML suites, 575 tests, 0 failures, 0 errors, 0 skipped. New `LessonRecordRepositoryTest` ran 7/7 PASS, including duplicate idempotency, 12 concurrent retries, cross-session key ownership, session mismatch and close/reopen durability.
+- **Workflow:** `ci/core` PASS; `ci/static-core` PASS including real Harness validate/next. Informational `verify:static:all` = 93/94; sole remaining failure is the old Expo `parity-run`, with the same `practice diff 0.50% (max 0.5%)`, `PARITY: FAIL (8/29)` on main CI run 43088599553 (2026-11-11). No golden or threshold weakened.
+- **Owner-policy correction:** canonical ADR-0039 is Accepted by owner (2026-11-05): fully offline/no-server, local package + local evaluator, no Phone/OTP in the final journey. OTP/token/session retirement is Phase-2 migration debt after O5, not an open product-policy conflict. O3 (LessonGateway fate) and O5 (single vs multiple local profiles) remain OPEN. No INTERNET permission, live OTP, server sync or mock authentication was added.
+- **Home residual P0:** hardcoded summary and duplicate Continue were removed, but root still passes `ShomaraPathProgress()`; graph currently resolves empty progress to ST01 `Fresh`. Returning children can therefore be shown at ST01 incorrectly until approved local identity + Room progress projection are connected. Explicitly tracked for N11-05; no synthetic progress is fabricated.
+- **Harness:** N11-02 = DONE_WITH_BLOCKER after real Android gate. N11-04 design-system foundation is now IN_PROGRESS and independent of N11-03 human-authored curriculum; content-specific manipulative design remains gated.
+- **Artifact:** `android-gate-diagnostics.zip` contains CI reports only; no APK was built or attached. Physical-device/TalkBack and screenshot gates remain UNVERIFIED.
+
+## 2026-11-18 — DT-03 — Home unresolved state and practice parity correction
+
+- Home progress now defaults unresolved; only a resolved local-child snapshot or explicit emptyResolved() can show Fresh. Deep-linked lesson entry and Station Start Sheet are deferred until resolution.
+- Practice tab remains Loading until local profile/progress resolve; it does not label all activities Locked. Compose tests cover deferred deep link and unresolved Practice.
+- Parity artifact 14374088460, run 44186937373: practice raw diff 0.5040485829959515%, 1494 bad pixels / 296400 total; maximum remains 0.5%. Actual screenshot had two locks on the unavailable row while golden had one.
+- Root cause: parity specimen tabs.tsx supplied icon='lock'; PracticeView.tsx rendered that badge icon and also passed trailingIcon='lock'. Removed the redundant trailingIcon. The badge lock remains; no golden or threshold changed.
+- Fix commit ca8067f0e36a27ff75733336a0ec83d25b8362c2. CI run 44189288523 and Android Native run 44189288438 were pending when this checkpoint was prepared.
+- Android evidence on ancestor 8ebfa084: Gate PASS; JDK 17, SDK 37, preflight exit 0, Gradle test/lint/app compile/androidTest-source compile exit 0; BUILD SUCCESSFUL. The published gate artifact did not expose a JUnit count. No APK or device test was produced.
+- Harness: N11-02 DONE_WITH_BLOCKER; N11-04 DONE_WITH_BLOCKER (Native visual validation pending); N11-05 IN_PROGRESS. O5 remains OPEN.
+
+
+## 2026-11-18 — DT-05 — Android gate PASS and parity review
+
+- **Branch head:** `7dd835a80f0cde920b34f24a6b06932f5d6942b9`; PR #4 remains a draft against `infra/p14b-home-ui`. Main and candidate branch were not changed.
+- **Android Native:** run `44191580216`, conclusion SUCCESS. Artifact `14377826064`, `build-reports/android/gate.json` status PASS. JDK 17 + SDK 37 READY; preflight exit 0; Gradle command `./gradlew test lint :app:compileDebugKotlin :app:compileDebugAndroidTestKotlin --stacktrace --no-daemon` exit 0; BUILD SUCCESSFUL in 3m08s; 822 actionable tasks, 533 executed and 289 from cache.
+- **Android boundaries:** four deprecation warnings for `createComposeRule` in instrumentation test source; `:app:compileDebugAndroidTestKotlin` passed. The gate did not run connected/device instrumentation and did not produce an APK.
+- **Web/core CI:** run `44191579879`: `core` PASS (package build, typecheck:all, Vitest); `static-core` PASS (Harness validate/next, token-codegen `--check`, verify:static:core); `visual-and-static` fails at parity; static aggregate `93/94`.
+- **Parity report:** artifact `14375744795` from run `44191579879`, head `7dd835a`. Current summary: 7/29 specimens fail. Practice now passes at 0.4683% (1388/296400) after removing duplicate lock in `PracticeView`; no golden or threshold changed.
+- **Compact replay Button:** source now uses single-line compact label; actual and golden both display one line. Its diff remains 0.7994% (88/11008) vs 0.5% limit, visually concentrated on text/icon pixels. It is NOT marked PASS and no threshold was weakened.
+- **Other current parity failures:** phone 0.5052%; button-amber 0.3246% (max 0.15); guide-07 0.9209% (max 0.15); chip-06 2.6282% (max 0.15); chip-icon-clock-06 0.6655%; profile 0.5402%. These require deliberate visual/raster analysis.
+- **Baseline:** main CI run `40687075654` (2026-10-28) and `43088599553` (2026-11-11) both had total parity failure 8/29. Their preserved logs explicitly show Practice at 0.50%; current branch has 7/29 after the duplicate-lock fix. The old logs do not preserve all individual failed specimen IDs, so no claim is made that every remaining failure is identical to all historical failures.
+- **Harness:** N11-02 stays DONE_WITH_BLOCKER (O5 local identity/progress read-model); N11-04 stays DONE_WITH_BLOCKER (source/JVM and Gradle gates pass; native visual evidence pending); N11-05 remains IN_PROGRESS.
+- **Still blocked:** O5, actual local active-child profile/progress projection, content/evaluator owner decisions, human-authored/licensed media, TalkBack/device screenshot catalog, release HG-05. No APK/release was generated.
+
+## 2026-11-18 — DT-06 — Home single-header and dead-screen retirement
+
+- **Home duplicate audit:** reviewed all 38 Kotlin files in the Android app shell/navigation, app tests/androidTests and feature/path. `ShomaraHomePathScreen` had no external consumer; `ShomaraHomeUiState` was only used by that unused screen; Progress/Continue/NodeLabel cards were only composed by that screen. The only shared consumer was `ShomaraHomeHeader` in the active `ShomaraChildShellHost`.
+- **KEEP:** the active zigzag `ShomaraPathScreen` remains the only child learning path; shell Header and Station Start Sheet remain.
+- **RETIRE:** deleted the unreferenced parallel `ShomaraHomePathScreen.kt` + `ShomaraHomeUiState.kt`; removed the three unused parallel cards; kept a header-only `ShomaraHomeComponents.kt` and four required Home token aliases. Recorded both deletions in `harness/file-ledger.json`.
+- **Visual/layout correction:** active shell Home Header now uses 24dp horizontal inset and 12dp vertical spacing, exposes title as a semantic heading, while Path Graph supports `showPathHeading`; shell passes false so title/mascot are not duplicated. Path count and next-step summary remain visible.
+- **Regression:** added Compose instrumentation test: exactly one `مسیر یادگیری` heading and remaining-station summary visible.
+- **Identity boundary unchanged:** O5 remains OPEN. Home/Practice remain Loading when unresolved; no fabricated progress or new Room profile schema was introduced.
+- **Evidence pending:** latest commit requires Android Native and CI. Even if compile/test gates pass, no physical device/TalkBack/screenshot/200% font validation is claimed. Parity thresholds and goldens were not changed.
+
+## 2026-11-18 — DT-07/08 — Path state precedence, PIN and privacy evidence correction
+
+- **Path state correction:** added pure `ShomaraPathGraphLogic.resolveEntryState`. Explicit Error/Empty and explicit Loading are preserved; Offline with unresolved progress now remains Loading, preventing a false fully locked path; resolved Offline still renders the real path. Four state-matrix assertions were added.
+- **Android gate:** run `44308240426` on `bc9c1b8` PASS — JDK 17 / Android SDK 37; 81 XML suites, 583 tests, zero failures/errors/skips; `lint`, app debug compile and androidTest Kotlin source compile all passed. `ShomaraPathGraphTest` 33/33, `ParentPinManagerTest` 7/7, `PrivacyAndDiagnosticsTest` 6/6.
+- **PIN hardening:** caller char arrays and temporary derived bytes are cleared; malformed records fail-closed; configured status validates salt/hash structure; persisted lockout test now asserts actual stored count and reset timestamp. Test store is in-memory only.
+- **KDF correction:** 210k PBKDF2-HMAC-SHA256 is labeled legacy ADR-0047 v1 baseline, not current OWASP guidance. OWASP now prefers Argon2id; if FIPS requires PBKDF2-HMAC-SHA256 it lists 600k. No blind bump was made; target-device benchmark, algorithm/record version and migration are required before wiring.
+- **Privacy deletion:** incomplete recursive directory deletion is surfaced as failure when the path remains; later wipes continue. Test proves it. Controller still accepts generic stores/dirs and is not app-composed.
+- **ADR-0047 correction:** no `LocalProfileManager`, `ProfileSlotStore` or durable `PinStore` exists in the source tree. ParentGate is still instantiated with `verifier=null`; profile draft store is not a permanent identity. No in-app data deletion flow is currently shipped. O5 remains OPEN.
+- **Visual/static:** CI core/static-core are green; visual-and-static remains informational FAIL due 7/29 pixel parity specimens. No golden, threshold or parity baseline was weakened.
+
+## 2026-11-19 — DT-11 — PR4 failed-gate attribution and future Home handoff
+
+- **Scope:** run `44309817949` on HEAD `4cb576f88837d54b07cab8c798c903e6e42d2cfd`; no repeated branch audit, no Base/Draft/main change and no Home ZIP inspection. Sole `STATIC_ALL` failure is `parity-run.mjs`; the other 93 checks pass.
+- **Artifacts:** current `14429966821` and parent `14377315357` (run `44190147820`, SHA `3b1889f`) downloaded with existing in-memory GitHub authentication and verified against GitHub SHA-256 metadata. Current digest `3777b100060b57f5211d98fd74df4c22e9d7896d0806b365f00bab8e072c9434`; parent digest `3ecad0b7bdf71891e8817bd08848ecae127bbbc678f2dad85f8319f6e2b097c5`.
+- **Attribution:** six non-replay actual/golden/diff triplets are byte-for-byte identical before/after the Button change. Replay improves from 748 bad pixels/6.7951% in the parent to 88/0.7994% at HEAD; parent spans y=15..54, HEAD only one text band y=25..38. This proves a real one-line UI improvement, not a regression. All seven failures pre-date the branch's new changes; no source fix is justified under the regression-only constraint.
+- **Image evidence:** programmatic Pillow/NumPy pixel masks, bounding boxes, color pairs and SHA-256 comparisons were used; no unsupported visual-inspection claim. Exact file/region/result matrix is in `docs/design/SHOMARA_DESIGN_SYSTEM_AUDIT_N11_FA.md` §9. No golden, threshold, assertion, workflow or `continue-on-error` change.
+- **Executed gates:** `npm ci --no-audit --no-fund` = exit 0 (641 packages); `npm run build:packages` = exit 0. Targeted seven-specimen `node scripts/parity-run.mjs ...` = exit 0, PASS 7/7. One full `npm run verify:static:all` = exit 0, PASS 94/94 including parity 29/29. Local Windows Node 24.22.1 differs from CI Ubuntu Node 22.22.0; Playwright is 1.63.0 and goldens are identical. Local PASS does not replace Linux CI 7/29 FAIL.
+- **Android:** no Android file changed; Android Gate not rerun. Independent run `44309817994` remains PASS.
+- **Future Home continuation only:** registered `C:\Users\VISION LAPTOP\Downloads\SHOMARA_HOME_UI_HANDOFF_v3_FINAL.zip` in `START_HERE.md`; ZIP remains unopened/unimplemented. Future task must verify manifest/checksum/provenance/assets and state/QA contracts before real Kotlin/Compose implementation with canonical tokens; no fake progress or duplicate Continue restoration.
+- **Integration:** PR4 remains on its current Base. It is not ready to retarget to `main` while the Linux visual/static gate remains red.
+
+## 2026-11-19 — DT-12 — Native Home/Path handoff implementation
+
+- **Scope:** Home/Path از `SHOMARA_HOME_UI_HANDOFF_v3_FINAL.zip` روی Kotlin + Jetpack Compose پیاده شد. ZIP با SHA-256 `22dc8a8f0be3de1e47f4db8ebab5f2a230af7d3a54b17e088d018bbf1c04c3ee` باز شد؛ 114/114 checksum داخلی معتبر بود. تنها asset جدیدِ لازم `shomara_garden_path_footer.webp` است؛ 31 vector قبلاً byte-identical در repo بودند و هیچ preview/mockup وارد runtime نشد.
+- **Implementation:** `ShomaraHomeScreen` stateless با `ShomaraHomeUiState`/action contract ساخته و به `ShomaraChildShellHost` وصل شد. Header تک‌عنوانه، خلاصهٔ واقعی مسیر، گراف قبلی، باندهای فصل، nodeهای Fresh/Current/Completed/Perfect/Locked، Station Start Sheet، FAB بازگشت به Current و Loading/Empty/Offline/Error حفظ/پیاده شدند. Continue تکراری برنگشت.
+- **Structure:** `ShomaraPathGraph.kt` به orchestration محدود شد؛ state/geometry به `ShomaraPathState.kt`، chapter band به `ShomaraPathChapter.kt` و node/connector/ring به `ShomaraPathNodes.kt` منتقل شد. `ShomaraStateSurface` فقط با icon/container اختیاری سازگار با مصرف‌های قبلی گسترش یافت. هیچ dependency جدیدی اضافه نشد.
+- **Tests:** `ShomaraPathGraphTest` = 36/36؛ instrumented `ShomaraHomeScreenTest` = 4/4 روی `Pixel_6a`/emulator-5554 (360/390/412dp، font scale 100/200%، semantics، 48dp، Loading/Empty/Offline/Error، click intent)؛ `ShomaraStationSheetTest` = 7/7 (sheet، locked، deep link، replay). `npm run android:gate` = exit 0؛ report `build-reports/android/gate.json` PASS؛ 81 XML suite / 586 JVM tests / 0 failures/errors/skips؛ lint و هر دو compile سبز.
+- **Screenshots:** نه PNG واقعی از instrumented Compose (نه Preview) در `build-reports/android/home-screenshots-stage3/compose-evidence/` کشیده شد؛ ابعاد 945/1024/1080×2100 برای 360/390/412dp با density دستگاه و stateهای Fresh/Current/Error/Offline. این خروجی generated است و track نمی‌شود.
+- **Gates:** `verify-design-system-native` PASS؛ token codegen `--check` PASS؛ `verify:design-governance` PASS؛ `verify:repository` PASS با هشدار شناخته‌شدهٔ Node محلی 24.22.1 در برابر pin 22.22.0؛ `verify:static:all` = 94/94 PASS؛ Harness validate = 129 task / 13 phase PASS و `next` همچنان N11-05 را IN_PROGRESS نشان می‌دهد.
+- **Blockers:** O5 همچنان OPEN است؛ ViewModel/UseCase/Repository مبتنی بر هویت محلی ساخته نشد و production root unresolved می‌ماند. TalkBack gesture walkthrough، physical-device review، deep-link روی device و 7/29 web parity debt باقی‌اند؛ golden/threshold تغییر نکرد.
+
+## 2026-11-19 — DT-13 — Home/Path rebuild + consumer-proven retirement
+
+- **Scope:** بازسازی اصولی Home و مسیر یادگیری روی همان شاخه، حذف فایل‌های اضافه با اثبات صفر-مصرف‌کننده، و انتقال قرارداد از یک انتزاع موازی به رندر واقعی. هیچ verifier/assertion/threshold/golden تضعیف نشد؛ O5 دست‌نخورده ماند و هیچ state یا پیشرفت ساختگی اضافه نشد.
+- **Home/Path UX (fix واقعی):** خلاصهٔ جهت‌یابی قبلاً اولین ردیف `LazyColumn` بود، پس وقتی لیست با `initialFirstVisibleIndex` روی ایستگاه Current باز می‌شد (سناریوی واقعی کودک برگشتی) فصل، گام بعدی و شمارش باقی‌مانده کاملاً از دید خارج می‌شدند. حالا `ShomaraHomeOrientationStrip` بیرون از لیست pin شده است و همیشه دیده می‌شود. هندسهٔ ایندکس به «فقط ردیف‌های مسیر» تغییر کرد (`chapterBandIndexForChapter`: band فصل ۱ = 0، stride = 7) و `headerItemIndexForChapter` حذف شد.
+- **Semantics/visual:** `contentDescription` تکراری نوار پیشرفت حذف شد (متن مرئی حامل جمله است، نوار فقط progress را اعلام می‌کند)؛ `depthFor(state)` اضافه و در رندر واقعی مصرف شد (Current=Featured تنها، Locked=Flat، بقیه=Soft)؛ آرت پایان مسیر فقط با تکمیل واقعی همهٔ ۲۵ ایستگاه رندر می‌شود؛ متن حباب ایستگاه Current از حقیقت پیشرفت مشتق شد (`currentBubbleLabel`: بدون پیشرفت «شروع»، وگرنه «ادامه» — دیگر روی ST13 «شروع» نوشته نمی‌شود)؛ `ShomaraStateSurface` پارامتر `applySystemInsets` گرفت و تب‌های داخل `Scaffold` دیگر inset دو‌باره نمی‌گیرند.
+- **Retirement (consumer proof):** حذف ۲۵ drawable با صفر ارجاع Kotlin/XML (۱۳٬۸۴۸ بایت): ۴ lesson icon، ۶ nav icon، ۵ node-state، ۲ state، ۸ ui icon (شامل `shomara_ui_book` که با حذف آیکون تزئینی خلاصه بی‌مصرف شد). حذف `PathKit.kt` (رندرکنندهٔ موازی مسیر با markهای emoji و Current کهربایی که با فوکال بنفش واقعی تناقض داشت)، `DesignSystemGalleryActivity.kt` (در هیچ manifest ثبت نشده بود و صفر مصرف‌کننده داشت، پس دستور `am start` خودش هم کار نمی‌کرد) و `LessonAttemptRecorder.kt` (صفر مصرف‌کننده). `Previews.kt` از `main` به source set ‏debug منتقل شد. تغییر نام: `ShomaraJumpTest.kt`→`ShomaraJumpAssessment.kt` و `ShomaraJumpTestTest.kt`→`ShomaraJumpAssessmentTest.kt` و حذف ادعای کهنهٔ «تغییر نام فایل ممکن نیست» از KDoc. بازیابی: همه از Git history (`git log --diff-filter=D`).
+- **Contract migration (بدون از دست دادن پوشش):** قرارداد PathKit حذف نشد، منتقل شد: `ShomaraPathGraphLogic.depthFor` + سه تست جدید در `ShomaraPathGraphTest` (depth per state، کنتراست متن برچسب ≥4.5:1 روی هر دو بوم، کنتراست نشانهٔ گره ≥3:1 برای هر ۵ state × ۵ فصل) و تست `currentBubbleLabel`. `shomara_char_fandogh_01.webp` عمداً نگه داشته شد: آرت رسمی رزرو‌شدهٔ راهنماست و `ShomaraCharacter` اندروید هنوز عضوی برای Fandogh ندارد — این یک تصمیم مالک است، نه فایل اضافه.
+- **Tests:** `ShomaraPathGraphTest` 40/40 (بود 36/36)؛ `ClayContractTest` 3/3 (دو تستِ انتزاع بازنشسته)؛ designsystem 82/82؛ instrumented `ShomaraHomeScreenTest` 5/5 شامل تست جدید `orientationStripStaysPinnedAboveTheListOnAMidPathStation` (با ST07 به‌عنوان Current هم ایستگاه بلافاصله قابل‌اقدام است و هم نوار جهت‌یابی دیده می‌شود، و بعد از scroll تا ST25 نوار جابه‌جا نمی‌شود) و `ShomaraStationSheetTest` 7/7 روی `Pixel_6a`/emulator-5554.
+- **Screenshots:** ۱۰ PNG واقعی instrumented Compose (نه Preview) در `build-reports/android/home-screenshots-stage4/compose-evidence/` شامل `home-midpath-strip-390dp.png`؛ ابعاد 945/1024/1080×2100 برای 360/390/412dp. هیچ ادعای بازرسی چشمی مطرح نیست — فقط ابعاد و حجم فایل ثبت شده است.
+- **Gates:** `npm run android:gate` = exit 0 (PASS؛ 81 XML suite / 588 JVM tests / 0 failures/errors/skips؛ lint و هر دو compile سبز)؛ `verify:design-governance` exit 0؛ `verify:design-pack` exit 0؛ `verify:repository` exit 0 با هشدار شناخته‌شدهٔ Node محلی 24.22.1 در برابر pin 22.22.0؛ `verify:static:all` 94/94 exit 0.
+- **Blockers (بدون تغییر):** O5 همچنان OPEN است؛ production root unresolved می‌ماند و هیچ ViewModel/UseCase/Repository هویت‌محور ساخته نشد. Practice/Me در حالت unresolved صادقانه Loading می‌مانند. TalkBack gesture walkthrough، physical-device review، deep-link روی device و 7/29 Linux web parity debt باز است؛ golden/threshold تغییر نکرد.
+
+## 2026-11-19 — DT-14 — بقیهٔ صفحات: گذرواژهٔ والدین و متن‌های تنظیمات
+
+- **نقص واقعی ۱ (امنیت/UI):** فیلد گذرواژهٔ والدین یک فیلد متنی ساده بود، پس گذرواژهٔ بزرگسال روی دستگاه مشترکِ کودک به‌صورت واضح خوانده می‌شد و TalkBack آن را بلند می‌خواند. `ShomaraTextField` پارامتر `secure` گرفت: ماسک با `OutputTransformation` (چون `BasicTextField` مبتنی بر `TextFieldState` پارامتر `visualTransformation` ندارد — `No parameter with name 'visualTransformation'` از کامپایلر) به‌علاوهٔ semantics ‏`password()`، و شاخهٔ read-only (disabled/loading) با `ShomaraFieldLogic.readOnlyTextFor` ماسک می‌شود تا متن در حالت busy هم نشت نکند. منطق gate دست‌نخورده و همچنان fail-closed است (`verifier == null` هرگز احراز نمی‌کند).
+- **نقص واقعی ۲ (کپی/a11y):** در تنظیمات، heading بخش دوم عیناً متن عنوان صفحه بود (`"تنظیمات"` به‌صورت literal با `heading()`)، پس TalkBack عنوان را دو بار می‌خواند و بخش دوم بی‌نام بود. `ShomaraSettingsStrings.PreferencesSection` («تنظیم‌های برنامه») اضافه و canonical شد؛ خط «آواتار انتخاب‌شده» هم از literal دست‌ساز به `ShomaraSettingsStrings.selectedAvatar(...)` با برچسب واقعی `ShomaraAvatarCatalog` منتقل شد.
+- **تست:** `ShomaraSettingsTest` 9/9 (دو تست جدید: نبود تکرار عنوان، ساخت خط آواتار از catalog)؛ `ShomaraSettingsWiringTest` 14/14؛ `ShomaraParentBoundaryTest` 9/9 (بدون تغییر)؛ `ShomaraPrimitives03Test` 19/19 با تست جدید «فیلد امن اعتبارش را در شاخهٔ read-only بازتاب نمی‌دهد»؛ designsystem در مجموع 83/83.
+- **شاهد دستگاه:** `ShomaraParentGateSemanticsTest` = 3/3 روی `Pixel_6a`/emulator-5554 (semantics ‏`Password` روی فیلد، گذرواژهٔ غلط → gate بسته می‌ماند و پیام خودِ state نمایش داده می‌شود، گذرواژهٔ درست → ورود). رگرسیون: `ShomaraHomeScreenTest` 5/5 و `ShomaraStationSheetTest` 7/7 دوباره سبز.
+- **APK:** `npm run android:assemble:debug` exit 0 (`app-debug.apk` ۱۷٬۹۰۲٬۹۴۷ بایت، SHA-256 `15e4d938…8b2cb8`) و `:app:assembleDebugAndroidTest` exit 0 (`app-debug-androidTest.apk` ۱٬۲۲۴٬۳۲۸ بایت).
+- **Ledger:** دو ردیف ANDROID برای Settings و Parent boundary اضافه شد (تا پیش از این تنها Home/Path ردیف بومی داشت و این دو صفحه در ledger با ردیف Expo پوشش داده می‌شدند).
+- **بازمانده:** O5 باز؛ TalkBack gesture walkthrough و physical-device review برای هر سه صفحه `NATIVE_PENDING`؛ 7/29 Linux parity debt و PR4 بدون تغییر.
+
+## 2026-11-19 — DT-15 — ادغام چهار CTA دست‌ساز onboarding در کامپوننت canonical
+
+- **نقص ساختاری:** چهار CTA مستقل در `feature:onboarding` (`ShomaraLaunchCta`، `ShomaraPhoneCta`، `ShomaraProfileCta`، `ShomaraOtpConfirmButton`) هر یک ماشین‌آلات `ShomaraButton` را بازنویسی می‌کردند: state ‏pressed/focused، colors/depth از `ShomaraButtonLogic`، shadow/background، semantics ‏role/disabled/stateDescription، tap-guard، padding و label — حدود ۳۳۰ خط کد تکراری که باید دستی هم‌زمان نگه داشته می‌شد، و هر کدام هم یک قاعده (مثلاً press-scale یا semantics غیرفعال) را جا انداخته بود.
+- **رفع:** `ShomaraButton` سه پارامتر defaulted گرفت — `shape` (نمونه‌های مالک pill هستند)، `disabledContainer`/`disabledContent` (تصمیم مستند «تیره‌ماندن CTA تا پر شدن فیلد») و اسلات `leading` که رنگ content را می‌گیرد تا فلش رسم‌شده هرگز از رنگ برچسب جدا نشود. سپس یک `OnboardingCta` داخلی، هر سه CTA پیلی را پشت یک نقطه می‌آورد و `ShomaraOtpConfirmButton` کاملاً حذف شد (بدنه‌اش از قبل همه‌چیز را به `ShomaraButtonLogic` واگذار می‌کرد؛ KDoc قدیمی‌اش ادعای override تیره می‌کرد که کد آگاهانه حذفش کرده بود — تناقض سند/کد هم اصلاح شد).
+- **عدد:** `OnboardingHost` ۷۳۶→۶۲۷ (−۱۰۹)، `ProfileScreens` ۱۰۴۰→۹۲۶ (−۱۱۴)، `WelcomePhone` ۱۰۲۹→۸۸۶ (−۱۴۳)، فایل جدید `OnboardingCta.kt` ۷۴ خط → **خالص −۲۹۲ خط**؛ ۴۳ import بی‌استفاده هم حذف شد. رفتار رندر عیناً حفظ شد (شکل pill، فلش رسم‌شده، رنگ غیرفعال تیره) و CTAها برای اولین‌بار فیدبک press-scale متعارف را گرفتند.
+- **تست:** `feature:onboarding` ۹۲/۹۲ و `core:designsystem` ۸۳/۸۳ واحد؛ روی `Pixel_6a`: `ShomaraOnboardingGatesTest` ۶/۶ (تست جدید: CTA غیرفعال پروفایل هیچ ‏OnClick به سرویس‌های دسترس‌پذیری اعلام نمی‌کند)، `ShomaraParentGateSemanticsTest` ۳/۳، و رگرسیون `ShomaraHomeScreenTest` ۵/۵، `ShomaraStationSheetTest` ۷/۷، `ShomaraJumpAssessmentShellTest` ۳/۳.
+- **APK:** `npm run android:assemble:debug` exit 0 (`app-debug.apk`، SHA-256 `458c7e8f…e2d8878`) و `:app:assembleDebugAndroidTest` exit 0.
+- **بازمانده:** O5 باز؛ نمونهٔ بصری روی دستگاه فیزیکی و TalkBack walkthrough برای onboarding همچنان `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-16 — قرارداد a11y فراصفحه‌ای و دو نقص واقعی که آشکار کرد
+
+- **شکاف روش:** بازبینی دسترس‌پذیری تا امروز چشمی بود؛ هیچ سنجهٔ مکانیکی نمی‌گفت کدام کنترل بدون نام است یا کوچک‌تر از کف ۴۸dp. تست `ShomaraA11ySweepTest` اضافه شد: درخت semantics واقعی چهار صفحه (تنظیمات، من، تمرین، مرز والدین) را در ۳۶۰dp پیمایش می‌کند و اگر کنترل قابل‌لمسی نام گفتاری نداشته باشد یا ارتفاعش زیر ۴۸dp باشد، build را می‌شکند (نسخهٔ اول: ۴ تست).
+- **نقص ۱ (واقعی، خصوصی‌سازی‌شده):** در «مرز والدین» فیلد گذرواژه یک **edit box بی‌نام** بود؛ لیبل بصری بیرون از semantics فیلد قرار داشت، پس TalkBack فقط «فیلد متن» می‌خواند. رفع در منبع: خودِ فیلد اکنون `contentDescription = label` دارد (هم‌زمان شاخهٔ read-only/disabled هم نام‌دار شد) و در شاخهٔ تعاملی، ارتفاع توکنی روی خودِ فیلد نشست.
+- **نقص ۲ (واقعی):** ناحیهٔ لمسی فیلد با padding عمودی ۸dp فقط **۴۰dp** از ۵۶dp سطح را می‌گرفت (اندازه‌گیری دستگاه: ۱۰۵px در ۴۲۰dpi). حالا خود فیلد `heightIn(ComponentButtonH)` دارد؛ گره‌ای که TalkBack فوکوس می‌کند تمام سطح فیلد است و متن هم با `decorator` مرکز می‌ماند.
+- **نقص ۳ (فرایندی):** مجموعهٔ androidTest ماژول `core:designsystem` **هرگز کامپایل نمی‌شد** (`assertCountEquals` روی کوئری تک‌گره‌ای) و دو تستش با قراردادهای مستند ناسازگار بود: اعلان رقم OTP ارقام لاتین را عمداً حفظ می‌کند (تصمیم باز مالک، F-22 الف) و اعلان پیشرفت کلمه‌محور است (ADR-0040)، در حالی که تست‌ها چیز دیگری می‌خواستند. تست‌ها با قرارداد واقعی و سخت‌گیرانه‌تر هم‌تراز شدند (پین کردن رشتهٔ دقیق + نبود رقم/درصد)، نه شل‌تر.
+- **شواهد:** `:core:designsystem:connectedDebugAndroidTest` = **۳۳/۳۳** (FontScale ۱۶، InteractiveSemantics ۱۱، ReducedMotion ۶) — اولین‌بار که این مجموعه اصلاً اجرا می‌شود؛ روی `Pixel_6a`: `ShomaraA11ySweepTest` ۴/۴، `ShomaraParentGateSemanticsTest` ۳/۳، `ShomaraOnboardingGatesTest` ۶/۶، `ShomaraHomeScreenTest` ۵/۵، `ShomaraStationSheetTest` ۷/۷، `ShomaraJumpAssessmentShellTest` ۳/۳؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا.
+- **بازمانده:** sweep فعلاً ۴ صفحه را پوشش می‌دهد (Home و مسیر با تست‌های اختصاصی خودشان پوشش دارند اما در sweep به‌عنوان صفحهٔ کامل نیستند)؛ O5 باز؛ device capture و TalkBack walkthrough همچنان `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-17 — sweep تا Home و گام‌های onboarding؛ حذف فیلد دست‌ساز پروفایل
+
+- **گسترش sweep:** `ShomaraA11ySweepTest` از ۴ به **۷ صفحه** رسید: Home (با پیشرفت واقعی ST01–ST04)، گام پروفایل و گام تعیین سطح اضافه شدند. اکنون صفحهٔ اصلی و مسیر یادگیری — اولویت اصلی هدف — به‌صورت مکانیکی پیمایش می‌شوند، نه فقط دو گرهٔ دستی.
+- **نقص ۳ (واقعی، رفع با ادغام):** فیلد نام در گام پروفایل یک **کپی ۱۱۳ خطی از `ShomaraTextField`** بود (لیبل، سطح، padding، sync وضعیت ویرایش، ردیف خطا و آیکون) و همان نقص ارتفاع را داشت: ناحیهٔ تعاملی ۱۰۴px ≈ ۳۹٫۶dp در سطح ۵۶dp. خود KDoc آن نوشته بود «اگر design system اسلات آیکون پیدا کند، این فیلد باید حذف شود و کامپوننت مشترک استفاده شود».
+- **رفع:** `ShomaraTextField` پارامتر defaulted `leading: (@Composable () -> Unit)?` گرفت (فلش/آیکون تزئینی در layout-start، با inset متن `Space40` و همان اسلات در شاخهٔ read-only)، و فیلد پروفایل به یک فراخوانی نازک تبدیل شد: **۱۱۳ خط حذف، ۳۵ خط جایگزین** (خالص −۷۸ خط در صفحه) و ۱۰ import بی‌استفاده پاک شد. `ProfileScreens.kt` اکنون ۸۳۵ خط است.
+- **شواهد:** `ShomaraA11ySweepTest` **۷/۷** روی `Pixel_6a` (Home + پروفایل + تعیین سطح + تنظیمات + من + تمرین + مرز والدین)؛ `:core:designsystem:connectedDebugAndroidTest` **۳۳/۳۳**؛ روی دستگاه: OnboardingGates ۶/۶، ParentGate ۳/۳، Home ۵/۵، StationSheet ۷/۷، JumpShell ۳/۳؛ `feature:onboarding` ۹۲/۹۲ و `core:designsystem` ۸۳/۸۳ واحد؛ `npm run android:gate` = exit 0 با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK SHA-256 `ec4e3f45…`.
+- **بازمانده:** خودِ `ProfileScreens` هنوز ۸۳۵ خط است (هندسه/hero و گرید پایه در همان فایل)؛ O5 باز؛ capture و TalkBack walkthrough `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-18 — اثبات صفر-مصرف‌کننده برای نمادهای عمومی + پوشش شیت ایستگاه و خانهٔ والدین
+
+- **ممیزی حذف (با اثبات، نه حدس):** برای هر ۲۷ نماد عمومی که در ممیزی اولیه «بدون ارجاع بیرونی» بودند، تعداد ارجاع در کل سورس‌های Kotlin شمرده شد (`build-reports/audit/zero_ref_proof.py`). نتیجه: **۲۵ نماد زنده‌اند** (یا درون فایل خودشان استفاده می‌شوند یا تست دارند) و تنها **۲ نماد** ارجاع صفر دارند: `AudioPolicy` و `ShomaraStateHolder`. هر دو **قرارداد مستند و پذیرفته‌شده** هستند (CONTENT-017 و ADR-0041 §4) و حذفشان یعنی برگرداندن یک تصمیم ثبت‌شده — که در یک پاس پاک‌سازی مجاز نیست. پس حذف نشدند؛ به‌جای آن این یافته ثبت می‌شود. یعنی از نظر کد مردهٔ **ثبت‌نشده** چیزی باقی نمانده؛ وزن واقعی در دور اول برداشته شد (۲۵ drawable + ۴ فایل).
+- **گسترش sweep به ۹ صفحه:** شیت ایستگاه (سطح بین Home و درس) و خانهٔ والدین اضافه شدند؛ هر دو از نظر نام‌گذاری و کف ۴۸dp پاک بودند — این هم یک یافتهٔ صادقانه است، نه همهٔ sweepها نقص پیدا نمی‌کنند.
+- **شواهد:** `ShomaraA11ySweepTest` **۹/۹** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`)؛ APK بدون تغییر بایت‌به‌بایت نسبت به دور قبل (`ec4e3f45…`) چون فقط کد تست اضافه شد.
+- **بازمانده:** O5 باز؛ شکستن `ProfileScreens` (۸۳۵ خط) و `OnboardingHost` (۶۲۷ خط)؛ capture و TalkBack walkthrough `NATIVE_PENDING`؛ 7/29 Linux parity.
+
+## 2026-11-19 — DT-19 — شکستن فایل ۸۳۵ خطی پروفایل به سه فایل موضوعی
+
+- **مسئله:** `ProfileScreens.kt` به ۸۳۵ خط رسیده بود و سه موضوع بی‌ربط را در خود داشت: صفحهٔ منطقی (state/CTA/فیلد نام)، هنر hero (لایه‌های SVG روی canvas، ~۳۵۰ خط)، و گرید انتخاب پایه. هر ویرایش کوچک روی صفحه، دیف را در میان صدها خط ترسیم گم می‌کرد.
+- **انجام:** با مرزهای تأییدشدهٔ اعلان‌ها جدا شد — `ProfileHero.kt` (۳۵۳ خط: رنگ‌های برگ/تپه، hero، canvas، برگ‌ها، پس‌زمینهٔ پایین)، `ProfileGradeGrid.kt` (۱۴۵ خط: گرید و کارت پایه)، `ProfileScreens.kt` (۳۷۷ خط: صفحه، فیلد نام، CTA، تعیین سطح). سه نماد که اکنون بین فایلی استفاده می‌شوند از `private` به `internal` رفتند (`ShomaraProfileHero`، `ShomaraProfileBottomBackground`، `ShomaraProfileGradeGrid`) — بدون تغییر رفتار. import هر فایل بعد از جابه‌جایی هرس شد.
+- **تأیید:** `feature:onboarding` ۹۲/۹۲ واحد (بدون تغییر)؛ روی `Pixel_6a`: `ShomaraA11ySweepTest` ۹/۹ و `ShomaraOnboardingGatesTest` ۶/۶؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK SHA-256 `2b24a61…`.
+- **بازمانده:** `OnboardingHost.kt` (۶۲۷ خط) نوبت بعد؛ O5 باز؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-20 — شکستن `OnboardingHost` + قاعدهٔ ساختاری heading در sweep (و قرارداد a11y که دروغ می‌گفت)
+
+- **شکستن فایل:** `OnboardingHost.kt` (۶۰۵ خط) به `OtpStep.kt` (۹۴ خط: `ShomaraOtpStepStrings` + `ShomaraOtpKeypad`) و `OnboardingHost.kt` (۵۲۵ خط) شکست؛ keypad از `private` به `internal` رفت و importها هرس شد. رفتار تغییر نکرد.
+- **قاعدهٔ دوم sweep (ساختار، نه فقط اندازه):** `ShomaraA11ySweepTest` حالا علاوه بر «کنترل بی‌نام / زیر ۴۸dp» بررسی می‌کند که **هر صفحه دست‌کم یک heading** برای پیمایش ساختاری TalkBack داشته باشد.
+- **نقص ۴ (واقعی و مهم):** گام پروفایل **هیچ heading رندرشده‌ای نداشت** — درحالی‌که `OnboardingA11y` (قرارداد پیمایش رسمی) صریحاً **دو heading** برای همین گام اعلام می‌کند: `ProfileTitle` و `GradeSectionTitle`. یعنی قرارداد/تست a11y چیزی را توصیف می‌کرد که در رندر وجود نداشت؛ آن تست فقط فهرست رشته‌ها را می‌سنجید، نه رندر واقعی. ۸ صفحهٔ دیگر پاس بودند.
+- **رفع (بدون تغییر ظاهر):** hero — که از نظر بصری همان عنوان صفحه است — به‌صورت `heading()` با `contentDescription = ProfileTitle` و گرید پایه به‌صورت `heading()` با `GradeSectionTitle` علامت‌گذاری شدند. حالا ترتیب واقعی TalkBack (title → field → section → CTA) با قرارداد اعلام‌شده در `OnboardingA11y` یکی است.
+- **شواهد:** `ShomaraA11ySweepTest` **۹/۹** (با قاعدهٔ جدید) روی `Pixel_6a`؛ `ShomaraOnboardingGatesTest` ۶/۶؛ `ShomaraHomeScreenTest` ۵/۵؛ `feature:onboarding` ۹۲/۹۲ واحد؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`)؛ APK SHA-256 `db9a59d…`. فایل‌ها: `OnboardingHost` ۵۲۵ · `OtpStep` ۹۴ · `ProfileScreens` ۳۷۷ · `ProfileHero` ۳۶۶ · `ProfileGradeGrid` ۱۵۸.
+- **بازمانده:** O5 باز؛ صفحهٔ درس هنوز پوشش a11y ندارد؛ قاعدهٔ «CTA اصلی یکتا در هر state» هنوز مکانیکی نشده؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-21 — صفحهٔ درس وارد sweep شد (سطحی که هیچ پوشش a11y نداشت)
+
+- **شکاف:** صفحهٔ درس عمیق‌ترین و کنترل‌سنگین‌ترین سطح اپ است، ولی تنها اندرویدتست آن (`ShomaraLessonHostResumeTest` در `feature:lesson`) فقط «مرحلهٔ ازسرگیری‌شده» را می‌سنجد — هیچ سنجش نام/اندازه/ساختار روی این صفحه نبود.
+- **انجام:** `lessonStartExposesLabelledTouchTargets` به `ShomaraA11ySweepTest` اضافه شد (اکنون **۱۰ صفحه**). برای اینکه تست «توخالی» سبز نشود، ابتدا وجود هدر واقعی درس (نام ایستگاه ST07) تأیید می‌شود و بعد قرارداد نام/۴۸dp/heading سنجیده می‌شود؛ پس یک اسکلت خالی نمی‌تواند قبول شود. صفحهٔ درس **پاک** بود.
+- **یافتهٔ صادقانه دربارهٔ gate:** `scripts/android-build.mjs` در حالت gate فقط `test` (JVM) و کامپایل `:app` androidTest را اجرا می‌کند و **تست‌های instrumented را اجرا نمی‌کند** — یعنی همهٔ تست‌های دستگاه (androidTest در `:app`، `:core:designsystem`، `:feature:lesson`) در gate فقط کامپایل می‌شوند. اجرای واقعی تا امروز دستی روی `Pixel_6a` انجام و گزارش شده است. افزودن اجرای instrumented به gate یک تصمیم مالک است (نیازمند دستگاه/emulator در CI)، بنابراین فقط ثبت شد و خودسرانه اعمال نشد.
+- **شواهد:** `ShomaraA11ySweepTest` **۱۰/۱۰** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`)؛ APK بدون تغییر بایت‌به‌بایت (`db9a59d…`) چون فقط کد تست اضافه شد.
+- **بازمانده:** O5 باز؛ قاعدهٔ «CTA اصلی یکتا در هر state»؛ اجرای instrumented در CI (نیازمند تصمیم مالک)؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-22 — پوشش state صفحهٔ Home (و نقص ۵: سیگنال آفلاین که نادیده گرفته می‌شد)
+
+- **شکاف:** sweep تا امروز از هر صفحه فقط **یک** state را می‌سنجید، درحالی‌که AGENTS §۶ هر state را لازم می‌داند. حالا Home در چهار state غیرشاد سنجیده می‌شود: Loading، Offline، Error، Empty — هر کدام با **تأیید رندر شدن همان state** (وجود متن canonical آن) تا پاس توخالی ممکن نباشد؛ مثلاً اگر `entryState` نادیده گرفته شود، تست شکست می‌خورد.
+- **نقص ۵ (واقعی):** همان تأییدِ ضد-توخالی، ناسازگاری را لو داد: صفحهٔ Home دو کانال برای واقعیت «آفلاین» دارد — `progress.offline` و `entryState = Offline` — ولی بنر آفلاین فقط به کانال اول وصل بود. یعنی فراخواننده‌ای که فقط می‌دانست «شبکه قطع است» و `entryState = Offline` می‌داد، کودک را با یک مسیر کاملاً عادی و بدون هیچ پیامی رها می‌کرد. `ShomaraPathGraphLogic.resolveEntryState` هم Offline را به مسیر پاس می‌داد و در `ShomaraPathGraph` عملاً no-op بود.
+- **رفع:** شرط بنر به `progress.isResolved && (progress.offline || entryState == Offline)` تغییر کرد؛ پیام همان رشتهٔ canonical است و چیزی اختراع نشد. حالا هر دو کانال به کودک می‌رسند و دو تست جدا هر کانال را می‌سنجند.
+- **شواهد:** `ShomaraA11ySweepTest` **۱۵/۱۵** روی `Pixel_6a` (۱۰ صفحه؛ Home با ۵ state)؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ رفتار Loading این‌گونه مستند شد که «در state بارگذاری هیچ کنترل عملی وجود ندارد» و به‌جای aimlessly سبز شدن، صریح با `expectActions = false` بیان شده است.
+- **بازمانده:** O5 باز؛ قاعدهٔ «CTA اصلی یکتا»؛ اجرای instrumented در CI؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-23 — state های تنظیمات/تمرین + استخراج متن canonical تمرین (نقض §۱۰ و یافتهٔ ۶)
+
+- **نقض §۱۰ رفع شد:** کامپوزبل `ShomaraPracticeHubScreen` هفت رشتهٔ فارسی را **inline** داشت (عنوان، سه بنر، دو heading بخش، «انجام شده») و §۱۰ می‌گوید متن UI باید از منبع canonical بیاید. همه به `ShomaraPracticeHubStrings` منتقل شدند؛ حالا تست‌ها هم همان ثابت‌ها را می‌خوانند و متن در دو جا تکرار نمی‌شود. رشته‌ها **بدون تغییر متن** منتقل شدند و تست‌های JVM ماژول تمرین سبز ماندند.
+- **پوشش state:** sweep از ۱۵ به **۲۲** تست رسید: تنظیمات در حالت‌های Dirty/Saving/Error (با تأیید متن «ذخیره» و پیام خطای واقعی) و تمرین در حالت‌های Loading/Offline/Error/Empty (با تأیید متن canonical همان state).
+- **یافتهٔ ۶ (ثبت‌شده، عمداً تغییر نکرد):** سه state اطلاعاتی تمرین (Offline/Error/Empty) **هیچ کنترل درون‌صفحه‌ای** ندارند. بررسی شد که بن‌بست نیست: شل کودک سه تب ثابت دارد و مسیر همیشه در دسترس است. اما ناسازگاری واقعی است: Home در state خطا «تلاش دوباره» دارد و تمرین ندارد — یک محصول، دو پاسخ به یک پرسش. افزودن `onRetry` بدون مصرف‌کننده در شل، پارامتر مرده می‌ساخت، پس **API اختراع نشد**؛ قرارداد هر state صریح شد (`expectActions = false`) و یافته برای تصمیم مالک ثبت شد.
+- **شواهد:** `ShomaraA11ySweepTest` **۲۲/۲۲** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `711362c…`.
+- **بازمانده:** O5 باز؛ قاعدهٔ «CTA اصلی یکتا» (نیازمند نشانهٔ primary در design system)؛ اجرای instrumented در CI؛ `onRetry` تمرین (تصمیم مالک)؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-24 — ممیزی مکانیکی متن inline (§۱۰) + canonical کردن «من» + state های آن
+
+- **ممیزی سیستماتیک:** یک اسکریپت (`build-reports/audit/inline_persian_audit.py`) همهٔ رشته‌های فارسی را که **در خط `const val` نیستند** شمرد: **۲۴۶** مورد در `feature`/`core:designsystem`/`app`. این عدد **بالا-کران** است نه شمار نقض: توابع داخل آبجکت‌های `*Strings` (مثل `ShomaraHomeStrings.remaining`) و داده‌های preview و رشته‌های `debug` هم در آن حساب شده‌اند. پس آن را به‌عنوان «فهرست کار» استفاده می‌کنیم، نه به‌عنوان верdict.
+- **بیشترین تراکم واقعی:** `LessonContentWiring` (۲۴، فقط debug)، `ShomaraStationStart` (۱۶)، `ShomaraParentBoundary` (۱۴)، `ShomaraMeScreen` (۱۲ → صفر شد)، `ShomaraLaunchGate` (۱۲)، `ShomaraLessonStageChrome` (۱۰)، `ShomaraSettingsScreen` (۷).
+- **رفع در این دور:** `ShomaraMeScreen` (۱۲ رشتهٔ inline) به `ShomaraMeStrings` منتقل شد — شامل عنوان، چهار بنر حالت، پیشوند آواتار، برچسب/توضیح دو ردیف و «۳ از ۲۵ ایستگاه کامل شده» (به‌صورت تابع با ارقام فارسی از قبل تبدیل‌شده). متن **بدون تغییر** و تست‌های JVM ماژول پروفایل سبز.
+- **پوشش state:** sweep از ۲۲ به **۲۶** رسید: «من» در Loading/Offline/Empty/Error، هر کدام با تأیید متن canonical. سه state اطلاعاتی به‌درستی `expectActions = false` هستند (شل تب دارد).
+- **شواهد:** `ShomaraA11ySweepTest` **۲۶/۲۶** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `cae99d7…`.
+- **بازمانده:** استخراج متن در `StationStart`/`ParentBoundary`/`LaunchGate`/`LessonStageChrome`/`Settings` (فایل‌به‌فایل)؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-25 — شیت ایستگاه و تنظیمات canonical شدند + state های قفل/آفلاین شیت
+
+- **شیت ایستگاه (نزدیک‌ترین سطح به مسیر):** `ShomaraStationStart` ۱۴ رشتهٔ inline داشت (برچسب CTA هر state، خط متادیتا، توضیح قفل، عنوان شیت پرش، بنرهای offline/error/preparing/starting، «بستن»، «پرش»، «؛ انتخاب شد»). همه به `ShomaraStationStartStrings` منتقل شدند؛ خط متادیتا و عنوان پرش به تابع تبدیل شدند تا ارقام فارسی از قبل تبدیل‌شده پاس داده شوند. متن **بدون تغییر** — `ShomaraStationStartTest` و بقیهٔ تست‌های ماژول مسیر سبز.
+- **تنظیمات:** ۵ رشتهٔ inline باقی‌مانده (پسوند «انتخاب‌شده»، «روشن»/«خاموش» در `stateDescription` و برچسب) به `ShomaraSettingsStrings` اضافه شدند؛ constهای موجود دست‌نخورده.
+- **پوشش state شیت:** دو case جدید — شیت در حالت **Locked** (تنها کنترل: «متوجه شدم») و **Offline** — با تأیید متن canonical قبل از سنجش؛ sweep از ۲۶ به **۲۸** رسید.
+- **اثر قابل اندازه‌گیری:** ممیزی inline از **۲۴۶** به **۲۱۷** رسید (`build-reports/audit/inline_persian_audit.py`). باقی‌ماندهٔ پرتراکم: `LessonContentWiring` (۲۴، debug)، `ShomaraCatalog` (۲۱)، `ParentBoundary` (۱۴)، `ShomaraFeedback` (۱۳)، `LaunchGate` (۱۲)، `LessonStageChrome` (۱۰).
+- **شواهد:** `ShomaraA11ySweepTest` **۲۸/۲۸** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `020fe6d…`.
+- **بازمانده:** `ParentBoundary`/`LaunchGate`/`LessonStageChrome` (و تصمیم دربارهٔ `ShomaraCatalog`/`ShomaraFeedback` که ممکن است canonical باشد)؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI.
+
+## 2026-11-19 — DT-26 — متن مرز والدین canonical شد + state «قفل موقت» در sweep
+
+- **مرز والدین (۱۴ رشته):** پیام‌های شکست دروازه (`NotConfigured` و `WrongPasscode` — همان چیزی که والد دقیقاً وقتی خطا رخ می‌دهد می‌خواند) و همهٔ برچسب‌های صفحه (`GateTitle`, `GatePrompt`, `LockedOutNotice`, `PasscodeLabel`, `Enter`, `Back`, `LockPolicyHint`, `ReportTitle`, `SignOut`, `ScopeNotice`) به `ShomaraParentStrings` منتقل شدند؛ خط پیشرفت به تابع تبدیل شد. متن **بدون تغییر** — `ShomaraParentBoundaryTest` و بقیهٔ تست‌های ماژول والدین سبز.
+- **LaunchGate:** کشف مهم برای ممیزی — رشته‌های آن **از قبل** داخل `ShomaraLaunchRecoveryCopy` (منبع canonical، «pure so it is unit-testable») بودند و شمارش من آن‌ها را inline حساب می‌کرد. به‌جای جابه‌جایی بی‌فایده، ۱۰ رشته به `const val`های نام‌دار ارتقا یافتند تا در یک نگاه مرور شوند و تست بتواند به آن‌ها ارجاع دهد.
+- **state جدید sweep:** دروازهٔ والدین در حالت **LockedOut** (پس از ۳ تلاش ناموفق) — تأیید می‌شود متن انتظار گفته می‌شود و همان دو کنترل واقعی نام‌دار و ≥۴۸dp می‌مانند. sweep به **۲۹** رسید.
+- **اثر اندازه‌گیری‌شده:** ممیزی inline از **۲۱۷** به **۱۹۴**.
+- **شواهد:** `ShomaraA11ySweepTest` **۲۹/۲۹** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `84ca1ae…`.
+- **بازمانده:** `LessonStageChrome` و بقیهٔ فایل‌های درس؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI.
+
+## 2026-11-19 — DT-27 — گالری کاتالوگ از main به debug + متن مرحلهٔ درس canonical + تفکیک متریک
+
+- **کد مردهٔ اثبات‌شده:** `ShomaraDesignSystemCatalog` (۱۲۴ خط با ۲۱ رشتهٔ نمونه) **صفر مصرف‌کننده** داشت — تنها میزبانش (`DesignSystemGalleryActivity`) در دور ۱ حذف شده بود و فقط اعلان + دو اشاره در اسناد مانده بود. حذف کامل، شواهد N03-06 را از بین می‌برد؛ رهاکردن، UI مرده را در ریلیز می‌فرستاد. راه‌حل: **انتقال کامپوزبل به `src/debug`** (همان الگوی `Previews.kt` در دور ۱) و نگه‌داشتن `ShomaraCatalogMatrix` در main چون تست JVM به آن assert می‌کند.
+- **اثبات ساختاری (نه ادعا):** خروجی کلاس‌ها — ریلیز فقط `ShomaraCatalogMatrix.class`؛ دیباگ علاوه بر آن `ShomaraCatalogGalleryKt.class` و `ComposableSingletons$ShomaraCatalogGalleryKt.class`. یعنی گالری دیگر در artifact ریلیز نیست.
+- **متن مرحلهٔ درس:** ۱۰ رشتهٔ inline در `ShomaraLessonStageChrome` (پنج نام مرحله، عنوان ایستگاه، fallback شناسهٔ ناشناس، هدر «— مرحلهٔ …»، «برای ادامه، به مسیر برگرد.»، «بازگشت به مسیر») به `ShomaraLessonStageLabels` با `const val` + توابع سازنده منتقل شد. متن **بدون تغییر**؛ تست‌های JVM ماژول درس سبز.
+- **تفکیک متریک ممیزی:** اسکریپت اکنون `SUBTOTAL_MAIN` و `SUBTOTAL_DEBUG` جدا می‌دهد: **MAIN=۱۳۲، DEBUG=۵۵، TOTAL=۱۸۷**. این نشان می‌دهد بخش بزرگی از «موارد» باقی‌مانده در MAIN، توابع سازندهٔ قانونی داخل آبجکت‌های `*Strings` هستند (`ShomaraFeedback` ۱۳، `ShomaraPathState` ۸، `ShomaraAudio` ۹) — یعنی متریک به مرز کاربردش رسیده و ادامهٔ کورکورانه‌اش ارزش منفی دارد.
+- **بازبینی خودم:** بررسی شد که در فایل‌های اصلاح‌شده (والدین، ایستگاه، مرحلهٔ درس، من، تنظیمات) هیچ رشتهٔ inline جا نمانده باشد — تنها باقی‌مانده‌ها **داخل** همان توابع سازندهٔ canonical هستند. ✓
+- **شواهد:** `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ `android:assemble:debug` exit 0؛ `:core:designsystem` debug+release+JVM سبز؛ APK `a9da074…`. sweep دست‌نخورده ماند (هیچ UI رندرشده‌ای تغییر نکرد) و آخرین اجرای تأییدشده‌اش ۲۹/۲۹ در DT-26 است — این را صریح ثبت می‌کنم.
+- **بازمانده:** O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI؛ شواهد دستگاه؛ بدهی Linux parity.
+
+## 2026-11-19 — DT-28 — قاعدهٔ «یک CTA اصلی» از توصیف به قرارداد اجراشدنی تبدیل شد
+
+- **قرارداد جدید در Design System:** `ShomaraPrimaryCta` یک `SemanticsPropertyKey<Boolean>` است و `shomaraPrimaryCta` روی `SemanticsPropertyReceiver`. فقط `ShomaraButtonVariant.Primary` آن را منتشر می‌کند؛ Secondary/Ghost هرگز — تا صفحه نتواند ناخواسته دو عمل اصلی تبلیغ کند. تغییر **افزایشی** است: هیچ label/role/stateDescription عوض نشد.
+- **شکاف واقعی که پیدا شد:** Home (Ready) صفر CTA اصلی داشت، چون عمل اصلی Home **گرهٔ ایستگاه فعلی روی مسیر** است نه یک دکمه. پس هر سطحی که تصمیم را می‌گیرد باید بتواند اعلام کند — گرهٔ Current حالا `shomaraPrimaryCta = true` می‌گذارد (به‌همراه `selected`).
+- **اندازه‌گیری کامل ۲۹ state روی دستگاه** (logcat `A11Y_SWEEP`): **هیچ سطحی دو CTA اصلی ندارد.** توزیع: یک CTA اصلی در `Home`(گرهٔ Current)، `Home/Error`(تلاش دوباره)، `StationSheet`(شروع)، `Settings`+`Dirty`+`Saving`+`Error`(ذخیره)، `ParentGate`+`LockedOut`(ورود)، `LessonStart`(بررسی)، `OnboardingProfile`(ادامه)؛ صفر در حالت‌های اطلاعاتی (`Me*`, `Practice/*`, `Home/Loading|Empty|Offline`, `ParentHome`, `OnboardingPlacement`) و در `StationSheet/Locked|Offline` که CTA‌شان عمداً Ghost است (تصمیم ثبت‌شده، نه تصمیم‌گیری).
+- **دقت در تعریف قاعده:** یک بار تست شکست خورد (`StationSheet: 2 primary CTAs`) و معلوم شد شیت یک پنجرهٔ **Dialog** است (`dialogs=1`) و TalkBack فوکوس را داخل آن نگه می‌دارد؛ شمارش بین‌پنجره‌ای، یک تصمیمِ در دسترس را با یک تصمیمِ غیرقابل‌دسترس مقایسه می‌کرد. قاعده به «حداکثر یک CTA اصلی **در هر پنجره**» اصلاح شد (`hasAnyAncestor(isDialog())`) — سخت‌گیری حفظ شد، نه اینکه assertion حذف شود.
+- **تست‌ها:** helper جدید `assertPrimaryCtaCount(screen, expected)` و Home حالا صریحاً **دقیقاً ۱** CTA اصلی را assert می‌کند؛ sweep همان **۲۹/۲۹** روی `Pixel_6a`.
+- **شواهد:** `android:gate` exit 0 (`ANDROID_BUILD: PASS`)، ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `d6f482c…`.
+- **بازمانده:** O5 باز؛ instrumented در CI؛ شواهد دستگاه فیزیکی؛ بدهی Linux parity.
+
+## 2026-11-19 — DT-29 — سنجش کد تکراری + صفر شدن متن inline در `app` + تست state تب تمرین
+
+- **ادعای «کد تکراری» سنجیده شد، نه حدس:** اسکنر `build-reports/audit/duplicate_scan.py` (بلوک‌های ۸+ خطی نرمال‌شده، فقط source اصلی، بدون `build`/generated/test) → در ۱۵۲ فایل: **صفر** بلوک تکراری ≥۱۲ خط، و فقط **۴ جفت** ۸–۱۱ خطی که همه boilerplate چیدمان‌اند (`Column/Arrangement.spacedBy`, `interactionSource` boilerplate). نتیجهٔ صادقانه: تکرار معنادار باقی نمانده؛ ادغام آن ۴ جفت ریسک ظاهری بدون سود واقعی است.
+- **`app` به صفر متن inline رسید:** دو رشتهٔ آخر در `ShomaraChildShellHost` («در حال آماده‌سازی تمرین‌ها» و بدنه‌اش) به `ShomaraPracticeHubStrings.PreparingTitle/PreparingBody` منتقل شدند. اکنون هیچ رشتهٔ فارسی inline در `app/src/main` نیست (فقط در `debug`).
+- **متریک:** MAIN ۱۳۲ → **۱۳۰**، DEBUG=۵۵، TOTAL=**۱۸۵**.
+- **تست state جدید (۳۰ مورد):** `practiceTabWhileProgressIsUnresolvedExplainsItself` — همان سطحی که کودک در O5 **واقعاً** می‌بیند: تب تمرین با مسیر حل‌نشده. تست تب را می‌زند، متن canonical را تأیید می‌کند و قرارداد a11y را می‌سنجد. (پیش از این فقط خود کامپوزبل تمرین تست می‌شد، نه سطح shell.)
+- **شواهد:** `ShomaraA11ySweepTest` **۳۰/۳۰** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `81636ef…`.
+- **بازمانده:** O5 (مسدودکنندهٔ واقعی)؛ instrumented در CI؛ شواهد دستگاه فیزیکی؛ بدهی Linux parity 7/29.
+
+## 2026-11-19 — DT-30 — اسکن کامل کد مرده (۵۲۸ اعلان) + پوشش state کشف درس + رفع نقص در helper خودم
+
+- **اسکن کامل، نه ۲۷ کاندید:** `build-reports/audit/dead_decl_scan.py` تمام اعلان‌های top-level در source اصلی (۵۲۸ اعلان) را شمرد و آن‌هایی را که **هیچ ارجاعی بیرون از فایل خودشان** ندارند جدا کرد → **۴۰ کاندید**. اسکنر با grep مستقیم روی ۹ نمونه **اعتبارسنجی شد** (همه واقعاً فقط در محل تعریف ظاهر می‌شوند).
+- **دسته‌بندی صادقانهٔ ۴۰ کاندید** (تفکیک مهمی که مانع حذف نادرست می‌شود): ۳۸ مورد **قرارداد مستند** (ارجاع در docs/ADR: `ShomaraStateHolder`, `AudioPolicy`, `ShomaraDialog`, `ShomaraChallengeIntro`, `ShomaraCountersGrid`, …) یا **قابلیت تست‌شدهٔ بدون سیم‌کشی** (`ManifestActivationEngine` ۷ ارجاع تست، `DraftAudioImporter` ۱۱، `ShomaraAssessmentDraw` ۱۶) یا **preview دیباگ**؛ فقط **۲ مورد** کاملاً یتیم بودند: `AssetResolver` و `AudioAssetResolver` (صفر ارجاع کد/تست/سند در کل مخزن).
+- **تصمیم دربارهٔ آن ۲ مورد: حذف نکردم** — و دلیلش را ثبت می‌کنم: KDoc آن‌ها را به ADR-0039 §۱ و CONTENT-017 گره می‌زند و مسئلهٔ O2 (قرارداد مسیر پکیج محتوا) باز است؛ این‌ها seamِ آمادهٔ اتصال‌اند نه کد مرده. حذفشان churn می‌ساخت. (این تصمیم مالک است، نه من.)
+- **پوشش state درس (عمیق‌ترین صفحه):** با dump درخت semantics معلوم شد درس در **P1 کشف** باز می‌شود و گزینه‌های سرور نیامده‌اند. تست جدید `lessonDiscoverWithoutServerOptionsIsHonestAndNavigable` همان سطح را می‌سنجد: متن صادقانه، قرارداد a11y، و **دقیقاً یک CTA اصلی**. sweep از ۳۰ به **۳۱** رسید.
+- **نقص در ابزار خودم پیدا و رفع شد:** `assertTextPresent` برچسبِ spoken (contentDescription) را نمی‌دید و stateِ درست‌رندرشده را «غایب» گزارش می‌کرد؛ helper مکمل `assertDescriptionPresent` اضافه شد (assertion ضعیف نشد، دقیق‌تر شد).
+- **متن:** ۶ برچسب ناحیهٔ skeleton در `ShomaraTemplateSkeletons` به `ShomaraTemplateSkeletonStrings` منتقل شد (متن بدون تغییر). متریک: MAIN ۱۳۰ → **۱۲۴**، TOTAL=**۱۷۹**.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۱/۳۱** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ef880a0…`.
+- **بازمانده:** O5؛ تصمیم دربارهٔ `AssetResolver`/`AudioAssetResolver`؛ instrumented در CI؛ شواهد دستگاه.
+
+## 2026-11-19 — DT-31 — بازبینی مسیر (منطق قفل) + پوشش state ذخیرهٔ پروفایل
+
+- **بررسی ادعای «گرهٔ قفل‌شده»:** `ShomaraPathGraphLogic.tapEnabled(state)` برای همهٔ stateها `true` برمی‌گرداند — عمدی. یک گرهٔ قفل‌شده **باید** قابل لمس باشد تا شیت در حالت Locked باز شود و به کودک بگوید چرا قفل است (`stateLabelFor(Locked) = «هنوز قفل؛ با ترتیب مسیر باز می‌شود»`). پس این باگ نیست، یک تعامل طراحی‌شده است؛ ثبت شد تا دوباره «رفع» نشود.
+- **شکاف واقعی sweep — ذخیرهٔ پروفایل:** صفحهٔ پروفایل `saveState` دارد با بنر شکست (Retry) و بنر موفقیت، اما هیچ state‌ای جز پیش‌فرض سنجیده نمی‌شد. دو case جدید:
+  - `onboardingProfileSaveFailureOffersTheWarmRetry` — شکست ذخیره با درفت معتبر: تأیید متن canonical `ShomaraProfileStrings.SaveFailed`، قرارداد a11y، و **دقیقاً یک CTA اصلی**.
+  - `onboardingProfileSavingKeepsOnePrimaryAndSaysItIsWorking` — در حال ذخیره: CTA همچنان تنها CTA اصلی است **و** صریحاً `Disabled` است (تأیید شد؛ دوبار‌ارسال ممکن نیست).
+- **sweep از ۳۱ به ۳۳** رسید.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۳/۳۳** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ef880a0…` (بدون تغییر کد اصلی در این دور).
+- **بازمانده:** O5؛ instrumented در CI؛ شواهد دستگاه؛ بدهی Linux parity.
+
+## 2026-11-19 — DT-32 — بازگشت Home به inset canonical ۲۴dp (با سنجش، نه سلیقه)
+
+- **یافته:** ممیزی ریتم ۱۹ صفحه نشان داد inset کناری متفاوت است: ۲۴dp در اکثر صفحه‌های کامل (Me، Practice، Profile، ParentGate، Placement، Phone)، ۱۶dp در Settings/OnboardingHost/JumpSheet (کاهش تطبیقی **ثبت‌شده** در `STAGE4_IMPLEMENTATION_NOTE`)، و **Home با ۲۰dp که هیچ‌جا ثبت نشده بود**.
+- **مسئله:** playbook می‌گوید inset ترجیحی ۲۴dp و هر کاهش باید *مستند* باشد. ۲۰dp در Home یک انحراف مستندنشده بود — یا باید ۲۴ شود یا باید ثبت شود.
+- **تست پایه قبل از تغییر (مهم):** `homeStaysUsableAt360dpWithDoubleText` ساخته شد — Home در عرض **۳۶۰dp** با **فونت ۲×** (که AGENTS §6 می‌خواهد و تا حالا هیچ‌وقت سنجیده نشده بود): قرارداد a11y، یک CTA اصلی، و **صفر نود سرریزشده** از viewport. پایه با ۲۰dp **سبز** بود.
+- **تغییر با شاهد:** ۲۰dp → **۲۴dp** در `ShomaraHomeScreen`؛ همان تست در باریک‌ترین/بزرگ‌ترین حالت **سبز** ماند → تغییر بدون شکستن چیدمان، با همراستایی canonical.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۴/۳۴** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `ca82512…` (**تغییر کرد** — این دور کد تولید عوض شد).
+- **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه.
+
+## 2026-11-19 — DT-33 — عرض ۳۶۰dp با فونت ۲× (خواستهٔ AGENTS §6) و کشف بریدگی متن با مکانیزمش
+
+- **شکاف پوشش:** sweep همیشه روی عرض دستگاه و ۱× اجرا می‌شد؛ AGENTS §6 عرض ۳۶۰/۳۹۰/۴۱۲ **و بزرگ‌نمایی متن** را می‌خواهد. helper مشترک `assertFitsAtNarrowWidth` ساخته شد (نه ۶ نسخهٔ تکراری): رندر داخل `CompositionLocalProvider(LocalDensity provides Density(2.625f, fontScale = 2f))` + `Box(width = 360.dp)`، سپس قرارداد a11y + سنجش سرریز. ۶ صفحه پوشش گرفت: Home, Me, PracticeHub, Settings, ParentHome, OnboardingProfile. sweep ۳۴ → **۳۹**.
+- **چک اول بی‌اثر بود:** سنجش با `boundsInRoot` هیچ‌وقت شکست نمی‌خورد، چون Compose متن را **clip** می‌کند و جعبه داخل viewport می‌ماند. جایگزین دقیق: `SemanticsActions.GetTextLayoutResult` → `TextLayoutResult.hasVisualOverflow`.
+- **نقص واقعی پیدا شد:** در ۳۶۰dp/۲× متن در **هر ۶ صفحه** بریده می‌شود — مجموعاً **۳۷** گره متنی (Home 8، Settings 11، Me 7، PracticeHub 7، Profile 2، ParentHome 2). این دقیقاً همان کاربری است که به بزرگ‌نمایی سیستم تکیه دارد.
+- **مکانیزم با اندازه‌گیری، نه حدس:** تست تشخیصی موقت هر گره بریده را لاگ کرد؛ نتیجه یکدست بود: `didWidth=true`، `didHeight=false`، `lines=1`، `layout.size == node.size`. یعنی ظرف‌های **عرض‌ثابت** در ۲× حتی برای یک کلمه کافی نیستند و متن فرصت شکستن خط ندارد. (هیچ `maxLines`ی در feature/path نیست؛ محدودیت از عرض ظرف می‌آید.)
+- **تصمیم:** ratchet به‌جای «صفر یا هیچ». بودجهٔ اندازه‌گیری‌شده per-screen ثبت شد و **فقط می‌تواند کم شود**؛ هر افزایش (= بریدگی بیشتر) تست را می‌شکند. اسامی همهٔ ۳۷ برچسب در KDoc نقشه ثبت شد.
+- **اثبات اینکه ratchet بی‌اثر نیست:** بودجهٔ Home موقتاً ۸→۷ شد و تست **شکست** (`8 text node(s) are clipped ... budget is 7`)؛ سپس ۷→۸ و کل suite دوباره سبز. بدون این اثبات، یک assertion «همیشه‌سبز» تحویل داده بودم.
+- **شواهد:** `ShomaraA11ySweepTest` **۳۹/۳۹** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK بدون تغییر `ca82512…` (فقط سورس تست).
+- **بازمانده:** رفع ساختاری بریدگی ۳۷ برچسب (عرض‌های ثابت مسیر/تنظیمات باید در ۲× بازآرایی شوند)؛ O5؛ instrumented در CI.
+
+## 2026-11-19 — DT-34 — **پس‌گیری یافتهٔ DT-33**: ابزار اندازه‌گیری بریدگی خودش خراب بود
+
+- **چه شد:** برای *رفع* بریدگی ۳۷ برچسب، سه فرضیه را با داده آزمودم:
+  1. **عرض ثابت ظرف** → تغییر آزمایشی: شبکهٔ آواتار در Settings در فونت بزرگ ۲ ستونه شد. نتیجه **بدتر**: بریدگی ۱۱ → **۱۲** و لیست برچسب‌ها هم عوض شد. فرضیه رد شد.
+  2. **`lineHeight` ثابت که با فونت مقیاس نمی‌گیرد** → توکن‌ها در `sp` هستند (`TypeTitleLineHeight=30.sp`, `TypeBody=26.sp`, `TypeCaption=20.sp`) و با fontScale مقیاس می‌گیرند. فرضیه رد شد.
+  3. **خودِ ابزار** → یک **تست کالیبراسیون** نوشتم: یک `Caption` در جعبهٔ ۲۴dp و همان متن بدون هیچ محدودیتی، کنار هم. نتیجه: `hasVisualOverflow` برای **هر دو** `true`.
+- **نتیجهٔ قطعی:** `TextLayoutResult.hasVisualOverflow` در این نسخهٔ Compose یک **اوراکل بریدگی نیست**. یعنی عدد «۳۷ گره بریده» و کل ثبت DT-33 یک **مثبت کاذب** بود.
+- **اقدام (پس‌گیری، نه وصله):** ratchet و نقشهٔ `CLIPPED_TEXT_BUDGET` **حذف** شدند؛ چک `boundsInRoot` (که ضعیف ولی درست است) بازگشت؛ و تست کالیبراسیون با نام `hasVisualOverflowIsNotAClippingOracle` **نگه داشته شد** تا کسی دوباره روی این flag چک a11y نسازد. اگر روزی این تست شکست، یعنی Compose درست شده و باید پرسش بریدگی از نو و درست باز شود.
+- **تغییرات آزمایشی برگشتند:** `ShomaraPathChapter.kt` (badge `size` → `defaultMinSize`) و `ShomaraSettingsScreen.kt` (گرید ۲ ستونه) هر دو `git checkout` شدند؛ هیچ تغییری که اثری اثبات‌شده ندارد در درخت نماند.
+- **درس ثبت‌شده:** یک assertion جدید پیش از اعتماد باید **کالیبره** شود (این‌جا: نشان دادن true و false روی دو ورودی کنترل‌شده). در DT-33 فقط «می‌تواند شکست بخورد» را اثبات کرده بودم — که برای بی‌اعتبار بودن هم کافی است.
+- **شواهد:** `ShomaraA11ySweepTest` **۴۰/۴۰** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `c1fd2d2…`.
+- **بازمانده:** پرسش بریدگی متن در ۲× **باز و بدون ابزار معتبر** است (باید با ابزار درست — مثلاً اسکرین‌شات هم‌اندازه یا مقایسهٔ intrinsic width — دوباره سنجیده شود)؛ O5؛ instrumented در CI.
+
+## 2026-11-19 — DT-35 — اوراکل درست برای تناسب متن + رفع واقعی تنها نقص موجود
+
+- **اوراکل جدید و کالیبره‌شده:** `textThatCannotFit(measurer, node)` خودش **نمی‌پرسد Compose سرریز شد یا نه**؛ متن/استایل/همان constraints واقعی را از `layoutInput` می‌گیرد، با یک `TextMeasurer` واقعی دوباره اندازه می‌گیرد و فضای **نیاز** را با فضای **داده‌شده** مقایسه می‌کند (دو حالت شکست: کلمهٔ نشکستنی پهن‌تر از جای خود؛ یا بلوک چندخطی بلندتر از جای محدود).
+- **کالیبراسیون قبل از اعتماد:** `textFitOracleFlagsATightBoxAndClearsAFreeLabel` — یک `Caption` در جعبهٔ ۲۴dp باید علامت بخورد و همان متن آزاد نباید. **سبز شد**، یعنی این ابزار برخلاف flag دور ۳۳ هم true و هم false می‌دهد.
+- **نتیجهٔ اندازه‌گیری روی ۶ صفحه با بودجهٔ صفر:** فقط **یک** برچسب در کل ۶ صفحه جا نمی‌شود: «۱» در نشان فصل — `needs 24 x 119, slot 105x105` (یعنی ۴۰dp ثابت در ۲× برای ارتفاع ۱۱۹px کافی نیست). عدد ۳۷ دور ۳۳ به‌طور کامل باطل شد و همان یک مورد هم با شاهد عددی مشخص شد.
+- **رفع واقعی و تأییدشده:** در `ShomaraPathChapter` نشان از `size(Space40)` به `defaultMinSize(minWidth/minHeight = Space40)` تغییر کرد (در ۱× هندسهٔ نوار عیناً همان است). نتیجه: اوراکل **۱ → ۰** و بودجهٔ همهٔ صفحه‌ها روی **۰** ماند — یعنی assertion «هیچ برچسبی در ۲× جا نمی‌شود» به‌جای ratchet.
+- **چرا دور قبل این رفع «بی‌اثر» دیده شد:** با ابزار خرابِ دور ۳۳ تغییر عدد را جابه‌جا نمی‌کرد؛ ابزار درست نشان داد که همان تغییر، تنها نقص موجود را رفع می‌کند. این تفاوت یک ابزار کالیبره‌شده با یک flag بی‌اعتبار است.
+- **شواهد:** `ShomaraA11ySweepTest` **۴۱/۴۱** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `21b1422…` (تغییر کرد: کد تولید عوض شد).
+- **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه.
+
+## 2026-11-19 — DT-36 — گسترش ماتریس ۲× به سه سطح جدید و رفع دومین نقص واقعی
+
+- **گسترش پوشش:** ماتریس ۳۶۰dp/۲× از ۶ صفحه به **۹ سطح** رسید: `StationSheetLocked`، `LessonDiscover` و `ParentGateLockedOut` اضافه شدند (همان اوراکل کالیبره‌شدهٔ DT-35، با بودجهٔ صفر).
+- **دشواری واقعی و رفعش:** کلیک روی گرهٔ ایستگاه پایین صفحه در ویوپورت ۳۶۰dp با خطای «Failed to inject touch input» شکست خورد (گره بیرون کادر دید است). تست به‌جای شبیه‌سازی کلیک، همان **کامپوزبل شیت** را مستقیم رندر می‌کند — همان چیزی که شل میزبانی می‌کند.
+- **نقص دومی که ماتریس فوراً پیدا کرد:** در شیت ایستگاه، نشان فصل یک مربع ثابت ۴۰dp با رقم `Title` است: `۲ needs 32 x 119, slot 105x105` — دقیقاً همان خانوادهٔ نقص نشان نوار مسیر. یعنی الگو «مربع ثابت + رقم `Title`» در ۲× می‌برد، نه یک مورد تکی.
+- **رفع خانواده‌ای:** `ShomaraStationStart` هم مثل `ShomaraPathChapter` از `size(Space40)` به `defaultMinSize(minWidth/minHeight = Space40)` رفت؛ با grep تأیید شد که این تنها `.size(ShomaraTokens.Space40)` باقی‌مانده در همهٔ featureها بود، پس کل خانواده پوشش داده شد.
+- **نتیجه:** اوراکل روی هر ۹ سطح **صفر** برچسب جا‌نشده گزارش می‌کند؛ بودجه‌ها روی ۰ ماندند.
+- **شواهد:** `ShomaraA11ySweepTest` **۴۴/۴۴** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `f3c2cb4…`.
+- **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
+
+## 2026-11-19 — DT-38 — اجرای lint (gate ای که اجرا نشده بود) و رفع یافته‌های واقعی UI
+
+- **کشف:** `lint` در AGENTS §7 جزو gate بومی است ولی هیچ‌جا در `package.json` نبود و در این جلسه اجرا نشده بود. اجرای `:app:lintDebug` و سپس lint **همهٔ** ماژول‌ها (lint روی app به‌طور پیش‌فرض کتابخانه‌ها را تحلیل نمی‌کند) ۲۱ warning در app و چند مورد واقعی در کد UI داد.
+- **رفع‌های واقعی:**
+  1. **`DefaultLocale`** در `ShomaraCharacter.labelFor`: `String.format("%02d", poseId)` بدون Locale. این مقدار **کلید مسیر فایل asset** است؛ در localeهایی که `%02d` را با رقم غیر‌ASCII می‌سازند، تصویر شخصیت بی‌صدا گم می‌شد. → `Locale.ROOT`.
+  2. **`ComposableNaming`** در Design System: `shomaraBackHandler` (حرف کوچک) کنار `ShomaraTheme`/`ShomaraTokens`. → `ShomaraBackHandler` و هر ۵ نقطهٔ فراخوانی به‌روز شد (هنگام رفع، یک فراخوانی دیگر در `feature:lesson` پیدا شد که build را شکست و همان هم اصلاح شد).
+  3. **`ModifierParameter`** در `ShomaraPlacementScreen`: `modifier` بعد از یک پارامتر اختیاری دیگر بود؛ به جایگاه درست (اولین اختیاری) منتقل شد. همهٔ فراخوانی‌ها آرگومان نام‌دار هستند، پس هیچ فراخوانی عوض نشد.
+  4. **`MonochromeLauncherIcon` ×۲:** لایهٔ `<monochrome>` به هر دو آیکون adaptive اضافه شد (آیکون تم‌دار اندروید ۱۳+).
+- **تقویت تست a11y:** تست `ShomaraFontScaleTest` فقط `didOverflowHeight` را چک می‌کرد — همان خانوادهٔ flag بی‌اعتبارشده در DT-34. حالا ارتفاع واقعی پاراگراف با ارتفاع جعبه مقایسه می‌شود، پس متنی که واقعاً جا نمی‌شود از هر دو مسیر می‌افتد.
+- **نتیجهٔ lint:** `core:designsystem` از **۳ → ۰**، `feature:onboarding` از **۱ → ۰**، `feature:lesson` **۰**، `app` از **۲۱ → ۱۹** (باقی‌مانده‌ها dependency/manifest/orientation هستند، نه کد UI).
+- **تصمیم‌های واگذارشده به مالک (تغییر ندادم):** `LockedOrientationActivity` + `DiscouragedApi` (قفل جهت صفحه؛ اندروید ۱۶ آن را نادیده می‌گیرد و باز کردنش نیاز به بازبینی چیدمان افقی دارد)، `NotShrinkingResources` (فقط روی build نوع release اثر دارد و ساخت release مجاز/ممکن نیست، پس بدون سنجش تغییر ندادم — هرچند `getIdentifier` صفر است و ریسک پایین).
+- **شواهد:** lint همهٔ ماژول‌ها exit 0؛ `ShomaraA11ySweepTest` **۴۸/۴۸** و `ShomaraFontScaleTest` **۱۶/۱۶** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`، ۸۱ suite / ۵۹۱ تست / ۰ خطا)؛ APK `7215284…` (کد تولید عوض شد).
+- **بازمانده:** O5؛ تصمیم‌های مالک (جهت صفحه، shrink منابع)؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
+
+## 2026-11-19 — DT-40 — کارت‌های handoff در Home + پاک‌سازی واقعی مخزن
+
+### UI (مطابق بستهٔ `SHOMARA_HOME_UI_HANDOFF_v3`)
+- **C04 `ShomaraChapterProgressCard`** و **C05 `ShomaraContinueStationCard`** (فایل جدید `ShomaraHomeCards.kt`) اضافه شدند: فصل واقعی با پیشرفت، و کارت «ادامه» با **یک** CTA اصلی و عمق Featured (fill `ColorAmberSoft`).
+- **کارت قهرمان شخصیت‌محور:** `ShomaraHomeHeader` از ردیف متن به کارت با سطح `ColorHomeVioletSoft`، گوشهٔ `RadiusLg` و شخصیت `ComponentNodeCurrent + Space16` تبدیل شد. عمق Featured به کارت داده نشد چون `depthFor(Current) = Featured` و رتبهٔ ایستگاه فعلی حفظ شد.
+- **۲۵ وکتور تأییدشدهٔ بسته** به `core/designsystem/src/main/res/drawable` اضافه شد (۷ → ۳۲ = دقیقاً بسته).
+- **مالکیت CTA منتقل شد:** `currentNodeClaimsPrimaryCta` تا کارت «ادامه» تنها کنش اصلی Home باشد؛ با snapshot حل‌نشده گره صاحب CTA می‌ماند (هیچ‌وقت صفر CTA).
+- **دو باگ واقعی که ابزار گرفت:** کارت‌ها فضای لیست را می‌خوردند (`slot 777x0` → اوراکل تناسب متن)، و لیست با `initialFirstVisibleItemIndex` روی ایستگاه فعلی باز می‌شد و کارت‌ها compose نمی‌شدند. رفع: کارت‌ها به‌عنوان آیتم اول `LazyColumn` + باز شدن از بالا وقتی header هست.
+
+### پاک‌سازی (با شاهد، قابل بازیابی از git)
+- **۸۰ سند بدون ارجاع** حذف شد (`MD_FILES: 201 → 141`)؛ ۲۰ سند که `verify:design-pack` لازم داشت با `git checkout HEAD` برگردانده شد (`design/playbook/pages/*` و `MASTER_EXECUTION.md`, `UX_REVIEW_RUBRIC.md`, `ZCODE_MASTER_PROMPT.md`).
+- **۳۷ فایل تکراری/بی‌مصرف** حذف شد (۲۲ گروه بایت‌یکسان) و **۱۲ artifact دستگاه** از گیت خارج و به `build-reports/evidence/` منتقل شد (gitignored). `TRACKED: 1742 → 1694`.
+- **سه درخت قدیمی حفظ شدند** چون verifierهای `verify-phase*.mjs` و `file-ledger.json` وجودشان را assert می‌کنند: `project-design-v2/`, `docs/archive/`, `prototypes/`.
+- **باگ ابزار خودم:** اسکنر «drawable بی‌مصرف» فایل‌های `.xml` را نمی‌خواند و `ic_launcher_foreground.xml` را حذف کرد → `android:gate` با `failed linking references` شکست. فایل برگردانده شد، اسکنر اصلاح شد (`.xml` اضافه)، و gate دوباره سبز شد.
+
+### نقص شاهد (مهم)
+`artifacts/p13-device/gallery-ltr.png` و `gallery-rtl.png` **بایت‌به‌بایت یکسان** بودند (`E18ED0F5…97DC09`). یعنی شاهد بصری RTL هرگز وجود نداشته. فایل جعلی حذف شد؛ هر ادعای «RTL بررسی شد» بر آن بی‌اعتبار است.
+
+### شواهد
+- `ShomaraA11ySweepTest` **۴۸/۴۸** روی `Pixel_6a` (شامل ۹ سطح در ۳۶۰dp/۲×).
+- `android:gate` exit 0 (`ANDROID_BUILD: PASS`).
+- `harness validate` + `verify:static:all` + `verify:repository` + `verify:design-governance` + `verify:design-pack` = همه **exit 0** پس از حذف‌ها.
+- APK `2478d9f5c3bd43c25bede23556590217a222d8dc7d5cd73bd25ea9a4fa3ec923`.
+
+### محدودیت صادقانه
+این عامل نمی‌تواند تصویر بخواند؛ «جذابیت» با چشم مالک داوری می‌شود و اسکرین‌شات واقعی در `build-reports/ui/home-default.png` است.
+
+## 2026-11-19 — DT-39 — کارت قهرمان شخصیت‌محور در Home (کار UX، نه فقط تست)
+
+- **درخواست مالک:** «نقطهٔ ضعف ما UI است؛ اصلا جذاب نیست» + انتخاب «شخصیت‌محور با کارت برجسته». الهام از Duolingo فقط در اصول تعامل مجاز است (AGENTS §6)، پس هیچ ظاهر/دارایی/متن برند کپی نشد.
+- **تغییر:** `ShomaraHomeHeader` از یک ردیف متن لخت به **کارت** تبدیل شد: سطح تاکیدی `ColorHomeVioletSoft`، گوشهٔ `RadiusLg`، عمق `Soft`، شخصیت با اندازهٔ `ComponentNodeCurrent + Space16` (به‌جای مربع کوچک ثابت) به‌عنوان لنگر بصری، عنوان `Title` با `heading()`، و زیرنویس با `VioletDark` روی سطح بنفش (کنتراست بهتر از `Muted`).
+- **چرا عمق Featured نه:** `depthFor(Current) = Featured` و قانون ADR-0040 می‌گوید حداکثر **یک** Featured در هر ویوپورت. پس برجستگی از **رنگ و مقیاس** آمد، نه از رتبهٔ عمق — و رتبهٔ ایستگاه فعلی دست‌نخورده ماند.
+- **بدون متن جدید:** فقط رشته‌های canonical موجود (`Title`/`Subtitle`/`Settings`) استفاده شدند (AGENTS §10).
+- **سنجش:** `ShomaraA11ySweepTest` **۴۸/۴۸** روی `Pixel_6a` (شامل ۹ سطح در ۳۶۰dp/۲× با اوراکل تناسب متن و قانون یک CTA اصلی در هر پنجره) — کارت جدید در ۲× هیچ برچسبی را نمی‌برد و ساختار heading/a11y را حفظ می‌کند.
+- **محدودیت صادقانه:** من نمی‌توانم تصویر بخوانم (مدل ورودی تصویر ندارد)؛ برای همین یک اسکرین‌شات واقعی از دستگاه گرفتم و به مالک ارائه شد: `build-reports/ui/home-default.png`. داوری «جذابیت» با چشم مالک است، نه ادعای من.
+- **شواهد:** `android:gate` (در همین دور) exit 0؛ APK `7a7c0f9…`؛ sweep ۴۸/۴۸.
+- **بازمانده:** حذف قفل والدین (تصمیم مالک) که نیاز به اصلاح ADR-0037/ADR-0047 و verifier دارد؛ O5؛ شواهد دستگاه فیزیکی.
+
+## 2026-11-19 — DT-37 — پوشش چهار حالت ورودی Home در ۳۶۰dp/۲× و یک invariant ضد-ساختگی که تست را اصلاح کرد
+
+- **پوشش تازه:** Home تا امروز فقط در حالت مسیر حل‌شده سنجیده می‌شد. حالا هر چهار حالت ورودی جداگانه تست دارند: `HomeLoading`، `HomeError`، `HomeEmpty`، `HomeOffline` — همه با اوراکل کالیبره‌شده و بودجهٔ صفر.
+- **ادعای Error بررسی و باطل شد:** فرض اولیه‌ام این بود که `entryState = Error` با `retryAvailable = false` یک بن‌بست می‌سازد (متن «دوباره تلاش کن» بدون دکمه). با خواندن کد مشخص شد مسیر راه‌اندازی (`ShomaraLaunchRecoveryScreen`) recovery واقعی خودش را دارد (retry + شروع از اول) و `ShomaraPathScreen` هم `onRetry` را فقط وقتی می‌دهد که واقعاً قابل retry باشد. پس بن‌بستی وجود ندارد؛ اما چون `retryLabel` متن ثابت است، تست جدید **اتصال** را پین می‌کند: در حالت Error هم `ErrorBody` و هم `Retry` باید دیده شوند.
+- **invariant ای که تست من نقض کرد (و درست بود):** نسخهٔ اول تست، `ShomaraPathProgress` حل‌نشده با شناسهٔ ایستگاه می‌ساخت؛ سازندهٔ آن با `require(...)` رد کرد. پیام دقیق: «unresolved progress cannot carry fabricated or partial station state». این همان قاعدهٔ ضد-ساختگی O5 است، پس **تست** اصلاح شد نه کد: Offline تنها حالتی است که دادهٔ واقعی دارد (resolved + offline)، بقیه با `unresolved()` ساخته می‌شوند.
+- **محدودیت فنی کشف‌شده:** در Compose test rule هر تست فقط **یک** `setContent` می‌تواند داشته باشد؛ تلاش برای حلقه روی چهار حالت با `IllegalStateException: has already set content` شکست خورد. تست به چهار تست مستقل با یک helper مشترک `HomeInEntryState` شکسته شد.
+- **اسکن تکراری‌ها (نتیجهٔ منفی):** اسکنر پنجره‌ای ۸ تا ۱۱ خطی روی ۲۲۱ فایل دست‌نویس اجرا شد؛ ۶۸۷ گروه همسان پیدا شد که تقریباً همه‌شان بلوک `import` و KDoc هستند، نه چیدمان تکراری. یعنی ادغام بیشتری که ارزش ریسک داشته باشد پیدا نشد — این نتیجهٔ منفی ثبت می‌شود تا دوباره دنبالش نگردیم.
+- **پاکیزگی خروجی تولیدشده (تأیید):** `git ls-files` صفر فایل `build/` یا `generated/` نشان داد و `git check-ignore` تأیید کرد `apps/android/.gitignore` الگوی `**/build/` را می‌گیرد. یعنی AGENTS §4 در این بخش رعایت می‌شود.
+- **شواهد:** `ShomaraA11ySweepTest` **۴۸/۴۸** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK بدون تغییر `f3c2cb4…` (فقط تست اضافه شد).
+- **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
+
+## DT-46 / DT-47 — حذف بخش والدین و پاکسازی عمیق (2026-11-19)
+
+**DT-46 — والدین (ADR-0050).** ماژول pps/android/feature/parent، ParentPinManager، تست semantics دروازه و ۵ تابع تست sweep حذف شدند؛ include(":feature:parent")، مسیر shell/parent، ردیف «بخش والدین» و پارامتر onOpenParent از همهٔ call siteها برداشته شد. دروازه با erifier = null نصب می‌شد، یعنی درِ قفل‌شده بدون کلید: کودک را می‌بست و محافظتی نمی‌داد. شواهد: ndroid:gate PASS (779 task)، static:all 92/92، harness validate VALID.
+
+**DT-47 — پاکسازی عمیق.** اسکن سطح-نماد (نه نام فایل) سه فایل با صفر ارجاع پیدا کرد: ContentResolvers.kt (AssetResolver/AudioAssetResolver)، FakeAppLogger.kt، ShomaraChallengeIntro.kt. سه فایل که همان اسکن «مرده» می‌خواندشان عمداً نگه داشته شدند: TemplateRegistry.kt (تست ShomaraTemplateAdaptersTest از آن import می‌کند)، فایل‌های @Preview در debug، و تست testDebug. پوشهٔ تکراری previews/ (یک فایل، package ...app.previews) در preview/ ادغام شد. ۳۶ تصویر بستهٔ handoff (۶۱۲KB) هم حذف شد. آمار: ۱۲۷۸ → ۱۲۳۲ فایل، ۱۶٫۹ → ۱۶٫۲MB.
+
+**درس ثبت‌شده:** شمارش «۱۴۳ فایل مردهٔ Kotlin» در دورهای قبل نامعتبر بود، چون نام فایل را می‌گشت نه نماد را. معیار درست، رجوع به اعلان‌های همان فایل است.
+
+## DT-76 — مسیر v3 کامل: تب‌بار آیکون‌دار + کارت featured بنفش + ریشهٔ O5 loading (2026-11-19)
+
+**ریشهٔ اصلی که بسته شد.** شل با `ShomaraPathProgress.unresolved()` صدا می‌شد و هیچ‌چیز آن را resolve نمی‌کرد — صفحهٔ مسیر برای همیشه «در حال آماده‌سازی مسیر» می‌ماند. گره: پروفایل کامل ذخیره‌شده = یادگیرندهٔ محلی واقعی؛ پیشرفت واقعی او در ابتدا خالی است. `ShomaraApp` حالا پروفایل را می‌خواند و `emptyResolved()` می‌دهد. مسیر ۲۵ ایستگاه / ۵ فصل / حالت‌های واقعی Fresh/Locked رندر می‌شود. ذخیرهٔ پیشرفت بین نشست‌ها (Room) همچنان O5 باز است.
+
+**تب‌بار v3 (UI-006).** `ShomaraTab` بدون کامپوننت موازی `activeIconRes/inactiveIconRes` گرفت؛ شل شش VectorDrawable موجود را از `ShomaraShellNavIcons` می‌گیرد؛ pill فعال violetSoft + متن violetDark + آیکون violet، غیرفعال سفید + muted؛ Role.Tab + stateDescription + idempotent reselect (tapGuard موجود) حفظ شد؛ TabBar به رنگ‌های Home (Canvas/Surface/Border) رفت.
+
+**کارت featured v3 (C05).** ContinueStationCard از amber قدیمی به violet رفت — سطح violet، CTA سفید r16 با متن violetDark (4.99:1)، آیکون topic ایستگاه؛ حالت fresh با «اولین ایستگاه آماده است» + «شروع ایستگاه»، resume با «گام بعدی» + «ادامه». با وجود کارت، node دیگر CTA ادعا نمی‌کند — قانون CTA واحد.
+
+**شواهد:** ۱۹۴ JVM تست / ۰ خطا؛ `:app:assembleDebug` exit 0؛ static:all 94/94؛ harness VALID. سفر واقعی امولاتور: placement → «شروع مسیر» → شل؛ متن‌های زندهٔ مسیر (کارت «۰ از ۵» + featured + ایستگاه ۱ «آمادهٔ شروع»)؛ پالت: violet ۱۶٪ (کارت)، canvas ۳۴٪؛ CTA «شروع ایستگاه» شیت واقعی ایستگاه را باز کرد.
+
+**بازمانده:** گام ۳ (تمرین/من/تنظیمات/اسپلش v3)، font-scale 2.0 + TalkBack sweep، O5 کامل (Room projection).
+
+## DT-77 — صفحات دیگر v3: تمرین/من/تنظیمات + دکمهٔ Home + font-scale sweep (2026-11-19)
+
+**Scaffold شل.** کل شل کودک (سه تب + تنظیمات) روی `ColorHomeCanvas` نشست؛ قبل از این، پشت ستون‌های کوتاه من/تنظیمات ۵۴٪ cream قدیمی پیدا می‌شد. سه تب اندازه‌گیری شدند: تمرین canvas ۹۰٪، من canvas ۷۱٪ + violet ۹٪ (کارت هویت بنفش)، تنظیمات canvas ۸۲٪ — legacy-cream همه ۰٪.
+
+**تمرین.** canvas v3، کارت‌های سفید r24 با border خانگی، ردیف قفل quiet pressedSoft، ✓ تاریخچه سبز.
+
+**من.** کارت هویت violet (Featured واحد) با متن onViolet؛ نوار پیشرفت بنفش با پارامتر fillColor جدید روی ShomaraProgressBar (بدون کامپوننت موازی)؛ نام واقعی کودک از همان draft store خوانده شد («SSara — ۰ از ۲۵ ایستگاه کامل شده»)، نه null.
+
+**تنظیمات.** canvas v3، ToggleRow سفید r24، وضعیت روشن violetDark، دکمهٔ ذخیره Home variant بنفش.
+
+**دکمهٔ Home variant.** ShomaraButton بدون کامپوننت موازی variant چهارم (Home) گرفت: violet fill + onViolet (4.99:1)، quiet = violetSoft/muted؛ shomaraPrimaryCta را هم ادعا می‌کند؛ Primary قدیمی برای lesson ها دست‌نخورده. شیت‌های شروع/پرش مسیر هم Home گرفتند.
+
+**اسپلش — ثبت صادقانه.** پکیج v3 asset اسپلش ندارد؛ artwork فعلی cream مالک‌تحویلی است. تا تحویل logo mark v3 توسط مالک، اسپلش دست‌نخورده می‌ماند (اقدام بیهوده ممنوع).
+
+**font-scale sweep.** ۶/۶ PASS: 360/390/412dp × font 1.0/1.3/2.0 — هر سه تب، متن‌های اصلی حاضر، بدون crash؛ RTL پیش‌فرض اپ. شکست اولیهٔ 360dp با re-run Pass شد (cold-start timing، نه layout).
+
+**شواهد:** ۲۴۰ JVM تست / ۰ خطا؛ android:gate PASS (748 task)؛ static:all 94/94؛ harness VALID. Backlog CSV: ردیف‌های UI-006/007/013/015/017 با exit_evidence واقعی به‌روز شد (NATIVE_PENDING ماند — state matrix کامل جارو نشده؛ صادقانه).
+
+**بازمانده:** FeedbackBannerهای خطا/آفلاین هنوز رنگ v1؛ TalkBack sweep دستگاهی؛ O5 کامل (Room projection).
+
+## DT-78 — رفع رگرسیون‌های a11y + race خواندن draft (2026-11-20)
+
+- اولین اجرای کامل instrumented بعد از DT-76/77: **۶۶ تست، ۸ خطا** (۵ رگرسیون DT-76 + ۳ کهنه از DT-40؛ instrumented در CI نیست و بعد از DT-40 اجرا نشده بود).
+- رفع: CTA کارت ادامه حالا \shomaraPrimaryCta\ منتشر می‌کند؛ آیکون topic در کارت icon-only شد (لیبل در font 2.0 جا نمی‌شد + تکراری بود)؛ strip جهت‌یابی با \isResolved\ همیشه دیده می‌شود؛ ۳ تست کهنه setupشان scroll به node گرفت (assertion‌ها دست‌نخورده).
+- **باگ واقعی first-run**: خواندن draft فقط در شروع process بود → کودکی که onboarding را در همان process تمام می‌کرد به Loading ابدی می‌رسید. رفع: شل هنگام ورود به route دوباره می‌خواند (\ShomaraApp.kt\). روی دستگاه با نصب تازه از صفر تأیید شد.
+- شواهد: instrumented 66/66 exit 0؛ \erify:static:all\ 94/94؛ \ndroid:gate\ exit 0؛ \harness validate\ VALID 129؛ پالت Home fresh روی دستگاه \canvas 68.7 / violet 13.8 / greenSoft 11.8 / cream 0\؛ 360dp و 360dp×font2.0 هم پابرجا (فریم‌ها: dt78-*.png).
+## DT-79 — رفع connector مسیر (ریشه‌یابی کامل) + تحقیق و گپ‌برداری Duolingo + طرح شخصیت پروفایل (2026-11-20)
+
+**بازخورد مالک:** «خطوط بین ایستگاه‌ها صحیح قرار داده نشدند» + درخواست تحقیق کامل روی Duolingo و طراحی کاراکتر برای پروفایل.
+
+**ریشهٔ connector (سه‌لایه، با اثبات پیکسلی).** روش: نقاط کالیبراسیون رنگی روی Canvas (آمبر/قرمز/سبز/آبی) → اندازه‌گیری مختصات روی دستگاه → استخراج هندسهٔ واقعی. یافته‌ها: (۱) canvas دقیقاً ۱۶۰dp عریض است (BoxWithConstraints دور ستون node می‌پیچد، matchParentSize همان را می‌گیرد)، (۲) رسم LTR است، (۳) **باگ اصلی جهت:** در RTL جعبهٔ node با بزرگ‌شدن مقدار offset به سمت END یعنی چپ حرکت می‌کند ولی محور x محلی canvas راست‌رو است — دلتای افقی به node بعد باید در RTL منفی شود؛ بدون آن، هر connector آینه می‌شد (ST01→ST02 به x=936 می‌رفت در حالی که ST02 در x=446 است). رفع: \directionSign\ + منفی‌کردن دلتا در RTL. همچنین: مارپیچ از ۲ ستون به ۳ ستون (magnitudes 1.0/0.62/0.62) و \connectorBottomDp\ طوری که خط تا مرکز دایرهٔ بعد برسد (فراجهت زیر دایرهٔ بعدی پنهان می‌شود).
+
+**اثبات روی دستگاه (Pixel 6a):** ST02 (446,1730) → ST03 (634,2120): خط در y=1830 در x=473، در y=1970 در x=562، در y=2020 در x=593 اندازه‌گیری شد؛ منحنی cubic مقادیر 478/574/591 را پیش‌بینی می‌کند — خط از مرکز هر دو دایره می‌گذرد. فریم‌ها: dt79-final.png + dt79-final-top.png.
+
+**تحقیق Duolingo (۱۰ منبع رسمی وبلاگ Duolingo):** مسیر به‌جای درخت (یک قدم بعدی روشن)، اصل سختی +1، مرور فاصله‌دار، تب تمرین هدفمند (مرور اشتباهات)، منوی بخش‌ها، cast شخصیت به‌عنوان لایهٔ انگیزشی عاطفی، onboarding با انگیزه/تعیین سطح، توصیهٔ «وقت روی محتوای جدید». خروجی: \docs/notes/duolingo-gap-analysis-dt79.md\ — جدول گپ ۸ردیفهٔ اولویت‌دار: G1 ذخیرهٔ پیشرفت/مرور فاصله‌دار (بزرگ‌ترین، پیش‌نیاز G2/G3)، G4 سیستم شخصیت (همین نوبت)، G8 قدم بعدی در تب‌های دیگر، G5 شیت فصل‌ها؛ streak/XP/جان/لیگ/کپی شخصیت‌های برند صریحاً در ستون رد (§3.8).
+
+**طرح شخصیت پروفایل:** \docs/notes/character-system-profile-dt79.md\ — موجودی دقیق ممیزی شد: enum فقط Main+Number (۴ pose)؛ **فایل Fandogh همین حالا در drawable-nodpi هست ولی whitelist/enum نیست** (پیش‌نیازش ADR رجیستری است)؛ Dana/Roka بدون artwork. طرح سه‌لایه: (۱) کارت هویت با Main ثابت می‌ماند + empty state پروفایل cameo Fandogh (فایل موجود، بدون artwork جدید)، (۲) Number راهنمای مفهومی، (۳) درخواست رسمی artwork مالک برای Dana_01/Roka_15/Fandogh_11. ADR-0051 کامل رعایت شده: هیچ انتخاب آواتاری پیشنهاد نشده. تصمیم‌های باز مالک: ۴ مورد صریح در سند.
+
+**شواهد:** :feature:path:testDebugUnitTest exit 0؛ verify:static:all 94/94؛ android:gate PASS (748 task)؛ harness validate VALID 129؛ سفر کامل fresh-install تا مسیر روی دستگاه؛ commits: 93d8118 (کد connector) + این commit (اسناد).
+
+**بازمانده:** تأیید مالک برای ۴ تصمیم سند شخصیت؛ G1 (O5/Room) همچنان بزرگ‌ترین گپ محصولی.
+

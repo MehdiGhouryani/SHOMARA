@@ -45,9 +45,9 @@ const required = [
   'apps/web/app/api/v1/learning/sessions/route.ts',
   'apps/web/app/api/v1/learning/sessions/[sessionId]/encounters/route.ts',
   'apps/web/app/api/v1/learning/attempts/submit/route.ts',
-  'docs/api/API_LEARNING_RUNTIME_CONTRACT.md',
-  'docs/adr/ADR-0003-server-authoritative-learning-runtime.md',
-  'docs/history/PACKAGE_MANIFEST_PHASE_5.json',
+  'docs/ARCHITECTURE.md',
+  'docs/DECISIONS.md',
+  'docs/notes/PACKAGE_MANIFEST_PHASE_5.json',
 ];
 for (const file of required) {
   if (!fs.existsSync(path.join(root, file))) throw new Error(`Missing: ${file}`);

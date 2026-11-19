@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -28,7 +32,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.password
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -75,6 +81,13 @@ object ShomaraFieldLogic {
     fun textDirectionFor(numericLtr: Boolean): TextDirection =
         if (numericLtr) TextDirection.Ltr else TextDirection.Rtl
 
+    /**
+     * Text shown by the read-only (disabled/loading) branch. A secure field never renders its
+     * credential in clear text, even when the caller has disabled it mid-entry.
+     */
+    fun readOnlyTextFor(value: String, secure: Boolean): String =
+        if (secure) "•".repeat(value.length) else value
+
     fun textStyleFor(numericLtr: Boolean, state: ShomaraFieldState): TextStyle = TextStyle(
         fontFamily = ShomaraTypography.Family,
         fontWeight = ShomaraTokens.TypeBodyWeight,
@@ -88,6 +101,18 @@ object ShomaraFieldLogic {
     )
 }
 
+/**
+ * Renders every entered character as a bullet while leaving the underlying buffer untouched, so a
+ * credential is never legible on a shared child device. Paired with [password] semantics, TalkBack
+ * announces the field as a password instead of reading it aloud.
+ */
+private object ShomaraPasswordMask : OutputTransformation {
+    override fun TextFieldBuffer.transformOutput() {
+        val count = length
+        if (count > 0) replace(0, count, "•".repeat(count))
+    }
+}
+
 @Composable
 fun ShomaraTextField(
     value: String,
@@ -98,8 +123,20 @@ fun ShomaraTextField(
     enabled: Boolean = true,
     busy: Boolean = false,
     numericLtr: Boolean = false,
+    /**
+     * Masks the entered characters and marks the field as a password for assistive technology.
+     * A parent credential must never be rendered in clear text in a child-facing app.
+     */
+    secure: Boolean = false,
     keyboardType: KeyboardType = if (numericLtr) KeyboardType.Number else KeyboardType.Text,
     hint: String = "",
+    /**
+     * Decorative leading glyph (e.g. the profile step's user icon) drawn at the layout-start of the
+     * input surface. The slot exists so screens stop hand-rolling their own copy of this field: the
+     * profile name field duplicated the whole surface, label, hint and error row just to place one
+     * icon, and its copy had drifted (a 40dp touch target inside a 56dp surface).
+     */
+    leading: (@Composable () -> Unit)? = null,
     // R-01 (F-33): under reduced motion the loading spinner renders as a static dot — same
     // rule as the button's and the audio control's loading states. Defaults to the
     // composition-wide flag so a caller cannot forget to pass it.
@@ -112,7 +149,10 @@ fun ShomaraTextField(
     val state = ShomaraFieldLogic.stateFor(value, focused, errorText != null, enabled, busy)
     val borderColor = ShomaraFieldLogic.borderFor(state)
     Column(modifier = modifier.fillMaxWidth()) {
-        // Persistent label: rendered in every state so the layout never jumps.
+        // Persistent label: rendered in every state so the layout never jumps. It keeps its text
+        // semantics (the font-scale test measures this exact node at 200%), while the field below
+        // carries the same words as its accessible NAME — without that, TalkBack announced a
+        // nameless edit box on the parent passcode field (caught by the a11y sweep).
         Text(
             text = label,
             style = ShomaraTypography.Caption,
@@ -131,9 +171,15 @@ fun ShomaraTextField(
                 color = borderColor,
                 shape = RoundedCornerShape(ShomaraTokens.RadiusSm),
             )
-            .padding(horizontal = ShomaraTokens.Space12, vertical = ShomaraTokens.Space8)
+            // No vertical padding: the 56dp surface IS the touch target. With Space8 vertical
+            // padding the inner editable node measured 40dp on device (caught by the cross-screen
+            // a11y sweep), below the 48dp floor; the text stays centred by the box alignment.
+            .padding(horizontal = ShomaraTokens.Space12)
         if (state == ShomaraFieldState.Disabled || state == ShomaraFieldState.Loading) {
-            Box(modifier = fieldModifier, contentAlignment = Alignment.CenterStart) {
+            Box(
+                modifier = fieldModifier.semantics(mergeDescendants = true) { contentDescription = label },
+                contentAlignment = Alignment.CenterStart,
+            ) {
                 if (state == ShomaraFieldState.Loading) {
                     if (reducedMotion) {
                         // R-01 (F-33): static loading mark — same size and colour as the
@@ -149,9 +195,15 @@ fun ShomaraTextField(
                     }
                 }
                 Text(
-                    text = if (value.isEmpty()) hint else value,
+                    // The quiet branch keeps the same leading glyph so the surface does not lose
+                    // its icon when the caller disables the field mid-entry.
+                    text = if (value.isEmpty()) hint else ShomaraFieldLogic.readOnlyTextFor(value, secure),
                     style = ShomaraFieldLogic.textStyleFor(numericLtr, state),
+                    modifier = if (leading != null) Modifier.padding(start = ShomaraTokens.Space40) else Modifier,
                 )
+                if (leading != null) {
+                    Box(modifier = Modifier.align(Alignment.CenterStart)) { leading() }
+                }
             }
         } else {
             // The field owns its editing state (state-owning TextFieldState API); every text
@@ -173,23 +225,53 @@ fun ShomaraTextField(
                 val text = editableState.text.toString()
                 if (text != value) onValueChange(text)
             }
-            BasicTextField(
-                state = editableState,
-                modifier = fieldModifier.semantics(mergeDescendants = true) {
-                    if (state == ShomaraFieldState.Invalid && errorText != null) error(errorText)
-                }.onFocusChanged { focused = it.isFocused },
-                textStyle = ShomaraFieldLogic.textStyleFor(numericLtr, state),
-                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                cursorBrush = SolidColor(ShomaraTokens.ColorPrimary),
-                decorator = { inner ->
-                    Box(contentAlignment = Alignment.CenterStart) {
-                        if (editableState.text.isEmpty()) {
-                            Text(text = hint, style = ShomaraFieldLogic.textStyleFor(numericLtr, state), color = ShomaraTokens.ColorMuted)
+            // The surface box carries no semantics of its own: the editable field inside is the
+            // one real target, so TalkBack sees a single labelled control instead of a labelled
+            // wrapper plus a nameless child.
+            Box(
+                modifier = fieldModifier,
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                if (leading != null) {
+                    Box(modifier = Modifier.align(Alignment.CenterStart)) { leading() }
+                }
+                BasicTextField(
+                    state = editableState,
+                    modifier = Modifier
+                        // The field itself carries the token height, so the node TalkBack focuses is
+                        // the full field surface and not just the text line inside the padding.
+                        .heightIn(min = ShomaraTokens.ComponentButtonH)
+                        .fillMaxWidth()
+                        // Keep the text clear of the decorative glyph at the layout-start.
+                        .then(
+                            if (leading != null) Modifier.padding(start = ShomaraTokens.Space40) else Modifier,
+                        )
+                        .semantics(mergeDescendants = true) {
+                            // The field's accessible name. Without it TalkBack announces a bare edit box.
+                            contentDescription = label
+                            if (state == ShomaraFieldState.Invalid && errorText != null) error(errorText)
+                            // A password field must announce itself as one, so TalkBack never reads
+                            // the entered credential aloud in a shared room.
+                            if (secure) password()
                         }
-                        inner()
-                    }
-                },
-            )
+                        .onFocusChanged { focused = it.isFocused },
+                    textStyle = ShomaraFieldLogic.textStyleFor(numericLtr, state),
+                    keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                    // The state-owning BasicTextField has no visualTransformation parameter; masking
+                    // is an output transformation over the same buffer, so the cursor and the values
+                    // the caller receives stay untouched.
+                    outputTransformation = if (secure) ShomaraPasswordMask else null,
+                    cursorBrush = SolidColor(ShomaraTokens.ColorPrimary),
+                    decorator = { inner ->
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                            if (editableState.text.isEmpty()) {
+                                Text(text = hint, style = ShomaraFieldLogic.textStyleFor(numericLtr, state), color = ShomaraTokens.ColorMuted)
+                            }
+                            inner()
+                        }
+                    },
+                )
+            }
         }
         // Actionable text error — the non-color status carrier for the Invalid state.
         if (state == ShomaraFieldState.Invalid && errorText != null) {

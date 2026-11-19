@@ -1,5 +1,7 @@
 package com.mathlearning.core.designsystem
 
+import java.util.Locale
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +26,9 @@ import androidx.compose.ui.unit.Dp
 /**
  * Shared character rendering (N08-15, task §5).
  *
- * Source of truth for which approved artwork exists: `docs/design-handoff-2026-10/pages-v1/manifest.json`
+ * Source of truth for which approved artwork exists: `design/handoff-2026-10/pages-v1/manifest.json`
  * (ADR-0035 cast — Main, Number, Dana, Fandogh, Roka) and the committed files under
- * `docs/design-handoff-2026-10/assets/characters/<Family>/`. Only shipped poses are referenced by
+ * `design/handoff-2026-10/assets/characters/<Family>/`. Only shipped poses are referenced by
  * [ShomaraCharacterDrawables]; the component never invents a missing pose and never claims
  * animation it does not have.
  *
@@ -58,7 +60,9 @@ object ShomaraCharacterPoses {
         catalog[character]?.contains(poseId) == true
 
     /** Two-digit pose label, matching the file naming convention of the handoff. */
-    fun labelFor(poseId: Int): String = String.format("%02d", poseId)
+    // Locale.ROOT, not the device locale: this label is the file-naming key for a shipped
+    // asset, so a locale that formats %02d with non-ASCII digits would silently miss the file.
+    fun labelFor(poseId: Int): String = String.format(Locale.ROOT, "%02d", poseId)
 
     /** Handoff asset path for a pose, or null when the pose is not part of the approved catalog. */
     fun assetPath(character: ShomaraCharacter, poseId: Int): String? = if (exists(character, poseId)) {

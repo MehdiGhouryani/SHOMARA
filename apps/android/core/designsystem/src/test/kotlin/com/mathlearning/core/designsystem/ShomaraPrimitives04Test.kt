@@ -19,6 +19,20 @@ class ShomaraPrimitives04Test {
         for (state in ShomaraCardState.entries) {
             assertTrue(ShomaraCardLogic.depthFor(state).ordinal <= ShomaraCardLogic.depthFor(ShomaraCardState.Default).ordinal)
         }
+
+    }
+
+    @Test
+    fun `card border width follows its resolved clay tier`() {
+        for (state in ShomaraCardState.entries) {
+            assertEquals(
+                ShomaraClay.specFor(ShomaraCardLogic.depthFor(state)).borderWidth,
+                ShomaraCardLogic.borderWidthFor(state),
+            )
+        }
+        assertEquals(ShomaraTokens.ClayFlatBorderWidth, ShomaraCardLogic.borderWidthFor(ShomaraCardState.Disabled))
+        assertEquals(ShomaraTokens.ClayHintBorderWidth, ShomaraCardLogic.borderWidthFor(ShomaraCardState.Pressed))
+        assertEquals(ShomaraTokens.ClaySoftBorderWidth, ShomaraCardLogic.borderWidthFor(ShomaraCardState.Default))
     }
 
     @Test

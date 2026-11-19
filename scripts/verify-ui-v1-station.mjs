@@ -47,7 +47,7 @@ check('speech-not-autoplayed', !/speakFa\(/.test(read('apps/mobile/src/station/v
 
 // Visual parity.
 const manifest = JSON.parse(read('apps/mobile/parity/manifest.json'));
-const golden = (p) => exists(`docs/design-handoff-2026-10/pages-v1/goldens/${p}.png`);
+const golden = (p) => exists(`design/handoff-2026-10/pages-v1/goldens/${p}.png`);
 const intro = manifest.find((x) => x.id === 'stage-intro');
 check('parity:stage-intro', Boolean(intro) && intro.page === '06-fix' && intro.maxDiffPercent <= 0.5 && golden('06-fix') && golden('06'), 'compared with the page with only its flex bug neutralised (U-Q14)');
 const lesson = manifest.find((x) => x.id === 'lesson');

@@ -67,7 +67,7 @@ interface AppContainer {
     val lessonRecords: LessonRecordRepository
     val outboxSyncEngine: OutboxSyncEngine
 
-    /** Persisted child preferences (N08-04): avatar + reduced motion, real DataStore. */
+    /** Persisted child preferences (N08-04): the reduced-motion preference, real DataStore. */
     val settingsStore: ShomaraSettingsStore
 
     /**

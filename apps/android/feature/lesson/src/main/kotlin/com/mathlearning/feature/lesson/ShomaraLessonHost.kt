@@ -27,7 +27,7 @@ import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
-import com.mathlearning.core.designsystem.shomaraBackHandler
+import com.mathlearning.core.designsystem.ShomaraBackHandler
 import com.mathlearning.core.model.MacroStage
 import com.mathlearning.core.network.LessonGateway
 import kotlinx.coroutines.launch
@@ -74,7 +74,7 @@ fun ShomaraLessonHost(
     // both empty/null (fail-closed skeleton); correctness never enters the projection.
     guidedItems: List<ShomaraGuidedItem> = emptyList(),
     guidedEvaluator: ShomaraGuidedEvaluator? = null,
-    // P14: the durable attempt recorder (null in release = fail-closed no-persist)
+    // P14/P6: the real Room-backed recorder is injected at the app root. Release has no draft guided items/evaluator, so this preview callback remains unreachable there.
     lessonRecords: com.mathlearning.core.model.repository.LessonRecordRepository? = null,
     // N08R-09: TRUE only in the debug preview (no evaluator can advance stages there), so
     // finishing discover walks to the guided preview. With the Phase-1 local evaluator this
@@ -89,6 +89,11 @@ fun ShomaraLessonHost(
     var gate by remember { mutableStateOf(ShomaraSubmitGateState()) }
     var awaitingServerStage by remember { mutableStateOf(false) }
     var resultSurface by remember { mutableStateOf<ShomaraResultSurface?>(null) }
+    // DT-55: the session's start time is captured ONCE. It used to be read inline for every attempt, so
+    // each recorded attempt carried a later `startedAtMs` than the previous one and the session appeared
+    // to restart on every check — any duration computed from it was wrong. `updatedAtMs` stays live,
+    // because that one is supposed to move.
+    val sessionStartedAtMs = remember { System.currentTimeMillis() }
 
     val journey = remember(stationId) {
         gateway?.let { ShomaraLessonJourney(sessionId, stationId, it, checkpointStore ?: NoCheckpoints) }
@@ -119,7 +124,7 @@ fun ShomaraLessonHost(
 
     // N08-05: back must ask before throwing away the child's place. Consuming the gesture while the
     // question is open means a stray second back cannot exit either.
-    shomaraBackHandler(enabled = journey != null) {
+    ShomaraBackHandler(enabled = journey != null) {
         closeState = ShomaraLessonBackLogic.onBack(closeState)
     }
 
@@ -196,7 +201,7 @@ fun ShomaraLessonHost(
                     items = guidedItems,
                     evaluator = guidedEvaluator,
                     onAllItemsComplete = { /* evaluator wiring lands with the local package (Phase 1) */ },
-                    // P14: the durable attempt recorder — null in release (fail-closed no-persist).
+                    // P14/P6: the recorder is durable Room storage; only the debug-gated pilot evaluator can call this preview callback.
                     onAttemptEvaluated = lessonRecords?.let { repo ->
                         { encounterId: String, attemptIndex: Int, outcome: String ->
                             scope.launch {
@@ -206,7 +211,7 @@ fun ShomaraLessonHost(
                                         stageCursor = 0, lifecycle = "ACTIVE",
                                         engineRuleVersion = "learning-engine:v1",
                                         contentPackageVersion = 1,
-                                        startedAtMs = System.currentTimeMillis(),
+                                        startedAtMs = sessionStartedAtMs,
                                         updatedAtMs = System.currentTimeMillis(),
                                     ),
                                     com.mathlearning.core.model.repository.RecordedAttempt(

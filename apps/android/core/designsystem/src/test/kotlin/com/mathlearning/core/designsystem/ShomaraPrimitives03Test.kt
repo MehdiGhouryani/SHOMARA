@@ -87,6 +87,11 @@ class ShomaraPrimitives03Test {
         assertEquals(ShomaraClayDepth.Hint, ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, ShomaraButtonState.Pressed))
         assertEquals(ShomaraClayDepth.Flat, ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Primary, ShomaraButtonState.Loading))
         assertEquals(ShomaraClayDepth.Flat, ShomaraButtonLogic.clayDepth(ShomaraButtonVariant.Ghost, ShomaraButtonState.Pressed))
+
+        assertEquals(ShomaraTokens.ClaySoftBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Primary, ShomaraButtonState.Default))
+        assertEquals(ShomaraTokens.ClayHintBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Primary, ShomaraButtonState.Pressed))
+        assertEquals(ShomaraTokens.ClayFlatBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Primary, ShomaraButtonState.Disabled))
+        assertEquals(ShomaraTokens.ClayHintBorderWidth, ShomaraButtonLogic.borderWidthFor(ShomaraButtonVariant.Ghost, ShomaraButtonState.Default))
     }
 
     @Test
@@ -144,6 +149,17 @@ class ShomaraPrimitives03Test {
         val numericLtr = true
         assertEquals(if (numericLtr) KeyboardType.Number else KeyboardType.Text, KeyboardType.Number)
         assertEquals(if (!numericLtr) KeyboardType.Number else KeyboardType.Text, KeyboardType.Text)
+    }
+
+    @Test
+    fun `a secure field never echoes its credential in the read-only branch`() {
+        // Regression: the disabled/loading branch used to render `value` verbatim, so a parent
+        // passcode stayed legible on screen the moment the field went busy.
+        assertEquals("••••", ShomaraFieldLogic.readOnlyTextFor("1234", secure = true))
+        assertEquals("", ShomaraFieldLogic.readOnlyTextFor("", secure = true))
+        // A non-secure field is unchanged — masking must never leak into ordinary inputs.
+        assertEquals("1234", ShomaraFieldLogic.readOnlyTextFor("1234", secure = false))
+        assertEquals("آریا", ShomaraFieldLogic.readOnlyTextFor("آریا", secure = false))
     }
 
     // ---- OTP ----

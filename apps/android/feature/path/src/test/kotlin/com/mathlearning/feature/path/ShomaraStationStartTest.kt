@@ -13,6 +13,7 @@ class ShomaraStationStartTest {
     private val progress = ShomaraPathProgress(
         completedStationIds = setOf("ST01", "ST02"),
         currentStationId = "ST03",
+        isResolved = true,
     )
 
     @Test

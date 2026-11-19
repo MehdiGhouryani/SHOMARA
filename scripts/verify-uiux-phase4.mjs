@@ -19,7 +19,7 @@ const required = [
   'apps/mobile/app/onboarding.tsx',
   'apps/mobile/src/components/ChildAvatar.tsx',
   'apps/mobile/src/onboarding/catalog.ts',
-  'docs/reference/ONBOARDING_CONTRACT.md',
+  'docs/ARCHITECTURE.md',
 ];
 
 const failures = [];
@@ -41,7 +41,7 @@ const checks = {
   noParentGateOnboardingWeb: !web.includes('PARENT_GATE') && !web.includes('ParentGate'),
   noParentGateOnboardingMobile: !mobile.includes('PARENT_GATE') && !mobile.includes('ParentGate'),
   phoneOnlyAuthContract: contract.includes("export type AuthMethod = 'MOBILE';"),
-  avatarNotCompanion: fs.readFileSync(path.join(root, 'docs/reference/ONBOARDING_CONTRACT.md'), 'utf8').includes('avatar') && fs.readFileSync(path.join(root, 'docs/reference/ONBOARDING_CONTRACT.md'), 'utf8').includes('companion'),
+  avatarNotCompanion: fs.readFileSync(path.join(root, 'docs/ARCHITECTURE.md'), 'utf8').includes('avatar') && fs.readFileSync(path.join(root, 'docs/ARCHITECTURE.md'), 'utf8').includes('companion'),
   placementSkippableWeb: placement.includes('فعلاً رد می‌کنم') && web.includes('skipPlacement'),
   placementSkippableMobile: mobile.includes('فعلاً رد می‌کنم'),
   // ADR-0037 item 1.7: the dead starsEarned state was removed with zero-consumer proof; the

@@ -9,15 +9,15 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 for (const file of [
   'scripts/android-build.mjs',
   'scripts/verify-android-environment.mjs',
-  'docs/architecture/ANDROID_BUILD_ENVIRONMENT.md',
-  'skills/shomara-android-build/SKILL.md',
+  'docs/ARCHITECTURE.md',
+  'docs/DESIGN_RULES.md',
 ]) {
   assert.ok(fs.existsSync(path.join(root, file)), `missing Android build harness file: ${file}`);
 }
 
 const build = read('scripts/android-build.mjs');
 for (const mode of ['doctor', 'gate', 'assemble-debug']) assert.ok(build.includes(`'${mode}'`), `missing mode ${mode}`);
-for (const task of ['test', 'lint', ':app:compileDebugKotlin', ':app:assembleDebug']) {
+for (const task of ['test', 'lint', ':app:compileDebugKotlin', ':app:compileDebugAndroidTestKotlin', ':app:assembleDebug']) {
   assert.ok(build.includes(`'${task}'`), `missing Gradle task ${task}`);
 }
 for (const contract of ['BLOCKED_ENV', 'sha256', 'signedForRelease: false', '--no-daemon']) {
@@ -32,6 +32,11 @@ const pkg = JSON.parse(read('package.json'));
 assert.equal(pkg.scripts['android:doctor'], 'node scripts/android-build.mjs doctor');
 assert.equal(pkg.scripts['android:gate'], 'node scripts/android-build.mjs gate');
 assert.equal(pkg.scripts['android:assemble:debug'], 'node scripts/android-build.mjs assemble-debug');
+
+// POSIX CI invokes the wrapper directly; the executable mode is part of the build contract.
+if (process.platform !== 'win32') {
+  fs.accessSync(path.join(root, 'apps', 'android', 'gradlew'), fs.constants.X_OK);
+}
 
 const ignore = read('.gitignore');
 assert.match(ignore, /^build-reports\/$/m, 'generated build reports must be ignored');

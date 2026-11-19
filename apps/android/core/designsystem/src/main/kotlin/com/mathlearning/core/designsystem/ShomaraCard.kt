@@ -42,6 +42,10 @@ object ShomaraCardLogic {
         else -> ShomaraClayDepth.Soft
     }
 
+    /** Border width must follow the same tier as elevation; disabled surfaces are visually flat. */
+    fun borderWidthFor(state: ShomaraCardState) =
+        ShomaraClay.specFor(depthFor(state)).borderWidth
+
     fun colorsFor(state: ShomaraCardState): Triple<Color, Color, Color> = when (state) {
         ShomaraCardState.Correct -> Triple(ShomaraTokens.ColorPrimarySoft, ShomaraTokens.ColorPrimary, ShomaraTokens.ColorPrimaryDark)
         ShomaraCardState.Retry -> Triple(ShomaraTokens.ColorAmberSoft, ShomaraTokens.ColorAmberEdge, ShomaraTokens.ColorAmberInk)
@@ -95,7 +99,7 @@ fun ShomaraCard(
             .defaultMinSize(minHeight = ShomaraTokens.ComponentRowH)
             .shadow(ShomaraClay.specFor(resolvedDepth).elevation, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .background(container, RoundedCornerShape(ShomaraTokens.RadiusLg))
-            .border(ShomaraTokens.ClaySoftBorderWidth, border, RoundedCornerShape(ShomaraTokens.RadiusLg))
+            .border(ShomaraCardLogic.borderWidthFor(resolved), border, RoundedCornerShape(ShomaraTokens.RadiusLg))
             .semantics(mergeDescendants = true) {
                 val label = ShomaraCardLogic.stateLabelFor(resolved)
                 if (label.isNotEmpty()) stateDescription = label

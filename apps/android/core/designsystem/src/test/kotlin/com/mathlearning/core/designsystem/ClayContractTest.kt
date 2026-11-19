@@ -12,10 +12,10 @@ class ClayContractTest {
 
     @Test
     fun `four depth tiers resolve in ascending visual weight`() {
-        val flat = ClaySpecResolver.specFor(ClayDepth.FLAT)
-        val hint = ClaySpecResolver.specFor(ClayDepth.HINT)
-        val soft = ClaySpecResolver.specFor(ClayDepth.SOFT)
-        val featured = ClaySpecResolver.specFor(ClayDepth.FEATURED)
+        val flat = ShomaraClay.specFor(ShomaraClayDepth.Flat)
+        val hint = ShomaraClay.specFor(ShomaraClayDepth.Hint)
+        val soft = ShomaraClay.specFor(ShomaraClayDepth.Soft)
+        val featured = ShomaraClay.specFor(ShomaraClayDepth.Featured)
         assertTrue(flat.elevation <= hint.elevation)
         assertTrue(hint.elevation <= soft.elevation)
         assertTrue(soft.elevation <= featured.elevation)
@@ -26,36 +26,31 @@ class ClayContractTest {
 
     @Test
     fun `values come from generated tokens - no raw literals in the resolver`() {
-        assertEquals(ShomaraTokens.ClaySoftElevation, ClaySpecResolver.specFor(ClayDepth.SOFT).elevation)
-        assertEquals(ShomaraTokens.ClayFeaturedBorderWidth, ClaySpecResolver.specFor(ClayDepth.FEATURED).borderWidth)
-        assertEquals(ShomaraTokens.ClayHintShadowRadius, ClaySpecResolver.specFor(ClayDepth.HINT).shadowRadius)
+        val tokenPairs = listOf(
+            Triple(ShomaraClayDepth.Flat, ShomaraTokens.ClayFlatBorderWidth, ShomaraTokens.ClayFlatElevation),
+            Triple(ShomaraClayDepth.Hint, ShomaraTokens.ClayHintBorderWidth, ShomaraTokens.ClayHintElevation),
+            Triple(ShomaraClayDepth.Soft, ShomaraTokens.ClaySoftBorderWidth, ShomaraTokens.ClaySoftElevation),
+            Triple(ShomaraClayDepth.Featured, ShomaraTokens.ClayFeaturedBorderWidth, ShomaraTokens.ClayFeaturedElevation),
+        )
+        tokenPairs.forEach { (depth, borderWidth, elevation) ->
+            assertEquals(borderWidth, ShomaraClay.specFor(depth).borderWidth)
+            assertEquals(elevation, ShomaraClay.specFor(depth).elevation)
+        }
+        assertEquals(ShomaraTokens.ClayHintShadowRadius, ShomaraClay.specFor(ShomaraClayDepth.Hint).shadowRadius)
+        assertEquals(ShomaraTokens.ClaySoftShadowRadius, ShomaraClay.specFor(ShomaraClayDepth.Soft).shadowRadius)
     }
 
     @Test
     fun `flat tier has no shadow or border - text surfaces stay flat`() {
-        val flat = ClaySpecResolver.specFor(ClayDepth.FLAT)
+        val flat = ShomaraClay.specFor(ShomaraClayDepth.Flat)
         assertEquals(0.0, flat.shadowOpacity.toDouble(), 0.0)
         assertEquals(0.0f, flat.borderWidth.value, 0.0f)
         assertEquals(0.0f, flat.elevation.value, 0.0f)
     }
 
-    @Test
-    fun `path node visuals use redundant encoding - fill, mark and label all differ per state`() {
-        val states = ShomaraPathNodeVisualState.values()
-        val marks = states.map { ShomaraPathNodeVisuals.markFor(it) }
-        val labels = states.map { ShomaraPathNodeVisuals.labelFor(it) }
-        assertEquals(marks.size, marks.toSet().size)
-        assertEquals(labels.size, labels.toSet().size)
-        val fills = states.map { ShomaraPathNodeVisuals.colorsFor(it).fill }
-        // FRESH/COMPLETED/PERFECT/LOCKED vary in fill; CURRENT has its own featured fill.
-        assertTrue(fills.toSet().size >= 3)
-    }
-
-    @Test
-    fun `current node is the only FEATURED depth - locked is FLAT`() {
-        assertEquals(ClayDepth.FEATURED, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.CURRENT))
-        assertEquals(ClayDepth.FLAT, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.LOCKED))
-        assertEquals(ClayDepth.SOFT, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.FRESH))
-    }
+    // The PathKit path-node contract (redundant encoding, CURRENT-only FEATURED, LOCKED FLAT)
+    // used to be asserted here against a parallel PathNode renderer that shipped emoji marks and
+    // an amber Current node. PathKit is retired; the same contract now lives on the real renderer
+    // and is asserted in feature:path (ShomaraPathGraphTest: depth, labels, white-on-accent).
 
 }

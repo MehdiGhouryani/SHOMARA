@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+<title id="title">Shomara nav practice inactive</title><desc id="desc">Vector icon for Shomara app UI. Use semantic labels in the app, not SVG text.</desc>
+<g fill="none" stroke="#918AA5" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 15 Q20 9 32 16 Q44 9 56 15 V49 Q44 43 32 50 Q20 43 8 49 Z"/><path d="M32 16 V50"/><path d="M14 23 Q21 20 26 23 M14 31 Q21 28 26 31 M38 23 Q45 20 50 23 M38 31 Q45 28 50 31"/></g></svg>

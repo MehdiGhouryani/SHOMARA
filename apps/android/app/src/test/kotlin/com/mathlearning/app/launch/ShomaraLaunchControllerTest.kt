@@ -17,7 +17,9 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -46,6 +48,16 @@ class ShomaraLaunchControllerTest {
         override suspend fun clear() { snapshot = null }
     }
 
+    /**
+     * DT-56: a store that is present but unreadable. The old `runCatching { ... }.getOrDefault(false)` mapped
+     * this to "no draft" and said nothing; this fake exists so the difference is asserted instead of assumed.
+     */
+    private class BrokenDraftStore(private val error: Exception) : ShomaraProfileDraftStore {
+        override suspend fun save(snapshot: ShomaraProfileDraftSnapshot) = Unit
+        override suspend fun read(): ShomaraProfileDraftSnapshot? = throw error
+        override suspend fun clear() = Unit
+    }
+
     private class FakeProvider(
         var verifyResult: ShomaraOtpResult = ShomaraOtpResult.Success("tok-real"),
     ) : ShomaraOtpProvider {
@@ -61,7 +73,7 @@ class ShomaraLaunchControllerTest {
     private fun controller(
         scope: TestScope,
         store: FakeStore,
-        draft: FakeDraftStore = FakeDraftStore(),
+        draft: ShomaraProfileDraftStore = FakeDraftStore(),
         provider: FakeProvider = FakeProvider(),
         backendConfigured: Boolean = true,
     ): ShomaraLaunchController = ShomaraLaunchController(
@@ -80,6 +92,48 @@ class ShomaraLaunchControllerTest {
         advanceUntilIdle()
         assertEquals(ShomaraLaunchState.NewUser, controller.state.value)
         assertFalse(ShomaraLaunchRouting.entersChildShell(controller.state.value))
+    }
+
+    /**
+     * DT-56: "the store says there is no draft" and "the store could not be read" must not be the same fact.
+     * Both still land on NewUser - an unreadable draft must not block the child - but only the second records
+     * a failure. Under the previous `runCatching { ... }.getOrDefault(false)` this test could not exist,
+     * because the two cases were literally the same value.
+     */
+    @Test
+    fun `a readable empty draft store is not recorded as a failure`() = runTest {
+        val controller = controller(this, FakeStore(), draft = FakeDraftStore(snapshot = null))
+        controller.startOnce()
+        advanceUntilIdle()
+        assertEquals(ShomaraLaunchState.NewUser, controller.state.value)
+        assertNull(controller.draftReadFailure)
+    }
+
+    @Test
+    fun `an unreadable draft store is reported instead of being called empty`() = runTest {
+        val failure = IllegalStateException("draft store is corrupt")
+        val controller = controller(this, FakeStore(), draft = BrokenDraftStore(failure))
+        controller.startOnce()
+        advanceUntilIdle()
+        // The child is not trapped at the gate: an unreadable draft resolves exactly like an absent one.
+        assertEquals(ShomaraLaunchState.NewUser, controller.state.value)
+        // ...but the failure is visible now, which is the whole point of the change.
+        assertSame(failure, controller.draftReadFailure)
+    }
+
+    @Test
+    fun `a retry clears the previous draft failure before reading again`() = runTest {
+        val controller = controller(this, FakeStore(), draft = BrokenDraftStore(IllegalStateException("corrupt")))
+        controller.startOnce()
+        advanceUntilIdle()
+        assertNotNull(controller.draftReadFailure)
+        // A retry must not keep showing a failure it has not re-observed.
+        controller.retry()
+        advanceUntilIdle()
+        assertNotNull(
+            "the store is still broken, so the failure must be re-reported",
+            controller.draftReadFailure,
+        )
     }
 
     @Test
@@ -199,7 +253,7 @@ class ShomaraLaunchControllerTest {
 
     @Test
     fun `a surviving profile draft resumes the journey without authenticating`() = runTest {
-        val draft = FakeDraftStore(ShomaraProfileDraftSnapshot(name = "سارا", avatarId = "A1", gradeId = "G1"))
+        val draft = FakeDraftStore(ShomaraProfileDraftSnapshot(name = "سارا", gradeId = "G1"))
         val controller = controller(this, FakeStore(), draft = draft)
         controller.startOnce()
         advanceUntilIdle()

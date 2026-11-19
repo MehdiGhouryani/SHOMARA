@@ -1,0 +1,1064 @@
+package com.mathlearning.app.ui
+
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.material3.Text
+import com.mathlearning.core.designsystem.ShomaraTypography
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.unit.dp
+import com.mathlearning.app.shell.ShomaraChildShell
+import com.mathlearning.core.datastore.LessonCheckpoint
+import com.mathlearning.core.datastore.LessonCheckpointStore
+import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
+import com.mathlearning.core.datastore.ShomaraSettingsStore
+import com.mathlearning.core.designsystem.ShomaraChildTabs
+import com.mathlearning.core.designsystem.ShomaraEntryState
+import com.mathlearning.core.designsystem.ShomaraPrimaryCta
+import com.mathlearning.core.designsystem.ShomaraTheme
+import com.mathlearning.core.model.ShomaraStationCatalog
+import com.mathlearning.core.network.LessonGateway
+import com.mathlearning.feature.lesson.ShomaraLessonHost
+import com.mathlearning.feature.lesson.ShomaraTemplateSkeletonStrings
+import com.mathlearning.feature.onboarding.ShomaraPlacementScreen
+import com.mathlearning.feature.onboarding.ShomaraPlacementState
+import com.mathlearning.feature.onboarding.ShomaraProfileDraft
+import com.mathlearning.feature.onboarding.ShomaraProfileSaveState
+import com.mathlearning.feature.onboarding.ShomaraProfileScreen
+import com.mathlearning.feature.onboarding.ShomaraProfileStrings
+import com.mathlearning.feature.path.ShomaraHomeScreen
+import com.mathlearning.feature.path.ShomaraHomeStrings
+import com.mathlearning.feature.path.ShomaraHomeUiState
+import com.mathlearning.feature.path.ShomaraPathProgress
+import com.mathlearning.feature.path.ShomaraStationStartSheet
+import com.mathlearning.feature.path.ShomaraStationStartStrings
+import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
+import com.mathlearning.feature.practice.ShomaraPracticeItem
+import com.mathlearning.feature.profile.ShomaraMeFacts
+import com.mathlearning.feature.profile.ShomaraMeStrings
+import com.mathlearning.feature.profile.ShomaraMeScreen
+import com.mathlearning.feature.practice.ShomaraPracticeHubLogic
+import com.mathlearning.feature.practice.ShomaraPracticeHubStrings
+import com.mathlearning.feature.settings.ShomaraSettingsScreen
+import com.mathlearning.feature.settings.ShomaraSettingsStrings
+import com.mathlearning.feature.settings.ShomaraSettingsState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import okhttp3.OkHttpClient
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+
+/**
+ * Cross-screen accessibility contract (AGENTS §6): every clickable surface must carry a spoken
+ * label and a touch target of at least 48dp, at every width the app supports.
+ *
+ * This is the mechanical sweep that was missing while each screen was reviewed by eye: it walks the
+ * real semantics tree of each screen, so an unlabelled icon button or a 32dp row fails the build
+ * instead of reaching a child. Rendering happens at 360dp x 640dp, the narrowest supported width.
+ */
+class ShomaraA11ySweepTest {
+
+    @get:Rule
+    val compose = createComposeRule()
+
+    @Test
+    fun settingsScreenExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraSettingsScreen(
+                    state = ShomaraSettingsState(reducedMotion = false),
+                    onReducedMotionChange = {},
+                    onSave = {},
+                )
+            }
+        }
+        assertA11yContract("Settings")
+    }
+
+    @Test
+    fun settingsDirtyExposesTheSaveAction() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraSettingsScreen(
+                    state = ShomaraSettingsState(reducedMotion = false)
+                        .withReducedMotion(true),
+                    onReducedMotionChange = {},
+                    onSave = {},
+                )
+            }
+        }
+        assertTextPresent("Settings/Dirty", ShomaraSettingsStrings.Save)
+        assertA11yContract("Settings/Dirty")
+    }
+
+    @Test
+    fun settingsSavingStaysConsistent() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraSettingsScreen(
+                    state = ShomaraSettingsState(reducedMotion = false).withReducedMotion(true).startSave(),
+                    onReducedMotionChange = {},
+                    onSave = {},
+                )
+            }
+        }
+        assertA11yContract("Settings/Saving")
+    }
+
+    @Test
+    fun settingsErrorShowsItsMessage() {
+        val message = ShomaraSettingsStrings.SaveFailed
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraSettingsScreen(
+                    state = ShomaraSettingsState(reducedMotion = false).withReducedMotion(true).onSaveFailure(message),
+                    onReducedMotionChange = {},
+                    onSave = {},
+                )
+            }
+        }
+        assertTextPresent("Settings/Error", message)
+        assertA11yContract("Settings/Error")
+    }
+
+    @Test
+    fun meScreenExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(
+                    facts = ShomaraMeFacts(
+                        childName = "آریا",
+                        completedStations = 3,
+                        totalStations = 25,
+                    ),
+                    onOpenSettings = {},
+                )
+            }
+        }
+        assertA11yContract("Me")
+    }
+
+    @Test
+    fun meLoadingAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(facts = null, loading = true, onOpenSettings = {})
+            }
+        }
+        assertTextPresent("Me/Loading", ShomaraMeStrings.Loading)
+        assertA11yContract("Me/Loading", expectActions = false)
+    }
+
+    @Test
+    fun meOfflineAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(
+                    facts = MeFacts,
+                    offline = true,
+                    onOpenSettings = {},
+                )
+            }
+        }
+        assertTextPresent("Me/Offline", ShomaraMeStrings.Offline)
+        assertA11yContract("Me/Offline")
+    }
+
+    @Test
+    fun meEmptyShowsItsGuide() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(facts = null, onOpenSettings = {})
+            }
+        }
+        assertTextPresent("Me/Empty", ShomaraMeStrings.Empty)
+        assertA11yContract("Me/Empty", expectActions = false)
+    }
+
+    @Test
+    fun meErrorShowsTheCallerMessage() {
+        val message = "پروفایل بارگذاری نشد."
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(
+                    facts = MeFacts,
+                    errorText = message,
+                    onOpenSettings = {},
+                )
+            }
+        }
+        assertTextPresent("Me/Error", message)
+        assertA11yContract("Me/Error")
+    }
+
+    @Test
+    fun practiceLoadingAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList(), loading = true)
+            }
+        }
+        assertTextPresent("Practice/Loading", ShomaraPracticeHubStrings.Loading)
+        assertA11yContract("Practice/Loading", expectActions = false)
+    }
+
+    @Test
+    fun practiceOfflineAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList(), offline = true)
+            }
+        }
+        assertTextPresent("Practice/Offline", ShomaraPracticeHubStrings.Offline)
+        // An informational state: the hub shows the notice and offers no in-screen action, because
+        // the escape is the shell's own tab bar (three fixed tabs, always present). Recorded
+        // finding: Home's error state DOES offer a retry while Practice's does not — the same
+        // product answering the same question two ways. Adding an onRetry here without an app-shell
+        // caller would be a dead parameter, so it is recorded for the owner instead.
+        assertA11yContract("Practice/Offline", expectActions = false)
+    }
+
+    @Test
+    fun practiceErrorShowsTheCallerMessage() {
+        val message = "تمرین‌ها بارگذاری نشدند."
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList(), errorText = message)
+            }
+        }
+        assertTextPresent("Practice/Error", message)
+        assertA11yContract("Practice/Error", expectActions = false)
+    }
+
+    @Test
+    fun practiceEmptyShowsTheWarmGuide() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(items = emptyList(), recent = emptyList())
+            }
+        }
+        assertTextPresent("Practice/Empty", ShomaraPracticeHubLogic.emptyGuide())
+        assertA11yContract("Practice/Empty", expectActions = false)
+    }
+
+    @Test
+    fun practiceHubExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPracticeHubScreen(
+                    items = listOf(
+                        ShomaraPracticeItem(id = "p1", title = "جمع تا ۱۰"),
+                        ShomaraPracticeItem(id = "p2", title = "الگوها", locked = true, lockedReason = "بعد از ایستگاه ۳"),
+                    ),
+                    recent = listOf(ShomaraPracticeItem(id = "p3", title = "شمردن")),
+                    onItemTap = {},
+                )
+            }
+        }
+        assertA11yContract("PracticeHub")
+    }
+    @Test
+    fun homeScreenExposesLabelledTouchTargets() {
+        // The priority surface: every station bubble, the settings entry and the CTA must all be
+        // nameable and at least 48dp — measured across the whole tree instead of the two nodes the
+        // Home test happens to assert.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        progress = ShomaraPathProgress(
+                            completedStationIds = setOf("ST01", "ST02", "ST03"),
+                            perfectStationIds = setOf("ST02"),
+                            currentStationId = "ST04",
+                            isResolved = true,
+                        ),
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertA11yContract("Home")
+        // The routed Home surface: the Current station node is the one primary action, so a
+        // regression that offers a competing primary (or none) is caught here.
+        assertPrimaryCtaCount("Home", 1)
+    }
+
+    @Test
+    fun onboardingProfileExposesLabelledTouchTargets() {
+        val draft = ShomaraProfileDraft()
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraProfileScreen(
+                    draft = draft,
+                    onDraftChange = {},
+                    saveState = ShomaraProfileSaveState(draft = draft),
+                    onSave = {},
+                )
+            }
+        }
+        assertA11yContract("OnboardingProfile")
+    }
+
+    @Test
+    fun homeStaysUsableAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("Home") {
+            ShomaraHomeScreen(
+                state = ShomaraHomeUiState(
+                    progress = ShomaraPathProgress(
+                        completedStationIds = setOf("ST01", "ST02", "ST03"),
+                        perfectStationIds = setOf("ST02"),
+                        currentStationId = "ST04",
+                        isResolved = true,
+                    ),
+                ),
+                onAction = {},
+            )
+        }
+        assertPrimaryCtaCount("Home/360dp/2x", 1)
+    }
+
+    /**
+     * A trustworthy text-fit oracle, replacing the flag that DT-33 trusted and DT-34 disproved.
+     *
+     * It does not ask Compose whether something overflowed. It takes the text, style and the exact
+     * constraints the real layout was given (all readable from `layoutInput`, which is input data
+     * rather than a verdict), re-measures the paragraph with a real [TextMeasurer], and compares the
+     * space the text NEEDS with the space it was given. Two ways to lose: an unbreakable word wider
+     * than the slot (width), or a wrapped block taller than a bounded slot (height).
+     *
+     * Returns the offending label, or null when the text genuinely fits.
+     */
+    private fun textThatCannotFit(measurer: TextMeasurer, node: SemanticsNode): String? {
+        val action = node.config.getOrNull(SemanticsActions.GetTextLayoutResult) ?: return null
+        val results = mutableListOf<TextLayoutResult>()
+        action.action?.invoke(results)
+        val layout = results.firstOrNull() ?: return null
+        val input = layout.layoutInput
+        val label = node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" / ") ?: return null
+        val needed = measurer.measure(
+            text = input.text,
+            style = input.style,
+            constraints = Constraints(maxWidth = input.constraints.maxWidth),
+        )
+        val tooWide = input.constraints.maxWidth != Constraints.Infinity &&
+            needed.size.width > input.constraints.maxWidth
+        val tooTall = input.constraints.maxHeight != Constraints.Infinity &&
+            needed.size.height > input.constraints.maxHeight
+        return if (tooWide || tooTall) {
+            "$label (needs ${needed.size}, slot ${input.constraints.maxWidth}x${input.constraints.maxHeight})"
+        } else {
+            null
+        }
+    }
+
+    @Test
+    fun textFitOracleFlagsATightBoxAndClearsAFreeLabel() {
+        // Calibration first: an oracle that cannot be wrong is worthless, and the previous round
+        // proved exactly how easy that trap is. The squeezed caption MUST be flagged and the
+        // unconstrained one MUST NOT, before the oracle is allowed to judge real screens.
+        var measurer: TextMeasurer? = null
+        compose.setContent {
+            val remembered = rememberTextMeasurer()
+            measurer = remembered
+            ShomaraTheme {
+                Column {
+                    Box(modifier = Modifier.size(24.dp)) {
+                        Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
+                    }
+                    Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
+                }
+            }
+        }
+        compose.waitForIdle()
+        val oracle = measurer ?: throw AssertionError("calibration: no TextMeasurer was captured")
+        val flags = compose.onAllNodesWithText(ShomaraSettingsStrings.PreferencesSection, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .map { textThatCannotFit(oracle, it) }
+        assertEquals("calibration: expected two measured text nodes, got $flags", 2, flags.size)
+        assertNotNull("calibration: the squeezed caption was NOT flagged", flags.first())
+        assertNull("calibration: the free caption WAS flagged: ${flags.last()}", flags.last())
+    }
+
+    @Test
+    fun hasVisualOverflowIsNotAClippingOracle() {
+        // DT-34 retraction, kept as a guard so nobody rebuilds the broken check: in this Compose
+        // version `TextLayoutResult.hasVisualOverflow` reports true for text with room to lay out,
+        // so it cannot be used to prove that large-text clipping happened. DT-33 shipped a
+        // 37-node "clipping" register on top of this flag; measuring a constrained and an
+        // unconstrained caption side by side (below) showed the flag fires for BOTH, which is why
+        // that register was withdrawn instead of being fixed up.
+        compose.setContent {
+            ShomaraTheme {
+                Column {
+                    Box(modifier = Modifier.size(24.dp)) {
+                        Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
+                    }
+                    Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Caption)
+                }
+            }
+        }
+        val flags = compose.onAllNodesWithText(ShomaraSettingsStrings.PreferencesSection, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .map { node ->
+                val results = mutableListOf<TextLayoutResult>()
+                node.config[SemanticsActions.GetTextLayoutResult].action?.invoke(results)
+                results.firstOrNull()?.hasVisualOverflow ?: false
+            }
+        assertEquals("expected two measured text nodes, got $flags", 2, flags.size)
+        assertTrue(
+            "If this now fails, hasVisualOverflow became trustworthy: re-open DT-33's clipping " +
+                "question properly instead of trusting the old numbers. Flags were $flags",
+            flags.all { it },
+        )
+    }
+
+    @Test
+    fun homeLoadingFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("HomeLoading") { HomeInEntryState(ShomaraEntryState.Loading) }
+    }
+
+    @Test
+    fun homeErrorFitsAt360dpWithDoubleText() {
+        // Error is the entry state that matters most: its body tells the child to try again, so the
+        // retry has to be present in the same state. A message that instructs an action the screen
+        // does not offer is a dead end on the app's first screen, so the affordance is asserted
+        // alongside the fit at the binding size.
+        assertFitsAtNarrowWidth("HomeError") { HomeInEntryState(ShomaraEntryState.Error) }
+        assertTextPresent("HomeError", ShomaraHomeStrings.ErrorBody)
+        assertTextPresent("HomeError", ShomaraHomeStrings.Retry)
+    }
+
+    @Test
+    fun homeEmptyFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("HomeEmpty") { HomeInEntryState(ShomaraEntryState.Empty) }
+    }
+
+    @Test
+    fun homeOfflineFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("HomeOffline") { HomeInEntryState(ShomaraEntryState.Offline) }
+    }
+
+    /**
+     * Home as the shell holds it in one of the four non-path entry states. Offline is the only one
+     * that carries station data, because it is the only one the path renders from a resolved
+     * snapshot; the others use the unresolved progress the shell actually has at that moment.
+     * `ShomaraPathProgress` rejects an unresolved snapshot that carries station ids — the
+     * anti-fabrication rule — so no helper may invent data to make a state easier to draw.
+     */
+    @Composable
+    private fun HomeInEntryState(entryState: ShomaraEntryState) {
+        val progress = if (entryState == ShomaraEntryState.Offline) {
+            ShomaraPathProgress(
+                completedStationIds = setOf("ST01", "ST02", "ST03"),
+                perfectStationIds = setOf("ST02"),
+                currentStationId = "ST04",
+                offline = true,
+                isResolved = true,
+            )
+        } else {
+            ShomaraPathProgress.unresolved()
+        }
+        ShomaraHomeScreen(
+            state = ShomaraHomeUiState(
+                progress = progress,
+                entryState = entryState,
+                retryAvailable = true,
+            ),
+            onAction = {},
+        )
+    }
+
+    @Test
+    fun stationSheetLockedFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("StationSheetLocked") {
+            // Rendered directly instead of tapping a node in the shell: at 360dp the far stations sit
+            // below the fold, and a touch injected at an off-screen coordinate fails rather than
+            // measuring anything. This is the same composable the shell hosts, in the Locked state —
+            // the densest copy in the journey, and the one that has to stay readable to explain why a
+            // station is closed.
+            ShomaraStationStartSheet(
+                stationId = "ST06",
+                progress = ShomaraPathProgress(
+                    completedStationIds = setOf("ST01", "ST02", "ST03"),
+                    perfectStationIds = setOf("ST02"),
+                    currentStationId = "ST04",
+                    isResolved = true,
+                ),
+                onStart = {},
+                onDismiss = {},
+            )
+        }
+    }
+
+    @Test
+    fun lessonDiscoverFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("LessonDiscover") {
+            ShomaraLessonHost(
+                stationId = "ST07",
+                gateway = LessonGateway(client = OkHttpClient(), submitUrl = { null }),
+                checkpointStore = MemoryCheckpoints(),
+                onExitToShell = {},
+            )
+        }
+    }
+    @Test
+    fun meFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("Me") {
+            ShomaraMeScreen(
+                facts = ShomaraMeFacts(
+                    childName = "آریا",
+                    completedStations = 3,
+                    totalStations = 25,
+                ),
+                onOpenSettings = {},
+            )
+        }
+    }
+
+    @Test
+    fun practiceHubFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("PracticeHub") {
+            ShomaraPracticeHubScreen(
+                items = listOf(
+                    ShomaraPracticeItem(id = "p1", title = "جمع تا ۱۰"),
+                    ShomaraPracticeItem(
+                        id = "p2",
+                        title = "الگوها",
+                        locked = true,
+                        lockedReason = "بعد از ایستگاه ۳",
+                    ),
+                ),
+                recent = listOf(ShomaraPracticeItem(id = "p3", title = "شمردن")),
+                onItemTap = {},
+            )
+        }
+    }
+
+    @Test
+    fun settingsFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("Settings") {
+            ShomaraSettingsScreen(
+                state = ShomaraSettingsState(reducedMotion = false),
+                onReducedMotionChange = {},
+                onSave = {},
+            )
+        }
+    }
+    @Test
+    fun profileFitsAt360dpWithDoubleText() {
+        val draft = ShomaraProfileDraft(name = "آریا")
+        assertFitsAtNarrowWidth("OnboardingProfile") {
+            ShomaraProfileScreen(
+                draft = draft,
+                onDraftChange = {},
+                saveState = ShomaraProfileSaveState(draft = draft),
+                onSave = {},
+            )
+        }
+    }
+
+    @Test
+    fun onboardingProfileSaveFailureOffersTheWarmRetry() {
+        // A guardian who has typed a name and hit a save failure must be told what happened, in the
+        // canonical retry wording, and keep exactly one primary action to try again.
+        val draft = ShomaraProfileDraft(name = "آریا")
+        val failed = ShomaraProfileSaveState(draft = draft).startSave().onSaveFailure()
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraProfileScreen(
+                    draft = draft,
+                    onDraftChange = {},
+                    saveState = failed,
+                    onSave = {},
+                )
+            }
+        }
+        assertTextPresent("OnboardingProfile/SaveFailed", ShomaraProfileStrings.SaveFailed)
+        assertA11yContract("OnboardingProfile/SaveFailed")
+        assertPrimaryCtaCount("OnboardingProfile/SaveFailed", 1)
+    }
+
+    @Test
+    fun onboardingProfileSavingKeepsOnePrimaryAndSaysItIsWorking() {
+        val draft = ShomaraProfileDraft(name = "آریا")
+        val saving = ShomaraProfileSaveState(draft = draft).startSave()
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraProfileScreen(
+                    draft = draft,
+                    onDraftChange = {},
+                    saveState = saving,
+                    onSave = {},
+                )
+            }
+        }
+        // The in-flight CTA is still the single primary action, but it must not be double-submittable.
+        assertA11yContract("OnboardingProfile/Saving")
+        assertPrimaryCtaCount("OnboardingProfile/Saving", 1)
+        val cta = compose.onAllNodesWithText(ShomaraProfileStrings.Continue).fetchSemanticsNodes()
+        assertTrue("OnboardingProfile/Saving: the CTA is missing while in flight", cta.isNotEmpty())
+        assertTrue(
+            "OnboardingProfile/Saving: the CTA must be marked disabled while saving",
+            cta.any { it.config.contains(SemanticsProperties.Disabled) },
+        )
+    }
+
+    @Test
+    fun onboardingPlacementExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPlacementScreen(
+                    state = ShomaraPlacementState(),
+                    onSkip = {},
+                )
+            }
+        }
+        assertA11yContract("OnboardingPlacement")
+    }
+
+    @Test
+    fun homeLoadingExposesTheAnnouncementAndNoDeadControls() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(entryState = ShomaraEntryState.Loading),
+                    onAction = {},
+                )
+            }
+        }
+        // Loading is the one state whose contract is "no action yet": there is nothing honest to
+        // tap while the path is being prepared, so it is measured for structure (a heading and a
+        // live announcement) rather than for touch targets.
+        assertTextPresent("Home/Loading", ShomaraHomeStrings.LoadingTitle)
+        assertA11yContract("Home/Loading", expectActions = false)
+    }
+
+    @Test
+    fun homeOfflineFromTheProgressSnapshotAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        progress = ShomaraPathProgress.emptyResolved().copy(offline = true),
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Offline(progress)", ShomaraHomeStrings.Offline)
+        assertA11yContract("Home/Offline(progress)")
+    }
+
+    @Test
+    fun homeOfflineFromTheEntryStateAlsoAnnouncesIt() {
+        // The second channel: a caller that only knows the network is down sets entryState. Before
+        // this fix that signal was silently dropped and the child saw a normal path.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        progress = ShomaraPathProgress.emptyResolved(),
+                        entryState = ShomaraEntryState.Offline,
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Offline(entryState)", ShomaraHomeStrings.Offline)
+        assertA11yContract("Home/Offline(entryState)")
+    }
+
+    @Test
+    fun homeErrorExposesALabelledRetry() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        entryState = ShomaraEntryState.Error,
+                        retryAvailable = true,
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Error", ShomaraHomeStrings.ErrorTitle)
+        assertA11yContract("Home/Error")
+    }
+
+    @Test
+    fun homeEmptyExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(entryState = ShomaraEntryState.Empty),
+                    onAction = {},
+                )
+            }
+        }
+        assertTextPresent("Home/Empty", ShomaraHomeStrings.EmptyTitle)
+        assertA11yContract("Home/Empty")
+    }
+    @Test
+    fun practiceTabWhileProgressIsUnresolvedExplainsItself() {
+        // O5: without a local identity/progress source the shell's snapshot never resolves, so this
+        // is the surface a child actually meets on the Practice tab — it must explain the wait and
+        // stay navigable instead of rendering a fabricated all-locked hub.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraChildShell(
+                    onSignOut = {},
+                    settingsStore = FakeSettingsStore,
+                )
+            }
+        }
+        compose.onNodeWithText(ShomaraChildTabs.Practice).performClick()
+        compose.waitForIdle()
+        assertTextPresent("PracticeTab/Unresolved", ShomaraPracticeHubStrings.PreparingTitle)
+        assertTextPresent("PracticeTab/Unresolved", ShomaraPracticeHubStrings.PreparingBody)
+        assertA11yContract("PracticeTab/Unresolved")
+    }
+
+    @Test
+    fun stationSheetExposesLabelledTouchTargets() {
+        // The sheet is the one surface between Home and a lesson, so an unlabelled or small control
+        // here blocks the child's main journey.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraChildShell(
+                    onSignOut = {},
+                    pathProgress = ShomaraPathProgress(
+                        completedStationIds = setOf("ST01", "ST02", "ST03"),
+                        perfectStationIds = setOf("ST02"),
+                        currentStationId = "ST04",
+                        isResolved = true,
+                    ),
+                    settingsStore = FakeSettingsStore,
+                    onStartStation = {},
+                    onReplayStation = {},
+                )
+            }
+        }
+        // DT-40: Home now opens at the top of the path (the chapter and continue cards are the
+        // first items), so the current node is below the fold. Scrolling to it first is what a child
+        // does too; clicking an off-screen node would fail injection rather than test anything.
+        val stationLabel = ShomaraStationCatalog.station("ST04").workingTitle
+        compose.onNodeWithTag("shomara-path-list")
+            .performScrollToNode(hasContentDescription(stationLabel))
+        compose.onNodeWithContentDescription(stationLabel).performClick()
+        compose.waitForIdle()
+        assertA11yContract("StationSheet")
+    }
+
+    private val MeFacts: ShomaraMeFacts = ShomaraMeFacts(
+        childName = "آریا",
+        completedStations = 3,
+        totalStations = 25,
+    )
+
+/**
+ * Measured text-fit budget at 360dp / 2x, produced by the CALIBRATED oracle (textThatCannotFit),
+ * not by Compose's `hasVisualOverflow` flag — that flag was disproved in DT-34. Seeded at zero on
+ * purpose: the first run reports the true counts, and the numbers may only ever go down after that.
+ */
+private val CLIPPED_BUDGET: Map<String, Int> = mapOf(
+    "Home" to 0,
+    "Me" to 0,
+    "PracticeHub" to 0,
+    "Settings" to 0,
+    "OnboardingProfile" to 0,
+    "HomeLoading" to 0,
+    "HomeError" to 0,
+    "HomeEmpty" to 0,
+    "HomeOffline" to 0,
+    "StationSheetLocked" to 0,
+    "LessonDiscover" to 0,
+)
+
+private object FakeSettingsStore : ShomaraSettingsStore {
+        override val state: Flow<ShomaraSettingsSnapshot> = MutableStateFlow(ShomaraSettingsSnapshot.Defaults)
+
+        override suspend fun save(snapshot: ShomaraSettingsSnapshot) {}
+    }
+
+    private class MemoryCheckpoints : LessonCheckpointStore {
+        private val map = mutableMapOf<String, LessonCheckpoint>()
+
+        override suspend fun save(checkpoint: LessonCheckpoint) {
+            map["${checkpoint.sessionId}|${checkpoint.stationId}"] = checkpoint
+        }
+
+        override suspend fun read(sessionId: String, stationId: String): LessonCheckpoint? =
+            map["$sessionId|$stationId"]
+
+        override suspend fun clear(sessionId: String, stationId: String) {
+            map.remove("$sessionId|$stationId")
+        }
+    }
+
+    @Test
+    fun stationSheetLockedExplainsItselfWithOneAcknowledge() {
+        // Locked is the sheet state a child meets most often early on, and its only control is the
+        // acknowledgement — so if that one control were unnamed or small, the sheet would trap them.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraStationStartSheet(
+                    stationId = "ST07",
+                    progress = ShomaraPathProgress.emptyResolved(),
+                    onStart = {},
+                    onDismiss = {},
+                )
+            }
+        }
+        assertTextPresent("StationSheet/Locked", ShomaraStationStartStrings.LockedExplanation)
+        assertA11yContract("StationSheet/Locked")
+    }
+
+    @Test
+    fun stationSheetOfflineSaysSoAndKeepsOneAcknowledge() {
+        val progress = ShomaraPathProgress.emptyResolved().copy(offline = true)
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraStationStartSheet(
+                    stationId = "ST01",
+                    progress = progress,
+                    onStart = {},
+                    onDismiss = {},
+                )
+            }
+        }
+        assertTextPresent("StationSheet/Offline", ShomaraStationStartStrings.Offline)
+        assertA11yContract("StationSheet/Offline")
+    }
+
+    @Test
+    fun lessonDiscoverWithoutServerOptionsIsHonestAndNavigable() {
+        // The deepest screen in the app in the state it actually ships today: the lesson opens in
+        // P1 discovery while the server has no options yet (O5). The surface must say so, keep the
+        // exit reachable, and never label the empty slots as if they were real choices.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraLessonHost(
+                    stationId = "ST07",
+                    gateway = LessonGateway(client = OkHttpClient(), submitUrl = { null }),
+                    checkpointStore = MemoryCheckpoints(),
+                    onExitToShell = {},
+                )
+            }
+        }
+        compose.waitForIdle()
+        assertDescriptionPresent("LessonDiscover/NoOptions", ShomaraTemplateSkeletonStrings.OptionsPlaceholder)
+        assertA11yContract("LessonDiscover/NoOptions")
+        // The disabled primary is still the declared decision; it must stay a single primary.
+        assertPrimaryCtaCount("LessonDiscover/NoOptions", 1)
+    }
+
+    @Test
+    fun lessonStartExposesLabelledTouchTargets() {
+        // The lesson is the deepest screen in the app and the one with the most controls, yet it
+        // had no a11y coverage at all: the module-local Compose test only asserts the resumed
+        // stage header.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraLessonHost(
+                    stationId = "ST07",
+                    gateway = LessonGateway(client = OkHttpClient(), submitUrl = { null }),
+                    checkpointStore = MemoryCheckpoints(),
+                    onExitToShell = {},
+                )
+            }
+        }
+        compose.waitForIdle()
+        // Guard against a vacuous pass: prove the real lesson screen rendered (its header names
+        // the station) before measuring it, so a blank skeleton could never satisfy the contract.
+        val stationTitle = ShomaraStationCatalog.station("ST07").workingTitle
+        val headerNodes = compose
+            .onAllNodesWithText(stationTitle, substring = true)
+            .fetchSemanticsNodes()
+        assertTrue("LessonStart: the real lesson header did not render", headerNodes.isNotEmpty())
+        assertA11yContract("LessonStart")
+    }
+
+    /**
+     * Proves a state really rendered instead of the default path: without it, an ignored
+     * `entryState` would make the state cases pass while measuring the happy path four times.
+     */
+    private fun assertTextPresent(screen: String, text: String) {
+        val found = compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes()
+        assertTrue("$screen: «$text» never rendered, so this state is not being shown", found.isNotEmpty())
+    }
+
+    /**
+     * AGENTS §6 requires 360/390/412dp widths AND text zoom; the sweep otherwise only ever renders
+     * at the device's own width and 1.0x. 360dp at 2x text is the binding extreme — if a routed page
+     * fits there it fits the wider cases — so the primary pages are pinned at that combination.
+     *
+     * Overflow is detected rather than eyeballed: a node whose bounds leave the 360dp viewport is
+     * exactly what hides on a big device and cuts text off on a small one.
+     */
+    private fun assertFitsAtNarrowWidth(
+        screen: String,
+        prepare: (() -> Unit)? = null,
+        content: @Composable () -> Unit,
+    ) {
+        var measurer: TextMeasurer? = null
+        compose.setContent {
+            val remembered = rememberTextMeasurer()
+            measurer = remembered
+            CompositionLocalProvider(LocalDensity provides Density(density = 2.625f, fontScale = 2f)) {
+                ShomaraTheme {
+                    Box(modifier = Modifier.width(360.dp)) {
+                        content()
+                    }
+                }
+            }
+        }
+        prepare?.invoke()
+        compose.waitForIdle()
+        val label = "$screen/360dp/2x"
+        assertA11yContract(label)
+        val widthPx = 360f * 2.625f
+        val overflowing = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .filter { it.boundsInRoot.right > widthPx + 0.5f || it.boundsInRoot.left < -0.5f }
+        assertTrue(
+            "$label: ${overflowing.size} node(s) overflow the 360dp viewport",
+            overflowing.isEmpty(),
+        )
+        // The calibrated text-fit oracle (see textThatCannotFit) judges whether text lost something
+        // at this size. Unlike the flag withdrawn in DT-34, this one was proven to report both
+        // "clipped" and "fits" on controlled inputs before it was pointed at a real screen.
+        val oracle = measurer ?: throw AssertionError("$label: no TextMeasurer was captured")
+        val clipped = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .mapNotNull { textThatCannotFit(oracle, it) }
+        val budget = CLIPPED_BUDGET[screen]
+            ?: throw AssertionError("$label: no recorded text-fit budget for '$screen'")
+        assertTrue(
+            "$label: ${clipped.size} label(s) cannot fit (budget $budget) -> $clipped",
+            clipped.size <= budget,
+        )
+    }
+
+    /**
+     * Sibling of [assertTextPresent] for a state whose marker is spoken, not drawn: a region label
+     * carried by `contentDescription` is invisible to `onAllNodesWithText`, so a text-only probe
+     * would report a correctly rendered state as missing.
+     */
+    private fun assertDescriptionPresent(screen: String, description: String) {
+        val found = compose.onAllNodesWithContentDescription(description, substring = true).fetchSemanticsNodes()
+        assertTrue("$screen: «$description» was never spoken, so this state is not being shown", found.isNotEmpty())
+    }
+
+    /**
+     * Walks every clickable node of the current screen and reports every violation at once, so a
+     * failure names the screen, the label and the measured height instead of just a boolean.
+     */
+    /**
+     * AGENTS §6, enforced instead of asserted by eye: a decision state publishes exactly one
+     * primary action, so a child never faces two answers to "what do I do now".
+     */
+    private fun assertPrimaryCtaCount(screen: String, expected: Int) {
+        compose.waitForIdle()
+        val nodes = compose.onAllNodes(SemanticsMatcher.keyIsDefined(ShomaraPrimaryCta)).fetchSemanticsNodes()
+        val labels = nodes.map { node ->
+            node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }
+                ?: node.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")
+                ?: "(unlabelled)"
+        }
+        assertEquals("$screen: expected $expected primary CTA(s), found ${nodes.size} ($labels)", expected, nodes.size)
+    }
+
+    private fun assertA11yContract(screen: String, expectActions: Boolean = true) {
+        compose.waitForIdle()
+        val minHeightPx = with(compose.density) { MinimumTouchTargetDp.dp.toPx() }
+        val nodes = compose.onAllNodes(hasClickAction()).fetchSemanticsNodes()
+        if (expectActions) {
+            assertTrue("$screen: no clickable node rendered at all", nodes.isNotEmpty())
+        }
+        val problems = nodes.mapNotNull { node ->
+            val label = node.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")?.takeIf { it.isNotBlank() }
+                ?: node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }?.takeIf { it.isNotBlank() }
+                ?: node.config.getOrNull(SemanticsProperties.EditableText)?.text?.takeIf { it.isNotBlank() }
+            when {
+                label == null -> "$screen: clickable surface without a spoken label (id=${node.id})"
+                node.size.height < minHeightPx -> "$screen: «$label» is ${node.size.height}px tall, below the 48dp floor"
+                else -> null
+            }
+        }
+        assertTrue(problems.joinToString(separator = "\n"), problems.isEmpty())
+
+        // Structure, not just size: TalkBack's heading navigation is how a child (and their adult)
+        // finds the title of a page. A screen with no heading is unnavigable by structure.
+        val headings = compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading)).fetchSemanticsNodes()
+        assertTrue(
+            "$screen: no heading — assistive technology cannot reach a title on this screen",
+            headings.isNotEmpty(),
+        )
+
+        // AGENTS §6: exactly one primary CTA per decision state. Two primaries are two answers to
+        // "what do I do now", which is the anti-pattern the rule exists to prevent.
+        // AGENTS §6 is enforced per WINDOW, not across windows. A sheet is a ModalBottomSheet — a
+        // dialog window — and TalkBack traps focus inside it, so the path's Current station behind
+        // the sheet is not reachable while the sheet is open. Counting them together would compare a
+        // reachable decision against an unreachable one; counting them separately still fails any
+        // surface that genuinely offers two competing primaries.
+        val inDialog = SemanticsMatcher.keyIsDefined(ShomaraPrimaryCta) and
+            androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.isDialog())
+        val inWindow = SemanticsMatcher.keyIsDefined(ShomaraPrimaryCta) and
+            !androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.isDialog())
+        val dialogPrimaries = compose.onAllNodes(inDialog).fetchSemanticsNodes()
+        val windowPrimaries = compose.onAllNodes(inWindow).fetchSemanticsNodes()
+        val allPrimaries = dialogPrimaries + windowPrimaries
+        val labels = allPrimaries.map { node ->
+            node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: "(unlabelled)"
+        }
+        android.util.Log.i("A11Y_SWEEP", "$screen primaries=${allPrimaries.size} window=${windowPrimaries.size} dialog=${dialogPrimaries.size} labels=$labels")
+        assertTrue(
+            "$screen: ${windowPrimaries.size} primary CTAs compete for the decision in the page ($labels)",
+            windowPrimaries.size <= 1,
+        )
+        assertTrue(
+            "$screen: ${dialogPrimaries.size} primary CTAs compete for the decision in the sheet ($labels)",
+            dialogPrimaries.size <= 1,
+        )
+        if (!expectActions) {
+            assertTrue(
+                "$screen: an action-less state must not advertise a primary CTA ($labels)",
+                allPrimaries.isEmpty(),
+            )
+        }
+    }
+
+    private companion object {
+        const val MinimumTouchTargetDp = 48
+    }
+}

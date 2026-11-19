@@ -30,4 +30,12 @@ dependencies {
 
     testImplementation(libs.junit4)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // DT-72: Compose semantics tests for the C23 tile are instrumented (same reason as
+    // core/designsystem N08-02: the Compose test API resolves only for the android variant).
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.junit4)
 }

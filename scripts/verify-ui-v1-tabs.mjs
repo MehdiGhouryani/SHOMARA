@@ -34,7 +34,7 @@ check('strings:pages-13-14', strings.includes('بیا مهارتت را قوی �
 const manifest = JSON.parse(read('apps/mobile/parity/manifest.json'));
 for (const [id, page] of [['practice', '13'], ['me', '14']]) {
   const e = manifest.find((x) => x.id === id);
-  check(`parity:${id}`, Boolean(e) && e.page === page && e.selector === '.body' && e.maxDiffPercent <= 0.5 && exists(`docs/design-handoff-2026-10/pages-v1/goldens/${page}.png`), 'body region only; the tab bar is the outlined one app-wide (D-011)');
+  check(`parity:${id}`, Boolean(e) && e.page === page && e.selector === '.body' && e.maxDiffPercent <= 0.5 && exists(`design/handoff-2026-10/pages-v1/goldens/${page}.png`), 'body region only; the tab bar is the outlined one app-wide (D-011)');
 }
 
 const { TABS_UI_WAIVERS } = await import('./lib/tabs-waivers.mjs');

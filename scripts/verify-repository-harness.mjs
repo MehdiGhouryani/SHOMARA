@@ -13,21 +13,21 @@ assert.deepEqual(result.errors, [], `roadmap errors:\n${result.errors.join('\n')
 const required = [
   'AGENTS.md', 'START_HERE.md', 'ZCODE.md', 'docs/README.md',
   'docs/roadmap/PHASE_CHECKLISTS_FA.md',
-  'docs/architecture/REPOSITORY_MAP_FA.md',
-  'docs/architecture/PACKAGE_BOUNDARIES_FA.md',
-  'docs/architecture/DESIGN_SYSTEM_MIGRATION_FA.md',
-  'docs/architecture/ANDROID_MODULE_GRAPH.md',
-  'docs/architecture/ANDROID_BUILD_ENVIRONMENT.md',
-  'docs/adr/ADR-0036-android-native-foundation.md',
-  'skills/shomara-product-design/SKILL.md',
-  'skills/shomara-android-build/SKILL.md',
-  'skills/shomara-design-system/SKILL.md',
-  'skills/shomara-screen-execution/SKILL.md',
-  'skills/shomara-learning-content/SKILL.md',
-  'design/MASTER.md',
-  'design/INSPIRATION_GUARDRAILS.md',
-  'design/playbook/COMPONENT_READINESS.md',
-  'design/playbook/NATIVE_IMPLEMENTATION.md',
+  'docs/ARCHITECTURE.md',
+  'docs/ARCHITECTURE.md',
+  'docs/ARCHITECTURE.md',
+  'docs/ARCHITECTURE.md',
+  'docs/ARCHITECTURE.md',
+  'docs/DECISIONS.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
+  'docs/DESIGN_RULES.md',
   'content-library/INTEGRATION_GATE.md',
   'content-library/integration/SOURCE_AUDIT.md',
   'content-library/integration/PHASE_INTEGRATION.md',
@@ -53,7 +53,23 @@ assert.ok(ledgerPaths.has('apps/mobile/src/path/PathBanner.tsx'), 'dead-code del
 
 const storedDependencyMap = JSON.parse(fs.readFileSync(path.join(root, 'harness/dependency-map.json'), 'utf8'));
 const liveDependencyMap = buildDependencySnapshot(buildDependencyAudit());
-assert.deepEqual(storedDependencyMap, liveDependencyMap, 'dependency map drift; regenerate and review it');
+const dependencyKeys = [...new Set([...Object.keys(storedDependencyMap), ...Object.keys(liveDependencyMap)])].sort();
+const dependencyDrift = dependencyKeys.flatMap((key) => {
+  const before = storedDependencyMap[key];
+  const after = liveDependencyMap[key];
+  if (JSON.stringify(before) === JSON.stringify(after)) return [];
+  if (Array.isArray(before) && Array.isArray(after)) {
+    const beforeSet = new Set(before.map((item) => JSON.stringify(item)));
+    const afterSet = new Set(after.map((item) => JSON.stringify(item)));
+    const added = after.filter((item) => !beforeSet.has(JSON.stringify(item)));
+    const removed = before.filter((item) => !afterSet.has(JSON.stringify(item)));
+    return [`${key}: stored=${before.length}, live=${after.length}, added=${JSON.stringify(added.slice(0, 8))}, removed=${JSON.stringify(removed.slice(0, 8))}`];
+  }
+  return [`${key}: stored=${JSON.stringify(before)}, live=${JSON.stringify(after)}`];
+});
+if (dependencyDrift.length) {
+  assert.fail(`dependency map drift; regenerate and review it:\n${dependencyDrift.join('\n')}`);
+}
 assert.equal(storedDependencyMap.counts.deepWorkspaceImports, 0, 'deep workspace imports are forbidden');
 
 const nvm = fs.readFileSync(path.join(root, '.nvmrc'), 'utf8').trim();

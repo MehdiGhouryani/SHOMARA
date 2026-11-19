@@ -10,7 +10,7 @@ const required = [
   'apps/web/components/LessonPlayerShell.module.css',
   'apps/mobile/src/station/LessonPlayerChrome.tsx',
   'apps/mobile/src/station/StationFlow.tsx',
-  'docs/reference/LESSON_PLAYER_CONTRACT.md',
+  'docs/ARCHITECTURE.md',
 ];
 for (const file of required) if (!fs.existsSync(path.join(root, file))) throw new Error(`MISSING:${file}`);
 

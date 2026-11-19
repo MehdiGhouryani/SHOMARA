@@ -1,0 +1,124 @@
+{
+  "version": "1.1.0",
+  "scope": "screen-local home/path visual layer; not a replacement for global SHOMARA token source",
+  "color": {
+    "canvas": "#F7F4FF",
+    "surface": "#FFFFFF",
+    "ink": "#242039",
+    "muted": "#6E687F",
+    "violet": "#7256E8",
+    "violetDark": "#563FC5",
+    "violetSoft": "#EDE8FF",
+    "green": "#16815D",
+    "greenSoft": "#E0F4E9",
+    "amber": "#FFC15A",
+    "border": "#E8E2F1",
+    "lockedBg": "#F2F0F6",
+    "onViolet": "#FFFFFF",
+    "onVioletMuted": "#F7F4FF",
+    "pressedSoft": "#F5F2FF",
+    "amberInk": "#6A4510"
+  },
+  "radiusDp": {
+    "small": 12,
+    "medium": 18,
+    "large": 26,
+    "extraLarge": 32,
+    "pill": 999
+  },
+  "spacingDp": {
+    "1": 4,
+    "2": 8,
+    "3": 12,
+    "4": 16,
+    "5": 20,
+    "6": 24,
+    "8": 32,
+    "10": 40
+  },
+  "sizesDp": {
+    "icon": 24,
+    "touchMin": 48,
+    "bottomBarHeight": 76,
+    "nodeCurrent": 84,
+    "nodeStandard": 72,
+    "buttonMinHeight": 56,
+    "characterCameoMax": 88
+  },
+  "typography": {
+    "fontFamily": "Vazirmatn (reuse project font setup)",
+    "pageTitle": {
+      "sp": 23,
+      "weight": 800,
+      "lineHeight": 31
+    },
+    "sectionTitle": {
+      "sp": 18,
+      "weight": 700,
+      "lineHeight": 26
+    },
+    "body": {
+      "sp": 14,
+      "weight": 500,
+      "lineHeight": 22
+    },
+    "caption": {
+      "sp": 12,
+      "weight": 500,
+      "lineHeight": 18
+    },
+    "button": {
+      "sp": 16,
+      "weight": 700,
+      "lineHeight": 24
+    }
+  },
+  "depth": {
+    "flat": "canvas and text; no shadow",
+    "hint": "non-interactive grouping; tiny separation",
+    "soft": "interactive card/tab; one tactile edge + subtle shadow",
+    "featured": "one current station or main CTA only"
+  },
+  "motionMs": {
+    "fast": 120,
+    "standard": 180,
+    "emphasized": 220,
+    "reducedMotion": "replace with immediate state change and no parallax/spring"
+  },
+  "breakpointsDp": {
+    "compactMax": 374,
+    "standardMax": 430,
+    "expandedMin": 600
+  },
+  "accessibility": {
+    "minTouchDp": 48,
+    "preferredManipulativeDp": [
+      72,
+      80
+    ],
+    "normalTextContrastRatio": 4.5,
+    "largeTextContrastRatio": 3.0,
+    "maxFontScaleTest": 2.0
+  },
+  "componentRules": {
+    "featuredPerViewport": 1,
+    "shadowLayersPerSurface": 1,
+    "navigationTabs": [
+      "من",
+      "تمرین",
+      "مسیر"
+    ],
+    "pathNodeSizeDp": 72,
+    "currentNodeSizeDp": 84,
+    "contentInsetDp": 20,
+    "compactInsetDp": 16,
+    "buttonMinHeightDp": 56,
+    "continueCardPrimaryActionCount": 1
+  },
+  "assetPolicy": {
+    "icons": "Android VectorDrawable at runtime; SVG remains editable source",
+    "characters": "approved repository WebP; do not redraw or recrop",
+    "decorativeBitmap": "WebP with alpha only when it adds value",
+    "fonts": "reuse existing Vazirmatn font setup; do not duplicate font files in this pack"
+  }
+}
