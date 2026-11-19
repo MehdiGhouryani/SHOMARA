@@ -188,6 +188,7 @@
       "apps/mobile/src/station/views2/LessonViewsV2.tsx",
       "apps/mobile/src/station/views2/StationStartV2.tsx",
       "content-library/integration/REPO_COMPATIBILITY.md",
+      "docs/notes/mobile-retirement-inventory.md",
       "docs/notes/verifier-migration-map.md",
       "docs/ui-v2-migration-ledger.md",
       "scripts/verify-ui-v1-onboarding.mjs",
