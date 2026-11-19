@@ -1184,7 +1184,8 @@
             ":feature:profile ShomaraMeScreen (family 14): loading/ready/empty/offline/error/edit-return; facts rendered verbatim in Persian digits (۳ از ۲۵ ایستگاه); zero synthetic reward surfaces (field-level test-enforced)",
             ":feature:settings ShomaraSettingsScreen (family 15): canonical avatar grid (sun/leaf/cloud/moon) with owned/equipped states, real reduced-motion preference, save lifecycle Dirty/Saving/Saved/Error with toggle-fail revert + warm retry",
             "same-value edits are no-ops (no dirty churn); save from Clean rejected; unknown avatar rejected at construction",
-            "gradle :feature:profile:test :feature:settings:test + lint = BUILD SUCCESSFUL (profile 4/4, settings 7/7)"
+            "gradle :feature:profile:test :feature:settings:test + lint = BUILD SUCCESSFUL (profile 4/4, settings 7/7)",
+          "DT-14 UX fix (2026-11-19): settings copy is fully canonical now — the section heading no longer repeats the page title (it was the literal «تنظیمات» rendered as a second heading, so TalkBack read the title twice and the section had no distinct name), and the selected-avatar line is built by ShomaraSettingsStrings.selectedAvatar from the real ShomaraAvatarCatalog label instead of a hand-written literal. ShomaraSettingsTest 9/9 (two new guards: section headings never repeat the title, selected-avatar line comes from the catalog) and ShomaraSettingsWiringTest 14/14."
           ]
         },
         {
@@ -1202,7 +1203,8 @@
             "ShomaraParentGate: fail-closed reducer - a missing verifier can never authenticate (warm config message); 3 consecutive failures trigger a cooldown lockout that rejects even the correct passcode; re-entrant verify while authenticated stays authenticated",
             "child-leak policy: ShomaraParentSurfaceContract allows ONLY progress-report/settings/sign-out - lesson/practice/station surfaces are structurally rejected (test-enforced); parent home renders summary numbers (Persian digits) and no rewards/leaderboard vocabulary",
             "child tab bar has no parent tab (canonical three-tab contract from N05-01); entry is only via the Me row -> re-auth gate screen",
-            "gradle :feature:parent:test :feature:parent:lint = BUILD SUCCESSFUL (7/7 tests)"
+            "gradle :feature:parent:test :feature:parent:lint = BUILD SUCCESSFUL (7/7 tests)",
+          "DT-14 security/UX fix (2026-11-19): the adult passcode field is masked and announced as a password. ShomaraTextField gained a secure flag implemented as an OutputTransformation mask (the state-owning BasicTextField has no visualTransformation parameter) plus Password semantics, and the disabled/loading branch masks through ShomaraFieldLogic.readOnlyTextFor, so the credential is neither legible on a shared child device nor read aloud by TalkBack. Gate logic is untouched and still fail-closed: verifier == null can never authenticate. ShomaraParentBoundaryTest 9/9 unchanged; new instrumented ShomaraParentGateSemanticsTest 3/3 on Pixel_6a (password semantics, wrong passcode stays closed and states the gate's own message, correct passcode opens the gate)."
           ]
         },
         {

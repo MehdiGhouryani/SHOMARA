@@ -155,6 +155,9 @@ fun ShomaraParentGateScreen(
             onValueChange = { passcode = it },
             label = "گذرواژه والدین",
             numericLtr = true,
+            // The adult credential is masked and announced as a password: a child-facing
+            // device is shared, and the passcode must never be legible on screen.
+            secure = true,
             modifier = Modifier.fillMaxWidth(),
         )
         ShomaraButton(

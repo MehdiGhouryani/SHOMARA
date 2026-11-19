@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -29,6 +31,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.password
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -75,6 +78,13 @@ object ShomaraFieldLogic {
     fun textDirectionFor(numericLtr: Boolean): TextDirection =
         if (numericLtr) TextDirection.Ltr else TextDirection.Rtl
 
+    /**
+     * Text shown by the read-only (disabled/loading) branch. A secure field never renders its
+     * credential in clear text, even when the caller has disabled it mid-entry.
+     */
+    fun readOnlyTextFor(value: String, secure: Boolean): String =
+        if (secure) "•".repeat(value.length) else value
+
     fun textStyleFor(numericLtr: Boolean, state: ShomaraFieldState): TextStyle = TextStyle(
         fontFamily = ShomaraTypography.Family,
         fontWeight = ShomaraTokens.TypeBodyWeight,
@@ -88,6 +98,18 @@ object ShomaraFieldLogic {
     )
 }
 
+/**
+ * Renders every entered character as a bullet while leaving the underlying buffer untouched, so a
+ * credential is never legible on a shared child device. Paired with [password] semantics, TalkBack
+ * announces the field as a password instead of reading it aloud.
+ */
+private object ShomaraPasswordMask : OutputTransformation {
+    override fun TextFieldBuffer.transformOutput() {
+        val count = length
+        if (count > 0) replace(0, count, "•".repeat(count))
+    }
+}
+
 @Composable
 fun ShomaraTextField(
     value: String,
@@ -98,6 +120,11 @@ fun ShomaraTextField(
     enabled: Boolean = true,
     busy: Boolean = false,
     numericLtr: Boolean = false,
+    /**
+     * Masks the entered characters and marks the field as a password for assistive technology.
+     * A parent credential must never be rendered in clear text in a child-facing app.
+     */
+    secure: Boolean = false,
     keyboardType: KeyboardType = if (numericLtr) KeyboardType.Number else KeyboardType.Text,
     hint: String = "",
     // R-01 (F-33): under reduced motion the loading spinner renders as a static dot — same
@@ -149,7 +176,7 @@ fun ShomaraTextField(
                     }
                 }
                 Text(
-                    text = if (value.isEmpty()) hint else value,
+                    text = if (value.isEmpty()) hint else ShomaraFieldLogic.readOnlyTextFor(value, secure),
                     style = ShomaraFieldLogic.textStyleFor(numericLtr, state),
                 )
             }
@@ -177,9 +204,16 @@ fun ShomaraTextField(
                 state = editableState,
                 modifier = fieldModifier.semantics(mergeDescendants = true) {
                     if (state == ShomaraFieldState.Invalid && errorText != null) error(errorText)
+                    // A password field must announce itself as one, so TalkBack never reads the
+                    // entered credential aloud in a shared room.
+                    if (secure) password()
                 }.onFocusChanged { focused = it.isFocused },
                 textStyle = ShomaraFieldLogic.textStyleFor(numericLtr, state),
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                // The state-owning BasicTextField has no visualTransformation parameter; masking
+                // is an output transformation over the same buffer, so the cursor and the values
+                // the caller receives stay untouched.
+                outputTransformation = if (secure) ShomaraPasswordMask else null,
                 cursorBrush = SolidColor(ShomaraTokens.ColorPrimary),
                 decorator = { inner ->
                     Box(contentAlignment = Alignment.CenterStart) {

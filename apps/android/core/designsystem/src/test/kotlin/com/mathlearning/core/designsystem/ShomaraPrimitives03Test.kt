@@ -151,6 +151,17 @@ class ShomaraPrimitives03Test {
         assertEquals(if (!numericLtr) KeyboardType.Number else KeyboardType.Text, KeyboardType.Text)
     }
 
+    @Test
+    fun `a secure field never echoes its credential in the read-only branch`() {
+        // Regression: the disabled/loading branch used to render `value` verbatim, so a parent
+        // passcode stayed legible on screen the moment the field went busy.
+        assertEquals("••••", ShomaraFieldLogic.readOnlyTextFor("1234", secure = true))
+        assertEquals("", ShomaraFieldLogic.readOnlyTextFor("", secure = true))
+        // A non-secure field is unchanged — masking must never leak into ordinary inputs.
+        assertEquals("1234", ShomaraFieldLogic.readOnlyTextFor("1234", secure = false))
+        assertEquals("آریا", ShomaraFieldLogic.readOnlyTextFor("آریا", secure = false))
+    }
+
     // ---- OTP ----
 
     @Test

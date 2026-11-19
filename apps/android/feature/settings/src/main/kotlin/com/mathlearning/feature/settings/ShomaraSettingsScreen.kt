@@ -97,6 +97,8 @@ data class ShomaraSettingsState(
 object ShomaraSettingsStrings {
     const val Title: String = "آواتار و تنظیمات"
     const val AvatarSection: String = "آواتار من"
+    /** Heading of the preference rows. It must not repeat [Title], or TalkBack reads it twice. */
+    const val PreferencesSection: String = "تنظیم‌های برنامه"
     const val ReducedMotionLabel: String = "حرکت کمتر"
     // R-11 (F-36): this hint OVERCLAIMS — it says all animations stop, but the reduced-motion
     // flag only gates the spinners (button/audio/text-field), the indeterminate progress bar
@@ -110,6 +112,9 @@ object ShomaraSettingsStrings {
     const val Save: String = "ذخیره"
     const val SavedMessage: String = "ذخیره شد."
     const val SaveFailed: String = "ذخیره نشد؛ دوباره تلاش کن."
+
+    /** Selected-avatar line: label comes from the real catalog, so it can never drift. */
+    fun selectedAvatar(labelFa: String): String = "آواتار انتخاب‌شده: $labelFa"
 }
 
 @Composable
@@ -143,8 +148,8 @@ fun ShomaraSettingsScreen(
         }
         // Selected state is stated in plain text, never carried by
         // colour or border width alone.
-        Text(text = "آواتار انتخاب‌شده: " + ShomaraAvatarCatalog.option(state.avatarId).label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
-        Text(text = "تنظیمات", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        Text(text = ShomaraSettingsStrings.selectedAvatar(ShomaraAvatarCatalog.option(state.avatarId).label), style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+        Text(text = ShomaraSettingsStrings.PreferencesSection, style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         ToggleRow(
             label = ShomaraSettingsStrings.ReducedMotionLabel,
             hint = ShomaraSettingsStrings.ReducedMotionHint,

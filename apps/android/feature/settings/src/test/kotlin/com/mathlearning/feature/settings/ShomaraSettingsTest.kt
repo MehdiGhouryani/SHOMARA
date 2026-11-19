@@ -66,4 +66,27 @@ class ShomaraSettingsTest {
         val state = ShomaraSettingsState(avatarId = "sun", reducedMotion = true)
         assertTrue(state.reducedMotion)
     }
+
+    @Test
+    fun `section headings never repeat the page title`() {
+        // Regression: the preferences heading used to be the literal «تنظیمات», so TalkBack read
+        // the page title twice and the section had no distinct name. Canonical strings only.
+        assertTrue(ShomaraSettingsStrings.PreferencesSection.isNotBlank())
+        assertTrue(ShomaraSettingsStrings.PreferencesSection != ShomaraSettingsStrings.Title)
+        assertTrue(ShomaraSettingsStrings.AvatarSection != ShomaraSettingsStrings.Title)
+        assertTrue(ShomaraSettingsStrings.PreferencesSection != ShomaraSettingsStrings.AvatarSection)
+    }
+
+    @Test
+    fun `selected avatar line is built from the real catalog label`() {
+        val option = com.mathlearning.core.model.ShomaraAvatarCatalog.option(ShomaraAvatarCatalogDefaultId)
+        assertEquals(
+            "آواتار انتخاب‌شده: " + option.label,
+            ShomaraSettingsStrings.selectedAvatar(option.label),
+        )
+    }
+
+    private companion object {
+        val ShomaraAvatarCatalogDefaultId = com.mathlearning.core.model.ShomaraAvatarCatalog.defaultId
+    }
 }
