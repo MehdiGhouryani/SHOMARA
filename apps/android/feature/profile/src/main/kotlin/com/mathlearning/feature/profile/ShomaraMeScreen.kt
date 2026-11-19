@@ -40,6 +40,28 @@ import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 
 /** Me-tab state matrix (family 14): loading/ready/empty/offline/error. */
+/**
+ * Canonical copy for the Me screen. AGENTS §10: every user-visible line lives here instead of as an
+ * inline literal in the renderer — the same rule the practice hub now follows. Text is byte-identical
+ * to what the screen rendered before this extraction.
+ */
+object ShomaraMeStrings {
+    const val Title: String = "من"
+    const val Offline: String = "اینترنت وصل نیست؛ پیشرفت ذخیره‌شده دیده می‌شود."
+    const val ErrorFallback: String = "مشکلی پیش آمد."
+    const val Loading: String = "در حال آوردن پروفایل…"
+    const val Empty: String = "پروفایل هنوز کامل نشده؛ از مسیر ادامه بده."
+    const val AvatarPrefix: String = "آواتار من: "
+    const val SettingsLabel: String = "آواتار و تنظیمات"
+    const val SettingsDescription: String = "ظاهر و تنظیم‌های واقعی"
+    const val ParentLabel: String = "بخش والدین"
+    const val ParentDescription: String = "با تأیید بزرگ‌ترها باز می‌شود"
+
+    /** «۳ از ۲۵ ایستگاه کامل شده» — digits are already Persian by the time they arrive. */
+    fun progressLine(completedFa: String, totalFa: String): String =
+        completedFa + " از " + totalFa + " ایستگاه کامل شده"
+}
+
 enum class ShomaraMeState { Loading, Ready, Empty, Offline, Error }
 
 /** Real facts only — rendered verbatim from caller/server data (no synthetic badges or streaks). */
@@ -55,7 +77,7 @@ data class ShomaraMeFacts(
     }
 
     fun progressLine(): String =
-        ShomaraDigits.toFa(completedStations) + " از " + ShomaraDigits.toFa(totalStations) + " ایستگاه کامل شده"
+        ShomaraMeStrings.progressLine(ShomaraDigits.toFa(completedStations), ShomaraDigits.toFa(totalStations))
 }
 
 /**
@@ -101,12 +123,12 @@ fun ShomaraMeScreen(
     // Checklist (family 14 acceptance, 200% font): the column scrolls, so a
     // 200%-font header + rows can never clip on a small screen.
     Column(modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(ShomaraTokens.Space24), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
-        Text(text = "من", style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
+        Text(text = ShomaraMeStrings.Title, style = ShomaraTypography.Title, color = ShomaraTokens.ColorInk, modifier = Modifier.semantics { heading() })
         when (state) {
-            ShomaraMeState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "اینترنت وصل نیست؛ پیشرفت ذخیره‌شده دیده می‌شود.")
-            ShomaraMeState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: "مشکلی پیش آمد.")
-            ShomaraMeState.Loading -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "در حال آوردن پروفایل…")
-            ShomaraMeState.Empty -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "پروفایل هنوز کامل نشده؛ از مسیر ادامه بده.")
+            ShomaraMeState.Offline -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraMeStrings.Offline)
+            ShomaraMeState.Error -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Error, text = errorText ?: ShomaraMeStrings.ErrorFallback)
+            ShomaraMeState.Loading -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraMeStrings.Loading)
+            ShomaraMeState.Empty -> ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraMeStrings.Empty)
             ShomaraMeState.Ready -> {
                 val f = facts!!
                 Row(
@@ -135,7 +157,7 @@ fun ShomaraMeScreen(
                         // settings choice (see ShomaraMeAvatarWiring), so this
                         // label is the saved choice once the store has emitted
                         // its first real value, not a hard-coded default.
-                        Text(text = "آواتار من: " + f.avatar.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
+                        Text(text = ShomaraMeStrings.AvatarPrefix + f.avatar.label, style = ShomaraTypography.Caption, color = ShomaraTokens.ColorInk2)
                     }
                 }
                 // Batch 2 (goal-card structure, ADR-0040 §5 — allowed for
@@ -162,8 +184,8 @@ fun ShomaraMeScreen(
         // whose profile is not complete yet had no way to reach avatar/settings at all — the
         // surface existed but was unreachable. Settings is a valid destination in every state.
         // F-20: the description is plain Persian — no Latin word inside a Persian sentence.
-        MeRow(label = "آواتار و تنظیمات", description = "ظاهر و تنظیم‌های واقعی", onClick = onOpenSettings)
-        MeRow(label = "بخش والدین", description = "با تأیید بزرگ‌ترها باز می‌شود", onClick = onOpenParent)
+        MeRow(label = ShomaraMeStrings.SettingsLabel, description = ShomaraMeStrings.SettingsDescription, onClick = onOpenSettings)
+        MeRow(label = ShomaraMeStrings.ParentLabel, description = ShomaraMeStrings.ParentDescription, onClick = onOpenParent)
     }
 }
 

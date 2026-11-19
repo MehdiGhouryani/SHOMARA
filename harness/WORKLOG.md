@@ -1099,3 +1099,12 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **یافتهٔ ۶ (ثبت‌شده، عمداً تغییر نکرد):** سه state اطلاعاتی تمرین (Offline/Error/Empty) **هیچ کنترل درون‌صفحه‌ای** ندارند. بررسی شد که بن‌بست نیست: شل کودک سه تب ثابت دارد و مسیر همیشه در دسترس است. اما ناسازگاری واقعی است: Home در state خطا «تلاش دوباره» دارد و تمرین ندارد — یک محصول، دو پاسخ به یک پرسش. افزودن `onRetry` بدون مصرف‌کننده در شل، پارامتر مرده می‌ساخت، پس **API اختراع نشد**؛ قرارداد هر state صریح شد (`expectActions = false`) و یافته برای تصمیم مالک ثبت شد.
 - **شواهد:** `ShomaraA11ySweepTest` **۲۲/۲۲** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `711362c…`.
 - **بازمانده:** O5 باز؛ قاعدهٔ «CTA اصلی یکتا» (نیازمند نشانهٔ primary در design system)؛ اجرای instrumented در CI؛ `onRetry` تمرین (تصمیم مالک)؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-24 — ممیزی مکانیکی متن inline (§۱۰) + canonical کردن «من» + state های آن
+
+- **ممیزی سیستماتیک:** یک اسکریپت (`build-reports/audit/inline_persian_audit.py`) همهٔ رشته‌های فارسی را که **در خط `const val` نیستند** شمرد: **۲۴۶** مورد در `feature`/`core:designsystem`/`app`. این عدد **بالا-کران** است نه شمار نقض: توابع داخل آبجکت‌های `*Strings` (مثل `ShomaraHomeStrings.remaining`) و داده‌های preview و رشته‌های `debug` هم در آن حساب شده‌اند. پس آن را به‌عنوان «فهرست کار» استفاده می‌کنیم، نه به‌عنوان верdict.
+- **بیشترین تراکم واقعی:** `LessonContentWiring` (۲۴، فقط debug)، `ShomaraStationStart` (۱۶)، `ShomaraParentBoundary` (۱۴)، `ShomaraMeScreen` (۱۲ → صفر شد)، `ShomaraLaunchGate` (۱۲)، `ShomaraLessonStageChrome` (۱۰)، `ShomaraSettingsScreen` (۷).
+- **رفع در این دور:** `ShomaraMeScreen` (۱۲ رشتهٔ inline) به `ShomaraMeStrings` منتقل شد — شامل عنوان، چهار بنر حالت، پیشوند آواتار، برچسب/توضیح دو ردیف و «۳ از ۲۵ ایستگاه کامل شده» (به‌صورت تابع با ارقام فارسی از قبل تبدیل‌شده). متن **بدون تغییر** و تست‌های JVM ماژول پروفایل سبز.
+- **پوشش state:** sweep از ۲۲ به **۲۶** رسید: «من» در Loading/Offline/Empty/Error، هر کدام با تأیید متن canonical. سه state اطلاعاتی به‌درستی `expectActions = false` هستند (شل تب دارد).
+- **شواهد:** `ShomaraA11ySweepTest` **۲۶/۲۶** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `cae99d7…`.
+- **بازمانده:** استخراج متن در `StationStart`/`ParentBoundary`/`LaunchGate`/`LessonStageChrome`/`Settings` (فایل‌به‌فایل)؛ O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI؛ capture/TalkBack `NATIVE_PENDING`.

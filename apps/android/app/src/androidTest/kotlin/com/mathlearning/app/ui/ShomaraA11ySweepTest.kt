@@ -35,6 +35,7 @@ import com.mathlearning.feature.path.ShomaraPathProgress
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
 import com.mathlearning.feature.practice.ShomaraPracticeItem
 import com.mathlearning.feature.profile.ShomaraMeFacts
+import com.mathlearning.feature.profile.ShomaraMeStrings
 import com.mathlearning.feature.profile.ShomaraMeScreen
 import com.mathlearning.feature.practice.ShomaraPracticeHubLogic
 import com.mathlearning.feature.practice.ShomaraPracticeHubStrings
@@ -142,6 +143,61 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("Me")
+    }
+
+    @Test
+    fun meLoadingAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(facts = null, loading = true, onOpenParent = {}, onOpenSettings = {})
+            }
+        }
+        assertTextPresent("Me/Loading", ShomaraMeStrings.Loading)
+        assertA11yContract("Me/Loading", expectActions = false)
+    }
+
+    @Test
+    fun meOfflineAnnouncesIt() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(
+                    facts = MeFacts,
+                    offline = true,
+                    onOpenParent = {},
+                    onOpenSettings = {},
+                )
+            }
+        }
+        assertTextPresent("Me/Offline", ShomaraMeStrings.Offline)
+        assertA11yContract("Me/Offline")
+    }
+
+    @Test
+    fun meEmptyShowsItsGuide() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(facts = null, onOpenParent = {}, onOpenSettings = {})
+            }
+        }
+        assertTextPresent("Me/Empty", ShomaraMeStrings.Empty)
+        assertA11yContract("Me/Empty", expectActions = false)
+    }
+
+    @Test
+    fun meErrorShowsTheCallerMessage() {
+        val message = "پروفایل بارگذاری نشد."
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraMeScreen(
+                    facts = MeFacts,
+                    errorText = message,
+                    onOpenParent = {},
+                    onOpenSettings = {},
+                )
+            }
+        }
+        assertTextPresent("Me/Error", message)
+        assertA11yContract("Me/Error")
     }
 
     @Test
@@ -394,6 +450,13 @@ class ShomaraA11ySweepTest {
         compose.waitForIdle()
         assertA11yContract("StationSheet")
     }
+
+    private val MeFacts: ShomaraMeFacts = ShomaraMeFacts(
+        childName = "آریا",
+        avatar = ShomaraAvatarCatalog.option("sun"),
+        completedStations = 3,
+        totalStations = 25,
+    )
 
     private object FakeSettingsStore : ShomaraSettingsStore {
         override val state: Flow<ShomaraSettingsSnapshot> = MutableStateFlow(ShomaraSettingsSnapshot.Defaults)
