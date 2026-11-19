@@ -29,9 +29,9 @@
       "section2_P1_DISCOVER_steps": 4,
       "section3_P2_GUIDED_items": 8,
       "section4_P3_GAME_T05": 1,
-      "section5_P4_pool_items": 5,
+      "section5_P4_pool_items": 26,
       "section6_P5_or_assessment_items": 5,
-      "section7_S13_S14": 2
+      "section7_S13_S14": 3
     },
     "stageMappingStatus": "PROTOTYPE — stage names need owner confirmation (CONTENT-014 adjacent)",
     "audioManifest": "originals/shomara-ST07-audio-manifest.csv",

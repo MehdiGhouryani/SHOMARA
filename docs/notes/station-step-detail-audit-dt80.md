@@ -106,3 +106,15 @@
 
 این نوبت: **ST01 · شمارش و الگو** (اولین ایستگاه، بدون پیش‌نیاز، بات A) — فایل مشخصات کامل با تمام
 آیتم‌های P1..P5. خروجی در `content-library/authoring/stations/ST01.md` + transcribe JSON.
+
+> **به‌روزرسانی DT-80 (تکمیل):** ST01 کامل شد — مشخصات در
+> `content-library/authoring/stations/specs/ST01.md` (۴۹ آیتم یکتا، ۶۲ خط صوت درفت)،
+> `ST01-audio-manifest.csv` و `stations/ST01.json` (lifecycle: MAPPED_TO_REPO از gate واقعی
+> promote؛ ثبت در promotion-ledger). matrix بازتولید شد: authoredStations: 2.
+
+> **به‌روزرسانی DT-81 (بازبینی):** گزارش «۰ خطا» ادعای بدون ابزار بود؛
+> `scripts/verify-station-spec.mjs` قواعد مرحلهٔ ۶ §۵ را ماشینی اجرا می‌کند (و به
+> verify:static:all پیوسته است). همین ابزار ۴ باگ واقعی پیدا و رفع کرد: دو آیتم تکراری در
+> استخر (F1.f3 هم‌شیء/هم‌تعداد P2.i01؛ F1.j1 هم‌شیء/هم‌تعداد F1.f1)، دارایی جامانده
+> `OBJ.apple2`، و drift واقعی در ST07.json (استخر 5→26، پرش 2→3). شمارش «۱/۲۵» این سند به
+> زمان نگارش آن درست بود؛ وضعیت جاری هر زمان در `curriculum-matrix.json` است.

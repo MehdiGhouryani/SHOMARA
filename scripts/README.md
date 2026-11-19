@@ -54,7 +54,7 @@
 | `verify-uiux-phase9.mjs` | — |
 | `verify-ux-p10-final.mjs` | — |
 
-## Content pipeline and media (6)
+## Content pipeline and media (7)
 
 | فایل | نقش |
 |---|---|
@@ -62,6 +62,7 @@
 | `verify-answer-key-boundary.mjs` | Wave A3/A9 static guard: answer-key boundary + RLS coverage. |
 | `verify-content-library.mjs` | — |
 | `verify-content-pipeline.mjs` | Content pipeline verifier (P7) — joins verify:static:all. |
+| `verify-station-spec.mjs` | Station-spec validator (DT-81) — stage6 §5 rules by machine: TTS/display budgets, no digits for ST01–ST06, forbidden words/art, id/audio/asset reference integrity, pool ≥ 12, declared-count drift. Joins verify:static:all. |
 | `verify-media-pipeline.mjs` | Media pipeline verifier (P9) — joins verify:static:all. |
 | `verify-migrations-static.mjs` | B0 extended guards — challenge runtime + presentation enrichment (0055/0056/0072/0073) |
 
@@ -166,6 +167,6 @@
 
 ---
 
-مجموع: **102** فایل `.mjs` در ریشهٔ `scripts/`.
+مجموع: **103** فایل `.mjs` در ریشهٔ `scripts/`.
 
 اجرای همه: `npm run verify:static:all` (کشف خودکار، با فهرست استثناهای ثابت در `verify-static-all.mjs`).

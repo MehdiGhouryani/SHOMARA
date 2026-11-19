@@ -44,16 +44,13 @@ const PILOT_SPECS = {
   ST07: 'originals/shomara-stage7-pilot-ST07.md',
 };
 
-function ledgerState(stationId) {
-  const ledgerFile = path.join(AUTHORING, 'promotion-ledger.json');
-  if (!fs.existsSync(ledgerFile)) return 'SOURCE_ONLY';
-  const ledger = readJson('content-library/authoring/promotion-ledger.json');
+function ledgerState(stationId, ledger) {
   const relevant = (ledger.transitions ?? []).filter((t) => t.stationId === stationId);
   if (relevant.length === 0) return 'SOURCE_ONLY';
   return relevant[relevant.length - 1].to;
 }
 
-function stationRow(stationId) {
+function stationRow(stationId, ledger) {
   const authoringFile = path.join(AUTHORING, 'stations', `${stationId}.json`);
   const specFile = path.join(AUTHORING, 'stations', 'specs', `${stationId}.md`);
   const transcribed = fs.existsSync(authoringFile);
@@ -62,7 +59,7 @@ function stationRow(stationId) {
   return {
     stationId,
     workingTitle: WORKING_TITLES[stationId] ?? '',
-    lifecycle: ledgerState(stationId),
+    lifecycle: ledgerState(stationId, ledger),
     fields: Object.fromEntries(FIELDS.map((field) => [field, authored ? 'PROTOTYPE_DRAFT' : 'NOT_AUTHORED'])),
     ...(authored ? { prototypeNotes: {
       ...(pilotSpec && !fs.existsSync(specFile) ? { pilotSpec: `content-library/${pilotSpec}` } : { authoredSpec: `content-library/authoring/stations/specs/${stationId}.md` }),
@@ -75,10 +72,13 @@ function stationRow(stationId) {
 
 export function buildMatrix() {
   const stations = readJson('content-library/derived/stations-index.json').stations.map((s) => s.id);
-  const authoredStations = stations.filter((id) => {
-    const row = stationRow(id);
-    return row.fields.learningGoalAndPrereq === 'PROTOTYPE_DRAFT';
-  }).length;
+  // One ledger read for the whole matrix (was 25 reads — one per station row).
+  const ledgerFile = path.join(AUTHORING, 'promotion-ledger.json');
+  const ledger = fs.existsSync(ledgerFile)
+    ? readJson('content-library/authoring/promotion-ledger.json')
+    : { transitions: [] };
+  const rows = stations.map((id) => stationRow(id, ledger));
+  const authoredStations = rows.filter((r) => r.fields.learningGoalAndPrereq === 'PROTOTYPE_DRAFT').length;
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
@@ -88,6 +88,6 @@ export function buildMatrix() {
     notAuthoredStations: stations.length - authoredStations,
     fields: FIELDS,
     batches: Object.fromEntries(Object.entries(BATCHES).map(([b, def]) => [b, { ...def, status: 'PLANNED', reviewRoles: ['curriculum', 'persian_pronunciation', 'accessibility', 'rights_moderation'] }])),
-    stations: stations.map(stationRow),
+    stations: rows,
   };
 }

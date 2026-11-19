@@ -12,11 +12,11 @@ current_task: N11-05
 | مورد | مقدار |
 |---|---|
 | شاخهٔ کار | `work/shomara-deep-transformation` |
-| آخرین commit | `93d8118` (DT-79 کد) + commit اسناد DT-79 |
+| آخرین commit | `f6b4ee1` (DT-80 تألیف ST01) |
 | `origin/main` | همگام (ff-only) |
 | `android:gate` | exit 0 (`ANDROID_BUILD: PASS`) |
 | `harness validate` | VALID (۱۲۹ task) |
-| `verify:static:all` | PASS 94/94 |
+| `verify:static:all` | PASS 95/95 |
 | instrumented (دستی، همه) | **۶۶/۶۶ PASS** (Pixel_6a) — اولین اجرای کامل بعد از DT-76/77 |
 | font-scale sweep | ۶/۶ PASS روی امولاتور (360/390/412dp × 1.0/1.3/2.0) |
 | محتوای ایستگاه‌ها | **۲ از ۲۵ authored** (ST07 پایلوت + ST01 کامل؛ هر دو MAPPED/VALIDATED، بدون بازبینی انسانی) — `curriculum-matrix.json` |
@@ -29,6 +29,7 @@ current_task: N11-05
 - **DT-78** رگرسیون‌های a11y + race خواندن draft: اولین اجرای کامل instrumented ۸ خطا داد (۵ رگرسیون DT-76: CTA بدون `shomaraPrimaryCta`، لیبل کاشی جا نشدن در font 2.0، strip پنهان؛ ۳ تست کهنه از DT-40). همه رفع شد؛ **باگ واقعی first-run هم پیدا و رفع شد** (خواندن draft فقط در شروع process بود → Loading ابدی تا restart؛ حالا شل هنگام ورود به route دوباره می‌خواند — روی دستگاه با نصب تازه از صفر تأیید شد). instrumented حالا **۶۶/۶۶**.
 - **DT-79** ریشهٔ «خطوط روی ایستگاه‌ها نیستند» پیدا و رفع شد (RTL direction-sign آینه می‌کرد + مارپیچ ۲→۳ ستون + رسیدن خط تا مرکز دایرهٔ بعد؛ اثبات پیکسلی روی دستگاه). **تحقیق کامل Duolingo** (۱۰ منبع رسمی): `docs/notes/duolingo-gap-analysis-dt79.md` — ۸ گپ اولویت‌دار؛ بزرگ‌ترین = ذخیرهٔ پیشرفت/مرور فاصله‌دار (G1). **طرح شخصیت پروفایل**: `docs/notes/character-system-profile-dt79.md` — فایل Fandogh در res هست ولی whitelist نیست؛ ۴ تصمیم باز مالک صریح ثبت شد.
 - **DT-80** ممیزی جزئیات مرحله‌به‌مرحله: فقط ۱/۲۵ ایستگاه محتوا داشت (ST07 پایلوت)؛ مستند `docs/notes/station-step-detail-audit-dt80.md`. **ST01 کامل تألیف شد** (۴۹ آیتم یکتا، ۶۲ خط صوت، بدون هیچ رقمی — نماد عدد از ST07 می‌آید): `content-library/authoring/stations/specs/ST01.md` + transcribe JSON + CSV صدا؛ pipeline به ۱۵ الگو + رژیم countableRange + رجیستری هش authoring گسترش یافت؛ matrix حالا از ledger واقعی مشتق می‌شود (۲/۲۵ authored). گیت‌ها: content-pipeline + content-library + static 94/94 + harness VALID.
+- **DT-81** بازبینی و رفع باگ: گزارش «۰ خطا» ادعای بدون ابزار بود → `scripts/verify-station-spec.mjs` ساخته شد (قواعد مرحلهٔ ۶ §۵ ماشینی؛ به static گیت اضافه شد). همین ابزار ۴ باگ واقعی پیدا و رفع کرد: دو آیتم تکراری در استخر ST01 (F1.f3/F1.j1)، دارایی جامانده (OBJ.apple2)، و drift واقعی در ST07.json (استخر: 5→26، پرش: 2→3). static اکنون **95/95**.
 
 ## باز و تأییدنشده (صادقانه)
 
