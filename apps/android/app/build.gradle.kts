@@ -50,7 +50,6 @@ dependencies {
     implementation(project(":feature:practice"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:settings"))
-    implementation(project(":feature:parent"))
     implementation(project(":feature:lesson"))
     implementation(project(":core:network"))
     implementation(project(":core:datastore"))

@@ -22,8 +22,9 @@
 | ADR-0042 | Durable learning database (Room/SQLite + DataStore split) — O4 APPROVED | Accepted — O4 APPROVED |
 | ADR-0043 | Content Package Engine: trust chain, PROPOSED schema, security report | Engine ACCEPTED as infrastructure; manifest schema = PROPOSED (DRAFT), pending O2 + O7 |
 | ADR-0044 | Local learning engine: API, state machine, decision seams (P6) | Engine infrastructure ACCEPTED; learning decisions GATED (O1, O3, CONTENT-014 OPEN) |
-| ADR-0047 | Local identity, Parent PIN, and privacy foundation (P10) | Contracts/backup policy accepted for P10; as-built 2026-11-18: foundation only — identity, durable Parent PIN, ParentGate, full erasure NOT wired |
+| ADR-0047 | Local identity, Parent PIN, and privacy foundation (P10) — **Parent PIN superseded by ADR-0050** | Contracts/backup policy accepted for P10; as-built 2026-11-18: foundation only — identity, durable Parent PIN, ParentGate, full erasure NOT wired |
 | ADR-0049 | Design System Library: ClaySurface, LessonKit, PathKit, preview gallery (P13) | ACCEPTED as library infrastructure; superseded in part 2026-11-19 (Home/Path rebuild) |
+| ADR-0050 | حذف کامل بخش والدین و قفل والدین | Accepted (2026-11-19) |
 
 ---
 
@@ -232,3 +233,11 @@
 - `DesignSystemGalleryActivity` بازنشسته (هرگز در manifest نبود) و `Previews.kt` به source set `debug`؛ شاهد اسکرین‌شات از instrumented Compose test در `:app`.
 
 **Rejected / trade-off:** Paparazzi نیست (CI screenshot gate = gap)؛ Home handoff در repo نیست (BLOCKED)؛ بدون asset/رنگ/فونت Duolingo (همه از `tokens.json`)؛ static:all 94/94.
+
+### ADR-0050 — حذف کامل بخش والدین و قفل والدین
+
+- **Status:** Accepted (owner instruction, 2026-11-19) — supersedes ADR-0037 §parent-area and ADR-0047 §Parent PIN
+- تصمیم: هیچ بخش والدین، دروازهٔ والدین (parent gate) یا PIN والدینی در محصول وجود ندارد. اپ فرزند یک سطح واحد است و مسیر `shell/parent` حذف شده است.
+- پیامد فنی: ماژول `apps/android/feature:parent`، کلاس `ShomaraParentBoundary`، `ParentPinManager` (PBKDF2) و تست‌های آن‌ها حذف شدند؛ ورودی «بخش والدین» از صفحهٔ «من» و مسیر آن از shell فرزند برداشته شد؛ assertionهای verifier که فقط همین دروازه را می‌سنجیدند بازنشسته شدند (با یادداشت، نه با تضعیف بقیهٔ بررسی‌ها).
+- هزینهٔ پذیرفته‌شده: دیگر هیچ دروازهٔ بزرگسال در دستگاه وجود ندارد، پس تنظیمات و گزارش پیشرفت بدون تأیید بزرگ‌تر باز می‌شوند. این ریسک آگاهانه پذیرفته شد تا UI کودک ساده بماند.
+- **Rejected / trade-off:** نگه‌داشتن gate به‌صورت fail-closed رد شد؛ همان حالت «قفل بی‌کلید» بود که تجربه را می‌بست بدون آنکه امنیتی اضافه کند.

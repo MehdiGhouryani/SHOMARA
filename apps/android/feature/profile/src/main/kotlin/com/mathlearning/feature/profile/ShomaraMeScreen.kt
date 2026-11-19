@@ -54,8 +54,6 @@ object ShomaraMeStrings {
     const val AvatarPrefix: String = "آواتار من: "
     const val SettingsLabel: String = "آواتار و تنظیمات"
     const val SettingsDescription: String = "ظاهر و تنظیم‌های واقعی"
-    const val ParentLabel: String = "بخش والدین"
-    const val ParentDescription: String = "با تأیید بزرگ‌ترها باز می‌شود"
 
     /** «۳ از ۲۵ ایستگاه کامل شده» — digits are already Persian by the time they arrive. */
     fun progressLine(completedFa: String, totalFa: String): String =
@@ -110,7 +108,6 @@ object ShomaraMeLogic {
 @Composable
 fun ShomaraMeScreen(
     facts: ShomaraMeFacts?,
-    onOpenParent: () -> Unit,
     onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
     offline: Boolean = false,
@@ -185,7 +182,6 @@ fun ShomaraMeScreen(
         // surface existed but was unreachable. Settings is a valid destination in every state.
         // F-20: the description is plain Persian — no Latin word inside a Persian sentence.
         MeRow(label = ShomaraMeStrings.SettingsLabel, description = ShomaraMeStrings.SettingsDescription, onClick = onOpenSettings)
-        MeRow(label = ShomaraMeStrings.ParentLabel, description = ShomaraMeStrings.ParentDescription, onClick = onOpenParent)
     }
 }
 

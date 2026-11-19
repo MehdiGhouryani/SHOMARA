@@ -27,9 +27,6 @@ import com.mathlearning.core.designsystem.ShomaraTabBar
 import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraStateSurface
 import com.mathlearning.core.designsystem.ShomaraBackHandler
-import com.mathlearning.feature.parent.ShomaraParentGate
-import com.mathlearning.feature.parent.ShomaraParentGateScreen
-import com.mathlearning.feature.parent.ShomaraParentHome
 import com.mathlearning.feature.path.ShomaraHomeAction
 import com.mathlearning.feature.path.ShomaraHomeScreen
 import com.mathlearning.feature.path.ShomaraHomeUiState
@@ -222,7 +219,6 @@ fun ShomaraChildShell(
                     }
                     ShomaraMeScreen(
                         facts = facts,
-                        onOpenParent = { navController.navigate("shell/parent") },
                         onOpenSettings = { navController.navigate("shell/settings") },
                     )
                 }
@@ -309,23 +305,8 @@ fun ShomaraChildShell(
                         },
                     )
                 }
-                composable(route = "shell/parent") {
-                    val gate = remember { ShomaraParentGate(verifier = null) } // fail-closed until the owner wires credentials
-                    var authenticated by rememberSaveable { mutableStateOf(false) }
-                    if (authenticated) {
-                        ShomaraParentHome(completedStations = completedStations, totalStations = com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT, onSignOut = onSignOut)
-                    } else {
-                        ShomaraParentGateScreen(
-                            gate = gate,
-                            onAuthenticated = { authenticated = true },
-                            // F-03b: the gate clock is the real clock (the screen's default is
-                            // already real; the shell states it explicitly so the wiring is visible).
-                            nowMs = { System.currentTimeMillis() },
-                            // F-23: an on-screen way back to the child shell.
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-                }
+                // DT-46: the parent area, its gate and its PIN were removed by owner decision. The child
+                // shell has no adult destination, so there is no route to protect and nothing to unlock.
             }
             // F-01: the station-start sheet — the one door into a lesson. The sheet owns its
             // own heading, so the bottom sheet renders with a null title (no doubled heading).

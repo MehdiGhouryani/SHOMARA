@@ -53,10 +53,6 @@ import com.mathlearning.feature.onboarding.ShomaraProfileDraft
 import com.mathlearning.feature.onboarding.ShomaraProfileSaveState
 import com.mathlearning.feature.onboarding.ShomaraProfileScreen
 import com.mathlearning.feature.onboarding.ShomaraProfileStrings
-import com.mathlearning.feature.parent.ShomaraParentGate
-import com.mathlearning.feature.parent.ShomaraParentGateScreen
-import com.mathlearning.feature.parent.ShomaraParentHome
-import com.mathlearning.feature.parent.ShomaraParentStrings
 import com.mathlearning.feature.path.ShomaraHomeScreen
 import com.mathlearning.feature.path.ShomaraHomeStrings
 import com.mathlearning.feature.path.ShomaraHomeUiState
@@ -170,7 +166,6 @@ class ShomaraA11ySweepTest {
                         completedStations = 3,
                         totalStations = 25,
                     ),
-                    onOpenParent = {},
                     onOpenSettings = {},
                 )
             }
@@ -182,7 +177,7 @@ class ShomaraA11ySweepTest {
     fun meLoadingAnnouncesIt() {
         compose.setContent {
             ShomaraTheme {
-                ShomaraMeScreen(facts = null, loading = true, onOpenParent = {}, onOpenSettings = {})
+                ShomaraMeScreen(facts = null, loading = true, onOpenSettings = {})
             }
         }
         assertTextPresent("Me/Loading", ShomaraMeStrings.Loading)
@@ -196,7 +191,6 @@ class ShomaraA11ySweepTest {
                 ShomaraMeScreen(
                     facts = MeFacts,
                     offline = true,
-                    onOpenParent = {},
                     onOpenSettings = {},
                 )
             }
@@ -209,7 +203,7 @@ class ShomaraA11ySweepTest {
     fun meEmptyShowsItsGuide() {
         compose.setContent {
             ShomaraTheme {
-                ShomaraMeScreen(facts = null, onOpenParent = {}, onOpenSettings = {})
+                ShomaraMeScreen(facts = null, onOpenSettings = {})
             }
         }
         assertTextPresent("Me/Empty", ShomaraMeStrings.Empty)
@@ -224,7 +218,6 @@ class ShomaraA11ySweepTest {
                 ShomaraMeScreen(
                     facts = MeFacts,
                     errorText = message,
-                    onOpenParent = {},
                     onOpenSettings = {},
                 )
             }
@@ -299,40 +292,6 @@ class ShomaraA11ySweepTest {
         }
         assertA11yContract("PracticeHub")
     }
-
-    @Test
-    fun parentGateExposesLabelledTouchTargets() {
-        compose.setContent {
-            ShomaraTheme {
-                ShomaraParentGateScreen(
-                    gate = ShomaraParentGate(verifier = { it == "1234" }),
-                    onAuthenticated = {},
-                    onBack = {},
-                )
-            }
-        }
-        assertA11yContract("ParentGate")
-    }
-
-    @Test
-    fun parentGateLockedOutStillOffersExactlyItsTwoControls() {
-        // LockedOut is the state where a guardian has failed repeatedly: the wait notice must be
-        // spoken and the two real controls (passcode field, enter) must stay tappable and named,
-        // otherwise the adult is stuck with no way back either.
-        // maxFailures defaults to 3, so three wrong codes are what actually produce LockedOut.
-        val gate = ShomaraParentGate(verifier = { it == "1234" })
-        gate.verify("0000", 0L)
-        gate.verify("1111", 0L)
-        gate.verify("2222", 0L)
-        compose.setContent {
-            ShomaraTheme {
-                ShomaraParentGateScreen(gate = gate, onAuthenticated = {}, onBack = {})
-            }
-        }
-        assertTextPresent("ParentGate/LockedOut", ShomaraParentStrings.LockedOutNotice)
-        assertA11yContract("ParentGate/LockedOut")
-    }
-
     @Test
     fun homeScreenExposesLabelledTouchTargets() {
         // The priority surface: every station bubble, the settings entry and the CTA must all be
@@ -577,18 +536,6 @@ class ShomaraA11ySweepTest {
             )
         }
     }
-
-    @Test
-    fun parentGateLockedOutFitsAt360dpWithDoubleText() {
-        assertFitsAtNarrowWidth("ParentGateLockedOut") {
-            val gate = ShomaraParentGate(verifier = { it == "1234" })
-            gate.verify("0000", 0L)
-            gate.verify("1111", 0L)
-            gate.verify("2222", 0L)
-            ShomaraParentGateScreen(gate = gate, onAuthenticated = {}, onBack = {})
-        }
-    }
-
     @Test
     fun meFitsAt360dpWithDoubleText() {
         assertFitsAtNarrowWidth("Me") {
@@ -599,7 +546,6 @@ class ShomaraA11ySweepTest {
                     completedStations = 3,
                     totalStations = 25,
                 ),
-                onOpenParent = {},
                 onOpenSettings = {},
             )
         }
@@ -635,14 +581,6 @@ class ShomaraA11ySweepTest {
             )
         }
     }
-
-    @Test
-    fun parentHomeFitsAt360dpWithDoubleText() {
-        assertFitsAtNarrowWidth("ParentHome") {
-            ShomaraParentHome(completedStations = 3, totalStations = 25, onSignOut = {})
-        }
-    }
-
     @Test
     fun profileFitsAt360dpWithDoubleText() {
         val draft = ShomaraProfileDraft(name = "آریا")
@@ -797,17 +735,6 @@ class ShomaraA11ySweepTest {
         assertTextPresent("Home/Empty", ShomaraHomeStrings.EmptyTitle)
         assertA11yContract("Home/Empty")
     }
-
-    @Test
-    fun parentHomeExposesLabelledTouchTargets() {
-        compose.setContent {
-            ShomaraTheme {
-                ShomaraParentHome(completedStations = 3, totalStations = 25, onSignOut = {})
-            }
-        }
-        assertA11yContract("ParentHome")
-    }
-
     @Test
     fun practiceTabWhileProgressIsUnresolvedExplainsItself() {
         // O5: without a local identity/progress source the shell's snapshot never resolves, so this
@@ -876,7 +803,6 @@ private val CLIPPED_BUDGET: Map<String, Int> = mapOf(
     "Me" to 0,
     "PracticeHub" to 0,
     "Settings" to 0,
-    "ParentHome" to 0,
     "OnboardingProfile" to 0,
     "HomeLoading" to 0,
     "HomeError" to 0,
@@ -884,7 +810,6 @@ private val CLIPPED_BUDGET: Map<String, Int> = mapOf(
     "HomeOffline" to 0,
     "StationSheetLocked" to 0,
     "LessonDiscover" to 0,
-    "ParentGateLockedOut" to 0,
 )
 
 private object FakeSettingsStore : ShomaraSettingsStore {
@@ -1100,7 +1025,7 @@ private object FakeSettingsStore : ShomaraSettingsStore {
         }
         assertTrue(problems.joinToString(separator = "\n"), problems.isEmpty())
 
-        // Structure, not just size: TalkBack's heading navigation is how a child (and their parent)
+        // Structure, not just size: TalkBack's heading navigation is how a child (and their adult)
         // finds the title of a page. A screen with no heading is unnavigable by structure.
         val headings = compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.Heading)).fetchSemanticsNodes()
         assertTrue(
