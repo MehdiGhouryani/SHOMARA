@@ -60,6 +60,7 @@ import com.mathlearning.core.model.StationNodeMeta
 /** One continuous winding-path row; connector and label use the same measured geometry. */
 @Composable
 internal fun ShomaraPathNodeItem(
+    claimsPrimaryCta: Boolean = true,
     meta: StationNodeMeta,
     state: ShomaraPathNodeState,
     isRtl: Boolean,
@@ -127,10 +128,12 @@ internal fun ShomaraPathNodeItem(
                         stateDescription = stateLabel
                         if (isCurrent) {
                     selected = true
-                    // The Current station IS Home's primary action — the path is the decision, not a
-                    // button. Declaring it lets the sweep enforce AGENTS §6 on the routed surface
-                    // instead of assuming it because no ShomaraButton happens to be primary.
-                    shomaraPrimaryCta = true
+                    // DT-40: on Home the dedicated Continue card (handoff C05) owns the single
+                    // primary action, so the node only claims it where no such card is rendered.
+                    // The caller decides; this composable never guesses twice in one viewport.
+                    if (claimsPrimaryCta) {
+                        shomaraPrimaryCta = true
+                    }
                 }
                     }
                     .clickable(

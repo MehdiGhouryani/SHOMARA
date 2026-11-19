@@ -23,12 +23,15 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.dp
 import com.mathlearning.app.shell.ShomaraChildShell
 import com.mathlearning.core.datastore.LessonCheckpoint
@@ -845,7 +848,13 @@ class ShomaraA11ySweepTest {
                 )
             }
         }
-        compose.onNodeWithContentDescription(ShomaraStationCatalog.station("ST04").workingTitle).performClick()
+        // DT-40: Home now opens at the top of the path (the chapter and continue cards are the
+        // first items), so the current node is below the fold. Scrolling to it first is what a child
+        // does too; clicking an off-screen node would fail injection rather than test anything.
+        val stationLabel = ShomaraStationCatalog.station("ST04").workingTitle
+        compose.onNodeWithTag("shomara-path-list")
+            .performScrollToNode(hasContentDescription(stationLabel))
+        compose.onNodeWithContentDescription(stationLabel).performClick()
         compose.waitForIdle()
         assertA11yContract("StationSheet")
     }

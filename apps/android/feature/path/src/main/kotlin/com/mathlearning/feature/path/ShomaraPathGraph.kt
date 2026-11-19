@@ -76,6 +76,16 @@ fun ShomaraPathScreen(
     onRetry: (() -> Unit)? = null,
     savedChapter: Int? = null,
     showPathHeading: Boolean = true,
+    /** True when nothing else on the surface owns the single primary action. */
+    currentNodeClaimsPrimaryCta: Boolean = true,
+    /**
+     * Rendered as the first item INSIDE the path list, so a page-level card scrolls with the path
+     * instead of taking fixed height away from it (DT-40: a sibling Column made the path zero-high
+     * at 360dp with 2x text, which the calibrated oracle caught as "slot 777x0").
+     */
+    header: (@Composable () -> Unit)? = null,
+    /** False when the caller already shows real chapter/progress cards above the list. */
+    showOrientationStrip: Boolean = true,
     canvasColor: Color = ShomaraTokens.ColorCanvas,
     /** Hosts that already apply window insets (a Scaffold tab) pass false to avoid double padding. */
     applySystemInsets: Boolean = false,
@@ -136,7 +146,15 @@ fun ShomaraPathScreen(
     }
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val listState = rememberLazyListState(
-        initialFirstVisibleItemIndex = ShomaraPathGraphLogic.initialFirstVisibleIndex(savedChapter, progress),
+        // DT-40: with a page-level header (the chapter + continue cards) the list must open at the
+        // top, otherwise the card the child needs is scrolled out of view on the very first frame
+        // and LazyColumn never even composes it. Without a header the old behaviour stands: open on
+        // the real current station.
+        initialFirstVisibleItemIndex = if (header != null) {
+            0
+        } else {
+            ShomaraPathGraphLogic.initialFirstVisibleIndex(savedChapter, progress)
+        },
     )
     val scope = rememberCoroutineScope()
     val anchorIndex = nextStep?.let { ShomaraPathGraphLogic.itemIndexForStation(it) }
@@ -189,18 +207,20 @@ fun ShomaraPathScreen(
                     )
                 }
             }
-            ShomaraHomeOrientationStrip(
-                chapterLabel = nextStep?.chapterLabel,
-                nextStepText = nextStepText,
-                remainingText = remainingText,
-                progressFraction = progressFraction,
-                modifier = Modifier.padding(
-                    start = horizontalInset,
-                    end = horizontalInset,
-                    top = ShomaraTokens.Space8,
-                    bottom = ShomaraTokens.Space12,
-                ),
-            )
+            if (showOrientationStrip) {
+                ShomaraHomeOrientationStrip(
+                    chapterLabel = nextStep?.chapterLabel,
+                    nextStepText = nextStepText,
+                    remainingText = remainingText,
+                    progressFraction = progressFraction,
+                    modifier = Modifier.padding(
+                        start = horizontalInset,
+                        end = horizontalInset,
+                        top = ShomaraTokens.Space8,
+                        bottom = ShomaraTokens.Space12,
+                    ),
+                )
+            }
             Box(modifier = Modifier.weight(1f)) {
                 LazyColumn(
                     state = listState,
@@ -210,6 +230,13 @@ fun ShomaraPathScreen(
                         .testTag("shomara-path-list"),
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {
+                    if (header != null) {
+                        item(key = "path-header") {
+                            Box(modifier = Modifier.padding(bottom = ShomaraTokens.Space16)) {
+                                header()
+                            }
+                        }
+                    }
                     for (chapter in ShomaraChapterCatalog.All) {
                         stickyHeader(key = "chapter-$chapter") {
                             Box(modifier = Modifier.padding(bottom = ShomaraTokens.Space16)) {
@@ -220,6 +247,7 @@ fun ShomaraPathScreen(
                             item(key = meta.id, contentType = "station-node") {
                                 val nodeState = ShomaraPathGraphLogic.stateFor(meta, progress)
                                 ShomaraPathNodeItem(
+                claimsPrimaryCta = currentNodeClaimsPrimaryCta,
                                     meta = meta,
                                     state = nodeState,
                                     isRtl = isRtl,

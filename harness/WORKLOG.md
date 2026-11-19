@@ -1244,6 +1244,33 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **شواهد:** lint همهٔ ماژول‌ها exit 0؛ `ShomaraA11ySweepTest` **۴۸/۴۸** و `ShomaraFontScaleTest` **۱۶/۱۶** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`، ۸۱ suite / ۵۹۱ تست / ۰ خطا)؛ APK `7215284…` (کد تولید عوض شد).
 - **بازمانده:** O5؛ تصمیم‌های مالک (جهت صفحه، shrink منابع)؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
 
+## 2026-11-19 — DT-40 — کارت‌های handoff در Home + پاک‌سازی واقعی مخزن
+
+### UI (مطابق بستهٔ `SHOMARA_HOME_UI_HANDOFF_v3`)
+- **C04 `ShomaraChapterProgressCard`** و **C05 `ShomaraContinueStationCard`** (فایل جدید `ShomaraHomeCards.kt`) اضافه شدند: فصل واقعی با پیشرفت، و کارت «ادامه» با **یک** CTA اصلی و عمق Featured (fill `ColorAmberSoft`).
+- **کارت قهرمان شخصیت‌محور:** `ShomaraHomeHeader` از ردیف متن به کارت با سطح `ColorHomeVioletSoft`، گوشهٔ `RadiusLg` و شخصیت `ComponentNodeCurrent + Space16` تبدیل شد. عمق Featured به کارت داده نشد چون `depthFor(Current) = Featured` و رتبهٔ ایستگاه فعلی حفظ شد.
+- **۲۵ وکتور تأییدشدهٔ بسته** به `core/designsystem/src/main/res/drawable` اضافه شد (۷ → ۳۲ = دقیقاً بسته).
+- **مالکیت CTA منتقل شد:** `currentNodeClaimsPrimaryCta` تا کارت «ادامه» تنها کنش اصلی Home باشد؛ با snapshot حل‌نشده گره صاحب CTA می‌ماند (هیچ‌وقت صفر CTA).
+- **دو باگ واقعی که ابزار گرفت:** کارت‌ها فضای لیست را می‌خوردند (`slot 777x0` → اوراکل تناسب متن)، و لیست با `initialFirstVisibleItemIndex` روی ایستگاه فعلی باز می‌شد و کارت‌ها compose نمی‌شدند. رفع: کارت‌ها به‌عنوان آیتم اول `LazyColumn` + باز شدن از بالا وقتی header هست.
+
+### پاک‌سازی (با شاهد، قابل بازیابی از git)
+- **۸۰ سند بدون ارجاع** حذف شد (`MD_FILES: 201 → 141`)؛ ۲۰ سند که `verify:design-pack` لازم داشت با `git checkout HEAD` برگردانده شد (`design/playbook/pages/*` و `MASTER_EXECUTION.md`, `UX_REVIEW_RUBRIC.md`, `ZCODE_MASTER_PROMPT.md`).
+- **۳۷ فایل تکراری/بی‌مصرف** حذف شد (۲۲ گروه بایت‌یکسان) و **۱۲ artifact دستگاه** از گیت خارج و به `build-reports/evidence/` منتقل شد (gitignored). `TRACKED: 1742 → 1694`.
+- **سه درخت قدیمی حفظ شدند** چون verifierهای `verify-phase*.mjs` و `file-ledger.json` وجودشان را assert می‌کنند: `project-design-v2/`, `docs/archive/`, `prototypes/`.
+- **باگ ابزار خودم:** اسکنر «drawable بی‌مصرف» فایل‌های `.xml` را نمی‌خواند و `ic_launcher_foreground.xml` را حذف کرد → `android:gate` با `failed linking references` شکست. فایل برگردانده شد، اسکنر اصلاح شد (`.xml` اضافه)، و gate دوباره سبز شد.
+
+### نقص شاهد (مهم)
+`artifacts/p13-device/gallery-ltr.png` و `gallery-rtl.png` **بایت‌به‌بایت یکسان** بودند (`E18ED0F5…97DC09`). یعنی شاهد بصری RTL هرگز وجود نداشته. فایل جعلی حذف شد؛ هر ادعای «RTL بررسی شد» بر آن بی‌اعتبار است.
+
+### شواهد
+- `ShomaraA11ySweepTest` **۴۸/۴۸** روی `Pixel_6a` (شامل ۹ سطح در ۳۶۰dp/۲×).
+- `android:gate` exit 0 (`ANDROID_BUILD: PASS`).
+- `harness validate` + `verify:static:all` + `verify:repository` + `verify:design-governance` + `verify:design-pack` = همه **exit 0** پس از حذف‌ها.
+- APK `2478d9f5c3bd43c25bede23556590217a222d8dc7d5cd73bd25ea9a4fa3ec923`.
+
+### محدودیت صادقانه
+این عامل نمی‌تواند تصویر بخواند؛ «جذابیت» با چشم مالک داوری می‌شود و اسکرین‌شات واقعی در `build-reports/ui/home-default.png` است.
+
 ## 2026-11-19 — DT-39 — کارت قهرمان شخصیت‌محور در Home (کار UX، نه فقط تست)
 
 - **درخواست مالک:** «نقطهٔ ضعف ما UI است؛ اصلا جذاب نیست» + انتخاب «شخصیت‌محور با کارت برجسته». الهام از Duolingo فقط در اصول تعامل مجاز است (AGENTS §6)، پس هیچ ظاهر/دارایی/متن برند کپی نشد.

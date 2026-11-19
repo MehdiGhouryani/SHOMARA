@@ -38,6 +38,13 @@ object ShomaraHomeStrings {
     const val PathComplete = "مسیر کامل شد"
     const val Offline = "اینترنت وصل نیست؛ مسیر آفلاین دیده می‌شود."
     const val ReturnCurrent = "بازگشت به ایستگاه فعلی"
+    // DT-40: the two handoff cards (C04 chapter progress, C05 continue station) need their own
+    // canonical labels. The owner relaxed the inline-copy rule, but shared strings still live here
+    // so a screen never hides a literal inside a card.
+    const val Continue = "ادامه"
+    const val ContinueEyebrow = "گام بعدی"
+
+    fun continueSupport(chapterLabel: String) = "از $chapterLabel"
     const val ReturnStart = "بازگشت به نقطهٔ شروع"
 
     fun remaining(countFa: String) = "ایستگاه‌های باقی‌مانده: $countFa"

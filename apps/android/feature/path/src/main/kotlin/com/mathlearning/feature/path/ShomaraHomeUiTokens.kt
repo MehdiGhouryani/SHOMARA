@@ -14,4 +14,6 @@ internal object ShomaraHomeUiTokens {
     val VioletSoft = ShomaraTokens.ColorHomeVioletSoft
     val Green = ShomaraTokens.ColorHomeGreen
     val GreenSoft = ShomaraTokens.ColorHomeGreenSoft
+    val Amber = ShomaraTokens.ColorHomeAmber
+    val AmberInk = ShomaraTokens.ColorHomeAmberInk
 }
