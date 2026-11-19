@@ -130,6 +130,13 @@ fun ShomaraTextField(
     secure: Boolean = false,
     keyboardType: KeyboardType = if (numericLtr) KeyboardType.Number else KeyboardType.Text,
     hint: String = "",
+    /**
+     * Decorative leading glyph (e.g. the profile step's user icon) drawn at the layout-start of the
+     * input surface. The slot exists so screens stop hand-rolling their own copy of this field: the
+     * profile name field duplicated the whole surface, label, hint and error row just to place one
+     * icon, and its copy had drifted (a 40dp touch target inside a 56dp surface).
+     */
+    leading: (@Composable () -> Unit)? = null,
     // R-01 (F-33): under reduced motion the loading spinner renders as a static dot — same
     // rule as the button's and the audio control's loading states. Defaults to the
     // composition-wide flag so a caller cannot forget to pass it.
@@ -188,9 +195,15 @@ fun ShomaraTextField(
                     }
                 }
                 Text(
+                    // The quiet branch keeps the same leading glyph so the surface does not lose
+                    // its icon when the caller disables the field mid-entry.
                     text = if (value.isEmpty()) hint else ShomaraFieldLogic.readOnlyTextFor(value, secure),
                     style = ShomaraFieldLogic.textStyleFor(numericLtr, state),
+                    modifier = if (leading != null) Modifier.padding(start = ShomaraTokens.Space40) else Modifier,
                 )
+                if (leading != null) {
+                    Box(modifier = Modifier.align(Alignment.CenterStart)) { leading() }
+                }
             }
         } else {
             // The field owns its editing state (state-owning TextFieldState API); every text
@@ -219,6 +232,9 @@ fun ShomaraTextField(
                 modifier = fieldModifier,
                 contentAlignment = Alignment.CenterStart,
             ) {
+                if (leading != null) {
+                    Box(modifier = Modifier.align(Alignment.CenterStart)) { leading() }
+                }
                 BasicTextField(
                     state = editableState,
                     modifier = Modifier
@@ -226,6 +242,10 @@ fun ShomaraTextField(
                         // the full field surface and not just the text line inside the padding.
                         .heightIn(min = ShomaraTokens.ComponentButtonH)
                         .fillMaxWidth()
+                        // Keep the text clear of the decorative glyph at the layout-start.
+                        .then(
+                            if (leading != null) Modifier.padding(start = ShomaraTokens.Space40) else Modifier,
+                        )
                         .semantics(mergeDescendants = true) {
                             // The field's accessible name. Without it TalkBack announces a bare edit box.
                             contentDescription = label

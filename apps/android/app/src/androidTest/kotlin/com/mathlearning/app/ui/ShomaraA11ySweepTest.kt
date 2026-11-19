@@ -7,8 +7,16 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import com.mathlearning.core.designsystem.ShomaraTheme
 import com.mathlearning.core.model.ShomaraAvatarCatalog
+import com.mathlearning.feature.onboarding.ShomaraPlacementScreen
+import com.mathlearning.feature.onboarding.ShomaraPlacementState
+import com.mathlearning.feature.onboarding.ShomaraProfileDraft
+import com.mathlearning.feature.onboarding.ShomaraProfileSaveState
+import com.mathlearning.feature.onboarding.ShomaraProfileScreen
 import com.mathlearning.feature.parent.ShomaraParentGate
 import com.mathlearning.feature.parent.ShomaraParentGateScreen
+import com.mathlearning.feature.path.ShomaraHomeScreen
+import com.mathlearning.feature.path.ShomaraHomeUiState
+import com.mathlearning.feature.path.ShomaraPathProgress
 import com.mathlearning.feature.practice.ShomaraPracticeHubScreen
 import com.mathlearning.feature.practice.ShomaraPracticeItem
 import com.mathlearning.feature.profile.ShomaraMeFacts
@@ -95,6 +103,58 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("ParentGate")
+    }
+
+    @Test
+    fun homeScreenExposesLabelledTouchTargets() {
+        // The priority surface: every station bubble, the settings entry and the CTA must all be
+        // nameable and at least 48dp — measured across the whole tree instead of the two nodes the
+        // Home test happens to assert.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraHomeScreen(
+                    state = ShomaraHomeUiState(
+                        progress = ShomaraPathProgress(
+                            completedStationIds = setOf("ST01", "ST02", "ST03"),
+                            perfectStationIds = setOf("ST02"),
+                            currentStationId = "ST04",
+                            isResolved = true,
+                        ),
+                    ),
+                    onAction = {},
+                )
+            }
+        }
+        assertA11yContract("Home")
+    }
+
+    @Test
+    fun onboardingProfileExposesLabelledTouchTargets() {
+        val draft = ShomaraProfileDraft()
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraProfileScreen(
+                    draft = draft,
+                    onDraftChange = {},
+                    saveState = ShomaraProfileSaveState(draft = draft),
+                    onSave = {},
+                )
+            }
+        }
+        assertA11yContract("OnboardingProfile")
+    }
+
+    @Test
+    fun onboardingPlacementExposesLabelledTouchTargets() {
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraPlacementScreen(
+                    state = ShomaraPlacementState(),
+                    onSkip = {},
+                )
+            }
+        }
+        assertA11yContract("OnboardingPlacement")
     }
 
     /**

@@ -20,24 +20,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
@@ -53,7 +46,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraButton
@@ -65,11 +57,10 @@ import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
 import com.mathlearning.core.designsystem.ShomaraFeedbackKind
-import com.mathlearning.core.designsystem.ShomaraFieldLogic
-import com.mathlearning.core.designsystem.ShomaraFieldState
 import com.mathlearning.core.designsystem.ShomaraProfileDrawables
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.rememberShomaraTapGuard
+import com.mathlearning.core.designsystem.ShomaraTextField
 import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.model.ShomaraGradeCatalog
 import com.mathlearning.core.model.ShomaraGradeOption
@@ -589,18 +580,14 @@ private fun ShomaraProfileBottomBackground(modifier: Modifier = Modifier) {
 }
 
 /**
- * The name field: the same field logic, border, label, hint, error text and
- * editing-state sync as [ShomaraTextField] — but with the owner SVG's user
- * icon drawn at the field's layout-start (visual right in RTL). The shared
- * component has no icon slot, and overlaying the icon on it would let the
- * text run underneath it; this page-local field reserves the icon's width
- * in the text inset instead. If the design system gains an icon slot, this
- * field should be deleted and the shared component used.
+ * The name field. The design system now owns an icon slot (`ShomaraTextField(leading = …)`), so the
+ * page-local copy of this field is deleted: it carried its own label, surface, padding, editing-state
+ * sync and error row just to place one glyph, and that copy had drifted — its interactive area
+ * measured 40dp inside a 56dp surface (caught by the cross-screen a11y sweep).
  *
- * Deviation from the sample, recorded: the sample shows no visible label;
- * the guide (and the repo's field contract) requires a real label, so the
- * label «نام کودک» renders above the field as a Caption, as on every other
- * page.
+ * Deviation from the sample, recorded: the sample shows no visible label; the guide (and the repo's
+ * field contract) requires a real label, so «نام کودک» renders above the field as a Caption, as on
+ * every other page.
  */
 @Composable
 private fun ShomaraProfileNameField(
@@ -609,98 +596,26 @@ private fun ShomaraProfileNameField(
     errorText: String?,
     modifier: Modifier = Modifier,
 ) {
-    var focused by remember { mutableStateOf(false) }
-    val state = ShomaraFieldLogic.stateFor(value, focused, errorText != null, true, false)
-    val borderColor = ShomaraFieldLogic.borderFor(state)
-    Column(modifier = modifier.fillMaxWidth()) {
-        // Persistent label: rendered in every state so the layout never jumps.
-        Text(
-            text = ShomaraProfileStrings.NameLabel,
-            style = ShomaraTypography.Caption,
-            color = ShomaraFieldLogic.labelFor(state),
-        )
-        val fieldModifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH)
-            // ADR-0040 R1: the field is the tactile input surface, so it
-            // renders Soft clay depth when interactive.
-            .shadow(ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation, RoundedCornerShape(ShomaraTokens.RadiusSm))
-            .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusSm))
-            .border(
-                width = ShomaraFieldLogic.borderWidthFor(state),
-                color = borderColor,
-                shape = RoundedCornerShape(ShomaraTokens.RadiusSm),
+    // Typed explicitly: a nullable composable lambda argument cannot be inferred composable from a
+    // bare trailing lambda, so the reference is declared first.
+    val userIcon: (@Composable () -> Unit)? = {
+        // The owner SVG's user icon at the field's layout-start (visual right in RTL).
+        Canvas(modifier = Modifier.size(ShomaraTokens.Space24).clearAndSetSemantics {}) {
+            drawPath(
+                path = ShomaraProfileShapes.iconUserPath(size.width, size.height),
+                color = ShomaraTokens.ColorMuted,
             )
-            .padding(horizontal = ShomaraTokens.Space12, vertical = ShomaraTokens.Space8)
-        // The field owns its editing state (state-owning TextFieldState API);
-        // every text change is reported through onValueChange.
-        val editableState = rememberTextFieldState(initialText = value)
-        // F-34: an external reset (e.g. the caller clearing the value) is
-        // synced back into the owned editing state — without this the field
-        // keeps showing the old text after the caller has cleared it.
-        LaunchedEffect(value) {
-            // foundation 1.12.0 has no setTextAndPlaceCursorAtEnd; the
-            // equivalent is an edit block that replaces the whole buffer and
-            // moves the cursor to the end.
-            if (editableState.text.toString() != value) editableState.edit {
-                replace(0, length, value)
-                placeCursorBeforeCharAt(value.length)
-            }
-        }
-        LaunchedEffect(editableState.text) {
-            val text = editableState.text.toString()
-            if (text != value) onValueChange(text)
-        }
-        Box(
-            modifier = fieldModifier.semantics(mergeDescendants = true) {
-                if (state == ShomaraFieldState.Invalid && errorText != null) error(errorText)
-            },
-        ) {
-            BasicTextField(
-                state = editableState,
-                // The text is inset from the layout-start by Space40 so it
-                // never runs under the 24dp user icon (12dp inset + 24dp).
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = ShomaraTokens.Space40)
-                    .onFocusChanged { focused = it.isFocused },
-                textStyle = ShomaraFieldLogic.textStyleFor(false, state),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                cursorBrush = SolidColor(ShomaraTokens.ColorPrimary),
-                decorator = { inner ->
-                    Box(contentAlignment = Alignment.CenterStart) {
-                        if (editableState.text.isEmpty()) {
-                            Text(text = ShomaraProfileStrings.NameHint, style = ShomaraFieldLogic.textStyleFor(false, state), color = ShomaraTokens.ColorMuted)
-                        }
-                        inner()
-                    }
-                },
-            )
-            // User icon at the field's layout-start (visual right in RTL),
-            // decorative — the label and hint already name the field.
-            Canvas(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .size(ShomaraTokens.Space24)
-                    .clearAndSetSemantics {},
-            ) {
-                drawPath(
-                    path = ShomaraProfileShapes.iconUserPath(size.width, size.height),
-                    color = ShomaraTokens.ColorMuted,
-                )
-            }
-        }
-        // Actionable text error — the non-color status carrier for the Invalid state.
-        if (state == ShomaraFieldState.Invalid && errorText != null) {
-            Row(modifier = Modifier.padding(top = ShomaraTokens.Space4)) {
-                Text(
-                    text = errorText,
-                    style = ShomaraTypography.Caption,
-                    color = ShomaraTokens.ColorDanger,
-                )
-            }
         }
     }
+    ShomaraTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = ShomaraProfileStrings.NameLabel,
+        hint = ShomaraProfileStrings.NameHint,
+        errorText = errorText,
+        modifier = modifier,
+        leading = userIcon,
+    )
 }
 
 /** The grade grid: 2 columns x 3 rows, RTL order (G1/G2, G3/G4, G5/G6). */
