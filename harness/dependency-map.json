@@ -209,7 +209,6 @@
       "scripts/verify-ui-v2-tabs.mjs"
     ],
     "design-handoff-2026-10": [
-      "START_HERE.md",
       "apps/android/core/designsystem/src/main/kotlin/com/mathlearning/core/designsystem/ShomaraCharacter.kt",
       "apps/mobile/src/path/__fixtures__/design-trail.json",
       "apps/mobile/src/ui/v1/README.md",
@@ -237,7 +236,6 @@
       "AGENTS.md",
       "README.md",
       "ROADMAP_PHASES.md",
-      "START_HERE.md",
       "docs/architecture/ADR_RECONCILIATION_P2_FA.md",
       "docs/architecture/INFRASTRUCTURE_GAP_REGISTER_FA.md",
       "docs/architecture/REPOSITORY_MAP_FA.md",
