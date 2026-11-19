@@ -1,7 +1,7 @@
 package com.mathlearning.feature.path
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -59,6 +60,11 @@ import kotlinx.coroutines.launch
 /**
  * The single winding learning journey. Graph state and geometry live in ShomaraPathState;
  * node/chapter rendering lives in ShomaraPathNodes/ShomaraPathChapter.
+ *
+ * Layout ownership: the orientation strip is PINNED above the scrolling list, so the chapter,
+ * the real next step and the real remaining count stay on screen even when the list opens on a
+ * mid-path Current station. Index math in [ShomaraPathGraphLogic] therefore counts only path
+ * rows (chapter band, node, divider) and never a synthetic header row.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -71,14 +77,17 @@ fun ShomaraPathScreen(
     savedChapter: Int? = null,
     showPathHeading: Boolean = true,
     canvasColor: Color = ShomaraTokens.ColorCanvas,
+    /** Hosts that already apply window insets (a Scaffold tab) pass false to avoid double padding. */
+    applySystemInsets: Boolean = false,
 ) {
-    when (val resolved = ShomaraPathGraphLogic.resolveEntryState(progress, entryState)) {
+    when (ShomaraPathGraphLogic.resolveEntryState(progress, entryState)) {
         ShomaraEntryState.Loading -> {
             ShomaraStateSurface(
                 state = ShomaraEntryState.Loading,
                 title = ShomaraHomeStrings.LoadingTitle,
                 body = ShomaraHomeStrings.LoadingBody,
                 containerColor = canvasColor,
+                applySystemInsets = applySystemInsets,
                 modifier = modifier,
             )
             return
@@ -92,6 +101,7 @@ fun ShomaraPathScreen(
                 onRetry = onRetry,
                 stateIconRes = R.drawable.shomara_state_error,
                 containerColor = canvasColor,
+                applySystemInsets = applySystemInsets,
                 modifier = modifier,
             )
             return
@@ -103,6 +113,7 @@ fun ShomaraPathScreen(
                 body = ShomaraHomeStrings.EmptyBody,
                 stateIconRes = R.drawable.shomara_state_empty,
                 containerColor = canvasColor,
+                applySystemInsets = applySystemInsets,
                 modifier = modifier,
             )
             return
@@ -153,139 +164,152 @@ fun ShomaraPathScreen(
             ShomaraTokens.Space20
         }
         val contentWidth = maxWidth - horizontalInset * 2
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = horizontalInset)
-                .testTag("shomara-path-list"),
-            verticalArrangement = Arrangement.spacedBy(0.dp),
-        ) {
-            item(key = "path-header", contentType = "home-orientation") {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
-                    modifier = Modifier.padding(bottom = ShomaraTokens.Space16),
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (showPathHeading) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(
+                        start = horizontalInset,
+                        end = horizontalInset,
+                        top = ShomaraTokens.Space8,
+                    ),
                 ) {
-                    if (showPathHeading) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            ShomaraCharacterImage(
-                                character = ShomaraCharacter.Main,
-                                poseId = 1,
-                                slot = ShomaraCharacterSlot.Inline,
-                                decorative = true,
-                            )
-                            Text(
-                                text = ShomaraHomeStrings.Title,
-                                style = ShomaraTypography.Title,
-                                color = ShomaraTokens.ColorInk,
-                                modifier = Modifier.semantics { heading() },
-                            )
-                        }
-                    }
-                    ShomaraHomePathOverview(
-                        remainingText = remainingText,
-                        nextStepText = nextStepText,
-                        chapterLabel = nextStep?.chapterLabel,
-                        progressFraction = progressFraction,
+                    ShomaraCharacterImage(
+                        character = ShomaraCharacter.Main,
+                        poseId = 1,
+                        slot = ShomaraCharacterSlot.Inline,
+                        decorative = true,
+                    )
+                    Text(
+                        text = ShomaraHomeStrings.Title,
+                        style = ShomaraTypography.Title,
+                        color = ShomaraTokens.ColorInk,
+                        modifier = Modifier.semantics { heading() },
                     )
                 }
             }
-            for (chapter in ShomaraChapterCatalog.All) {
-                stickyHeader(key = "chapter-$chapter") {
-                    Box(modifier = Modifier.padding(bottom = ShomaraTokens.Space16)) {
-                        ShomaraChapterBand(chapter = chapter, progress = progress)
+            ShomaraHomeOrientationStrip(
+                chapterLabel = nextStep?.chapterLabel,
+                nextStepText = nextStepText,
+                remainingText = remainingText,
+                progressFraction = progressFraction,
+                modifier = Modifier.padding(
+                    start = horizontalInset,
+                    end = horizontalInset,
+                    top = ShomaraTokens.Space8,
+                    bottom = ShomaraTokens.Space12,
+                ),
+            )
+            Box(modifier = Modifier.weight(1f)) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = horizontalInset)
+                        .testTag("shomara-path-list"),
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                ) {
+                    for (chapter in ShomaraChapterCatalog.All) {
+                        stickyHeader(key = "chapter-$chapter") {
+                            Box(modifier = Modifier.padding(bottom = ShomaraTokens.Space16)) {
+                                ShomaraChapterBand(chapter = chapter, progress = progress)
+                            }
+                        }
+                        for (meta in ShomaraStationCatalog.stationsInChapter(chapter)) {
+                            item(key = meta.id, contentType = "station-node") {
+                                val nodeState = ShomaraPathGraphLogic.stateFor(meta, progress)
+                                ShomaraPathNodeItem(
+                                    meta = meta,
+                                    state = nodeState,
+                                    isRtl = isRtl,
+                                    contentWidth = contentWidth,
+                                    canvasColor = canvasColor,
+                                    onStationTap = onStationTap,
+                                    ringFraction = if (nodeState == ShomaraPathNodeState.Current) {
+                                        ShomaraPathGraphLogic.ringFractionFor(meta, progress)
+                                    } else {
+                                        null
+                                    },
+                                    bubbleLabel = ShomaraPathGraphLogic.currentBubbleLabel(progress),
+                                )
+                            }
+                        }
+                        if (chapter < ShomaraChapterCatalog.All.size) {
+                            item(key = "chapter-divider-$chapter", contentType = "chapter-divider") {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = ShomaraTokens.Space16)
+                                        .clearAndSetSemantics {},
+                                    horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    HorizontalDivider(color = ShomaraTokens.ColorLine2, modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = ShomaraPathGraphLogic.chapterSpanLabel(chapter + 1),
+                                        style = ShomaraTypography.Caption,
+                                        color = ShomaraTokens.ColorMuted,
+                                    )
+                                    HorizontalDivider(color = ShomaraTokens.ColorLine2, modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
                     }
-                }
-                for (meta in ShomaraStationCatalog.stationsInChapter(chapter)) {
-                    item(key = meta.id, contentType = "station-node") {
-                        val nodeState = ShomaraPathGraphLogic.stateFor(meta, progress)
-                        ShomaraPathNodeItem(
-                            meta = meta,
-                            state = nodeState,
-                            isRtl = isRtl,
-                            contentWidth = contentWidth,
-                            canvasColor = canvasColor,
-                            onStationTap = onStationTap,
-                            ringFraction = if (nodeState == ShomaraPathNodeState.Current) {
-                                ShomaraPathGraphLogic.ringFractionFor(meta, progress)
-                            } else {
-                                null
-                            },
+                    // End-of-path art marks a real completion only. While stations remain it
+                    // would be decoration without meaning in the middle of the journey.
+                    if (remainingStations == 0) {
+                        item(key = "path-garden-footer", contentType = "decorative-footer") {
+                            Image(
+                                painter = painterResource(R.drawable.shomara_garden_path_footer),
+                                contentDescription = null,
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clearAndSetSemantics {},
+                            )
+                        }
+                    }
+                    item(key = "path-bottom-spacer", contentType = "bottom-inset") {
+                        Spacer(
+                            modifier = Modifier
+                                .height(ShomaraTokens.ComponentButtonH + ShomaraTokens.Space16)
+                                .fillMaxWidth(),
                         )
                     }
                 }
-                if (chapter < ShomaraChapterCatalog.All.size) {
-                    item(key = "chapter-divider-$chapter", contentType = "chapter-divider") {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = ShomaraTokens.Space16)
-                                .clearAndSetSemantics {},
-                            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            HorizontalDivider(color = ShomaraTokens.ColorLine2, modifier = Modifier.weight(1f))
-                            Text(
-                                text = ShomaraPathGraphLogic.chapterSpanLabel(chapter + 1),
-                                style = ShomaraTypography.Caption,
-                                color = ShomaraTokens.ColorMuted,
+                if (showBackToAnchor && anchorIndex != null) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(ShomaraTokens.Space16)
+                            .size(ShomaraTokens.ComponentTouchMin)
+                            .shadow(
+                                ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation,
+                                RoundedCornerShape(ShomaraTokens.RadiusPill),
                             )
-                            HorizontalDivider(color = ShomaraTokens.ColorLine2, modifier = Modifier.weight(1f))
-                        }
+                            .background(
+                                ShomaraTokens.ColorHomeViolet,
+                                RoundedCornerShape(ShomaraTokens.RadiusPill),
+                            )
+                            .semantics(mergeDescendants = true) {
+                                role = Role.Button
+                                contentDescription = anchorLabel
+                            }
+                            .clickable(role = Role.Button) {
+                                scope.launch { listState.scrollToItem(anchorIndex) }
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.shomara_ui_arrow),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(ShomaraTokens.Space24)
+                                .graphicsLayer { rotationZ = -90f },
+                        )
                     }
                 }
-            }
-            item(key = "path-garden-footer", contentType = "decorative-footer") {
-                Image(
-                    painter = painterResource(R.drawable.shomara_garden_path_footer),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillWidth,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clearAndSetSemantics {},
-                )
-            }
-            item(key = "path-bottom-spacer", contentType = "bottom-inset") {
-                Spacer(
-                    modifier = Modifier
-                        .height(ShomaraTokens.ComponentButtonH + ShomaraTokens.Space16)
-                        .fillMaxWidth(),
-                )
-            }
-        }
-        if (showBackToAnchor && anchorIndex != null) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(ShomaraTokens.Space16)
-                    .size(ShomaraTokens.ComponentTouchMin)
-                    .shadow(
-                        ShomaraClay.specFor(ShomaraClayDepth.Soft).elevation,
-                        RoundedCornerShape(ShomaraTokens.RadiusPill),
-                    )
-                    .background(
-                        ShomaraTokens.ColorHomeViolet,
-                        RoundedCornerShape(ShomaraTokens.RadiusPill),
-                    )
-                    .semantics(mergeDescendants = true) {
-                        role = Role.Button
-                        contentDescription = anchorLabel
-                    }
-                    .clickable(role = Role.Button) {
-                        scope.launch { listState.scrollToItem(anchorIndex) }
-                    },
-                contentAlignment = Alignment.Center,
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.shomara_ui_arrow),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(ShomaraTokens.Space24)
-                        .graphicsLayer { rotationZ = -90f },
-                )
             }
         }
     }

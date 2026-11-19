@@ -48,23 +48,9 @@ class ClayContractTest {
         assertEquals(0.0f, flat.elevation.value, 0.0f)
     }
 
-    @Test
-    fun `path node visuals use redundant encoding - fill, mark and label all differ per state`() {
-        val states = ShomaraPathNodeVisualState.values()
-        val marks = states.map { ShomaraPathNodeVisuals.markFor(it) }
-        val labels = states.map { ShomaraPathNodeVisuals.labelFor(it) }
-        assertEquals(marks.size, marks.toSet().size)
-        assertEquals(labels.size, labels.toSet().size)
-        val fills = states.map { ShomaraPathNodeVisuals.colorsFor(it).fill }
-        // FRESH/COMPLETED/PERFECT/LOCKED vary in fill; CURRENT has its own featured fill.
-        assertTrue(fills.toSet().size >= 3)
-    }
-
-    @Test
-    fun `current node is the only FEATURED depth - locked is FLAT`() {
-        assertEquals(ShomaraClayDepth.Featured, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.CURRENT))
-        assertEquals(ShomaraClayDepth.Flat, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.LOCKED))
-        assertEquals(ShomaraClayDepth.Soft, ShomaraPathNodeVisuals.depthFor(ShomaraPathNodeVisualState.FRESH))
-    }
+    // The PathKit path-node contract (redundant encoding, CURRENT-only FEATURED, LOCKED FLAT)
+    // used to be asserted here against a parallel PathNode renderer that shipped emoji marks and
+    // an amber Current node. PathKit is retired; the same contract now lives on the real renderer
+    // and is asserted in feature:path (ShomaraPathGraphTest: depth, labels, white-on-accent).
 
 }

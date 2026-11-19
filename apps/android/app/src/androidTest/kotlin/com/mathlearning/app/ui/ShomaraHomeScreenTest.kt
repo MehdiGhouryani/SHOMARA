@@ -116,6 +116,44 @@ class ShomaraHomeScreenTest {
     }
 
     @Test
+    fun orientationStripStaysPinnedAboveTheListOnAMidPathStation() {
+        // A returning child lands on ST07 (chapter 2, third station of the chapter). Orientation
+        // used to be the first list row, so opening on a mid-path station scrolled the chapter,
+        // the next step and the remaining count out of view entirely. The strip is now pinned
+        // outside the list, so it must survive an arbitrary scroll.
+        val midPath = ShomaraPathProgress(
+            completedStationIds = setOf("ST01", "ST02", "ST03", "ST04", "ST05", "ST06"),
+            perfectStationIds = setOf("ST02"),
+            currentStationId = "ST07",
+            isResolved = true,
+        )
+        val state = mutableStateOf(ShomaraHomeUiState(progress = midPath))
+        setHome(state = state, width = mutableStateOf(390), scale = mutableStateOf(1f))
+
+        val station = ShomaraStationCatalog.station("ST07")
+        val nextStep = ShomaraHomeStrings.nextStep(station.workingTitle)
+        val remaining = ShomaraHomeStrings.remaining(ShomaraDigits.toFa(19))
+
+        // The Current station is immediately actionable…
+        compose.onNodeWithContentDescription(station.workingTitle).assertIsDisplayed()
+        // (The anchor-bubble copy «ادامه» is decorative with cleared semantics — it is asserted
+        //  in ShomaraPathGraphTest against real progress, not through the semantics tree here.)
+        // …and the orientation is already on screen next to it.
+        compose.onNodeWithText(nextStep).assertIsDisplayed()
+        compose.onNodeWithText(remaining).assertIsDisplayed()
+
+        // Scrolling to the end of the path must not move the pinned strip.
+        val lastStation = SemanticsMatcher("station ST25") { node ->
+            node.config.getOrNull(SemanticsProperties.ContentDescription)
+                ?.contains(ShomaraStationCatalog.station("ST25").workingTitle) == true
+        }
+        compose.onNodeWithTag("shomara-path-list").performScrollToNode(lastStation)
+        compose.onNodeWithText(nextStep).assertIsDisplayed()
+        compose.onNodeWithText(remaining).assertIsDisplayed()
+        capture("home-midpath-strip-390dp")
+    }
+
+    @Test
     fun completedPerfectAndLockedStationsKeepTheirDomainSemantics() {
         val state = mutableStateOf(ShomaraHomeUiState(progress = currentProgress))
         setHome(state = state, width = mutableStateOf(412), scale = mutableStateOf(1f))

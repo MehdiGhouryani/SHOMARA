@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.Dp
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.designsystem.ShomaraTokens
@@ -125,6 +126,21 @@ object ShomaraPathGraphLogic {
 
     fun tapEnabled(state: ShomaraPathNodeState): Boolean = true
 
+    /**
+     * Depth encodes availability and can never contradict the state label: the Current station
+     * is the only raised surface, a locked station is flat (there is nothing to press into) and
+     * every other station is a soft surface. Migrated from the retired PathKit contract, so the
+     * rule is now asserted against the real renderer instead of a parallel one.
+     */
+    fun depthFor(state: ShomaraPathNodeState): ShomaraClayDepth = when (state) {
+        ShomaraPathNodeState.Current -> ShomaraClayDepth.Featured
+        ShomaraPathNodeState.Locked -> ShomaraClayDepth.Flat
+        ShomaraPathNodeState.Fresh,
+        ShomaraPathNodeState.Completed,
+        ShomaraPathNodeState.Perfect
+        -> ShomaraClayDepth.Soft
+    }
+
     fun restoredChapter(saved: Int?): Int =
         if (saved != null && saved in ShomaraChapterCatalog.All) saved else ShomaraChapterCatalog.All.first()
 
@@ -146,6 +162,13 @@ object ShomaraPathGraphLogic {
 
     fun remainingCount(progress: ShomaraPathProgress): Int =
         (ShomaraStationCatalog.STATION_COUNT - knownCompletedCount(progress)).coerceAtLeast(0)
+
+    /**
+     * Copy for the anchor bubble above the Current station. It is derived from real progress, so
+     * a child resuming at ST07 never reads «شروع» over a station twelve steps into the path.
+     */
+    fun currentBubbleLabel(progress: ShomaraPathProgress): String =
+        if (knownCompletedCount(progress) == 0) "شروع" else "ادامه"
 
     fun progressFraction(progress: ShomaraPathProgress): Float {
         val total = ShomaraStationCatalog.STATION_COUNT
@@ -173,17 +196,20 @@ object ShomaraPathGraphLogic {
         else -> ShomaraTokens.ColorSurfaceAlt to ShomaraTokens.ColorInk2
     }
 
-    fun headerItemIndexForChapter(chapter: Int): Int =
-        1 + (chapter - 1) * (ShomaraStationCatalog.STATIONS_PER_CHAPTER + 2)
+    // The list holds path rows only: per chapter one sticky band, its stations, and a divider
+    // between chapters. The orientation strip is pinned outside the list, so chapter 1's band is
+    // index 0 and no synthetic header offset is counted anywhere.
+    fun chapterBandIndexForChapter(chapter: Int): Int =
+        (chapter - 1) * (ShomaraStationCatalog.STATIONS_PER_CHAPTER + 2)
 
     fun itemIndexForStation(meta: StationNodeMeta): Int {
         val positionInChapter = (meta.ordinal - 1) % ShomaraStationCatalog.STATIONS_PER_CHAPTER
-        return headerItemIndexForChapter(meta.chapter) + 1 + positionInChapter
+        return chapterBandIndexForChapter(meta.chapter) + 1 + positionInChapter
     }
 
     fun restoredFirstVisibleIndex(savedChapter: Int?): Int {
         val chapter = restoredChapter(savedChapter)
-        return if (chapter <= 1) 0 else headerItemIndexForChapter(chapter)
+        return if (chapter <= 1) 0 else chapterBandIndexForChapter(chapter)
     }
 
     /**

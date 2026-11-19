@@ -156,3 +156,15 @@
 - **UNVERIFIED:** Gradle compile، lint، Robolectric، Android instrumentation، screenshot/visual regression، TalkBack و physical device.
 - محیط حاضر به working tree/Android SDK پروژه دسترسی اجرایی ندارد؛ در این checkpoint هیچ exit code برای npm/Gradle ثبت نشده است.
 - مرحلهٔ بعد باید CI را روی همین branch اجرا کند؛ هر failure باید بر اساس log اصلاح شود، نه با حذف assertion یا تضعیف gate.
+
+## 6. DT-13 — بازسازی Home/Path و بازنشستگی مبتنی بر شاهد (۲۰۲۶-۱۱-۱۹)
+
+- **اصل حاکم:** هر تغییر فقط با شاهد اجرایی؛ هیچ state، فصل، پیشرفت یا Fresh/Locked ساختگی اضافه نشد و O5 دست‌نخورده ماند.
+- **مالکیت چیدمان:** خلاصه/جهت‌یابی مسیر از ردیف اول `LazyColumn` بیرون آمد و بالای لیست pin شد. دلیل: با `initialFirstVisibleIndex` روی ایستگاه Current، سه قلم اطلاعاتی (فصل، گام بعدی، شمارش باقی‌مانده) عملاً همیشه از دید خارج می‌شدند. نتیجه: مدل ایندکس لیست فقط ردیف‌های مسیر را می‌شمارد (`chapterBandIndexForChapter`؛ band فصل ۱ = 0، stride = 7) و `headerItemIndexForChapter` حذف شد.
+- **درستی معنایی:** `contentDescription` نوار پیشرفت حذف شد تا یک جمله دو بار اعلام نشود؛ `depthFor(state)` در رندر واقعی مصرف می‌شود (Current = Featured تنها، Locked = Flat، بقیه = Soft)؛ متن حباب ایستگاه Current از پیشرفت واقعی مشتق می‌شود؛ آرت پایان مسیر فقط با تکمیل واقعی رندر می‌شود.
+- **مالکیت inset:** `ShomaraStateSurface` پارامتر `applySystemInsets` گرفت. میزبان‌هایی که داخل `Scaffold` هستند `false` می‌دهند تا padding وضعیت/ناوبری دو‌باره اعمال نشود.
+- **بازنشستگی با اثبات مصرف‌کننده (همه با Git history قابل بازیابی):** ۲۵ drawable بدون ارجاع (۱۳٬۸۴۸ بایت)؛ `PathKit.kt` (رندرکنندهٔ موازی و متناقض مسیر)؛ `DesignSystemGalleryActivity.kt` (خارج از هر manifest و بدون مصرف‌کننده — دستور launch مستندش هم قابل اجرا نبود)؛ `LessonAttemptRecorder.kt` (بدون مصرف‌کننده). `Previews.kt` به source set ‏debug منتقل شد؛ `ShomaraJumpTest.kt` → `ShomaraJumpAssessment.kt` تغییر نام یافت.
+- **قرارداد منتقل‌شده، نه حذف‌شده:** قواعد PathKit (redundant encoding، CURRENT-only FEATURED، LOCKED FLAT) در `ShomaraPathGraphTest` روی رندر واقعی تست می‌شوند (depth، کنتراست برچسب ≥4.5:1، کنتراست نشانهٔ گره ≥3:1).
+- **نگه‌داشته‌شدهٔ آگاهانه:** `shomara_char_fandogh_01.webp` حذف نشد؛ آرت رسمی رزرو‌شدهٔ شخصیت راهنماست و افزودن Fandogh به `ShomaraCharacter` یک تصمیم محتوایی/مالک است.
+- **شواهد این checkpoint:** `android:gate` exit 0 (۸۱ suite / ۵۸۸ تست / ۰ خطا)؛ `PathGraphTest` 40/40؛ `ClayContractTest` 3/3؛ `HomeScreenTest` 5/5 و `StationSheetTest` 7/7 روی `Pixel_6a`؛ ۱۰ PNG واقعی Compose؛ `verify:static:all` 94/94، design governance، design pack و repository همگی exit 0.
+- **بازماندهٔ صادقانه:** O5، TalkBack gesture walkthrough، physical-device review، device deep-link و 7/29 Linux web parity debt باز است؛ هیچ golden/threshold/assertion تضعیف نشد.

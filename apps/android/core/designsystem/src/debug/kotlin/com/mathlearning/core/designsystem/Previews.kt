@@ -1,21 +1,23 @@
 package com.mathlearning.core.designsystem
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.LayoutDirection
 
 /**
- * Preview gallery (P13) — light theme + RTL for every new primitive. Screenshot regression
- * evidence comes from the device gallery run (Gradle task) — @Preview gives IDE/in-CI rendering.
+ * Debug-only @Preview gallery for the design-system primitives (light theme + RTL).
+ *
+ * Previews live in the debug source set: they are an authoring aid and must never ship inside a
+ * release artifact. Screenshot evidence for shipping UI comes from the instrumented Compose
+ * tests in :app (captureToImage), not from a preview activity.
  */
 @Composable
 private fun Wrap(direction: LayoutDirection, content: @Composable () -> Unit) {
@@ -52,19 +54,5 @@ fun LessonKitPreviews() {
         ResultSummary(passed = false, title = "نزدیک بودی", detail = "با مرور دوباره، درست می‌شود.")
         RecoveryCard(title = "ST07.P2.i02", detail = "دو کفش — یک مرور کوتاه")
         LessonActionBar { Text("[CTA slot]", style = ShomaraTypography.Caption) }
-    }
-}
-
-@Preview(name = "PathKit - LTR", widthDp = 360, showBackground = true)
-@Preview(name = "PathKit - RTL", widthDp = 360, showBackground = true, locale = "fa")
-@Composable
-fun PathKitPreviews() {
-    Wrap(LayoutDirection.Ltr) {
-        Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-            ShomaraPathNode(state = ShomaraPathNodeVisualState.CURRENT, label = "ST07")
-            ShomaraPathNode(state = ShomaraPathNodeVisualState.COMPLETED, label = "ST06")
-            ShomaraPathNode(state = ShomaraPathNodeVisualState.LOCKED, label = "ST08")
-            ShomaraPathConnector()
-        }
     }
 }

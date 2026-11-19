@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -107,14 +106,18 @@ fun ShomaraHomeHeader(
 }
 
 /**
- * Real progress/next-step orientation, not a Continue card: it has no click action and never
- * duplicates the Current/Fresh node's station-start interaction.
+ * Pinned orientation for the path: the real chapter, the real next step and the real remaining
+ * count. It is deliberately not a Continue card — no click action, and it never duplicates the
+ * Current/Fresh node's station-start interaction.
+ *
+ * [ShomaraPathScreen] renders this ABOVE the scrolling list, so a returning child who lands on a
+ * mid-path Current station still knows where they are, what comes next and how much is left.
  */
 @Composable
-internal fun ShomaraHomePathOverview(
-    remainingText: String,
-    nextStepText: String?,
+internal fun ShomaraHomeOrientationStrip(
     chapterLabel: String?,
+    nextStepText: String?,
+    remainingText: String,
     progressFraction: Float,
     modifier: Modifier = Modifier,
 ) {
@@ -134,50 +137,27 @@ internal fun ShomaraHomePathOverview(
                 ShomaraHomeUiTokens.Border,
                 RoundedCornerShape(ShomaraTokens.RadiusLg),
             )
-            .padding(ShomaraTokens.Space16),
-        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+            .padding(horizontal = ShomaraTokens.Space16, vertical = ShomaraTokens.Space12),
+        verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
-            ) {
-                if (chapterLabel != null) {
-                    Text(
-                        text = chapterLabel,
-                        style = ShomaraTypography.Caption,
-                        color = ShomaraHomeUiTokens.VioletDark,
-                    )
-                }
-                Text(
-                    text = nextStepText ?: remainingText,
-                    style = ShomaraTypography.Body,
-                    color = ShomaraHomeUiTokens.Ink,
-                )
-                if (nextStepText != null) {
-                    Text(
-                        text = remainingText,
-                        style = ShomaraTypography.Caption,
-                        color = ShomaraHomeUiTokens.Muted,
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .size(ShomaraTokens.ComponentTouchMin)
-                    .background(ShomaraHomeUiTokens.VioletSoft, CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.shomara_ui_book),
-                    contentDescription = null,
-                    modifier = Modifier.size(ShomaraTokens.Space24),
-                )
-            }
+        if (chapterLabel != null) {
+            Text(
+                text = chapterLabel,
+                style = ShomaraTypography.Caption,
+                color = ShomaraHomeUiTokens.VioletDark,
+            )
+        }
+        Text(
+            text = nextStepText ?: remainingText,
+            style = ShomaraTypography.Body,
+            color = ShomaraHomeUiTokens.Ink,
+        )
+        if (nextStepText != null) {
+            Text(
+                text = remainingText,
+                style = ShomaraTypography.Caption,
+                color = ShomaraHomeUiTokens.Muted,
+            )
         }
         Box(
             modifier = Modifier
@@ -187,9 +167,10 @@ internal fun ShomaraHomePathOverview(
                     ShomaraHomeUiTokens.GreenSoft,
                     RoundedCornerShape(ShomaraTokens.RadiusPill),
                 )
+                // The visible «remaining» line owns the words; the bar only exposes progress, so
+                // TalkBack never announces the same sentence twice for one orientation strip.
                 .semantics {
-                    progressBarRangeInfo = ProgressBarRangeInfo(progressFraction, 0f..1f)
-                    contentDescription = remainingText
+                    progressBarRangeInfo = ProgressBarRangeInfo(progressFraction.coerceIn(0f, 1f), 0f..1f)
                 },
             contentAlignment = Alignment.CenterStart,
         ) {

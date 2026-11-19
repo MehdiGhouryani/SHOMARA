@@ -74,13 +74,17 @@ fun ShomaraStateSurface(
     onSecondary: (() -> Unit)? = null,
     @DrawableRes stateIconRes: Int? = null,
     containerColor: Color = ShomaraTokens.ColorCanvas,
+    /**
+     * A host that already owns window insets (a Scaffold tab, a bottom sheet) passes false:
+     * adding status/navigation padding twice pushed the state copy away from the real content.
+     */
+    applySystemInsets: Boolean = true,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(containerColor)
-            .statusBarsPadding()
-            .navigationBarsPadding()
+            .then(if (applySystemInsets) Modifier.statusBarsPadding().navigationBarsPadding() else Modifier)
             .verticalScroll(rememberScrollState())
             .padding(ShomaraTokens.Space24)
             // F-25: the surface announces its state kind once (loading/offline/error/empty),

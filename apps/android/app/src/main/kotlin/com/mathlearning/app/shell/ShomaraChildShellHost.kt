@@ -171,10 +171,13 @@ fun ShomaraChildShell(
                     // progress. Do not render every item as LOCKED while identity/progress is
                     // still loading: that would mislabel a returning child as a first-run learner.
                     if (!pathProgress.isResolved) {
+                        // The shell Scaffold already applied the window insets, so this state
+                        // surface must not add a second status/navigation padding.
                         ShomaraStateSurface(
                             state = ShomaraEntryState.Loading,
                             title = "در حال آماده‌سازی تمرین‌ها",
                             body = "تمرین‌های مناسب تو پس از آماده‌شدن مسیر نمایش داده می‌شوند.",
+                            applySystemInsets = false,
                         )
                     } else {
                         val practiceItems = remember(pathProgress) {

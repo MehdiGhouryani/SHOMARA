@@ -66,6 +66,7 @@ internal fun ShomaraPathNodeItem(
     canvasColor: Color,
     onStationTap: (String) -> Unit,
     ringFraction: Float? = null,
+    bubbleLabel: String = "شروع",
 ) {
     val globalIndex = meta.ordinal - 1
     val isCurrent = state == ShomaraPathNodeState.Current
@@ -81,7 +82,7 @@ internal fun ShomaraPathNodeItem(
     val isPressed by interactionSource.collectIsPressedAsState()
     val pressSink = if (isPressed) ShomaraTokens.ComponentEdge else 0.dp
     var isFocused by remember(meta.id) { mutableStateOf(false) }
-    val containerDepth = if (isCurrent) ShomaraClayDepth.Featured else ShomaraClayDepth.Soft
+    val containerDepth = ShomaraPathGraphLogic.depthFor(state)
 
     BoxWithConstraints(modifier = Modifier.padding(bottom = ShomaraTokens.Space24)) {
         val half = (maxWidth - PathNodeColumnWidth) / 2f
@@ -146,7 +147,7 @@ internal fun ShomaraPathNodeItem(
                 if (isCurrent) {
                     Spacer(modifier = Modifier.height(ShomaraTokens.Space8))
                     ShomaraAnchorBubble(
-                        text = "شروع",
+                        text = bubbleLabel,
                         accent = colors.container,
                         border = colors.edge,
                     )

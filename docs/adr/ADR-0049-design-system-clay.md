@@ -33,3 +33,25 @@ ClayContractTest: ascending weight across tiers, generated-token equality (no ra
 - No page redesigns — library only.
 - Paparazzi not available in this environment; screenshot regression delivered as the Gallery activity + device captures (artifacts/p13-device/*.png, light+RTL) — CI screenshot gate remains a recorded gap.
 - No Duolingo assets/colors/fonts — all values resolve through tokens.json.
+
+## 5. Superseded in part — 2026-11-19 (Home/Path rebuild)
+
+This ADR's decision is unchanged for ClaySurface, the four clay tiers, LessonKit and the
+token-driven depth resolver. Three P13 items were retired because they duplicated the shipped
+renderer or could never run:
+
+- **PathKit (`ShomaraPathNode`/`ShomaraPathConnector`/`ShomaraPathNodeVisuals`) is RETIRED.** It
+  was a second path-node renderer with emoji marks (`▶ ★ ✓ ✓✓ 🔒`) and an amber Current node,
+  contradicting the shipped violet focal node in `feature:path`. Its redundant-encoding /
+  CURRENT-only-FEATURED / LOCKED-FLAT contract was **migrated, not dropped**: it now lives on the
+  real renderer as `ShomaraPathGraphLogic.depthFor` and is asserted in `ShomaraPathGraphTest`
+  (depth per state, label contrast on the canvas, 3:1 face-mark contrast for every state/chapter).
+- **`DesignSystemGalleryActivity` is RETIRED.** It was never registered in any manifest (only one
+  manifest exists: `apps/android/app/src/main/AndroidManifest.xml`) and had no consumer, so the
+  `adb shell am start … /.preview.DesignSystemGalleryActivity` instruction in its KDoc could not
+  work. The one-shot P13 device capture it produced is preserved under `artifacts/p13-device/`.
+- **`Previews.kt` moved from `main` to the `debug` source set** of `core:designsystem`: @Preview is
+  an authoring aid and must not ship in a release artifact. Screenshot evidence for shipping UI
+  comes from instrumented Compose tests in `:app`, not from a preview activity.
+
+Recovery: every removed file is recoverable from Git history (`git log --diff-filter=D`).

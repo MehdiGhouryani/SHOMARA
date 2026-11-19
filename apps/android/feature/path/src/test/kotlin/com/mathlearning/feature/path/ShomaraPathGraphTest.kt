@@ -1,5 +1,6 @@
 package com.mathlearning.feature.path
 
+import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraEntryState
 import com.mathlearning.core.model.ShomaraChapterCatalog
@@ -322,22 +323,71 @@ class ShomaraPathGraphTest {
     @Test
     fun `item indices follow the lazy list model with chapter dividers`() {
         // E-02: each chapter is band + 5 nodes + 1 divider (chapters 1-4); chapter 5 has no divider.
-        assertEquals(1, ShomaraPathGraphLogic.headerItemIndexForChapter(1))
-        assertEquals(8, ShomaraPathGraphLogic.headerItemIndexForChapter(2))
-        assertEquals(29, ShomaraPathGraphLogic.headerItemIndexForChapter(5))
-        assertEquals(2, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST01")))
-        assertEquals(6, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST05")))
-        assertEquals(9, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST06")))
-        assertEquals(34, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST25")))
+        // The orientation strip is pinned OUTSIDE the list, so no header row is counted and
+        // chapter 1's band is index 0.
+        assertEquals(0, ShomaraPathGraphLogic.chapterBandIndexForChapter(1))
+        assertEquals(7, ShomaraPathGraphLogic.chapterBandIndexForChapter(2))
+        assertEquals(28, ShomaraPathGraphLogic.chapterBandIndexForChapter(5))
+        assertEquals(1, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST01")))
+        assertEquals(5, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST05")))
+        assertEquals(8, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST06")))
+        assertEquals(33, ShomaraPathGraphLogic.itemIndexForStation(ShomaraStationCatalog.station("ST25")))
     }
 
     @Test
-    fun `restore scroll targets the saved chapter header`() {
+    fun `restore scroll targets the saved chapter band`() {
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(null))
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(1))
-        assertEquals(8, ShomaraPathGraphLogic.restoredFirstVisibleIndex(2))
-        assertEquals(29, ShomaraPathGraphLogic.restoredFirstVisibleIndex(5))
+        assertEquals(7, ShomaraPathGraphLogic.restoredFirstVisibleIndex(2))
+        assertEquals(28, ShomaraPathGraphLogic.restoredFirstVisibleIndex(5))
         assertEquals(0, ShomaraPathGraphLogic.restoredFirstVisibleIndex(9))
+    }
+
+    @Test
+    fun `current anchor bubble starts only at a real beginning and continues otherwise`() {
+        // Copy follows real progress: «شروع» on a first run, «ادامه» once anything is completed.
+        assertEquals("شروع", ShomaraPathGraphLogic.currentBubbleLabel(ShomaraPathProgress.emptyResolved()))
+        assertEquals("شروع", ShomaraPathGraphLogic.currentBubbleLabel(ShomaraPathProgress.unresolved()))
+        assertEquals("ادامه", ShomaraPathGraphLogic.currentBubbleLabel(progress))
+    }
+
+    @Test
+    fun `depth encodes availability so it never contradicts the state label`() {
+        // Migrated contract: the Current station is the only raised node, a locked station is
+        // flat (nothing to press into), and every other state is a soft surface.
+        assertEquals(ShomaraClayDepth.Featured, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Current))
+        assertEquals(ShomaraClayDepth.Flat, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Locked))
+        assertEquals(ShomaraClayDepth.Soft, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Fresh))
+        assertEquals(ShomaraClayDepth.Soft, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Completed))
+        assertEquals(ShomaraClayDepth.Soft, ShomaraPathGraphLogic.depthFor(ShomaraPathNodeState.Perfect))
+        assertEquals(1, ShomaraPathNodeState.entries.count { ShomaraPathGraphLogic.depthFor(it) == ShomaraClayDepth.Featured })
+    }
+
+    @Test
+    fun `node labels keep the 4 to 5 to 1 text floor on the path canvas`() {
+        // The label block is drawn on the canvas colour, not on the node face: the station line
+        // uses Ink and the state line uses Ink2. Both are small text, so the floor is 4.5:1.
+        // Home passes ColorHomeCanvas and the standalone default is ColorCanvas — cover both.
+        for (canvas in listOf(ShomaraTokens.ColorCanvas, ShomaraTokens.ColorHomeCanvas)) {
+            listOf(ShomaraTokens.ColorInk, ShomaraTokens.ColorInk2).forEach { text ->
+                val ratio = contrastRatio(text, canvas)
+                assertTrue("node label text contrast $ratio must be >= 4.5", ratio >= 4.5)
+            }
+        }
+    }
+
+    @Test
+    fun `node face marks keep the 3 to 1 non-text floor in every state and chapter`() {
+        for (chapter in 1..5) {
+            for (state in ShomaraPathNodeState.entries) {
+                val colors = ShomaraPathGraphLogic.colorsFor(state, chapter)
+                val ratio = contrastRatio(colors.content, colors.container)
+                assertTrue(
+                    "chapter $chapter $state glyph contrast $ratio must be >= 3.0",
+                    ratio >= 3.0,
+                )
+            }
+        }
     }
 
     @Test

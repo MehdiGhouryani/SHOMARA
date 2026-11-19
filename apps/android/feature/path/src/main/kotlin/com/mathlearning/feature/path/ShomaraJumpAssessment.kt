@@ -23,9 +23,9 @@ import com.mathlearning.core.designsystem.ShomaraTypography
  * There is deliberately no correctness field here: feedback (if any) comes only after the
  * single attempt ends, from the evaluator — never mid-test, never from this shell.
  *
- * (Renamed from `ShomaraJumpTest`: a production data class must not be named `...Test`.
- * The file name stays `ShomaraJumpTest.kt` — snapshot push cannot delete/rename files —
- * and will be aligned when a delete-capable method exists.)
+ * (Renamed from `ShomaraJumpTest`: a production data class must not be named `...Test`. The
+ * file, and its test file, are now named `ShomaraJumpAssessment` as well — the earlier note
+ * that the file name could not change is obsolete: a delete/rename-capable method exists.)
  */
 data class ShomaraJumpAssessment(
     /** Configurable question count (not a hardcoded 1 or 5). */
