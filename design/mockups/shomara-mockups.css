@@ -84,8 +84,10 @@ body{background:#EAE6F4;font-family:Vazirmatn,sans-serif;color:var(--ink);font:v
   font:var(--t-button);cursor:pointer;position:relative}
 .node.current{width:84px;height:84px;background:var(--violet);color:#fff;box-shadow:0 6px 0 var(--violet-dark)}
 .node.fresh{background:var(--amber);color:var(--amber-ink);box-shadow:0 5px 0 #D89B3D}
-.node.completed{background:var(--green-soft);color:var(--green);box-shadow:0 4px 0 #C6E6D5}
-.node.perfect{background:var(--green-soft);color:var(--green);box-shadow:0 4px 0 #C6E6D5}
+/* DT-71 review: green on greenSoft measured 4.22:1 — below the 4.5 the owner's own tokens require.
+ * Fixed with existing tokens only: completed/perfect become SOLID green with a white glyph (4.85:1 PASS). */
+.node.completed{background:var(--green);color:#fff;box-shadow:0 4px 0 #0E5F43}
+.node.perfect{background:var(--green);color:#fff;box-shadow:0 4px 0 #0E5F43;outline:4px solid var(--green-soft);outline-offset:3px}
 .node.perfect::after{content:"★";position:absolute;top:2px;left:2px;font-size:13px}
 .node.locked{background:var(--locked-bg);color:var(--muted);box-shadow:0 4px 0 #E4E1EC;cursor:default}
 .node-label{font:var(--t-caption);color:var(--muted);margin-top:6px;text-align:center}
@@ -116,8 +118,26 @@ body{background:#EAE6F4;font-family:Vazirmatn,sans-serif;color:var(--ink);font:v
 .banner{display:flex;gap:10px;align-items:flex-start;border-radius:var(--r-m);padding:14px;font:var(--t-body)}
 .banner.offline{background:#FFF6E8;color:var(--amber-ink)}
 .banner.error{background:#FDECEC;color:#8C2F2F}
-.banner.ok{background:var(--green-soft);color:var(--green)}
+/* DT-71: text becomes ink — green on greenSoft measured 4.22:1. The green stays in the icon and the background. */
+.banner.ok{background:var(--green-soft);color:var(--ink)}
+/* warm, non-punitive hint (§3.9) — its own class, not a reuse of offline */
+.banner.hint{background:#FFF6E8;color:var(--amber-ink)}
 .banner .ic{font-size:20px}
+
+/* PathReturnFab (C12) — appears only after a real scroll threshold, above the bar, 48dp target */
+.fab{position:absolute;inset-inline-end:16px;bottom:92px;width:56px;height:56px;border-radius:var(--r-m);
+  background:var(--violet);color:#fff;font-size:22px;border:none;cursor:pointer;box-shadow:0 4px 0 var(--violet-dark)}
+.fab:active{transform:translateY(2px);box-shadow:0 2px 0 var(--violet-dark)}
+
+/* keyboard focus must be visible — Phase 3 copies this contract */
+.icon-btn:focus-visible,.cta:focus-visible,.tab:focus-visible,.menu-item:focus-visible,.fab:focus-visible{
+  outline:3px solid var(--violet);outline-offset:2px}
+
+/* reduced-motion: the tokens demand an immediate state change with no parallax/spring at all */
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+  .spinner{border-top-color:var(--violet-soft)}
+}
 .spinner{width:34px;height:34px;border-radius:50%;border:4px solid var(--violet-soft);border-top-color:var(--violet);
   animation:spin 1s linear infinite;margin:24px auto}
 @keyframes spin{to{transform:rotate(360deg)}}

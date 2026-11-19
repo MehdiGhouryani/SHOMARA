@@ -14,14 +14,14 @@
     <p class="state-label"><b>تنظیمات — ready</b> (مقدار ذخیره‌شده؛ دکمهٔ ذخیره فقط وقتی واقعاً ویرایش شده)</p>
     <div class="phone"><div class="phone-screen"><div class="phone-body">
       <div class="hdr">
-        <button class="icon-btn">→</button><div class="grow"><h1>تنظیمات</h1></div>
+        <button class="icon-btn" aria-label="برگشت">→</button><div class="grow"><h1>تنظیمات</h1></div>
       </div>
       <div class="section" style="margin:4px 4px 8px">تنظیم‌های برنامه</div>
       <div class="card">
         <h3>حرکت کمتر</h3><p>انیمیشن‌ها کم می‌شوند.</p>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
           <span class="cap">خاموش</span>
-          <div style="width:56px;height:32px;border-radius:999px;background:var(--locked-bg);position:relative">
+          <div role="switch" aria-checked="false" style="width:56px;height:32px;border-radius:999px;background:var(--locked-bg);position:relative">
             <div style="position:absolute;top:3px;inset-inline-start:3px;width:26px;height:26px;border-radius:50%;background:#fff;border:1.5px solid var(--border)"></div>
           </div>
         </div>
@@ -30,22 +30,22 @@
       </div>
       <div class="note">حالت ready = Clean: دکمهٔ ذخیره غیرفعال تا اولین ویرایش واقعی (تست شده در ShomaraSettingsTest).</div>
     </div>
-    <div class="bottom-bar">
-      <div class="tab"><div class="dot">🛤</div>مسیر</div>
-      <div class="tab"><div class="dot">✏️</div>تمرین</div>
-      <div class="tab active"><div class="dot">🙂</div>من</div>
+    <div class="bottom-bar" role="tablist">
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">🛤</div>مسیر</div>
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">✏️</div>تمرین</div>
+      <div class="tab active" role="tab" aria-selected="true"><div class="dot">🙂</div>من</div>
     </div></div></div>
   </div>
 
   <div class="state-block">
     <p class="state-label"><b>تنظیمات — dirty → saving → saved</b> (ماشین حالت واقعی صفحه)</p>
     <div class="phone"><div class="phone-screen"><div class="phone-body">
-      <div class="hdr"><button class="icon-btn">→</button><div class="grow"><h1>تنظیمات</h1></div></div>
+      <div class="hdr"><button class="icon-btn" aria-label="برگشت">→</button><div class="grow"><h1>تنظیمات</h1></div></div>
       <div class="card">
         <h3>حرکت کمتر</h3><p>انیمیشن‌ها کم می‌شوند.</p>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
           <span class="cap">روشن</span>
-          <div style="width:56px;height:32px;border-radius:999px;background:var(--violet);position:relative">
+          <div role="switch" aria-checked="true" style="width:56px;height:32px;border-radius:999px;background:var(--violet);position:relative">
             <div style="position:absolute;top:3px;inset-inline-end:3px;width:26px;height:26px;border-radius:50%;background:#fff"></div>
           </div>
         </div>
@@ -54,20 +54,19 @@
         <div style="height:10px"></div>
         <div class="banner ok" style="padding:10px 14px"><span class="ic">✔</span><div>ذخیره شد.</div></div>
         <div style="height:8px"></div>
-        <div class="cap" style="color:var(--muted);text-align:center">در حال ذخیره… (چرخندهٔ کوچک)</div>
       </div>
     </div>
-    <div class="bottom-bar">
-      <div class="tab"><div class="dot">🛤</div>مسیر</div>
-      <div class="tab"><div class="dot">✏️</div>تمرین</div>
-      <div class="tab active"><div class="dot">🙂</div>من</div>
+    <div class="bottom-bar" role="tablist">
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">🛤</div>مسیر</div>
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">✏️</div>تمرین</div>
+      <div class="tab active" role="tab" aria-selected="true"><div class="dot">🙂</div>من</div>
     </div></div></div>
   </div>
 
   <div class="state-block">
     <p class="state-label"><b>تنظیمات — toggle-fail / error</b> (بازگشت به مقدار قبلی؛ بدون موفقیت جعلی)</p>
     <div class="phone"><div class="phone-screen"><div class="phone-body">
-      <div class="hdr"><button class="icon-btn">→</button><div class="grow"><h1>تنظیمات</h1></div></div>
+      <div class="hdr"><button class="icon-btn" aria-label="برگشت">→</button><div class="grow"><h1>تنظیمات</h1></div></div>
       <div class="banner error"><span class="ic">❗</span><div>ذخیره نشد؛ دوباره تلاش کن.</div></div>
       <div style="height:12px"></div>
       <div class="card">
@@ -77,17 +76,17 @@
       </div>
       <div class="note">toggle-fail: ترجیح به مقدار قبلی برمی‌گردد و خطا اعلام می‌شود — هرگز بی‌صدا گم نمی‌شود.</div>
     </div>
-    <div class="bottom-bar">
-      <div class="tab"><div class="dot">🛤</div>مسیر</div>
-      <div class="tab"><div class="dot">✏️</div>تمرین</div>
-      <div class="tab active"><div class="dot">🙂</div>من</div>
+    <div class="bottom-bar" role="tablist">
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">🛤</div>مسیر</div>
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">✏️</div>تمرین</div>
+      <div class="tab active" role="tab" aria-selected="true"><div class="dot">🙂</div>من</div>
     </div></div></div>
   </div>
 
   <div class="state-block">
     <p class="state-label"><b>منو — از هدر (شیت)</b> (فقط گزینه‌های واقعی؛ گزینهٔ والدین حذف‌شده برای همیشه)</p>
     <div class="phone"><div class="phone-screen"><div class="phone-body">
-      <div class="hdr"><div class="grow"><h1>مسیر</h1></div><button class="icon-btn">☰</button></div>
+      <div class="hdr"><div class="grow"><h1>مسیر</h1></div><button class="icon-btn" aria-label="منو">☰</button></div>
       <div class="ribbon"><div class="band">فصل ۱ · شمردن</div></div>
       <div class="scrim"></div>
       <div class="sheet-panel">
@@ -99,10 +98,10 @@
         <div class="menu-item"><div class="mi">ℹ</div><div>دربارهٔ شمارا<small>نسخه و اعتبار</small></div></div>
       </div>
     </div>
-    <div class="bottom-bar">
-      <div class="tab active"><div class="dot">🛤</div>مسیر</div>
-      <div class="tab"><div class="dot">✏️</div>تمرین</div>
-      <div class="tab"><div class="dot">🙂</div>من</div>
+    <div class="bottom-bar" role="tablist">
+      <div class="tab active" role="tab" aria-selected="true"><div class="dot">🛤</div>مسیر</div>
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">✏️</div>تمرین</div>
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">🙂</div>من</div>
     </div></div></div>
   </div>
 
@@ -121,10 +120,10 @@
         <button class="cta ghost">بستن</button>
       </div>
     </div>
-    <div class="bottom-bar">
-      <div class="tab active"><div class="dot">🛤</div>مسیر</div>
-      <div class="tab"><div class="dot">✏️</div>تمرین</div>
-      <div class="tab"><div class="dot">🙂</div>من</div>
+    <div class="bottom-bar" role="tablist">
+      <div class="tab active" role="tab" aria-selected="true"><div class="dot">🛤</div>مسیر</div>
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">✏️</div>تمرین</div>
+      <div class="tab" role="tab" aria-selected="false"><div class="dot">🙂</div>من</div>
     </div></div></div>
   </div>
 </div>
