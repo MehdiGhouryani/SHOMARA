@@ -1,9 +1,13 @@
 ﻿package com.mathlearning.app.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.material3.Text
+import com.mathlearning.core.designsystem.ShomaraTypography
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextLayoutResult
@@ -64,6 +68,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.OkHttpClient
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -380,6 +385,39 @@ class ShomaraA11ySweepTest {
     }
 
     @Test
+    fun hasVisualOverflowIsNotAClippingOracle() {
+        // DT-34 retraction, kept as a guard so nobody rebuilds the broken check: in this Compose
+        // version `TextLayoutResult.hasVisualOverflow` reports true for text with room to lay out,
+        // so it cannot be used to prove that large-text clipping happened. DT-33 shipped a
+        // 37-node "clipping" register on top of this flag; measuring a constrained and an
+        // unconstrained caption side by side (below) showed the flag fires for BOTH, which is why
+        // that register was withdrawn instead of being fixed up.
+        compose.setContent {
+            ShomaraTheme {
+                Column {
+                    Box(modifier = Modifier.size(24.dp)) {
+                        Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                    }
+                    Text(text = "آواتار و تنظیمات", style = ShomaraTypography.Caption)
+                }
+            }
+        }
+        val flags = compose.onAllNodesWithText("آواتار و تنظیمات", useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .map { node ->
+                val results = mutableListOf<TextLayoutResult>()
+                node.config[SemanticsActions.GetTextLayoutResult].action?.invoke(results)
+                results.firstOrNull()?.hasVisualOverflow ?: false
+            }
+        assertEquals("expected two measured text nodes, got $flags", 2, flags.size)
+        assertTrue(
+            "If this now fails, hasVisualOverflow became trustworthy: re-open DT-33's clipping " +
+                "question properly instead of trusting the old numbers. Flags were $flags",
+            flags.all { it },
+        )
+    }
+
+    @Test
     fun meFitsAt360dpWithDoubleText() {
         assertFitsAtNarrowWidth("Me") {
             ShomaraMeScreen(
@@ -650,36 +688,6 @@ class ShomaraA11ySweepTest {
         totalStations = 25,
     )
 
-    /**
-     * Measured clipping budget at 360dp / 2x text (DT-33). Each entry counts the text nodes whose
-     * own layout reports `hasVisualOverflow` on a real Pixel_6a run. The numbers may only go DOWN:
-     * this is a debt register, not a tolerance. Clipped labels as measured on 2026-11-19:
-     *
-     *  Home               8 — فصل ۱ · ایستگاه‌های باقی‌مانده: ۲۲ · ایستگاه فعلی · هنوز قفل · ۱ ·
-     *                          فصل ۱ · ایستگاه‌های ۱ تا ۵ · ۳ از ۵ کامل شد
-     *  Settings          11 — آواتار و تنظیمات · آواتار من · ✓ · برگ · ابری · ماه ·
-     *                          آواتار انتخاب‌شده: خورشیدی · تنظیم‌های برنامه · حرکت کمتر ·
-     *                          انیمیشن‌ها متوقف می‌شوند. · ذخیره
-     *  Me                 7 — من · آریا · آواتار من: خورشیدی · آواتار و تنظیمات ·
-     *                          ظاهر و تنظیم‌های واقعی · بخش والدین · با تأیید بزرگ‌ترها باز می‌شود
-     *  PracticeHub        7 — تمرین · تمرین‌های قابل انجام · جمع تا ۱۰ · الگوها · قفل ·
-     *                          تمرین‌های اخیر · شمردن
-     *  OnboardingProfile  2 — نام کودک · ادامه
-     *  ParentHome         2 — گزارش والدین · خروج از حساب
-     *
-     * These states are reached mainly through system font scaling — exactly the setting the
-     * accessibility users this app targets depend on — which is why the debt is registered with
-     * every label named instead of being silenced.
-     */
-    private val CLIPPED_TEXT_BUDGET: Map<String, Int> = mapOf(
-    "Home" to 8,
-    "Settings" to 11,
-    "Me" to 7,
-    "PracticeHub" to 7,
-    "OnboardingProfile" to 2,
-    "ParentHome" to 2,
-)
-
 private object FakeSettingsStore : ShomaraSettingsStore {
         override val state: Flow<ShomaraSettingsSnapshot> = MutableStateFlow(ShomaraSettingsSnapshot.Defaults)
 
@@ -814,39 +822,12 @@ private object FakeSettingsStore : ShomaraSettingsStore {
         val label = "$screen/360dp/2x"
         assertA11yContract(label)
         val widthPx = 360f * 2.625f
-        val nodes = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
+        val overflowing = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true)
             .fetchSemanticsNodes()
-        val overflowing = nodes.filter {
-            it.boundsInRoot.right > widthPx + 0.5f || it.boundsInRoot.left < -0.5f
-        }
+            .filter { it.boundsInRoot.right > widthPx + 0.5f || it.boundsInRoot.left < -0.5f }
         assertTrue(
             "$label: ${overflowing.size} node(s) overflow the 360dp viewport",
             overflowing.isEmpty(),
-        )
-        // Bounds alone are weak: Compose clips a too-long line, so the box stays inside the viewport
-        // while the glyphs are cut. The text layout result knows — it reports hasVisualOverflow.
-        val clipped = nodes.mapNotNull { node ->
-            val action = node.config.getOrNull(SemanticsActions.GetTextLayoutResult) ?: return@mapNotNull null
-            val results = mutableListOf<TextLayoutResult>()
-            action.action?.invoke(results)
-            val layout = results.firstOrNull() ?: return@mapNotNull null
-            if (layout.hasVisualOverflow) {
-                node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" / ") ?: "<unlabelled>"
-            } else {
-                null
-            }
-        }
-        // RATCHET, not a pass/fail-on-zero check: 360dp at 2x text clips a real, measured set of
-        // labels (DT-33 records every one of them). The baseline is per screen and may only go
-        // DOWN — a font-size or spacing change that clips MORE text fails here, and every fix
-        // lowers the number in this table. Pretending the debt is zero would have meant shipping
-        // an assertion nobody could satisfy, which is how clipping debt stays invisible.
-        val budget = CLIPPED_TEXT_BUDGET[screen]
-            ?: throw AssertionError("$label: no recorded clipping budget for '$screen' — add one, "
-                + "measured from a real run, instead of guessing")
-        assertTrue(
-            "$label: ${clipped.size} text node(s) are clipped at 360dp/2x, budget is $budget -> $clipped",
-            clipped.size <= budget,
         )
     }
 
