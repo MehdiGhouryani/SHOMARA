@@ -1,4 +1,5 @@
-# scripts/ — فهرست دامنه‌ای
+
+| erify-verifier-verdicts.mjs | Every verifier that collects failures must be able to report one |# scripts/ — فهرست دامنه‌ای
 
 این پوشه تخت است و **عمداً** می‌ماند: نام هر فایل، دامنهٔ آن را می‌گوید، و جابه‌جایی به زیرپوشه‌ها
 ۲۷۷ ارجاع مسیری را در ۴۵ فایل می‌شکست — از جمله `harness/WORKLOG.md` و `ROADMAP_PHASES.md` که سابقهٔ
@@ -84,6 +85,7 @@
 | `independent-verification.mjs` | 1. |
 | `verify-repository-harness.mjs` | P1 hardening (2026-11-12): a running Node outside the repo pin must never be silent. |
 | `verify-structure.mjs` | Structure gate — keeps the repository's shape a rule instead of a habit. |
+| `verify-verifier-verdicts.mjs` | A verifier that collects failures must be able to report one |
 
 ## Phase and feature ledgers (41)
 
@@ -164,6 +166,6 @@
 
 ---
 
-مجموع: **101** فایل `.mjs` در ریشهٔ `scripts/`.
+مجموع: **102** فایل `.mjs` در ریشهٔ `scripts/`.
 
 اجرای همه: `npm run verify:static:all` (کشف خودکار، با فهرست استثناهای ثابت در `verify-static-all.mjs`).
