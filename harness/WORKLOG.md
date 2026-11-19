@@ -1300,3 +1300,15 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 **DT-47 — پاکسازی عمیق.** اسکن سطح-نماد (نه نام فایل) سه فایل با صفر ارجاع پیدا کرد: ContentResolvers.kt (AssetResolver/AudioAssetResolver)، FakeAppLogger.kt، ShomaraChallengeIntro.kt. سه فایل که همان اسکن «مرده» می‌خواندشان عمداً نگه داشته شدند: TemplateRegistry.kt (تست ShomaraTemplateAdaptersTest از آن import می‌کند)، فایل‌های @Preview در debug، و تست testDebug. پوشهٔ تکراری previews/ (یک فایل، package ...app.previews) در preview/ ادغام شد. ۳۶ تصویر بستهٔ handoff (۶۱۲KB) هم حذف شد. آمار: ۱۲۷۸ → ۱۲۳۲ فایل، ۱۶٫۹ → ۱۶٫۲MB.
 
 **درس ثبت‌شده:** شمارش «۱۴۳ فایل مردهٔ Kotlin» در دورهای قبل نامعتبر بود، چون نام فایل را می‌گشت نه نماد را. معیار درست، رجوع به اعلان‌های همان فایل است.
+
+## DT-76 — مسیر v3 کامل: تب‌بار آیکون‌دار + کارت featured بنفش + ریشهٔ O5 loading (2026-11-19)
+
+**ریشهٔ اصلی که بسته شد.** شل با `ShomaraPathProgress.unresolved()` صدا می‌شد و هیچ‌چیز آن را resolve نمی‌کرد — صفحهٔ مسیر برای همیشه «در حال آماده‌سازی مسیر» می‌ماند. گره: پروفایل کامل ذخیره‌شده = یادگیرندهٔ محلی واقعی؛ پیشرفت واقعی او در ابتدا خالی است. `ShomaraApp` حالا پروفایل را می‌خواند و `emptyResolved()` می‌دهد. مسیر ۲۵ ایستگاه / ۵ فصل / حالت‌های واقعی Fresh/Locked رندر می‌شود. ذخیرهٔ پیشرفت بین نشست‌ها (Room) همچنان O5 باز است.
+
+**تب‌بار v3 (UI-006).** `ShomaraTab` بدون کامپوننت موازی `activeIconRes/inactiveIconRes` گرفت؛ شل شش VectorDrawable موجود را از `ShomaraShellNavIcons` می‌گیرد؛ pill فعال violetSoft + متن violetDark + آیکون violet، غیرفعال سفید + muted؛ Role.Tab + stateDescription + idempotent reselect (tapGuard موجود) حفظ شد؛ TabBar به رنگ‌های Home (Canvas/Surface/Border) رفت.
+
+**کارت featured v3 (C05).** ContinueStationCard از amber قدیمی به violet رفت — سطح violet، CTA سفید r16 با متن violetDark (4.99:1)، آیکون topic ایستگاه؛ حالت fresh با «اولین ایستگاه آماده است» + «شروع ایستگاه»، resume با «گام بعدی» + «ادامه». با وجود کارت، node دیگر CTA ادعا نمی‌کند — قانون CTA واحد.
+
+**شواهد:** ۱۹۴ JVM تست / ۰ خطا؛ `:app:assembleDebug` exit 0؛ static:all 94/94؛ harness VALID. سفر واقعی امولاتور: placement → «شروع مسیر» → شل؛ متن‌های زندهٔ مسیر (کارت «۰ از ۵» + featured + ایستگاه ۱ «آمادهٔ شروع»)؛ پالت: violet ۱۶٪ (کارت)، canvas ۳۴٪؛ CTA «شروع ایستگاه» شیت واقعی ایستگاه را باز کرد.
+
+**بازمانده:** گام ۳ (تمرین/من/تنظیمات/اسپلش v3)، font-scale 2.0 + TalkBack sweep، O5 کامل (Room projection).

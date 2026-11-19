@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,6 @@ import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.designsystem.R
-import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
@@ -136,9 +136,10 @@ internal fun ShomaraChapterProgressCard(
 /**
  * C05 of the Home handoff: the station the child continues from, with exactly one primary action.
  *
- * This is the Featured surface of the viewport (ADR-0040 pairing: amberSoft fill, amber border), so
- * the continue action is the obvious focal point of Home. The station title is the real projected
- * title; nothing here decides unlocks or progress.
+ * DT-76 (handoff v3 reconciliation): this is the Featured surface of the viewport and now uses the
+ * handoff's violet treatment — violet fill, white CTA card, and the optional Number/lesson art on
+ * the physical left of the RTL row (reference: ShomaraHomeComponents.kt C05). The eyebrow adapts to
+ * the real session state (fresh vs resume) instead of always claiming a continuation.
  */
 @Composable
 internal fun ShomaraContinueStationCard(
@@ -146,41 +147,100 @@ internal fun ShomaraContinueStationCard(
     onContinue: () -> Unit,
     modifier: Modifier = Modifier,
     actionLabel: String = ShomaraHomeStrings.Continue,
+    // DT-76 (handoff C05): eyebrow and CTA adapt to the real session state — a fresh child sees
+    // the first-ready invitation, a returning child sees the resume invitation.
+    isResume: Boolean = true,
 ) {
     val station = ShomaraStationCatalog.station(stationId)
+    val eyebrow = if (isResume) {
+        ShomaraHomeStrings.ContinueEyebrow
+    } else {
+        ShomaraHomeStrings.ContinueEyebrowFresh
+    }
+    val cta = if (isResume) actionLabel else ShomaraHomeStrings.ContinueFresh
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(ShomaraTokens.RadiusLg),
-        color = ShomaraTokens.ColorAmberSoft,
-        border = BorderStroke(ShomaraTokens.ClayFeaturedBorderWidth, ShomaraHomeUiTokens.Amber),
+        color = ShomaraHomeUiTokens.Violet,
         shadowElevation = ShomaraClay.specFor(ShomaraClayDepth.Featured).elevation,
     ) {
-        Column(
-            modifier = Modifier.padding(ShomaraTokens.Space16),
-            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(ShomaraTokens.Space16),
+            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // In an RTL Row the first child sits on the physical right: text/CTA column first,
+            // the optional art slot lands on the left — the approved composition.
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
+                horizontalAlignment = Alignment.End,
+            ) {
+                Text(
+                    text = eyebrow,
+                    style = ShomaraTypography.Caption,
+                    color = ShomaraHomeUiTokens.OnViolet,
+                    textAlign = TextAlign.End,
+                )
+                Text(
+                    text = station.workingTitle,
+                    style = ShomaraTypography.Title,
+                    color = ShomaraHomeUiTokens.OnViolet,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.semantics { heading() },
+                )
+                Text(
+                    text = ShomaraHomeStrings.continueSupport(ShomaraChapterCatalog.labelFor(station.chapter)),
+                    style = ShomaraTypography.Caption,
+                    color = ShomaraHomeUiTokens.OnVioletMuted,
+                    textAlign = TextAlign.End,
+                )
+                Spacer(Modifier.height(ShomaraTokens.Space4))
+                ContinueCardAction(
+                    text = cta,
+                    onClick = onContinue,
+                )
+            }
+            // C23 topic tile of the continued station — real station identity, never decoration.
+            ShomaraContinueTopicTile(
+                stationId = stationId,
+                modifier = Modifier.size(ShomaraTokens.ComponentNodeSize),
+            )
+        }
+    }
+}
+
+/**
+ * The single primary action of the continue card. On-violet contrast treatment: a white surface
+ * with violet text (4.99:1, PACKAGE_CONTRACT_AUDIT) rather than the shared green button, which
+ * would clash with the violet featured surface.
+ */
+@Composable
+private fun ContinueCardAction(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = ShomaraTokens.ComponentButtonH),
+        shape = RoundedCornerShape(ShomaraTokens.RadiusMd),
+        color = ShomaraHomeUiTokens.Surface,
+        border = BorderStroke(ShomaraTokens.ClaySoftBorderWidth, ShomaraHomeUiTokens.VioletSoft),
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(ShomaraTokens.Space16),
+            contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = ShomaraHomeStrings.ContinueEyebrow,
-                style = ShomaraTypography.Caption,
-                color = ShomaraHomeUiTokens.AmberInk,
-            )
-            Text(
-                text = station.workingTitle,
-                style = ShomaraTypography.Title,
-                color = ShomaraHomeUiTokens.Ink,
-                modifier = Modifier.semantics { heading() },
-            )
-            Text(
-                text = ShomaraHomeStrings.continueSupport(ShomaraChapterCatalog.labelFor(station.chapter)),
-                style = ShomaraTypography.Caption,
-                color = ShomaraHomeUiTokens.AmberInk,
-            )
-            Spacer(Modifier.height(ShomaraTokens.Space4))
-            ShomaraButton(
-                text = actionLabel,
-                onClick = onContinue,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(ShomaraTokens.RadiusMd),
+                text = text,
+                style = ShomaraTypography.Body,
+                color = ShomaraHomeUiTokens.VioletDark,
+                textAlign = TextAlign.Center,
             )
         }
     }

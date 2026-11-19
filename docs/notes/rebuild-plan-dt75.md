@@ -54,6 +54,41 @@
 - WORKLOG + START_HERE بند ۶ → «انجام»؛ `NOT VERIFIED` صریح برای شواهد دستگاه فیزیکی (نداریم).
 - commit + push + ff-only main.
 
+## شواهد گام ۱ + ۲ — مسیر v3 کامل (DT-76)
+
+| شاهد | مقدار |
+|---|---|
+| JVM تست‌ها (designsystem + path + app) | **۱۹۴ تست، ۰ خطا** |
+| `:app:assembleDebug` | exit 0 |
+| `verify:static:all` | PASS 94/94 |
+| `harness validate` | VALID (129 tasks, 13 phases) |
+| سفر واقعی روی امولاتور | placement → «شروع مسیر» → شل |
+| متن‌های صفحهٔ مسیر روی دستگاه | «مسیر یادگیری / قدم‌به‌قدم جلو می‌ریم» + کارت «۰ از ۵ کامل شد» + کارت featured «اولین ایستگاه آماده است — شمارش و الگو — شروع ایستگاه» + ایستگاه ۱ «آمادهٔ شروع» |
+| پالت فریم مسیر | `canvas ۳۴٪ / white ۲۲٪ / violet ۱۶٪ (کارت featured) / greenSoft ۱۵٪ / violetSoft ۱٪` |
+| تب‌بار آیکون‌دار | تب فعال (مسیر): violetSoft + آیکون violet؛ تب‌های غیرفعال: سفید + آیکون خاکستری |
+| تعامل CTA | «شروع ایستگاه» → شیت واقعی «شمارش و الگو — ایستگاه ۱ از ۲۵ — فصل ۱» باز و بسته شد |
+| فریم‌های شاهد | `dt76-home-featured.png` + `dt76-sheet-flow.png` (غیر git-tracked) |
+
+### ریشه‌ای که این گام بست: O5 loading همیشگی
+
+قبل از DT-76 شل با `ShomaraPathProgress.unresolved()` صدا می‌شد و هیچ‌چیز آن را resolve نمی‌کرد —
+صفحهٔ مسیر برای همیشه «در حال آماده‌سازی مسیر» می‌ماند. گره: پروفایل کامل ذخیره‌شده = یادگیرندهٔ
+محلی واقعی است؛ پیشرفت واقعی او در ابتدا خالی است. حالا `ShomaraApp` پروفایل را می‌خواند و
+`emptyResolved()` می‌دهد — مسیر ۲۵ ایستگاه، ۵ فصل، حالت‌های واقعی Fresh/Locked رندر می‌شود.
+ذخیرهٔ پیشرفت بین نشست‌ها (Room projection) همچنان O5 باز است.
+
+### کارکرد گام ۱ + ۲
+
+- **تب‌بار v3 (UI-006)**: `ShomaraTab` حالا `activeIconRes/inactiveIconRes` دارد (بدون کامپوننت
+  موازی طبق CODE_REFERENCE_MAP)؛ شل شش VectorDrawable موجود را از `ShomaraShellNavIcons` می‌گیرد؛
+  pill فعال violetSoft + متن violetDark + آیکون violet، غیرفعال سفید + muted؛ Role.Tab +
+  stateDescription + idempotent reselect (tapGuard موجود) حفظ شد.
+- **کارت featured v3 (C05)**: ContinueStationCard از amber قدیمی به violet v3 رفت — سطح violet،
+  CTA سفید r16 با متن violetDark (4.99:1)، آیکون topic ایستگاه کنار متن (RTL: سمت چپ)؛
+  حالت fresh با eyebrow «اولین ایستگاه آماده است» + CTA «شروع ایستگاه»؛ حالت resume با «گام بعدی» + «ادامه».
+- **قانون CTA واحد**: با وجود کارت، node دیگر CTA ادعا نمی‌کند (`currentNodeClaimsPrimaryCta = !hasPathCards`).
+- **رنگ‌های v3 در شل**: TabBar از `ColorHomeSurface/Border/VioletSoft/VioletDark/Muted` (نه primarySoft قدیمی).
+
 ## چه چیزی ساخته نمی‌شود (ضد اقدام بیهوده)
 
 - کامپوننت موازی Button/TabBar/PathNode/Progress (Gate 3 v3 صریحاً ممنوع).

@@ -128,7 +128,16 @@ fun ShomaraChildShell(
         modifier = modifier.fillMaxSize(),
         bottomBar = {
             ShomaraTabBar(
-                tabs = ShomaraShellLogic.canonicalTabs().map { ShomaraTab(id = it.route, label = it.label) },
+                // DT-76 (handoff C13): each tab carries its canonical active/inactive nav icon —
+                // the six VectorDrawables from the v3 handoff asset pack.
+                tabs = ShomaraShellLogic.canonicalTabs().map { tab ->
+                    ShomaraTab(
+                        id = tab.route,
+                        label = tab.label,
+                        activeIconRes = ShomaraShellNavIcons.activeFor(tab),
+                        inactiveIconRes = ShomaraShellNavIcons.inactiveFor(tab),
+                    )
+                },
                 selectedId = currentTab.route,
                 onSelected = { route ->
                     goToTab(ShomaraShellLogic.select(currentTab, ShomaraShellTab.fromRoute(route)))

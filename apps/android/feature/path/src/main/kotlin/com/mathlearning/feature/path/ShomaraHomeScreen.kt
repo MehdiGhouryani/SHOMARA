@@ -70,8 +70,14 @@ fun ShomaraHomeScreen(
         // chapter the child is really in and the station they really continue from, before the path.
         // An unresolved snapshot renders neither: an unresolved Home has no chapter and no current
         // station, and inventing either is not allowed (O5 / ADR-0039).
+        // DT-76 (handoff C05 fresh state): a RESOLVED fresh learner has no current station yet, but
+        // the domain names the first ready station (freshStationId) — the featured card shows THAT
+        // station with the fresh eyebrow, so the first-ever action is a card CTA, not a node hunt.
         val currentStationId = state.progress.currentStationId
-        val hasPathCards = state.progress.isResolved && currentStationId != null
+        val featuredStationId = currentStationId
+            ?: ShomaraPathGraphLogic.freshStationId(state.progress)
+        val isResume = currentStationId != null
+        val hasPathCards = state.progress.isResolved && featuredStationId != null
         ShomaraPathScreen(
             progress = state.progress,
             entryState = state.entryState,
@@ -100,12 +106,13 @@ fun ShomaraHomeScreen(
                         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
                     ) {
                         ShomaraChapterProgressCard(
-                            chapter = ShomaraStationCatalog.station(currentStationId!!).chapter,
+                            chapter = ShomaraStationCatalog.station(featuredStationId!!).chapter,
                             progress = state.progress,
                         )
                         ShomaraContinueStationCard(
-                            stationId = currentStationId,
-                            onContinue = { onAction(ShomaraHomeAction.OpenStation(currentStationId)) },
+                            stationId = featuredStationId,
+                            onContinue = { onAction(ShomaraHomeAction.OpenStation(featuredStationId)) },
+                            isResume = isResume,
                         )
                     }
                 }

@@ -16,4 +16,8 @@ internal object ShomaraHomeUiTokens {
     val GreenSoft = ShomaraTokens.ColorHomeGreenSoft
     val Amber = ShomaraTokens.ColorHomeAmber
     val AmberInk = ShomaraTokens.ColorHomeAmberInk
+
+    /** On-violet text pairs (handoff contrast audit: 4.99:1 and 4.59:1). */
+    val OnViolet = ShomaraTokens.ColorWhite
+    val OnVioletMuted = ShomaraTokens.ColorHomeCanvas
 }

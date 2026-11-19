@@ -44,6 +44,10 @@ object ShomaraHomeStrings {
     const val Continue = "ادامه"
     const val ContinueEyebrow = "گام بعدی"
 
+    /** DT-76 (handoff C05 fresh state): the first-ready invitation for a fresh learner. */
+    const val ContinueEyebrowFresh: String = "اولین ایستگاه آماده است"
+    const val ContinueFresh: String = "شروع ایستگاه"
+
     fun continueSupport(chapterLabel: String) = "از $chapterLabel"
     const val ReturnStart = "بازگشت به نقطهٔ شروع"
 
