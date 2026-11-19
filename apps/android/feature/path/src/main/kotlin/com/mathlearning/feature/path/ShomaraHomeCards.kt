@@ -29,6 +29,8 @@ import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
+import com.mathlearning.core.designsystem.ShomaraLessonTopic
+import com.mathlearning.core.designsystem.ShomaraLessonTopicIcon
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.model.ShomaraChapterCatalog
@@ -179,6 +181,63 @@ internal fun ShomaraContinueStationCard(
                 onClick = onContinue,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(ShomaraTokens.RadiusMd),
+            )
+        }
+    }
+}
+
+/**
+ * C23 of the Home handoff: the topic tile of the station being continued — "فقط محتوا و identity واقعی".
+ *
+ * The topic mapping is an explicit, JVM-testable table (not a modulo hidden inside a composable):
+ * every chapter of the catalog names the topic its lessons teach, and this object is the single
+ * place that decision lives. A preview tile renders without a "selected" claim, because a preview
+ * must not announce state the domain has not confirmed.
+ */
+internal object ShomaraLessonTopics {
+    /** Chapter number → the topic its lessons teach. Station identity comes from the catalog. */
+    private val chapterTopic = mapOf(
+        1 to ShomaraLessonTopic.Counting,
+        2 to ShomaraLessonTopic.Addition,
+        3 to ShomaraLessonTopic.Shapes,
+        4 to ShomaraLessonTopic.Patterns,
+        5 to ShomaraLessonTopic.Counting,
+    )
+
+    fun labelForStation(stationId: String): String =
+        topicForStation(stationId).faLabel
+
+    fun topicForStation(stationId: String): ShomaraLessonTopic {
+        val chapter = ShomaraStationCatalog.chapterOf(stationId)
+        check(chapter in 1..5) { "catalog chapter out of range: $chapter" }
+        return chapterTopic.getValue(chapter)
+    }
+}
+
+@Composable
+internal fun ShomaraContinueTopicTile(
+    stationId: String,
+    modifier: Modifier = Modifier,
+    isPreview: Boolean = false,
+) {
+    val topic = ShomaraLessonTopics.topicForStation(stationId)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) { },
+        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        ShomaraLessonTopicIcon(
+            topic = topic,
+            selected = !isPreview,
+            enabled = true,
+        )
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = if (isPreview) ShomaraHomeStrings.ContinueEyebrow else topic.faLabel,
+                style = ShomaraTypography.Caption,
+                color = ShomaraHomeUiTokens.Muted,
             )
         }
     }
