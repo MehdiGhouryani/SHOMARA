@@ -5,15 +5,20 @@ import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import com.mathlearning.app.shell.ShomaraChildShell
+import com.mathlearning.core.datastore.LessonCheckpoint
+import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
 import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.designsystem.ShomaraTheme
 import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
+import com.mathlearning.core.network.LessonGateway
+import com.mathlearning.feature.lesson.ShomaraLessonHost
 import com.mathlearning.feature.onboarding.ShomaraPlacementScreen
 import com.mathlearning.feature.onboarding.ShomaraPlacementState
 import com.mathlearning.feature.onboarding.ShomaraProfileDraft
@@ -33,6 +38,7 @@ import com.mathlearning.feature.settings.ShomaraSettingsScreen
 import com.mathlearning.feature.settings.ShomaraSettingsState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import okhttp3.OkHttpClient
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -206,6 +212,47 @@ class ShomaraA11ySweepTest {
         override val state: Flow<ShomaraSettingsSnapshot> = MutableStateFlow(ShomaraSettingsSnapshot.Defaults)
 
         override suspend fun save(snapshot: ShomaraSettingsSnapshot) {}
+    }
+
+    private class MemoryCheckpoints : LessonCheckpointStore {
+        private val map = mutableMapOf<String, LessonCheckpoint>()
+
+        override suspend fun save(checkpoint: LessonCheckpoint) {
+            map["${checkpoint.sessionId}|${checkpoint.stationId}"] = checkpoint
+        }
+
+        override suspend fun read(sessionId: String, stationId: String): LessonCheckpoint? =
+            map["$sessionId|$stationId"]
+
+        override suspend fun clear(sessionId: String, stationId: String) {
+            map.remove("$sessionId|$stationId")
+        }
+    }
+
+    @Test
+    fun lessonStartExposesLabelledTouchTargets() {
+        // The lesson is the deepest screen in the app and the one with the most controls, yet it
+        // had no a11y coverage at all: the module-local Compose test only asserts the resumed
+        // stage header.
+        compose.setContent {
+            ShomaraTheme {
+                ShomaraLessonHost(
+                    stationId = "ST07",
+                    gateway = LessonGateway(client = OkHttpClient(), submitUrl = { null }),
+                    checkpointStore = MemoryCheckpoints(),
+                    onExitToShell = {},
+                )
+            }
+        }
+        compose.waitForIdle()
+        // Guard against a vacuous pass: prove the real lesson screen rendered (its header names
+        // the station) before measuring it, so a blank skeleton could never satisfy the contract.
+        val stationTitle = ShomaraStationCatalog.station("ST07").workingTitle
+        val headerNodes = compose
+            .onAllNodesWithText(stationTitle, substring = true)
+            .fetchSemanticsNodes()
+        assertTrue("LessonStart: the real lesson header did not render", headerNodes.isNotEmpty())
+        assertA11yContract("LessonStart")
     }
 
     /**

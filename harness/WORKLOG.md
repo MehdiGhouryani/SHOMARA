@@ -1075,3 +1075,11 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **رفع (بدون تغییر ظاهر):** hero — که از نظر بصری همان عنوان صفحه است — به‌صورت `heading()` با `contentDescription = ProfileTitle` و گرید پایه به‌صورت `heading()` با `GradeSectionTitle` علامت‌گذاری شدند. حالا ترتیب واقعی TalkBack (title → field → section → CTA) با قرارداد اعلام‌شده در `OnboardingA11y` یکی است.
 - **شواهد:** `ShomaraA11ySweepTest` **۹/۹** (با قاعدهٔ جدید) روی `Pixel_6a`؛ `ShomaraOnboardingGatesTest` ۶/۶؛ `ShomaraHomeScreenTest` ۵/۵؛ `feature:onboarding` ۹۲/۹۲ واحد؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`)؛ APK SHA-256 `db9a59d…`. فایل‌ها: `OnboardingHost` ۵۲۵ · `OtpStep` ۹۴ · `ProfileScreens` ۳۷۷ · `ProfileHero` ۳۶۶ · `ProfileGradeGrid` ۱۵۸.
 - **بازمانده:** O5 باز؛ صفحهٔ درس هنوز پوشش a11y ندارد؛ قاعدهٔ «CTA اصلی یکتا در هر state» هنوز مکانیکی نشده؛ capture/TalkBack `NATIVE_PENDING`.
+
+## 2026-11-19 — DT-21 — صفحهٔ درس وارد sweep شد (سطحی که هیچ پوشش a11y نداشت)
+
+- **شکاف:** صفحهٔ درس عمیق‌ترین و کنترل‌سنگین‌ترین سطح اپ است، ولی تنها اندرویدتست آن (`ShomaraLessonHostResumeTest` در `feature:lesson`) فقط «مرحلهٔ ازسرگیری‌شده» را می‌سنجد — هیچ سنجش نام/اندازه/ساختار روی این صفحه نبود.
+- **انجام:** `lessonStartExposesLabelledTouchTargets` به `ShomaraA11ySweepTest` اضافه شد (اکنون **۱۰ صفحه**). برای اینکه تست «توخالی» سبز نشود، ابتدا وجود هدر واقعی درس (نام ایستگاه ST07) تأیید می‌شود و بعد قرارداد نام/۴۸dp/heading سنجیده می‌شود؛ پس یک اسکلت خالی نمی‌تواند قبول شود. صفحهٔ درس **پاک** بود.
+- **یافتهٔ صادقانه دربارهٔ gate:** `scripts/android-build.mjs` در حالت gate فقط `test` (JVM) و کامپایل `:app` androidTest را اجرا می‌کند و **تست‌های instrumented را اجرا نمی‌کند** — یعنی همهٔ تست‌های دستگاه (androidTest در `:app`، `:core:designsystem`، `:feature:lesson`) در gate فقط کامپایل می‌شوند. اجرای واقعی تا امروز دستی روی `Pixel_6a` انجام و گزارش شده است. افزودن اجرای instrumented به gate یک تصمیم مالک است (نیازمند دستگاه/emulator در CI)، بنابراین فقط ثبت شد و خودسرانه اعمال نشد.
+- **شواهد:** `ShomaraA11ySweepTest` **۱۰/۱۰** روی `Pixel_6a`؛ `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`)؛ APK بدون تغییر بایت‌به‌بایت (`db9a59d…`) چون فقط کد تست اضافه شد.
+- **بازمانده:** O5 باز؛ قاعدهٔ «CTA اصلی یکتا در هر state»؛ اجرای instrumented در CI (نیازمند تصمیم مالک)؛ capture/TalkBack `NATIVE_PENDING`.
