@@ -15,6 +15,7 @@ import com.mathlearning.core.datastore.LessonCheckpointStore
 import com.mathlearning.core.datastore.ShomaraSettingsSnapshot
 import com.mathlearning.core.datastore.ShomaraSettingsStore
 import com.mathlearning.core.designsystem.ShomaraEntryState
+import com.mathlearning.core.designsystem.ShomaraPrimaryCta
 import com.mathlearning.core.designsystem.ShomaraTheme
 import com.mathlearning.core.model.ShomaraAvatarCatalog
 import com.mathlearning.core.model.ShomaraStationCatalog
@@ -48,6 +49,7 @@ import com.mathlearning.feature.settings.ShomaraSettingsState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.OkHttpClient
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -324,6 +326,9 @@ class ShomaraA11ySweepTest {
             }
         }
         assertA11yContract("Home")
+        // The routed Home surface: the Current station node is the one primary action, so a
+        // regression that offers a competing primary (or none) is caught here.
+        assertPrimaryCtaCount("Home", 1)
     }
 
     @Test
@@ -575,6 +580,21 @@ class ShomaraA11ySweepTest {
      * Walks every clickable node of the current screen and reports every violation at once, so a
      * failure names the screen, the label and the measured height instead of just a boolean.
      */
+    /**
+     * AGENTS §6, enforced instead of asserted by eye: a decision state publishes exactly one
+     * primary action, so a child never faces two answers to "what do I do now".
+     */
+    private fun assertPrimaryCtaCount(screen: String, expected: Int) {
+        compose.waitForIdle()
+        val nodes = compose.onAllNodes(SemanticsMatcher.keyIsDefined(ShomaraPrimaryCta)).fetchSemanticsNodes()
+        val labels = nodes.map { node ->
+            node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }
+                ?: node.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")
+                ?: "(unlabelled)"
+        }
+        assertEquals("$screen: expected $expected primary CTA(s), found ${nodes.size} ($labels)", expected, nodes.size)
+    }
+
     private fun assertA11yContract(screen: String, expectActions: Boolean = true) {
         compose.waitForIdle()
         val minHeightPx = with(compose.density) { MinimumTouchTargetDp.dp.toPx() }
@@ -601,6 +621,39 @@ class ShomaraA11ySweepTest {
             "$screen: no heading — assistive technology cannot reach a title on this screen",
             headings.isNotEmpty(),
         )
+
+        // AGENTS §6: exactly one primary CTA per decision state. Two primaries are two answers to
+        // "what do I do now", which is the anti-pattern the rule exists to prevent.
+        // AGENTS §6 is enforced per WINDOW, not across windows. A sheet is a ModalBottomSheet — a
+        // dialog window — and TalkBack traps focus inside it, so the path's Current station behind
+        // the sheet is not reachable while the sheet is open. Counting them together would compare a
+        // reachable decision against an unreachable one; counting them separately still fails any
+        // surface that genuinely offers two competing primaries.
+        val inDialog = SemanticsMatcher.keyIsDefined(ShomaraPrimaryCta) and
+            androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.isDialog())
+        val inWindow = SemanticsMatcher.keyIsDefined(ShomaraPrimaryCta) and
+            !androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.isDialog())
+        val dialogPrimaries = compose.onAllNodes(inDialog).fetchSemanticsNodes()
+        val windowPrimaries = compose.onAllNodes(inWindow).fetchSemanticsNodes()
+        val allPrimaries = dialogPrimaries + windowPrimaries
+        val labels = allPrimaries.map { node ->
+            node.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: "(unlabelled)"
+        }
+        android.util.Log.i("A11Y_SWEEP", "$screen primaries=${allPrimaries.size} window=${windowPrimaries.size} dialog=${dialogPrimaries.size} labels=$labels")
+        assertTrue(
+            "$screen: ${windowPrimaries.size} primary CTAs compete for the decision in the page ($labels)",
+            windowPrimaries.size <= 1,
+        )
+        assertTrue(
+            "$screen: ${dialogPrimaries.size} primary CTAs compete for the decision in the sheet ($labels)",
+            dialogPrimaries.size <= 1,
+        )
+        if (!expectActions) {
+            assertTrue(
+                "$screen: an action-less state must not advertise a primary CTA ($labels)",
+                allPrimaries.isEmpty(),
+            )
+        }
     }
 
     private companion object {

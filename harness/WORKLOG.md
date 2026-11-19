@@ -1136,3 +1136,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **بازبینی خودم:** بررسی شد که در فایل‌های اصلاح‌شده (والدین، ایستگاه، مرحلهٔ درس، من، تنظیمات) هیچ رشتهٔ inline جا نمانده باشد — تنها باقی‌مانده‌ها **داخل** همان توابع سازندهٔ canonical هستند. ✓
 - **شواهد:** `npm run android:gate` = exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ `android:assemble:debug` exit 0؛ `:core:designsystem` debug+release+JVM سبز؛ APK `a9da074…`. sweep دست‌نخورده ماند (هیچ UI رندرشده‌ای تغییر نکرد) و آخرین اجرای تأییدشده‌اش ۲۹/۲۹ در DT-26 است — این را صریح ثبت می‌کنم.
 - **بازمانده:** O5 باز؛ قاعدهٔ CTA اصلی؛ instrumented در CI؛ شواهد دستگاه؛ بدهی Linux parity.
+
+## 2026-11-19 — DT-28 — قاعدهٔ «یک CTA اصلی» از توصیف به قرارداد اجراشدنی تبدیل شد
+
+- **قرارداد جدید در Design System:** `ShomaraPrimaryCta` یک `SemanticsPropertyKey<Boolean>` است و `shomaraPrimaryCta` روی `SemanticsPropertyReceiver`. فقط `ShomaraButtonVariant.Primary` آن را منتشر می‌کند؛ Secondary/Ghost هرگز — تا صفحه نتواند ناخواسته دو عمل اصلی تبلیغ کند. تغییر **افزایشی** است: هیچ label/role/stateDescription عوض نشد.
+- **شکاف واقعی که پیدا شد:** Home (Ready) صفر CTA اصلی داشت، چون عمل اصلی Home **گرهٔ ایستگاه فعلی روی مسیر** است نه یک دکمه. پس هر سطحی که تصمیم را می‌گیرد باید بتواند اعلام کند — گرهٔ Current حالا `shomaraPrimaryCta = true` می‌گذارد (به‌همراه `selected`).
+- **اندازه‌گیری کامل ۲۹ state روی دستگاه** (logcat `A11Y_SWEEP`): **هیچ سطحی دو CTA اصلی ندارد.** توزیع: یک CTA اصلی در `Home`(گرهٔ Current)، `Home/Error`(تلاش دوباره)، `StationSheet`(شروع)، `Settings`+`Dirty`+`Saving`+`Error`(ذخیره)، `ParentGate`+`LockedOut`(ورود)، `LessonStart`(بررسی)، `OnboardingProfile`(ادامه)؛ صفر در حالت‌های اطلاعاتی (`Me*`, `Practice/*`, `Home/Loading|Empty|Offline`, `ParentHome`, `OnboardingPlacement`) و در `StationSheet/Locked|Offline` که CTA‌شان عمداً Ghost است (تصمیم ثبت‌شده، نه تصمیم‌گیری).
+- **دقت در تعریف قاعده:** یک بار تست شکست خورد (`StationSheet: 2 primary CTAs`) و معلوم شد شیت یک پنجرهٔ **Dialog** است (`dialogs=1`) و TalkBack فوکوس را داخل آن نگه می‌دارد؛ شمارش بین‌پنجره‌ای، یک تصمیمِ در دسترس را با یک تصمیمِ غیرقابل‌دسترس مقایسه می‌کرد. قاعده به «حداکثر یک CTA اصلی **در هر پنجره**» اصلاح شد (`hasAnyAncestor(isDialog())`) — سخت‌گیری حفظ شد، نه اینکه assertion حذف شود.
+- **تست‌ها:** helper جدید `assertPrimaryCtaCount(screen, expected)` و Home حالا صریحاً **دقیقاً ۱** CTA اصلی را assert می‌کند؛ sweep همان **۲۹/۲۹** روی `Pixel_6a`.
+- **شواهد:** `android:gate` exit 0 (`ANDROID_BUILD: PASS`)، ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `d6f482c…`.
+- **بازمانده:** O5 باز؛ instrumented در CI؛ شواهد دستگاه فیزیکی؛ بدهی Linux parity.

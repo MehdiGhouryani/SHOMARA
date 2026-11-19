@@ -53,6 +53,7 @@ import com.mathlearning.core.designsystem.ShomaraClay
 import com.mathlearning.core.designsystem.ShomaraClayDepth
 import com.mathlearning.core.designsystem.ShomaraDigits
 import com.mathlearning.core.designsystem.ShomaraTokens
+import com.mathlearning.core.designsystem.shomaraPrimaryCta
 import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.model.StationNodeMeta
 
@@ -124,7 +125,13 @@ internal fun ShomaraPathNodeItem(
                         role = Role.Button
                         contentDescription = meta.workingTitle
                         stateDescription = stateLabel
-                        if (isCurrent) selected = true
+                        if (isCurrent) {
+                    selected = true
+                    // The Current station IS Home's primary action — the path is the decision, not a
+                    // button. Declaring it lets the sweep enforce AGENTS §6 on the routed surface
+                    // instead of assuming it because no ShomaraButton happens to be primary.
+                    shomaraPrimaryCta = true
+                }
                     }
                     .clickable(
                         enabled = ShomaraPathGraphLogic.tapEnabled(state),

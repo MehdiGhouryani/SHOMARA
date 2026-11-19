@@ -24,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.role
@@ -83,6 +85,20 @@ class ShomaraTapGuard(
 enum class ShomaraButtonState { Default, Pressed, Focused, Disabled, Loading }
 
 enum class ShomaraButtonVariant { Primary, Secondary, Ghost }
+
+/**
+ * AGENTS §6 rule «in every state there is exactly one clear primary CTA» was prose only: nothing in
+ * the semantics tree said which action a screen considers primary, so no test could check it and
+ * reviewers counted by eye. A Primary-variant [ShomaraButton] now publishes this flag, which lets
+ * the instrumented sweep count primary CTAs per state and fail when two actions compete for the
+ * decision — or when a decision state offers none.
+ *
+ * It is additive: no label, role or state description changes, so assistive technology and the
+ * existing semantics assertions are unaffected.
+ */
+val ShomaraPrimaryCta = SemanticsPropertyKey<Boolean>("ShomaraPrimaryCta")
+
+var SemanticsPropertyReceiver.shomaraPrimaryCta by ShomaraPrimaryCta
 
 /** Pure button logic — JVM-testable; the composable is a thin renderer of this contract. */
 object ShomaraButtonLogic {
@@ -236,6 +252,9 @@ fun ShomaraButton(
                 role = Role.Button
                 if (state == ShomaraButtonState.Disabled) disabled()
                 if (semanticsLabel.isNotEmpty()) stateDescription = semanticsLabel
+                // Only the Primary variant claims the decision; Secondary/Ghost deliberately do not,
+                // so a screen cannot accidentally advertise two primary actions.
+                if (variant == ShomaraButtonVariant.Primary) shomaraPrimaryCta = true
             }
             .let {
                 if (interactive) {

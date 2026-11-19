@@ -1794,7 +1794,8 @@
           "evidence": [
             "apps/android/core/designsystem/src/androidTest/.../ShomaraInteractiveSemanticsTest.kt (10 instrumented tests)",
             "harness/WORKLOG.md M13: TalkBack 15.0.0 real gesture walkthrough — spoken announcements + double-tap activation verified on welcome/phone/tabs/settings/lesson-exit; pid stable, no FATAL",
-            "English TTS engine limitation recorded: pronunciation fidelity of Persian is CONTENT-006 (narrator) domain, not a UI defect"
+            "English TTS engine limitation recorded: pronunciation fidelity of Persian is CONTENT-006 (narrator) domain, not a UI defect",
+            "DT-28 (2026-11-19): AGENTS §6 «in every state there is exactly one clear primary CTA» was prose — nothing in the semantics tree said which action a screen considers primary, so only a reviewer could check it. A Primary-variant ShomaraButton now publishes ShomaraPrimaryCta (a SemanticsPropertyKey<Boolean>) and nothing else does, which makes the rule machine-checkable. Measuring the 29 swept states found a real gap rather than a clean sheet: Home in its Ready state published zero primary actions, because Home's decision is the Current station node on the path rather than a button — that node now declares the flag too. The first run then failed with «StationSheet: 2 primary CTAs», which turned out to be a cross-window comparison: the sheet is a ModalBottomSheet dialog window and TalkBack traps focus inside it, so the rule was corrected to at most one primary per WINDOW (hasAnyAncestor(isDialog())) instead of being dropped. Final measurement: no surface offers competing primaries; the states with zero are informational (Me*, Practice/*, Home Loading/Empty/Offline, ParentHome, OnboardingPlacement) or deliberately Ghost (the locked and offline station sheets). The sweep stays at 29/29 and Home now asserts exactly one."
           ]
         },
         {
