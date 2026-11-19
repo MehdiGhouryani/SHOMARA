@@ -92,9 +92,11 @@ class ShomaraInteractiveSemanticsTest {
             ShomaraOtpInput(state = state, onStateChange = {})
         }
         // F-22b: one announcement per cell — position plus its digit, so TalkBack never
-        // reads a cell twice.
-        compose.onNodeWithText("1").assert(hasContentDescription("رقم ۱ از ۴: ۱"))
-        compose.onNodeWithText("2").assert(hasContentDescription("رقم ۲ از ۴: ۲"))
+        // reads a cell twice. The position is Persian; the digit stays exactly as displayed,
+        // because the Persian/Latin digit choice is an explicitly open owner decision
+        // (F-22 الف) and this component must not silently pre-empt it.
+        compose.onNodeWithText("1").assert(hasContentDescription("رقم ۱ از ۴: 1"))
+        compose.onNodeWithText("2").assert(hasContentDescription("رقم ۲ از ۴: 2"))
     }
 
     @Test
@@ -153,7 +155,10 @@ class ShomaraInteractiveSemanticsTest {
         compose.setContent {
             ShomaraTextField(value = "09123456789", onValueChange = {}, label = "شمارهٔ همراه")
         }
-        compose.onNode(hasErrorMessage("شماره باید ۱۱ رقم باشد")).assertCountEquals(0)
+        // assertCountEquals is only defined on node *collections*; this module's instrumented
+        // tests had never been compiled, so the call had never failed the build. assertDoesNotExist
+        // carries the same meaning for a single node query: no node may match the error matcher.
+        compose.onNode(hasErrorMessage("شماره باید ۱۱ رقم باشد")).assertDoesNotExist()
     }
 
     private companion object {
