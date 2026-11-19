@@ -1229,3 +1229,14 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **نتیجه:** اوراکل روی هر ۹ سطح **صفر** برچسب جا‌نشده گزارش می‌کند؛ بودجه‌ها روی ۰ ماندند.
 - **شواهد:** `ShomaraA11ySweepTest` **۴۴/۴۴** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK `f3c2cb4…`.
 - **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه فیزیکی.
+
+## 2026-11-19 — DT-37 — پوشش چهار حالت ورودی Home در ۳۶۰dp/۲× و یک invariant ضد-ساختگی که تست را اصلاح کرد
+
+- **پوشش تازه:** Home تا امروز فقط در حالت مسیر حل‌شده سنجیده می‌شد. حالا هر چهار حالت ورودی جداگانه تست دارند: `HomeLoading`، `HomeError`، `HomeEmpty`، `HomeOffline` — همه با اوراکل کالیبره‌شده و بودجهٔ صفر.
+- **ادعای Error بررسی و باطل شد:** فرض اولیه‌ام این بود که `entryState = Error` با `retryAvailable = false` یک بن‌بست می‌سازد (متن «دوباره تلاش کن» بدون دکمه). با خواندن کد مشخص شد مسیر راه‌اندازی (`ShomaraLaunchRecoveryScreen`) recovery واقعی خودش را دارد (retry + شروع از اول) و `ShomaraPathScreen` هم `onRetry` را فقط وقتی می‌دهد که واقعاً قابل retry باشد. پس بن‌بستی وجود ندارد؛ اما چون `retryLabel` متن ثابت است، تست جدید **اتصال** را پین می‌کند: در حالت Error هم `ErrorBody` و هم `Retry` باید دیده شوند.
+- **invariant ای که تست من نقض کرد (و درست بود):** نسخهٔ اول تست، `ShomaraPathProgress` حل‌نشده با شناسهٔ ایستگاه می‌ساخت؛ سازندهٔ آن با `require(...)` رد کرد. پیام دقیق: «unresolved progress cannot carry fabricated or partial station state». این همان قاعدهٔ ضد-ساختگی O5 است، پس **تست** اصلاح شد نه کد: Offline تنها حالتی است که دادهٔ واقعی دارد (resolved + offline)، بقیه با `unresolved()` ساخته می‌شوند.
+- **محدودیت فنی کشف‌شده:** در Compose test rule هر تست فقط **یک** `setContent` می‌تواند داشته باشد؛ تلاش برای حلقه روی چهار حالت با `IllegalStateException: has already set content` شکست خورد. تست به چهار تست مستقل با یک helper مشترک `HomeInEntryState` شکسته شد.
+- **اسکن تکراری‌ها (نتیجهٔ منفی):** اسکنر پنجره‌ای ۸ تا ۱۱ خطی روی ۲۲۱ فایل دست‌نویس اجرا شد؛ ۶۸۷ گروه همسان پیدا شد که تقریباً همه‌شان بلوک `import` و KDoc هستند، نه چیدمان تکراری. یعنی ادغام بیشتری که ارزش ریسک داشته باشد پیدا نشد — این نتیجهٔ منفی ثبت می‌شود تا دوباره دنبالش نگردیم.
+- **پاکیزگی خروجی تولیدشده (تأیید):** `git ls-files` صفر فایل `build/` یا `generated/` نشان داد و `git check-ignore` تأیید کرد `apps/android/.gitignore` الگوی `**/build/` را می‌گیرد. یعنی AGENTS §4 در این بخش رعایت می‌شود.
+- **شواهد:** `ShomaraA11ySweepTest` **۴۸/۴۸** روی `Pixel_6a`؛ `android:gate` exit 0 (`ANDROID_BUILD: PASS`) با ۸۱ suite / ۵۹۱ تست / ۰ خطا؛ APK بدون تغییر `f3c2cb4…` (فقط تست اضافه شد).
+- **بازمانده:** O5؛ تصمیم‌های مالک؛ instrumented در CI؛ شواهد دستگاه فیزیکی.

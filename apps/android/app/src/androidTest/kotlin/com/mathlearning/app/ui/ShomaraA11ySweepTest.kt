@@ -486,6 +486,62 @@ class ShomaraA11ySweepTest {
     }
 
     @Test
+    fun homeLoadingFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("HomeLoading") { HomeInEntryState(ShomaraEntryState.Loading) }
+    }
+
+    @Test
+    fun homeErrorFitsAt360dpWithDoubleText() {
+        // Error is the entry state that matters most: its body tells the child to try again, so the
+        // retry has to be present in the same state. A message that instructs an action the screen
+        // does not offer is a dead end on the app's first screen, so the affordance is asserted
+        // alongside the fit at the binding size.
+        assertFitsAtNarrowWidth("HomeError") { HomeInEntryState(ShomaraEntryState.Error) }
+        assertTextPresent("HomeError", ShomaraHomeStrings.ErrorBody)
+        assertTextPresent("HomeError", ShomaraHomeStrings.Retry)
+    }
+
+    @Test
+    fun homeEmptyFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("HomeEmpty") { HomeInEntryState(ShomaraEntryState.Empty) }
+    }
+
+    @Test
+    fun homeOfflineFitsAt360dpWithDoubleText() {
+        assertFitsAtNarrowWidth("HomeOffline") { HomeInEntryState(ShomaraEntryState.Offline) }
+    }
+
+    /**
+     * Home as the shell holds it in one of the four non-path entry states. Offline is the only one
+     * that carries station data, because it is the only one the path renders from a resolved
+     * snapshot; the others use the unresolved progress the shell actually has at that moment.
+     * `ShomaraPathProgress` rejects an unresolved snapshot that carries station ids — the
+     * anti-fabrication rule — so no helper may invent data to make a state easier to draw.
+     */
+    @Composable
+    private fun HomeInEntryState(entryState: ShomaraEntryState) {
+        val progress = if (entryState == ShomaraEntryState.Offline) {
+            ShomaraPathProgress(
+                completedStationIds = setOf("ST01", "ST02", "ST03"),
+                perfectStationIds = setOf("ST02"),
+                currentStationId = "ST04",
+                offline = true,
+                isResolved = true,
+            )
+        } else {
+            ShomaraPathProgress.unresolved()
+        }
+        ShomaraHomeScreen(
+            state = ShomaraHomeUiState(
+                progress = progress,
+                entryState = entryState,
+                retryAvailable = true,
+            ),
+            onAction = {},
+        )
+    }
+
+    @Test
     fun stationSheetLockedFitsAt360dpWithDoubleText() {
         assertFitsAtNarrowWidth("StationSheetLocked") {
             // Rendered directly instead of tapping a node in the shell: at 360dp the far stations sit
@@ -813,6 +869,10 @@ private val CLIPPED_BUDGET: Map<String, Int> = mapOf(
     "Settings" to 0,
     "ParentHome" to 0,
     "OnboardingProfile" to 0,
+    "HomeLoading" to 0,
+    "HomeError" to 0,
+    "HomeEmpty" to 0,
+    "HomeOffline" to 0,
     "StationSheetLocked" to 0,
     "LessonDiscover" to 0,
     "ParentGateLockedOut" to 0,
