@@ -72,9 +72,7 @@ internal fun ShomaraPathNodeItem(
 ) {
     val globalIndex = meta.ordinal - 1
     val isCurrent = state == ShomaraPathNodeState.Current
-    val amplitude = ShomaraPathGraphLogic.zigzagAmplitudeDp(contentWidth)
     val exitOffset = ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex, isRtl, contentWidth)
-    val enterOffset = ShomaraPathGraphLogic.connectorEnterOffsetDp(globalIndex, isRtl, contentWidth)
     val accent = ShomaraPathGraphLogic.accentFor(meta.chapter)
     val colors = ShomaraPathGraphLogic.colorsFor(state, meta.chapter)
     val nodeSize = if (isCurrent) ShomaraTokens.ComponentNodeCurrent else ShomaraTokens.ComponentNodeSize
@@ -88,8 +86,14 @@ internal fun ShomaraPathNodeItem(
 
     BoxWithConstraints(modifier = Modifier.padding(bottom = ShomaraTokens.Space24)) {
         val half = (maxWidth - PathNodeColumnWidth) / 2f
+        // DT-79: the stroke must reach the NEXT node's circle. The next row's circle center
+        // sits one item below: this canvas ends 24dp (the item's bottom padding) above the
+        // next item's top, then the circle center is 36dp in (42dp for a Current row with
+        // its 12dp spacer). 68dp covers the normal center exactly and lands inside the
+        // circle for the taller Current row; an overshoot hides behind the next circle
+        // (later items draw on top), an undershoot would show a gap.
         val connectorBottom = if (meta.ordinal < com.mathlearning.core.model.ShomaraStationCatalog.STATION_COUNT) {
-            ShomaraTokens.Space32
+            ShomaraTokens.Space24 + ShomaraTokens.ComponentNodeSize / 2f + ShomaraTokens.Space8
         } else {
             0.dp
         }
@@ -100,14 +104,31 @@ internal fun ShomaraPathNodeItem(
                 .offset(x = half + exitOffset)
                 .clearAndSetSemantics {},
         ) {
+            // DT-79 GEOMETRY (measured on device with calibration dots): this Canvas matches the
+            // BoxWithConstraints, which wraps the node column — so it is exactly
+            // PathNodeColumnWidth (160dp) wide and moves WITH the node column (same offset).
+            // The node circle's center is therefore at the canvas's own center in LOCAL
+            // coordinates, and drawing runs left-to-right.
             val localCenter = size.width / 2f
-            val enterCenter = localCenter + (enterOffset - exitOffset).toPx()
+            // DT-79 CRITICAL FIX (direction): the node Box anchors at the item's START edge and
+            // `Modifier.offset` moves it toward END as the offset value grows. In RTL that is
+            // LEFTWARD — the OPPOSITE of the canvas's local x-axis — so the horizontal delta to
+            // the next node must be NEGATED in RTL. On device the un-negated delta mirrored
+            // every connector: the ST01→ST02 stroke ran to x=936 while ST02 sits at x=446.
+            val directionSign = if (isRtl) -1f else 1f
+            val nextOffset = ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex + 1, isRtl, contentWidth)
+            val nextCenter = localCenter + directionSign * (nextOffset - exitOffset).toPx()
             val strokePx = ShomaraTokens.Space12.toPx()
-            val c1y = size.height * 0.25f
-            val c2y = size.height * 0.75f
+            // The curve starts at THIS node's circle center (36dp below the item top) and
+            // lands at the next node's circle center; a single cubic whose control points
+            // keep the tangent vertical at both ends, so the winding reads as one path.
+            val startY = ShomaraTokens.ComponentNodeSize.toPx() / 2f
+            val endY = size.height + connectorBottom.toPx()
+            val c1y = startY + (endY - startY) * 0.33f
+            val c2y = startY + (endY - startY) * 0.67f
             val connector = Path().apply {
-                moveTo(enterCenter, 0f)
-                cubicTo(enterCenter, c1y, localCenter, c2y, localCenter, size.height + connectorBottom.toPx())
+                moveTo(localCenter, startY)
+                cubicTo(localCenter, c1y, nextCenter, c2y, nextCenter, endY)
             }
             val connectorColor = if (state == ShomaraPathNodeState.Completed || state == ShomaraPathNodeState.Perfect) {
                 accent

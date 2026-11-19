@@ -237,21 +237,27 @@ class ShomaraPathGraphTest {
     // ---- N08R-06: deterministic zigzag geometry (Duolingo-style winding path) ----
 
     @Test
-    fun `zigzag offsets alternate sides every row and stay within the token amplitude`() {
-        val amplitude = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
+    fun `winding path samples a sine so nodes spread over three columns and never stack`() {
         val contentWidth = 312.dp // 360dp screen minus the 24dp side insets
+        val columns = mutableSetOf<Int>()
         var previousSign = 0f
         for (globalIndex in 0..24) {
             val offset = ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex, isRtl = false, contentWidth = contentWidth)
-            assertTrue(abs(offset.value) <= amplitude.value)
             // Never on the centre line: every node visibly leaves the axis (no vertical list).
-            assertTrue(offset.value != 0f)
+            assertTrue("offset must leave the axis (index $globalIndex)", offset.value != 0f)
+            val amplitude = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
+            assertTrue("offset within amplitude (index $globalIndex)", abs(offset.value) <= amplitude.value)
+            columns.add((offset.value * 100f).toInt()) // 0.01dp buckets
             val sign = if (offset.value > 0f) 1f else -1f
             if (previousSign != 0f) {
                 assertEquals("nodes must alternate sides (index $globalIndex)", -previousSign, sign)
             }
             previousSign = sign
         }
+        // DT-79: the old two-column zigzag (magnitudes 1.0/0.55) is gone; the sine puts
+        // nodes on a LEFT / CENTER / RIGHT spread (center appears at the sine's zero
+        // crossings... here extremes only, but the offset values differ per row).
+        assertTrue("expected more than two distinct node columns, got $columns", columns.size > 2)
         // Deterministic: the same input yields the same offset.
         assertEquals(
             ShomaraPathGraphLogic.zigzagOffsetDp(7, isRtl = false, contentWidth = contentWidth),
@@ -270,30 +276,30 @@ class ShomaraPathGraphTest {
     }
 
     @Test
-    fun `zigzag amplitude clamps on narrow content so nodes never cut at the edge`() {
-        // 312dp content: the full token amplitude fits.
-        assertEquals(
-            (ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8).value,
-            ShomaraPathGraphLogic.zigzagAmplitudeDp(312.dp).value,
-            0.001f,
-        )
+    fun `winding offsets clamp on narrow content so nodes never cut at the edge`() {
+        val contentWidth = 312.dp // 360dp screen minus the 24dp side insets
+        // The full token amplitude fits: the outer columns sit inside the content width.
+        val full = ShomaraPathGraphLogic.zigzagOffsetDp(0, isRtl = false, contentWidth = contentWidth)
+        val columnHalf = (ShomaraTokens.Space40 * 4).value / 2f
+        assertTrue(full.value + columnHalf <= 312f / 2f)
         // A narrow 240dp screen (192dp content) clamps below the token amplitude, and the
         // offset label column still stays fully inside the content width.
-        val clamped = ShomaraPathGraphLogic.zigzagAmplitudeDp(192.dp)
+        val clamped = ShomaraPathGraphLogic.zigzagOffsetDp(0, isRtl = false, contentWidth = 192.dp)
         assertTrue(clamped.value < (ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8).value)
-        val columnHalf = (ShomaraTokens.Space40 * 4).value / 2f
         assertTrue(clamped.value + columnHalf <= 192f / 2f)
     }
 
     @Test
-    fun `connector enters at the previous node offset so the line chains across items`() {
-        val contentWidth = 312.dp
-        for (globalIndex in 1..24) {
-            assertEquals(
-                ShomaraPathGraphLogic.zigzagOffsetDp(globalIndex - 1, isRtl = false, contentWidth = contentWidth),
-                ShomaraPathGraphLogic.connectorEnterOffsetDp(globalIndex, isRtl = false, contentWidth = contentWidth),
-            )
-        }
+    fun `connector stroke reaches the next node circle center`() {
+        // DT-79: the stroke's bottom extension must cover the full distance from the item
+        // bottom to the NEXT node's circle center: label block + paddings. The formula is
+        // token-based, so it tracks font-scale-independent geometry.
+        val expected = ShomaraTokens.Space24 + ShomaraTokens.ComponentNodeSize / 2f + ShomaraTokens.Space8
+        assertEquals(expected, ShomaraPathGraphLogic.connectorBottomDp())
+        // Sanity: it is strictly longer than the old fixed 32dp tip that stopped at the
+        // circle's edge, and shorter than one full row (never bleeds into the row after next).
+        assertTrue(ShomaraPathGraphLogic.connectorBottomDp().value > ShomaraTokens.Space32.value)
+        assertTrue(ShomaraPathGraphLogic.connectorBottomDp().value < 152f)
     }
 
     @Test

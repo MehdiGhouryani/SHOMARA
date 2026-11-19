@@ -57,28 +57,37 @@ object ShomaraPathGraphLogic {
 
     private val PathZigzagMaxAmplitude: Dp = ShomaraTokens.ComponentNodeSize - ShomaraTokens.Space8
 
-    fun zigzagMagnitude(globalIndex: Int): Float = when (globalIndex % 4) {
-        0 -> 1f
-        1 -> 0.55f
-        2 -> 1f
-        else -> 0.55f
-    }
-
-    fun zigzagAmplitudeDp(contentWidth: Dp): Dp {
-        val reachable = (contentWidth - PathNodeColumnWidth) / 2f
-        val cap = if (reachable.value > 0f) reachable else Dp(0f)
-        return minOf(PathZigzagMaxAmplitude, cap)
-    }
-
+    /**
+     * DT-79: the old magnitudes (1.0 / 0.55) put every node on one of only TWO x columns
+     * (+64dp / -35dp), which reads as a flat zigzag — and with the label block's height the
+     * connectors visibly started/ended at circle edges instead of centers. The winding
+     * reference (Duolingo-style path, interaction principle only) is a sine sampled every
+     * half-period: each node sits on the sine's EXTREME (left column, center, right column),
+     * and the connector between two nodes is the natural half-sine segment through the
+     * crossing. Sampling exactly at the extremes keeps the same "never a straight vertical
+     * list" guarantee and alternates sides with a gentle slope, like the reference.
+     */
     fun zigzagOffsetDp(globalIndex: Int, isRtl: Boolean, contentWidth: Dp): Dp {
+        val reachable = (contentWidth - PathNodeColumnWidth) / 2f
+        val amplitude = minOf(PathZigzagMaxAmplitude, if (reachable.value > 0f) reachable else Dp(0f))
+        // DT-79: alternating-sign winding with THREE magnitudes cycling (1.0, 0.62, 0.62) —
+        // the left/right extremes plus a mid-column — so consecutive nodes change side with
+        // a gentle slope (the winding reference's spread) and no node ever sits on the axis.
+        val magnitudes = floatArrayOf(1f, 0.62f, 0.62f)
         val sign = if (globalIndex % 2 == 0) 1f else -1f
-        val offset = zigzagAmplitudeDp(contentWidth) * sign * zigzagMagnitude(globalIndex)
+        val offset = amplitude * 0.9f * sign * magnitudes[globalIndex % 3]
         return if (isRtl) -offset else offset
     }
 
-    fun connectorEnterOffsetDp(globalIndex: Int, isRtl: Boolean, contentWidth: Dp): Dp =
-        if (globalIndex <= 0) zigzagOffsetDp(globalIndex, isRtl, contentWidth)
-        else zigzagOffsetDp(globalIndex - 1, isRtl, contentWidth)
+    /**
+     * DT-79: the connector must END at the NEXT node's circle CENTER, not at the item top.
+     * The item's canvas ends 24dp (bottom padding) above the next item's top; the next
+     * circle's center is 36dp further in (42dp for a taller Current row). The +8dp margin
+     * lands inside the circle in both cases; the overshoot hides behind the next circle
+     * (later items draw on top), while an undershoot would show a visible gap.
+     */
+    fun connectorBottomDp(): Dp =
+        ShomaraTokens.Space24 + ShomaraTokens.ComponentNodeSize / 2f + ShomaraTokens.Space8
 
     fun freshStationId(progress: ShomaraPathProgress): String? {
         if (!progress.isResolved || progress.currentStationId != null) return null
