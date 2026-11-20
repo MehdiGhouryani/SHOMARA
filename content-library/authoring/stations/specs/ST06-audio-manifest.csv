@@ -1,0 +1,53 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST06.P1.s00.pr,pr,اتاق بازی,به اتاق بازی دوستان خوش آمدی,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s00,پردهٔ آغاز
+ST06.P1.s01.pr,pr,,دو ستون چینه را کنار هم بگذار,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s01,مجموع
+ST06.P1.s01.a,rv,,دو و سه می‌شود پنج. از پایین رنگ کن,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s01,قاعدهٔ رنگ
+ST06.P1.s01.done,done,,دو رنگ در یک ستون,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s01,پایان قدم
+ST06.P1.s02.pr,pr,,به چینه‌های سبز نگاه کن,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s02,خط‌زدن
+ST06.P1.s02.a,rv,,از پنج چینه دو تا برداشتیم، سه ماند,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s02,جملهٔ کتاب
+ST06.P1.s02.done,done,,خط از بالا، باقی‌مانده پایین,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s02,پایان قدم
+ST06.P1.s03.pr,pr,,کاغذ را از خط وسط تا کن,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s03,تقارن
+ST06.P1.s03.a,rv,,فشار بده. قرینه پیدا شد!,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s03,آشکارسازی
+ST06.P1.s03.done,done,,دو طرفِ خطِ تا مثل هم‌اند,fa-IR-DilaraNeural,-15%,draft,ST06.P1.s03,پایان کشف
+ST06.S.sum.pr,pr,,دو ستون با هم، چند می‌شود؟,fa-IR-DilaraNeural,-15%,draft,T04,مجموع
+ST06.S.sum.h1,hint,,ستون را از پایین رنگ کن,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ یک
+ST06.S.sum.h2,hint,,راهنما یک خانه را رنگ می‌کند,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ دو
+ST06.S.sum.h3,hint,,با هم رنگ می‌کنیم و می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ سه
+ST06.S.cross.pr,pr,,از بالا خط بزن و باقی‌مانده را بگو,fa-IR-DilaraNeural,-15%,draft,T04,خط‌زدن
+ST06.S.cross.h1,hint,,خانه‌های بدون خط را بشمار,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ یک
+ST06.S.cross.h2,hint,,راهنما یک خط می‌زند,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ دو
+ST06.S.cross.h3,hint,,با هم خط می‌زنیم و می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ سه
+ST06.S.story.pr,pr,,گوش کن و جواب را نشان بده,fa-IR-DilaraNeural,-15%,draft,T11,داستان
+ST06.S.story.h1,hint,,داستان را دوباره گوش کن,fa-IR-DilaraNeural,-15%,draft,T11,سرنخ یک
+ST06.S.story.h2,hint,,راهنما مرحلهٔ اول را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T11,سرنخ دو
+ST06.S.story.h3,hint,,با هم صحنه را می‌چینیم,fa-IR-DilaraNeural,-15%,draft,T11,سرنخ سه
+ST06.S.story.taxi.nr,narr,,سه نفر در تاکسی‌اند. یکی سوار شد. چند نفرند؟,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i05,راوی
+ST06.S.story.bus.nr,narr,,چهار نفر در اتوبوس‌اند. دو نفر پیاده شدند. چند ماندند؟,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i06,راوی
+ST06.S.story.balloon.nr,narr,,دو بادکنک بود. یکی دیگر آورده شد. چند شد؟,fa-IR-DilaraNeural,-15%,draft,ST06.F3.t1,راوی
+ST06.S.story.apple.nr,narr,,یک سیب بود. دو سیب دیگر گذاشته شد. چند شد؟,fa-IR-DilaraNeural,-15%,draft,ST06.F3.t2,راوی
+ST06.S.story.car.nr,narr,,دو ماشین بنفش بود. دو ماشین دیگر آمدند. چند شد؟,fa-IR-DilaraNeural,-15%,draft,ST06.F3.t3,راوی
+ST06.S.story.horse.nr,narr,,سه اسب چوبی بود. یکی برداشته شد. چند ماند؟,fa-IR-DilaraNeural,-15%,draft,ST06.F3.t4,راوی
+ST06.S.story.crayon.nr,narr,,پنج مداد رنگی بود. دو تا برداشته شد. چند ماند؟,fa-IR-DilaraNeural,-15%,draft,ST06.F3.t5,راوی
+ST06.S.story.ball.nr,narr,,چهار توپ بود. یکی غلت رفت. چند ماند؟,fa-IR-DilaraNeural,-15%,draft,ST06.F3.t6,راوی
+ST06.S.story.twostep.nr,narr,,سه موش بود. یکی آمد. دو تا رفتند. چند ماند؟,fa-IR-DilaraNeural,-15%,draft,ST06.P5.i03,راوی دومرحله‌ای
+ST06.S.sym.pr,pr,,قرینه را کامل کن,fa-IR-DilaraNeural,-15%,draft,T07,تقارن
+ST06.S.sym.h1,hint,,خانهٔ مقابل را پیدا کن,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ یک
+ST06.S.sym.h2,hint,,راهنما یک خانه را رنگ می‌کند,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ دو
+ST06.S.sym.h3,hint,,کاغذ تا می‌شود؛ خودت ببین,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ سه
+ST06.S.symboth.pr,pr,,این بار دو خط تا داریم,fa-IR-DilaraNeural,-15%,draft,ST06.P5.i04,دو محور
+ST06.S.ident.pr,pr,,کدام قرینه است؟,fa-IR-DilaraNeural,-15%,draft,T07 identify,تشخیص
+ST06.S.stencil.pr,pr,,با شابلون بکش و تا کن,fa-IR-DilaraNeural,-15%,draft,T07 stencil,شابلون
+ST06.S.build.pr,pr,,نیمهٔ دیگر را بساز,fa-IR-DilaraNeural,-15%,draft,T07 بازی,دور عمودی
+ST06.S.buildH.pr,pr,,این بار بالا و پایین,fa-IR-DilaraNeural,-15%,draft,T07 بازی,دور افقی
+ST06.S.build.ok,ok,,دو نیمه مثل هم شدند!,fa-IR-DilaraNeural,-15%,draft,T07 بازی,هر دور
+ST06.S.Lpat.pr,pr,,بعدی کدام است؟,fa-IR-DilaraNeural,-15%,draft,T15 مرور,الگوی L
+ST06.S.Lpat.h1,hint,,از اول بلند بگو: سبز، آبی، قرمز,fa-IR-DilaraNeural,-15%,draft,T15 مرور,سرنخ یک
+ST06.P2.i01.ok,ok,,درست! دو و سه می‌شود پنج,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i01,بازخورد
+ST06.P2.i02.ok,ok,,درست! یک و چهار می‌شود پنج,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i02,بازخورد
+ST06.P2.i03.ok,ok,,درست! سه ماند,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i03,بازخورد
+ST06.P2.i04.ok,ok,,درست! سه ماند,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i04,بازخورد
+ST06.P2.i05.ok,ok,,درست! چهار نفر شدند,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i05,بازخورد
+ST06.P2.i06.ok,ok,,درست! دو نفر ماندند,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i06,بازخورد
+ST06.P2.i07.ok,ok,,درست! قرینه شد,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i07,بازخورد
+ST06.P2.i08.ok,ok,,درست! نوبت قرمز بود,fa-IR-DilaraNeural,-15%,draft,ST06.P2.i08,بازخورد
+ST06.P5.i01.pr,pr,,فقط قرمزها! سبز نه,fa-IR-DilaraNeural,-15%,draft,ST06.P5.i01,مزاحم
