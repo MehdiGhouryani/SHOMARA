@@ -1,0 +1,49 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST09.P1.s00.pr,pr,کلاس درس,به کلاس نگاه کن. همه‌چیز را می‌شود شمرد,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s00,پردهٔ آغاز
+ST09.P1.s01.pr,pr,,همهٔ این‌ها پنج‌تاییند,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s01,نمایش‌های ۵
+ST09.P1.s01.a,rv,,پنج انگشت، پنج نقطه، پنج چوب. همه پنج,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s01,آشکارسازی
+ST09.P1.s01.done,done,,این هم نماد پنج,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s01,معرفی نماد
+ST09.P1.s02.pr,pr,,حالا پنج را با انگشت بکش,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s02,ردگیری ۵
+ST09.P1.s02.a,rv,,از نقطهٔ شروع، با دندانهٔ پنج,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s02,جهت قلم
+ST09.P1.s02.done,done,,آفرین! پنج با دندانه‌اش,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s02,پایان قدم
+ST09.P1.s03.pr,pr,,سه سیب در سبد است. تک‌تک بردار,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s03,مفهوم صفر
+ST09.P1.s03.a,rv,,یکی، یکی، یکی. هیچ نماند,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s03,انیمیشن برداشتن
+ST09.P1.s03.done,done,,هیچ یعنی صفر. این هم نماد صفر,fa-IR-DilaraNeural,-15%,draft,ST09.P1.s03,معرفی نماد ۰
+ST09.S.trace.pr,pr,,عدد را روی مسیر بکش,fa-IR-DilaraNeural,-15%,draft,T13,ردگیری
+ST09.S.trace.h1,hint,,از نقطهٔ شروع شروع کن,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ یک
+ST09.S.trace.h2,hint,,راهنما قلم را حرکت می‌دهد,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ دو
+ST09.S.trace.h3,hint,,حالا با هم، از اول,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ سه
+ST09.S.tally.pr,pr,,بشمار و چوب خط بزن,fa-IR-DilaraNeural,-15%,draft,T02,چوب‌خط
+ST09.S.tally.h1,hint,,شیء بعدی را لمس کن,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ یک
+ST09.S.tally.h2,hint,,راهنما یک خط می‌زند,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ دو
+ST09.S.tally.h3,hint,,با هم تا آخر می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ سه
+ST09.S.sum.pr,pr,,روی هم چند تا شد؟,fa-IR-DilaraNeural,-15%,draft,T15 جمع,جمع
+ST09.S.sum.h1,hint,,هر دو دسته را بشمار,fa-IR-DilaraNeural,-15%,draft,T15 جمع,سرنخ یک
+ST09.S.sum.h2,hint,,راهنما دستهٔ دوم را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T15 جمع,سرنخ دو
+ST09.S.zero.pr,pr,,خوب نگاه کن. چند تا است؟,fa-IR-DilaraNeural,-15%,draft,T15 صفر,نبودن
+ST09.S.zero.h1,hint,,اگر هیچ نباشد، صفر است,fa-IR-DilaraNeural,-15%,draft,T01/T15 صفر,سرنخ یک
+ST09.S.zero.h2,hint,,راهنما جای خالی را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T01/T15 صفر,سرنخ دو
+ST09.S.take.pr,pr,,تک‌تک بردار و ببین چه می‌ماند,fa-IR-DilaraNeural,-15%,draft,T01 کاهشی,برداشتن
+ST09.S.take.h1,hint,,هر لمس یکی را برمی‌دارد,fa-IR-DilaraNeural,-15%,draft,T01 کاهشی,سرنخ یک
+ST09.S.flag.pr,pr,,پرچم را قرینه کن,fa-IR-DilaraNeural,-15%,draft,T07 بازی,دورها
+ST09.S.flag.ok,ok,,پرچم قرینه شد!,fa-IR-DilaraNeural,-15%,draft,T07 بازی,هر دور
+ST09.S.flag.done,done,,همهٔ پرچم‌ها تمام شد,fa-IR-DilaraNeural,-15%,draft,T07 بازی,پایان بازی
+ST09.S.sym.h1,hint,,خانهٔ روبرویش مثل خودش است,fa-IR-DilaraNeural,-15%,draft,T07 بازی,سرنخ یک
+ST09.S.sym.h2,hint,,راهنما یک خانه را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T07 بازی,سرنخ دو
+ST09.S.sym.h3,hint,,با هم تا می‌زنیم و می‌بینیم,fa-IR-DilaraNeural,-15%,draft,T07 بازی,سرنخ سه
+ST09.S.free.pr,pr,,پرچم خودت را قرینه بساز,fa-IR-DilaraNeural,-15%,draft,ST09.P3.r06,دور آزاد
+ST09.S.magic.pr,pr,,هر سطر و ستون و مربع: صفر، یک، دو، سه,fa-IR-DilaraNeural,-15%,draft,ST09.P5.i04,قانون ۴×۴ با صفر
+ST09.S.magic.h1,hint,,سطر و ستون و مربعِ این خانه را ببین,fa-IR-DilaraNeural,-15%,draft,ST09.P5.i04,سرنخ یک
+ST09.S.magic.okstep,ok,,یک خانهٔ درست!,fa-IR-DilaraNeural,-15%,draft,ST09.P5.i04,هر خانه
+ST09.S.num.pr,pr,,بشمار و عددش را بگو,fa-IR-DilaraNeural,-15%,draft,T15,عدد
+ST09.S.num.h1,hint,,بلند بشمار,fa-IR-DilaraNeural,-15%,draft,T15,سرنخ یک
+ST09.S.review.pr,pr,,این را یاد داری؟ عددش را بگو,fa-IR-DilaraNeural,-15%,draft,ST09.P5.i05,مرور ST08
+ST09.P2.i01.ok,ok,,درست! پنج,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i01,بازخورد
+ST09.P2.i02.ok,ok,,درست! صفر,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i02,بازخورد
+ST09.P2.i03.ok,ok,,درست! سه پاک‌کن,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i03,بازخورد
+ST09.P2.i04.ok,ok,,درست! دو مداد,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i04,بازخورد
+ST09.P2.i05.ok,ok,,درست! سه شد,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i05,بازخورد
+ST09.P2.i06.ok,ok,,درست! هیچ ماهی نماند,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i06,بازخورد
+ST09.P2.i07.ok,ok,,درست! خورشید صفر تا است,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i07,بازخورد
+ST09.P2.i08.ok,ok,,درست! چهار چوب خط,fa-IR-DilaraNeural,-15%,draft,ST09.P2.i08,بازخورد
+ST09.P5.i02.pr,pr,,فقط گوش می‌دهی: پنج را بنویس,fa-IR-DilaraNeural,-15%,draft,ST09.P5.i02,از روی صدا
