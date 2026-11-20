@@ -19,13 +19,22 @@ const stations = args.length ? args : readdirSync(SPECS_DIR)
   .filter((f) => /^ST\d{2}\.md$/.test(f))
   .map((f) => f.replace(/\.md$/, ''));
 
-/** Count completions of a partial n x n grid. rules: {rows, cols, boxes}. Returns -1 for invalid givens. */
+/** Count completions of a partial n x n grid. rules: {rows, cols, boxes: {h, w} | true}. Returns -1 for invalid givens. */
 function solveCount(n, givens, { boxes }) {
-  const boxSize = boxes ? Math.sqrt(n) : n; // boxes only used when exact sqrt exists
-  const useBoxes = boxes && Number.isInteger(boxSize) && boxSize > 1 && boxSize < n;
+  // boxes: null (rows+cols only), `true` (square sqrt(n) blocks), or explicit {h, w}.
+  // Rectangular blocks are real content now: the T08 template pins 6x6 to 2x3 rectangles
+  // ("۶×۶ با مستطیل‌های ۲×۳") — 2 rows by 3 cols — and ST12 will bring 9x9 with 3x3.
+  // The tiling must be exact; a malformed rule throws rather than silently passing.
+  let bh = 0, bw = 0;
+  if (boxes === true) { bh = Math.sqrt(n); bw = bh; }
+  else if (boxes) { bh = boxes.h; bw = boxes.w; }
+  const useBoxes = Number.isInteger(bh) && bh > 1 && bh < n && Number.isInteger(bw) && bw > 1 && bw < n;
+  if (boxes && !useBoxes) throw new Error(`box rule ${JSON.stringify(boxes)} does not yield a valid block size for ${n}x${n}`);
+  if (useBoxes && (n % bh !== 0 || n % bw !== 0)) throw new Error(`box ${bh}x${bw} does not tile ${n}x${n}`);
+  const boxCols = useBoxes ? n / bw : 1;
   const row = Array(n).fill(0), col = Array(n).fill(0), box = Array(n).fill(0);
   const grid = Array.from({ length: n }, () => Array(n).fill(-1));
-  const boxIdx = (r, c) => useBoxes ? Math.floor(r / boxSize) * boxSize + Math.floor(c / boxSize) : 0;
+  const boxIdx = (r, c) => useBoxes ? Math.floor(r / bh) * boxCols + Math.floor(c / bw) : 0;
   for (const g of givens) {
     if (g.r < 0 || g.r >= n || g.c < 0 || g.c >= n || g.v < 0 || g.v >= n) return -1;
     const bit = 1 << g.v, b = boxIdx(g.r, g.c);
@@ -110,14 +119,22 @@ for (const st of stations) {
       if (v === undefined) { console.error(`FAIL  ${b.id}: solution symbol "${b.solution[r][c]}" not in symbols list`); failures += 1; r = n; break; }
       full.push({ r, c, v });
     }
-    const useBoxes = b.rule.includes('box2x2') || n === 4;
-    const fullCount = solveCount(n, full, { boxes: useBoxes });
+    // Box rule resolution: `box2x2`/`box3x3` (square) or explicit `boxHxW` rectangles
+    // (`box2x3` = 2 rows x 3 cols, the T08 template's 6x6 tiling). Legacy 4x4 specs
+    // predate explicit rules and keep the implicit 2x2 default.
+    let boxes = null;
+    const dim = b.rule.map((r) => r.match(/^box(\d+)x(\d+)$/)).find(Boolean);
+    if (dim) {
+      boxes = { h: Number(dim[1]), w: Number(dim[2]) };
+      if (boxes.h === boxes.w) boxes = true; // square: keep the sqrt path
+    } else if (b.rule.includes('box2x2') || n === 4) boxes = true;
+    const fullCount = solveCount(n, full, { boxes });
     if (fullCount !== 1) { console.error(`FAIL  ${b.id}: solution grid itself violates the rule (count=${fullCount})`); failures += 1; continue; }
     const badGiven = b.given.find((g) => idx.get(g.sym) !== idx.get(b.solution[g.r][g.c]));
     if (badGiven) { console.error(`FAIL  ${b.id}: given (${g0fmt(badGiven)}) contradicts solution`); failures += 1; continue; }
-    const count = solveCount(n, b.given.map((g) => ({ r: g.r, c: g.c, v: idx.get(g.sym) })), { boxes: useBoxes });
+    const count = solveCount(n, b.given.map((g) => ({ r: g.r, c: g.c, v: idx.get(g.sym) })), { boxes });
     if (count !== 1) { console.error(`FAIL  ${b.id}: givens admit ${count} completions (must be exactly 1)`); failures += 1; continue; }
-    console.log(`OK    ${b.id}: unique solution (${n}x${n}${useBoxes ? ', rows+cols+boxes' : ', rows+cols'})`);
+    console.log(`OK    ${b.id}: unique solution (${n}x${n}${boxes ? `, rows+cols+boxes${boxes !== true ? ` ${boxes.h}x${boxes.w}` : ''}` : ', rows+cols'})`);
   }
 }
 function g0fmt(g) { return `r${g.r + 1},c${g.c + 1}=${g.sym}`; }

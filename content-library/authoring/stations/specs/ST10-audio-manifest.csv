@@ -1,0 +1,51 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST10.P1.s00.pr,pr,حیاط مدرسه,به حیاط نگاه کن. همه‌چیز را می‌شود شمرد,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s00,پردهٔ آغاز
+ST10.P1.s01.pr,pr,,هفت سنگ: چهار و سه. با انگشتانت جابه‌جا کن,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s01,انتقال انگشتان
+ST10.P1.s01.a,rv,,یکی رفت آن‌طرف. حالا پنج و دو,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s01,آشکارسازی
+ST10.P1.s01.done,done,,عددهای بزرگ‌تر از پنج: پنج و یک عدد دیگر,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s01,قاعدهٔ کلی
+ST10.P1.s02.pr,pr,,حالا شش را با انگشت بکش,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s02,ردگیری ۶
+ST10.P1.s02.a,rv,,از نقطهٔ شروع، تا پایین و بسته شو,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s02,جهت قلم
+ST10.P1.s02.done,done,,آفرین! شش,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s02,پایان قدم
+ST10.P1.s03.pr,pr,,پنج انگشت و دو انگشت: هفت,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s03,ترکیب ۷
+ST10.P1.s03.a,rv,,این هم هفت. حالا خط‌هایش را ببین,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s03,نمایش ردگیری
+ST10.P1.s03.done,done,,پنج و دو: هفت!,fa-IR-DilaraNeural,-15%,draft,ST10.P1.s03,پایان کشف
+ST10.S.trace.pr,pr,,عدد را روی مسیر بکش,fa-IR-DilaraNeural,-15%,draft,T13,ردگیری
+ST10.S.trace.h1,hint,,از نقطهٔ شروع شروع کن,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ یک
+ST10.S.trace.h2,hint,,راهنما قلم را حرکت می‌دهد,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ دو
+ST10.S.trace.h3,hint,,حالا با هم، از اول,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ سه
+ST10.S.hand.pr,pr,,با انگشتانت نشان بده,fa-IR-DilaraNeural,-15%,draft,T03/T04,انگشت و چینه
+ST10.S.hand.h1,hint,,یکی از انگشتانت را جابه‌جا کن,fa-IR-DilaraNeural,-15%,draft,T03/T04,سرنخ یک
+ST10.S.hand.h2,hint,,راهنما یک انگشت را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T03/T04,سرنخ دو
+ST10.S.hand.h3,hint,,با هم تا پنج می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T03/T04,سرنخ سه
+ST10.S.rod.pr,pr,,چینه‌ها را پشت هم بچین,fa-IR-DilaraNeural,-15%,draft,T04,چینه
+ST10.S.sum.pr,pr,,روی هم چند تا شد؟,fa-IR-DilaraNeural,-15%,draft,T15,جمع
+ST10.S.sum.h1,hint,,هر دو دسته را بشمار,fa-IR-DilaraNeural,-15%,draft,T15,سرنخ یک
+ST10.S.sum.h2,hint,,راهنما دستهٔ دوم را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T15,سرنخ دو
+ST10.S.cmp.pr,pr,,کدام بیشتر است؟,fa-IR-DilaraNeural,-15%,draft,T14,مقایسه
+ST10.S.cmp.h1,hint,,جفت‌جفت خط بکش، اضافه را ببین,fa-IR-DilaraNeural,-15%,draft,T14,سرنخ یک
+ST10.S.cmp.h2,hint,,راهنما جفت‌ها را وصل می‌کند,fa-IR-DilaraNeural,-15%,draft,T14,سرنخ دو
+ST10.S.cmp.h3,hint,,آنچه اضافه ماند، بیشتر است,fa-IR-DilaraNeural,-15%,draft,T14,سرنخ سه
+ST10.S.sym.pr,pr,,دو نیمه باید مثل هم شوند,fa-IR-DilaraNeural,-15%,draft,T07,تقارن
+ST10.S.sym.h1,hint,,خانهٔ روبرویش مثل خودش است,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ یک
+ST10.S.sym.h2,hint,,راهنما یک خانه را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ دو
+ST10.S.sym.h3,hint,,با هم تا می‌زنیم و می‌بینیم,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ سه
+ST10.S.mirror.ok,ok,,آینه شد!,fa-IR-DilaraNeural,-15%,draft,T07/T05 بازی,هر دور
+ST10.S.mirror.done,done,,همهٔ آینه‌ها تمام شد,fa-IR-DilaraNeural,-15%,draft,T07/T05 بازی,پایان بازی
+ST10.S.pat.pr,pr,,الگو را ادامه بده,fa-IR-DilaraNeural,-15%,draft,T05,الگو
+ST10.S.pat.h1,hint,,اولین واحد را ببین,fa-IR-DilaraNeural,-15%,draft,T05,سرنخ یک
+ST10.S.pat.h2,hint,,راهنما یک خانه را پر می‌کند,fa-IR-DilaraNeural,-15%,draft,T05,سرنخ دو
+ST10.S.pat.h3,hint,,با هم کل الگو را اجرا کنیم,fa-IR-DilaraNeural,-15%,draft,T05,سرنخ سه
+ST10.S.pat2.pr,pr,,خودت یک شطرنجی بساز,fa-IR-DilaraNeural,-15%,draft,ST10.P3.r04,ساخت آزاد
+ST10.S.magic.pr,pr,,هر سطر و ستون و مستطیل: یک تا شش,fa-IR-DilaraNeural,-15%,draft,ST10 T08,قانون ۶×۶
+ST10.S.magic.h1,hint,,سطر و ستون و مستطیلِ این خانه را ببین,fa-IR-DilaraNeural,-15%,draft,ST10 T08,سرنخ یک
+ST10.S.magic.okstep,ok,,یک خانهٔ درست!,fa-IR-DilaraNeural,-15%,draft,ST10 T08,هر خانه
+ST10.S.review.pr,pr,,این را یاد داری؟ روی هم چند تا؟,fa-IR-DilaraNeural,-15%,draft,ST10.P5.i05,مرور ST09
+ST10.P2.i01.ok,ok,,درست! شش,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i01,بازخورد
+ST10.P2.i02.ok,ok,,درست! هفت,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i02,بازخورد
+ST10.P2.i03.ok,ok,,درست! پنج و دو,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i03,بازخورد
+ST10.P2.i04.ok,ok,,درست! چهار و دو: شش,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i04,بازخورد
+ST10.P2.i05.ok,ok,,درست! شش پرنده,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i05,بازخورد
+ST10.P2.i06.ok,ok,,درست! عدس بیشتر است,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i06,بازخورد
+ST10.P2.i07.ok,ok,,درست! دو نیمه مثل هم,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i07,بازخورد
+ST10.P2.i08.ok,ok,,درست! الگو ادامه یافت,fa-IR-DilaraNeural,-15%,draft,ST10.P2.i08,بازخورد
+ST10.P5.i01.pr,pr,,فقط گوش می‌دهی: شش را بنویس,fa-IR-DilaraNeural,-15%,draft,ST10.P5.i01,از روی صدا
