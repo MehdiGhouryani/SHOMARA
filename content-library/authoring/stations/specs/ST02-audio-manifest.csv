@@ -1,0 +1,54 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST02.P1.s00.pr,pr,,امروز بیرون از خانه می‌رویم. آماده‌ای؟,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s00,پردهٔ آغاز
+ST02.P1.s01.pr,pr,,سریع نگاه کن. بدون شمردن بگو چندتاست,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s01,زیرشماری
+ST02.P1.s01.a,rv,یک کوله‌پشتی,یک کوله‌پشتی,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s01,آشکارسازی یک
+ST02.P1.s01.b,rv,دو کفش,دو کفش,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s01,آشکارسازی دو
+ST02.P1.s01.c,rv,سه کلید,سه کلید,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s01,آشکارسازی سه
+ST02.P1.s01.done,done,,عالی! بدون شمردن دیدی,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s01,پایان قدم
+ST02.P1.s02.pr,pr,,دستهٔ سمت راست را با دست راست نشان بده,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s02,دست راست/چپ
+ST02.P1.s02.done,done,,آفرین! دست‌هایت راهنمای خوبی‌اند,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s02,پایان قدم
+ST02.P1.s03.pr,pr,,اگر یکی بیاید یا یکی برود چه می‌شود؟,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s03,قبل/بعد
+ST02.P1.s03.a,rv,,دو تا بود. یکی آمد. حالا سه تا است,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s03,بعد
+ST02.P1.s03.b,rv,,سه تا بود. یکی رفت. حالا دو تا است,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s03,قبل
+ST02.P1.s03.c,rv,,گاهی هیچ‌چیز نمی‌ماند. اسمش را بعداً با هم می‌گوییم,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s03,صفر مفهومی
+ST02.P1.s03.done,done,,خیلی خوب! حالا خودت امتحان کن,fa-IR-DilaraNeural,-15%,draft,ST02.P1.s03,پایان کشف
+ST02.S.flash.watch,pr,,سریع نگاه کن!,fa-IR-DilaraNeural,-15%,draft,T01 flash,شروع نگاه گذرا
+ST02.S.flash.ask,pr,,چند تا بود؟,fa-IR-DilaraNeural,-15%,draft,T01 flash,پرسش پس از نگاه
+ST02.S.flash.h1,hint,,دوباره سریع نگاه کن,fa-IR-DilaraNeural,-15%,draft,T01 flash,سرنخ یک
+ST02.S.flash.h2,hint,,گروه‌ها را با هم ببین,fa-IR-DilaraNeural,-15%,draft,T01 flash,سرنخ دو
+ST02.S.flash.h3,hint,,بشماریم. یک، دو، سه,fa-IR-DilaraNeural,-15%,draft,T01 flash,سرنخ سه
+ST02.S.place.pr,pr,,به همان تعداد، در جعبه بگذار,fa-IR-DilaraNeural,-15%,draft,T01 place,تناظر
+ST02.S.place.h1,hint,,به دستهٔ اول نگاه کن,fa-IR-DilaraNeural,-15%,draft,T01 place,سرنخ یک
+ST02.S.place.h2,hint,,راهنما یکی می‌گذارد,fa-IR-DilaraNeural,-15%,draft,T01 place,سرنخ دو
+ST02.S.place.h3,hint,,همه را با هم می‌گذاریم,fa-IR-DilaraNeural,-15%,draft,T01 place,سرنخ سه
+ST02.S.after.pr,pr,,اگر یکی بیاید، چند تا می‌شود؟,fa-IR-DilaraNeural,-15%,draft,T15 بعد,عدد بعد
+ST02.S.after.h1,hint,,دوباره به دسته نگاه کن,fa-IR-DilaraNeural,-15%,draft,T15 بعد,سرنخ یک
+ST02.S.after.h2,hint,,راهنما یکی اضافه می‌کند,fa-IR-DilaraNeural,-15%,draft,T15 بعد,سرنخ دو
+ST02.S.after.h3,hint,,با هم یکی اضافه می‌کنیم,fa-IR-DilaraNeural,-15%,draft,T15 بعد,سرنخ سه
+ST02.S.before.pr,pr,,اگر یکی برود، چند تا می‌ماند؟,fa-IR-DilaraNeural,-15%,draft,T15 قبل,عدد قبل
+ST02.S.before.h1,hint,,دوباره به دسته نگاه کن,fa-IR-DilaraNeural,-15%,draft,T15 قبل,سرنخ یک
+ST02.S.before.h2,hint,,راهنما یکی برمی‌دارد,fa-IR-DilaraNeural,-15%,draft,T15 قبل,سرنخ دو
+ST02.S.before.h3,hint,,با هم یکی برمی‌داریم,fa-IR-DilaraNeural,-15%,draft,T15 قبل,سرنخ سه
+ST02.S.hand.right.pr,pr,,با دست راست نشان بده,fa-IR-DilaraNeural,-15%,draft,T03,دست راست
+ST02.S.hand.left.pr,pr,,با دست چپ نشان بده,fa-IR-DilaraNeural,-15%,draft,T03,دست چپ
+ST02.S.finger.h1,hint,,انگشت‌های باز را بشمار,fa-IR-DilaraNeural,-15%,draft,T03,سرنخ یک
+ST02.S.finger.h2,hint,,راهنما چند انگشت باز می‌کند,fa-IR-DilaraNeural,-15%,draft,T03,سرنخ دو
+ST02.S.finger.h3,hint,,با هم باز می‌کنیم,fa-IR-DilaraNeural,-15%,draft,T03,سرنخ سه
+ST02.S.magic.pr,pr,,در هر سطر و هر ستون، هر سه رنگ باشد,fa-IR-DilaraNeural,-15%,draft,T08,قانون مربع
+ST02.S.magic.h1,hint,,سطر و ستون این خانه را ببین,fa-IR-DilaraNeural,-15%,draft,T08,سرنخ یک
+ST02.S.magic.h2,hint,,راهنما یک خانه را پر می‌کند,fa-IR-DilaraNeural,-15%,draft,T08,سرنخ دو
+ST02.S.magic.h3,hint,,به سطر نگاه کن. چه رنگی کم است؟,fa-IR-DilaraNeural,-15%,draft,T08,سرنخ سه
+ST02.S.magic.okstep,ok,,یک خانهٔ درست!,fa-IR-DilaraNeural,-15%,draft,T08,هر خانهٔ درست
+ST02.S.review.continue,pr,,الگو را ادامه بده,fa-IR-DilaraNeural,-15%,draft,ST02.P5.i05,مرور ST01
+ST02.S.review.h1,hint,,اولین واحد را ببین,fa-IR-DilaraNeural,-15%,draft,ST02.P5.i05,سرنخ مرور
+ST02.P2.i01.ok,ok,,درست! دو ابر,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i01,بازخورد
+ST02.P2.i02.ok,ok,,درست! سه کوله‌پشتی,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i02,بازخورد
+ST02.P2.i03.ok,ok,,درست! یک کلاه,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i03,بازخورد
+ST02.P2.i04.ok,ok,,درست! همان تعداد,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i04,بازخورد
+ST02.P2.i05.ok,ok,,درست! سه می‌شود,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i05,بازخورد
+ST02.P2.i06.ok,ok,,درست! دو می‌ماند,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i06,بازخورد
+ST02.P2.i07.ok,ok,,درست! با دست راست,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i07,بازخورد
+ST02.P2.i08.ok,ok,,درست! با دست چپ,fa-IR-DilaraNeural,-15%,draft,ST02.P2.i08,بازخورد
+ST02.P5.i01.pr,pr,,فقط کفش‌ها! چند تا بود؟,fa-IR-DilaraNeural,-15%,draft,ST02.P5.i01,مزاحم
+ST02.P5.i02.pr,pr,,اگر یکی برود، چه می‌ماند؟,fa-IR-DilaraNeural,-15%,draft,ST02.P5.i02,صفر مفهومی
+ST02.P5.i02.ok,ok,,درست! هیچ‌چیز نمی‌ماند,fa-IR-DilaraNeural,-15%,draft,ST02.P5.i02,بازخورد صفر

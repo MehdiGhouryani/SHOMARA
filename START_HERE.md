@@ -19,7 +19,8 @@ current_task: N11-05
 | `verify:static:all` | PASS 95/95 |
 | instrumented (دستی، همه) | **۶۶/۶۶ PASS** (Pixel_6a) — اولین اجرای کامل بعد از DT-76/77 |
 | font-scale sweep | ۶/۶ PASS روی امولاتور (360/390/412dp × 1.0/1.3/2.0) |
-| محتوای ایستگاه‌ها | **۲ از ۲۵ authored** (ST07 پایلوت + ST01 کامل؛ هر دو MAPPED/VALIDATED، بدون بازبینی انسانی) — `curriculum-matrix.json` |
+| محتوای ایستگاه‌ها | **۳ از ۲۵ authored** (ST01 + ST02 + ST07 پایلوت؛ همه MAPPED، بدون بازبینی انسانی) — `curriculum-matrix.json` |
+| هدف بخش‌ها | منشور قطعی: `content-library/authoring/stage-purpose-charter.md` + ماتریس ۲۵×۵: `matrix/stage-goal-matrix.md` |
 
 ## آخرین کارها
 
@@ -30,6 +31,7 @@ current_task: N11-05
 - **DT-79** ریشهٔ «خطوط روی ایستگاه‌ها نیستند» پیدا و رفع شد (RTL direction-sign آینه می‌کرد + مارپیچ ۲→۳ ستون + رسیدن خط تا مرکز دایرهٔ بعد؛ اثبات پیکسلی روی دستگاه). **تحقیق کامل Duolingo** (۱۰ منبع رسمی): `docs/notes/duolingo-gap-analysis-dt79.md` — ۸ گپ اولویت‌دار؛ بزرگ‌ترین = ذخیرهٔ پیشرفت/مرور فاصله‌دار (G1). **طرح شخصیت پروفایل**: `docs/notes/character-system-profile-dt79.md` — فایل Fandogh در res هست ولی whitelist نیست؛ ۴ تصمیم باز مالک صریح ثبت شد.
 - **DT-80** ممیزی جزئیات مرحله‌به‌مرحله: فقط ۱/۲۵ ایستگاه محتوا داشت (ST07 پایلوت)؛ مستند `docs/notes/station-step-detail-audit-dt80.md`. **ST01 کامل تألیف شد** (۴۹ آیتم یکتا، ۶۲ خط صوت، بدون هیچ رقمی — نماد عدد از ST07 می‌آید): `content-library/authoring/stations/specs/ST01.md` + transcribe JSON + CSV صدا؛ pipeline به ۱۵ الگو + رژیم countableRange + رجیستری هش authoring گسترش یافت؛ matrix حالا از ledger واقعی مشتق می‌شود (۲/۲۵ authored). گیت‌ها: content-pipeline + content-library + static 94/94 + harness VALID.
 - **DT-81** بازبینی و رفع باگ: گزارش «۰ خطا» ادعای بدون ابزار بود → `scripts/verify-station-spec.mjs` ساخته شد (قواعد مرحلهٔ ۶ §۵ ماشینی؛ به static گیت اضافه شد). همین ابزار ۴ باگ واقعی پیدا و رفع کرد: دو آیتم تکراری در استخر ST01 (F1.f3/F1.j1)، دارایی جامانده (OBJ.apple2)، و drift واقعی در ST07.json (استخر: 5→26، پرش: 2→3). static اکنون **95/95**.
+- **DT-82** منشور هدف بخش‌ها (تصمیم مالک): `authoring/stage-purpose-charter.md` — تعریف قطعی آموزش/تمرین/بازی/چالش برای هر بخش + ماتریس هدف ۲۵×۵ (`matrix/stage-goal-matrix.md`). **ST02 کامل تألیف شد** (۵۳ آیتم یکتا، ۵۳ خط صوت؛ زیرشماری بدون شمردن، تناظر، قبل/بعد، دست راست/چپ، مربع ۳×۳؛ صفر فقط مفهومی؛ مرور مارپیچی ST01) → MAPPED_TO_REPO. ST01 با بلوک‌های هدف بازپروری شد. وضعیت: ۳/۲۵ authored.
 
 ## باز و تأییدنشده (صادقانه)
 

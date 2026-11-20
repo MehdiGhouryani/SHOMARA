@@ -42,6 +42,16 @@
       "evidence": {
         "kind": "tool-run"
       }
+    },
+    {
+      "stationId": "ST02",
+      "from": "SOURCE_ONLY",
+      "to": "MAPPED_TO_REPO",
+      "at": "2026-11-20T07:52:20.443Z",
+      "actor": "dt83-station-authoring-batch-a",
+      "evidence": {
+        "kind": "tool-run"
+      }
     }
   ]
 }
