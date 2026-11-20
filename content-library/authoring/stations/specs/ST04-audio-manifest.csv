@@ -1,0 +1,53 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST04.P1.s00.pr,pr,مهمانی,به مهمانی رسیده‌ایم. نگاه کن!,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s00,پردهٔ آغاز
+ST04.P1.s01.pr,pr,,این مثلث را با میله بسازیم,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s01,شکل با میله
+ST04.P1.s01.a,rv,,سه میله، سه گوشه. عجیب نیست؟,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s01,آشکارسازی
+ST04.P1.s01.done,done,,میله و گوشه با هم شکل می‌سازند,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s01,پایان قدم
+ST04.P1.s02.pr,pr,,هر بشقاب را لمس کن,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s02,چوب خط
+ST04.P1.s02.a,rv,,هر لمس، یک چوب خط. پنجمی مورب!,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s02,قاعدهٔ ۵
+ST04.P1.s02.done,done,,آفرین! چوب خط، شمارش را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s02,پایان قدم
+ST04.P1.s03.pr,pr,,چینهٔ زرد و سبز را کنار هم بگذار,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s03,چینه
+ST04.P1.s03.a,rv,,دو و سه می‌شود پنج,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s03,جملهٔ کتاب
+ST04.P1.s03.done,done,,حالا خودت امتحان کن,fa-IR-DilaraNeural,-15%,draft,ST04.P1.s03,پایان کشف
+ST04.S.corner.pr,pr,,این شکل چند گوشه دارد؟,fa-IR-DilaraNeural,-15%,draft,T01 گوشه,گوشه‌شماری
+ST04.S.corner.h1,hint,,هر گوشه را لمس کن,fa-IR-DilaraNeural,-15%,draft,T01 گوشه,سرنخ یک
+ST04.S.corner.h2,hint,,راهنما دو گوشه را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T01 گوشه,سرنخ دو
+ST04.S.corner.h3,hint,,با هم می‌شماریم. یک، دو، سه,fa-IR-DilaraNeural,-15%,draft,T01 گوشه,سرنخ سه
+ST04.S.tally.pr,pr,,هر کدام را لمس کن تا چوب خط بیاید,fa-IR-DilaraNeural,-15%,draft,T02,چوب خط
+ST04.S.tally.h1,hint,,هنوز چیزی نمانده که لمس نشده,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ یک
+ST04.S.tally.h2,hint,,راهنما یکی را لمس می‌کند,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ دو
+ST04.S.tally.h3,hint,,با هم لمس می‌کنیم,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ سه
+ST04.S.rod.pr,pr,,زرد و سبز، چند می‌شود؟,fa-IR-DilaraNeural,-15%,draft,T04,چینه
+ST04.S.rod.h1,hint,,از آخرین مکعب ادامه بده,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ یک
+ST04.S.rod.h2,hint,,راهنما یکی می‌چیند,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ دو
+ST04.S.rod.h3,hint,,با هم می‌چینیم و می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T04,سرنخ سه
+ST04.S.transfer.pr,pr,,دو انگشت از چپ به راست ببر,fa-IR-DilaraNeural,-15%,draft,T03,انتقال
+ST04.S.transfer.h1,hint,,انگشت‌های باز را بشمار,fa-IR-DilaraNeural,-15%,draft,T03,سرنخ یک
+ST04.S.shape.pr,pr,,کدام شکل همان است؟,fa-IR-DilaraNeural,-15%,draft,T15 شکل,تشخیص
+ST04.S.shape.h1,hint,,به گوشه‌ها نگاه کن,fa-IR-DilaraNeural,-15%,draft,T15 شکل,سرنخ یک
+ST04.S.shape.h2,hint,,راهنما یک گوشه را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T15 شکل,سرنخ دو
+ST04.S.shape.h3,hint,,با هم گوشه‌ها را می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T15 شکل,سرنخ سه
+ST04.S.build.pr,pr,,برج را به همین بلندی بساز,fa-IR-DilaraNeural,-15%,draft,T04 بازی,دور ساخت
+ST04.S.build2.pr,pr,,این بار با هر دو رنگ!,fa-IR-DilaraNeural,-15%,draft,T04 بازی,دور دورنگ
+ST04.S.build.h1,hint,,چینه‌ها را کنار هم بچین,fa-IR-DilaraNeural,-15%,draft,T04 بازی,سرنخ یک
+ST04.S.build.h2,hint,,راهنما یکی را می‌گذارد,fa-IR-DilaraNeural,-15%,draft,T04 بازی,سرنخ دو
+ST04.S.build.h3,hint,,با هم می‌چینیم,fa-IR-DilaraNeural,-15%,draft,T04 بازی,سرنخ سه
+ST04.S.build.okstep,ok,,برج درست شد!,fa-IR-DilaraNeural,-15%,draft,T04 بازی,هر برج
+ST04.S.cmp.pr,pr,,بلندترین برج کدام است؟,fa-IR-DilaraNeural,-15%,draft,T04 مقایسه,مقایسه
+ST04.S.cmp.h1,hint,,سرِ برج‌ها را با هم مقایسه کن,fa-IR-DilaraNeural,-15%,draft,T04 مقایسه,سرنخ یک
+ST04.S.cmp.h2,hint,,راهنما یک خط تراز می‌کشد,fa-IR-DilaraNeural,-15%,draft,T04 مقایسه,سرنخ دو
+ST04.S.cmp.h3,hint,,با هم از کوتاه به بلند می‌چینیم,fa-IR-DilaraNeural,-15%,draft,T04 مقایسه,سرنخ سه
+ST04.S.cmp.ok,ok,,درست! بلندترین را پیدا کردی,fa-IR-DilaraNeural,-15%,draft,T04 مقایسه,بازخورد
+ST04.S.review.add.pr,pr,,چهار صندلی بود. یکی دیگر آمد,fa-IR-DilaraNeural,-15%,draft,ST04.P5.i05,مرور ST03
+ST04.S.review.add.h1,hint,,از چهار ادامه بده,fa-IR-DilaraNeural,-15%,draft,ST04.P5.i05,سرنخ مرور
+ST04.P2.i01.ok,ok,,درست! سه گوشه,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i01,بازخورد
+ST04.P2.i02.ok,ok,,درست! چهار گوشه,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i02,بازخورد
+ST04.P2.i03.ok,ok,,درست! سه چوب خط,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i03,بازخورد
+ST04.P2.i04.ok,ok,,درست! یک دستهٔ پنج‌تایی,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i04,بازخورد
+ST04.P2.i05.ok,ok,,درست! دو و سه می‌شود پنج,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i05,بازخورد
+ST04.P2.i06.ok,ok,,درست! یک و سه می‌شود چهار,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i06,بازخورد
+ST04.P2.i07.ok,ok,,درست! سه و دو می‌شود پنج,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i07,بازخورد
+ST04.P2.i08.ok,ok,,درست! مثلث، سه گوشه دارد,fa-IR-DilaraNeural,-15%,draft,ST04.P2.i08,بازخورد
+ST04.P5.i02.pr,pr,,فقط قورباغه‌ها! لاک‌پشت نه,fa-IR-DilaraNeural,-15%,draft,ST04.P5.i02,مزاحم
+ST04.P5.i03.pr,pr,,دو زرد و چند سبز، تا پنج شود؟,fa-IR-DilaraNeural,-15%,draft,ST04.P5.i03,جزء گمشده
+ST04.P5.i04.pr,pr,,از کوتاه به بلند بچین,fa-IR-DilaraNeural,-15%,draft,ST04.P5.i04,مرتب‌سازی
