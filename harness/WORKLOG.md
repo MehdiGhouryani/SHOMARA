@@ -1459,3 +1459,9 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **اسناد کانونی غایب (A6) بازسازی شدند:** `design/MASTER.md`، `design/INSPIRATION_GUARDRAILS.md`، `design/playbook/PAGE_UIUX_BLUEPRINT.md` (جدول قفل ۱۷ خانواده: ترکیب/CTA/عمق/حالت‌ها).
 - **شواهد:** `:feature:lesson:testDebugUnitTest` سبز (ChromeLogicTest ۵/۵؛ CoreTest به‌روز شد)؛ `:feature:lesson:compileDebugAndroidTestKotlin` سبز (شیت semantics test آمادهٔ دستگاه)؛ `:app:compileDebugKotlin` + `:core:designsystem:testDebugUnitTest` سبز؛ harness VALID؛ validate-pack PASS. backlog UX-001 با شواهد ثبت شد — اجرای on-device + اسکرین‌شات در S6.
 - بعد: S1 (StationHost V3 صحنه/گذار) طبق STATION_BUILD_PHASES؛ محتوای ST09 موازی.
+
+### DT-91 · 2026-11-20 · اصلاح صادقانهٔ یافتهٔ A6 + رشد عمدی backlog به ۲۸ ردیف
+
+- **یافتهٔ A6 از DT-89 نادرست بود:** سندهای `PAGE_UIUX_BLUEPRINT/MASTER/INSPIRATION_GUARDRAILS` «گم» نبودند — عمداً در `docs/DESIGN_RULES.md` تجمیع شده بودند (ردیف «منبع» در پایان بخش‌ها تاریخچهٔ جذب است، نه ارجاع زنده). سه فایل موازی که DT-90 ساخت **حذف شدند** (git rm) و ارجاعِ ۱۷ قرارداد صفحه از `../PAGE_UIUX_BLUEPRINT.md` به canonical واقعی `docs/DESIGN_RULES.md § نقشهٔ نهایی UI/UX صفحه‌ها` بازگردانده شد — اعمال قاعدهٔ «یک canonical» (AGENTS §4). STATION_EXPERIENCE_BLUEPRINT §۱/§۷ و STATION_BUILD_PHASES S0 اصلاح شدند.
+- **گیت حاکمیتی عمداً به‌روز شد (نه ضعیف‌شد):** شمار پین‌شدهٔ backlog از «header+20» به «header+28» تغییر کرد چون ۸ ردیف اجرایی UX-001..008 (برنامهٔ مصوب مالک، DT-89) به دنبالهٔ UI-001..020 اضافه شدند؛ پینِ دقیق باقی ماند، ردیف‌های باز همچنان باید NATIVE_PENDING باشند و قانون وجود ماژول برای UX هم اعمال می‌شود (feature:lesson/core:designsystem/app موجودند).
+- **شواهد:** `verify-design-governance.mjs` PASS (۱۷ خانواده، ۲۸ ردیف)؛ ردیف DT-90 در START_HERE نیز اصلاح شد.

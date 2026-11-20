@@ -16,10 +16,10 @@
 
 | | |
 |---|---|
-| خروجی | TopBar (آیکون خانه/× + StageChips + صدا) · `StationExitSheet` · انتقال همهٔ رشته‌های literal فارسی درس به `strings.xml` · بازسازی ۳ سند کانونی غایب (A6) |
+| خروجی | TopBar (آیکون خانه/× + StageChips + صدا) · `StationExitSheet` · انتقال همهٔ رشته‌های literal فارسی درس به شیء کانونی `ShomaraLessonStrings` · بازگرداندن ارجاع ۱۷ قرارداد صفحه به `docs/DESIGN_RULES.md` (اصلاح A6 در DT-91 — سندها جذب‌شده در DESIGN_RULES بودند، نه گم‌شده) |
 | فایل‌ها | `ShomaraLessonHost.kt`، `ShomaraLessonCore.kt`، `ShomaraLessonStageChrome.kt`، `core/designsystem/ShomaraSheet.kt` (جدید)، `core/ui/res/values-fa/strings.xml` |
 | منطق | `ShomaraCloseConfirmLogic` **دست‌نخورده** (تست‌های موجود سبز می‌مانند) — فقط رندر بنر→شیت |
-| پذیرش | ① واحد: ExitSheet state machine + بک‌ژست همان Sheet را باز می‌کند ② semantics: TalkBack ترتیب عنوان→صحنه→CTA ③ اسکرین‌شات 360/390/412dp خروج+تأیید ④ grep: صفر literal فارسی در `feature/lesson/*.kt` ⑤ اسناد A6 موجود و در backlog ارجاع‌شده |
+| پذیرش | ① واحد: ExitSheet state machine + بک‌ژست همان Sheet را باز می‌کند ② semantics: TalkBack ترتیب عنوان→صحنه→CTA ③ اسکرین‌شات 360/390/412dp خروج+تأیید ④ grep: صفر literal فارسی در بدنهٔ composableهای `feature/lesson` ⑤ ارجاع قراردادهای صفحه به canonical واقعی (`docs/DESIGN_RULES.md`) — انجام‌شده در DT-91 |
 | اندازه | M · وابستگی: — |
 
 ## S1 · StationHost V3 — صحنه و گذار
@@ -94,4 +94,4 @@ S0 ─▶ S1 ─▶ S2 ─▶ S3a ─▶ S3b ─▶ S4 ─▶ S5 ─▶ S6
 | تغییر سیاست «هیچ حرکت تزئینی» → «حرکت روایی اطلاعاتی» | بازبینی N08-04 | همین سند + S0 (بازنویسی doc-comment ShomaraMotion) |
 | PROD پایلوت ST07 فعلاً بدون محتوای بومی | دموها با draft-pilot | O1/O2 — هم‌راستا با CONTENT-014 |
 | TTS fa-IR روی دستگاه اثبات نشده | صوت S4 | گیت فیزیکی S6 |
-| اسناد A6 بازسازی می‌شوند نه بازیابی | ممکن است جزئیات تاریخی تفاوت کند | S0 — بازبینی مالک روی پیش‌نویس |
+| ~~اسناد A6 بازسازی می‌شوند~~ | اصلاح DT-91: سندها جذب‌شده در `docs/DESIGN_RULES.md` بودند؛ کپی‌های موازی حذف و ارجاع‌ها اصلاح شد | انجام‌شده |

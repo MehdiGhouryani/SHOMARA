@@ -50,8 +50,12 @@ for (const invariant of ['360/390/412', '200% font', 'TalkBack', 'NATIVE_PENDING
 
 const backlog = read('design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv');
 const backlogRows = backlog.trim().split(/\r?\n/);
-assert.equal(backlogRows.length, 21, 'Native implementation backlog must contain header + 20 work items');
-for (const id of ['UI-001', 'UI-020']) {
+// DT-91: the pinned count grew from 20 to 28 on purpose. The owner approved the station-UX
+// plan (design/playbook/STATION_BUILD_PHASES.md, DT-89) and its eight execution rows
+// UX-001..UX-008 joined the UI-001..UI-020 sequence. The exact-count pin stays: adding or
+// removing a work row still requires editing this assertion deliberately.
+assert.equal(backlogRows.length, 29, 'Native implementation backlog must contain header + 28 work items (UI-001..020 + UX-001..008)');
+for (const id of ['UI-001', 'UI-020', 'UX-001', 'UX-008']) {
   assert.ok(backlog.includes(id), `Native implementation backlog missing ${id}`);
 }
 // DT-59: two rows describe surfaces the owner removed on purpose (the guardian area, ADR-0050, and the avatar
@@ -161,4 +165,4 @@ const screenSkill = read('docs/DESIGN_RULES.md');
 assert.ok(productSkill.includes('docs/DESIGN_RULES.md § design system/SKILL.md'), 'product-design skill must route shared UI work');
 assert.ok(screenSkill.includes('docs/DESIGN_RULES.md § design system/SKILL.md'), 'screen-execution skill must route shared UI work');
 
-console.log('DESIGN_GOVERNANCE: PASS (17 page families, 20 Native UI work items, 4 inspiration sources, 9 component families, 4 Clay depth tiers)');
+console.log('DESIGN_GOVERNANCE: PASS (17 page families, 28 Native work items (UI+UX), 4 inspiration sources, 9 component families, 4 Clay depth tiers)');

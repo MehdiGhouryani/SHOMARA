@@ -2,7 +2,7 @@
 
 **Coverage candidates:** intro steps, optional adult guidance, first run. **Do not invent route IDs**: discover actual routes, state machine and entry points first. This file overrides only *page layout/UX*, not canonical DESIGN tokens or domain/security requirements.
 
-**Native V3 lock:** ردیف 02 در `../PAGE_UIUX_BLUEPRINT.md` composition/CTA/depth/state را قفل می‌کند؛ وضعیت اجرا فقط در `../quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` تغییر می‌کند.
+**Native V3 lock:** ردیف 02 در `docs/DESIGN_RULES.md § نقشهٔ نهایی UI/UX صفحه‌ها` composition/CTA/depth/state را قفل می‌کند؛ وضعیت اجرا فقط در `../quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` تغییر می‌کند.
 
 ## Per-page mandatory actions
 1. Locate exact route/view, owner data source, entry/exit, loading and error states; record actual file paths in `SCREEN_LEDGER.csv`.

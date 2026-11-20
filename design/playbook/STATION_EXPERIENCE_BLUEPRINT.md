@@ -18,7 +18,7 @@
 | A3 | رشته‌های فارسی هاردکد در Kotlin | «خروج از ایستگاه» خط ۱۸۶؛ `ShomaraLessonCore.kt:36–38` | نقض AGENTS §3-10 (منبع رشتهٔ canonical) |
 | A4 | صفر ترنزیشن بین مراحل/آیتم‌ها | فقط `shomaraPressScale` + celebration gate در `ShomaraMotion.kt`؛ `AnimatedVisibility` در هیچ‌جای `apps/android` نیست | تعویض ناگهانی چیدمان؛ حس «زنده بودن» صفر |
 | A5 | صفحهٔ درس = متن + بنر + اسکلتون؛ بدون صحنه/مانیپولاتیو | `ShomaraTemplateSkeletons.kt`؛ options خالی | تجربهٔ «کتاب صوتی با دکمه» نه بازیِ ریاضی |
-| A6 | اسناد کانونی ارجاع‌شده غایب‌اند | `../PAGE_UIUX_BLUEPRINT.md`، `design/MASTER.md`، `design/INSPIRATION_GUARDRAILS.md` در مخزن نیستند | «Native V3 lock» به هیچی قفل نیست؛ بازبینی‌گر مرجع ندارد |
+| A6 | قراردادهای صفحه به سند جذب‌شده ارجاع می‌دادند | ارجاع `../PAGE_UIUX_BLUEPRINT.md` در ۱۷ قرارداد به canonical واقعی (`docs/DESIGN_RULES.md § نقشهٔ نهایی UI/UX صفحه‌ها`) بازگردانده شد (DT-91) | مسیر مطالعهٔ فعال حالا به یک سند می‌رسد |
 | A7 | progress بدون کسر واقعی حذف شده (درست) اما جایگزین ندارد | کامنت F-05 در Host | کودک نمی‌داند در ایستگاه کجاست |
 
 ## ۲. معماری هدف — StationHost V3
@@ -137,8 +137,9 @@ fun TemplateT01(
 - صدا: صف `ShomaraAudioManager` (موجود) — قطع صدا با لمس بعدی ≤۴۵۰ms (قرارداد T01).
 - عملکرد: صحنهٔ تک-کامپوزیشن؛ هیچ اسکرول تودرتو؛ انیمیشن‌ها روی graphicsLayer (نه layout).
 
-## ۷. رفع یافتهٔ A6 (اسناد غایب)
+## ۷. اصلاح A6 (DT-91)
 
-`PAGE_UIUX_BLUEPRINT.md` (جدول قفل ۱۷ ردیف)، `MASTER.md` و `INSPIRATION_GUARDRAILS.md`
-در همین فاز بازسازی/ثبت می‌شوند تا «V3 lock» دوباره به چیزی واقعی قفل شود —
-ردیف S0 در `STATION_BUILD_PHASES.md`.
+یافتهٔ اولیه («۳ سند کانونی غایب») **نادرست از آب درآمد**: آن اسناد عمداً در
+`docs/DESIGN_RULES.md` تجمیع شده بودند و ردیف منبع در انتهای بخش‌ها صرفاً تاریخچهٔ
+جذب است. سه فایل موازی که در S0 ساخته شد حذف شدند و ارجاع ۱۷ قرارداد صفحه به
+canonical واقعی بازگردانده شد — یک canonical (AGENTS §4).
