@@ -1,0 +1,51 @@
+{
+  "stationId": "ST08",
+  "lifecycle": "MAPPED_TO_REPO",
+  "evaluatorConfig": {
+    "draft": true,
+    "draftSourceRef": "authoring/stations/specs/ST08.md#section-3",
+    "ruleVersionRef": "runtime-policy:phase13-postgres-v1 (DRAFT reference only; CONTENT-014 OPEN)",
+    "items": [
+      { "id": "ST08.P2.i01", "template": "T13", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i01/answer", "correctRef": { "kind": "trace-path", "value": "path3" }, "gap": "T13 adapter pending — O1 per-template proof required (N08R-09)" },
+      { "id": "ST08.P2.i02", "template": "T13", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i02/answer", "correctRef": { "kind": "trace-path", "value": "path4-book-form" }, "gap": "O1 per-template proof required (N08R-09)" },
+      { "id": "ST08.P2.i03", "template": "T15", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i03/answer", "correctRef": { "kind": "numeral", "value": 3 } },
+      { "id": "ST08.P2.i04", "template": "T15", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i04/answer", "correctRef": { "kind": "numeral", "value": 4 } },
+      { "id": "ST08.P2.i05", "template": "T01", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i05/answer", "correctRef": { "kind": "numeral", "value": 3 } },
+      { "id": "ST08.P2.i06", "template": "T01", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i06/answer", "correctRef": { "kind": "numeral", "value": 4 } },
+      { "id": "ST08.P2.i07", "template": "T01", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i07/answer", "correctRef": { "kind": "numeral", "value": 3 } },
+      { "id": "ST08.P2.i08", "template": "T11", "stage": "P2_GUIDED", "specAnswerAnchor": "section-3/ST08.P2.i08/answer", "correctRef": { "kind": "numeral", "value": 1 }, "gap": "O1 per-template proof required (N08R-09)" }
+    ]
+  },
+  "passThreshold": "spec section-10 (DRAFT — CONTENT-014/011 pending owner decision)",
+  "reviewEvidence": [],
+  "prerequisites": [
+    { "fromStationId": "ST07", "toStationId": "ST08" }
+  ],
+  "provenance": {
+    "sourceFile": "authoring/stations/specs/ST08.md",
+    "sourceSha256File": "content-library/authoring/authoring-sources-sha256.json",
+    "transcribedBy": "dt88-station-authoring-batch-b",
+    "transcribedAt": "2026-11-20",
+    "taughtNumerals": [3, 4],
+    "countableRange": [1, 2, 3, 4],
+    "declaredItemCounts": {
+      "section2_P1_DISCOVER_steps": 4,
+      "section3_P2_GUIDED_items": 8,
+      "section4_P3_GAME_T05": 1,
+      "section5_P4_pool_items": 24,
+      "section6_P5_or_assessment_items": 5,
+      "section7_S13_S14": 4
+    },
+    "stageMappingStatus": "PROTOTYPE — stage names need owner confirmation (CONTENT-014 adjacent)",
+    "audioManifest": "authoring/stations/specs/ST08-audio-manifest.csv",
+    "audioRowCount": 59,
+    "audioStatus": "ALL_DRAFT_NO_BINARIES",
+    "assetPolicy": "all fresh illustrations; no book photos; religious prayer/qibla imagery intentionally NOT represented (open product decision recorded on the stage-4 card) - math only from workbook pages P02-P07; numeral 4 rendered only in the book's glyph form (glyph_form: book_only everywhere, per T13 note); trace paths with arrow, start dot and baseline per T13; clips uniform with no overlap",
+    "assetDelivery": "NOT_DELIVERED",
+    "rightsModeration": "PENDING_RIGHTS_REVIEW",
+    "gapsOpen": ["O1", "O2", "O7", "CONTENT-009", "CONTENT-010", "CONTENT-014", "stage-mapping-confirmation", "prayer-content-product-decision"]
+  },
+  "advanceProse": "پیشروی دستی؛ هر بخش پس از تکمیل، بخش بعدی باز می‌شود (spec section-0)",
+  "interactionProse": "بازخورد گرم؛ نمادهای ۱ تا ۴ مجاز (۱ و ۲ از ST07، ۳ و ۴ تازه)؛ فقط شکل نماد کتاب برای ۴؛ بدون واژهٔ جمع/تفریق (spec section-0)",
+  "behaviorId": "tap_select"
+}

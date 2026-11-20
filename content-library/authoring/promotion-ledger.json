@@ -92,6 +92,16 @@
       "evidence": {
         "kind": "tool-run"
       }
+    },
+    {
+      "stationId": "ST08",
+      "from": "SOURCE_ONLY",
+      "to": "MAPPED_TO_REPO",
+      "at": "2026-11-20T09:40:57.299Z",
+      "actor": "dt88-station-authoring-batch-b",
+      "evidence": {
+        "kind": "tool-run"
+      }
     }
   ]
 }

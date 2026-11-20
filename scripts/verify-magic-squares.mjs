@@ -76,13 +76,13 @@ function extractBlocks(text) {
     const rule = line.match(/^\s+rule: \[(.*)\]\s*$/);
     if (rule) cur.rule = rule[1].split(',').map((s) => s.trim());
     const syms = line.match(/^\s+symbols: \[(.*)\]\s*$/);
-    if (syms) cur.symbols = syms[1].split(',').map((s) => s.trim().replace(/^PAT\./, ''));
+    if (syms) cur.symbols = syms[1].split(',').map((s) => s.trim().replace(/^(?:PAT|NUM)\./, ''));
     const sol = line.match(/^\s+solution: /);
     if (sol) { const mx = parseMatrix(line); if (mx) cur.solution = mx; }
     const giv = line.match(/^\s+given: \[(.*)\]\s*$/);
     if (giv) {
       cur.given = giv[1].split('},').map((s) => {
-        const r = s.match(/r:\s*(\d+)/)[1], c = s.match(/c:\s*(\d+)/)[1], sm = s.match(/s:\s*PAT\.(\w+)/)[1];
+        const r = s.match(/r:\s*(\d+)/)[1], c = s.match(/c:\s*(\d+)/)[1], sm = s.match(/s:\s*(?:PAT|NUM)\.(\w+)/)[1];
         return { r: Number(r) - 1, c: Number(c) - 1, sym: sm };
       });
     }

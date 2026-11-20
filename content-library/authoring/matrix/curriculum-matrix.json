@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-20T09:21:19.530Z",
+  "generatedAt": "2026-11-20T09:40:57.352Z",
   "matrixVersion": "curriculum-matrix:v2 (honest status, derived from ledger + artifacts)",
   "totalStations": 25,
-  "authoredStations": 7,
-  "notAuthoredStations": 18,
+  "authoredStations": 8,
+  "notAuthoredStations": 17,
   "fields": [
     "learningGoalAndPrereq",
     "skillMapping",
@@ -400,22 +400,43 @@
     {
       "stationId": "ST08",
       "workingTitle": "عددهای ۳ و ۴",
-      "lifecycle": "SOURCE_ONLY",
+      "lifecycle": "MAPPED_TO_REPO",
       "fields": {
-        "learningGoalAndPrereq": "NOT_AUTHORED",
-        "skillMapping": "NOT_AUTHORED",
-        "progressionP1P5": "NOT_AUTHORED",
-        "teachingMethod": "NOT_AUTHORED",
-        "guidedPractice": "NOT_AUTHORED",
-        "appliedGame": "NOT_AUTHORED",
-        "assessment": "NOT_AUTHORED",
-        "transferSpiralReview": "NOT_AUTHORED",
-        "hintRecoveryPolicy": "NOT_AUTHORED",
-        "canonicalTextAudioIds": "NOT_AUTHORED",
-        "assetIdsDescription": "NOT_AUTHORED",
-        "accessibilityCopy": "NOT_AUTHORED",
-        "validatorEvidence": "NOT_AUTHORED",
-        "contentVersion": "NOT_AUTHORED"
+        "learningGoalAndPrereq": "PROTOTYPE_DRAFT",
+        "skillMapping": "PROTOTYPE_DRAFT",
+        "progressionP1P5": "PROTOTYPE_DRAFT",
+        "teachingMethod": "PROTOTYPE_DRAFT",
+        "guidedPractice": "PROTOTYPE_DRAFT",
+        "appliedGame": "PROTOTYPE_DRAFT",
+        "assessment": "PROTOTYPE_DRAFT",
+        "transferSpiralReview": "PROTOTYPE_DRAFT",
+        "hintRecoveryPolicy": "PROTOTYPE_DRAFT",
+        "canonicalTextAudioIds": "PROTOTYPE_DRAFT",
+        "assetIdsDescription": "PROTOTYPE_DRAFT",
+        "accessibilityCopy": "PROTOTYPE_DRAFT",
+        "validatorEvidence": "PROTOTYPE_DRAFT",
+        "contentVersion": "PROTOTYPE_DRAFT"
+      },
+      "prototypeNotes": {
+        "authoredSpec": "content-library/authoring/stations/specs/ST08.md",
+        "structurallyTranscribed": "content-library/authoring/stations/ST08.json",
+        "transcribedFields": [
+          "prerequisites",
+          "evaluatorConfig.items (P2 anchors)",
+          "taughtNumerals/countableRange",
+          "declaredItemCounts",
+          "audioManifest",
+          "assetPolicy",
+          "rightsModeration"
+        ],
+        "gaps": [
+          "O1 evaluator model",
+          "O2 final schema",
+          "O7 budget",
+          "CONTENT-009/010 assets",
+          "CONTENT-014 policy",
+          "stage-mapping confirmation"
+        ]
       }
     },
     {

@@ -1,0 +1,60 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST08.P1.s00.pr,pr,میزها,سه میز رنگی آماده است. نگاه کن,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s00,پردهٔ آغاز
+ST08.P1.s01.pr,pr,,همهٔ این‌ها سه‌تاییند,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s01,نمایش‌های ۳
+ST08.P1.s01.a,rv,,سه انگشت، سه نقطه، سه مربع. همه سه,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s01,آشکارسازی
+ST08.P1.s01.done,done,,این هم نماد سه,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s01,معرفی نماد
+ST08.P1.s02.pr,pr,,حالا سه را با انگشت بکش,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s02,ردگیری
+ST08.P1.s02.a,rv,,از نقطهٔ شروع، در جهت فلش,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s02,جهت قلم
+ST08.P1.s02.done,done,,آفرین! سه مثل دو گوش و یک شکم است,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s02,پایان قدم
+ST08.P1.s03.pr,pr,,حالا نوبت چهار است,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s03,نمایش‌های ۴
+ST08.P1.s03.a,rv,,چهار انگشت، چهار نقطه، چهار بال,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s03,آشکارسازی
+ST08.P1.s03.done,done,,چهار فصل، چهار چرخ. این هم نماد چهار,fa-IR-DilaraNeural,-15%,draft,ST08.P1.s03,پایان کشف
+ST08.S.trace.pr,pr,,عدد را روی مسیر بکش,fa-IR-DilaraNeural,-15%,draft,T13,ردگیری
+ST08.S.trace.h1,hint,,از نقطهٔ شروع شروع کن,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ یک
+ST08.S.trace.h2,hint,,راهنما قلم را حرکت می‌دهد,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ دو
+ST08.S.trace.h3,hint,,حالا با هم، از اول,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ سه
+ST08.S.num.pr,pr,,عدد درست را پیدا کن,fa-IR-DilaraNeural,-15%,draft,T15,عدد
+ST08.S.num.h1,hint,,بشمار و کارت را ببین,fa-IR-DilaraNeural,-15%,draft,T15,سرنخ یک
+ST08.S.num.h2,hint,,راهنما یک کارت را کم می‌کند,fa-IR-DilaraNeural,-15%,draft,T15,سرنخ دو
+ST08.S.cnt.pr,pr,,بشمار و عددش را بگو,fa-IR-DilaraNeural,-15%,draft,T01,شمردن
+ST08.S.cnt.h1,hint,,هر کدام را که نشمردی لمس کن,fa-IR-DilaraNeural,-15%,draft,T01,سرنخ یک
+ST08.S.meas.pr,pr,,با گیره‌ها بسنج. چند گیره شد؟,fa-IR-DilaraNeural,-15%,draft,T01 گیره,اندازه‌گیری
+ST08.S.meas.h1,hint,,گیره‌ها را یکی‌یکی بشمار,fa-IR-DilaraNeural,-15%,draft,T01 گیره,سرنخ یک
+ST08.S.meas.h2,hint,,راهنما یک گیره می‌بندد,fa-IR-DilaraNeural,-15%,draft,T01 گیره,سرنخ دو
+ST08.S.meas.h3,hint,,با هم می‌بندیم و می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T01 گیره,سرنخ سه
+ST08.S.story.pr,pr,,به میز نگاه کن و جواب بده,fa-IR-DilaraNeural,-15%,draft,T11,داستان
+ST08.S.story.h1,hint,,صندلی‌های خالی را نشان بده,fa-IR-DilaraNeural,-15%,draft,T11,سرنخ یک
+ST08.S.story.h2,hint,,راهنما یکی را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T11,سرنخ دو
+ST08.S.story.h3,hint,,با هم یکی‌یکی می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T11,سرنخ سه
+ST08.S.story.table4.nr,narr,,میز چهار نفره است. سه نفر نشسته. چند جای خالی؟,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i08,راوی
+ST08.S.story.table5a.nr,narr,,میز پنج نفره است. سه نفر نشسته‌اند. چند جای خالی؟,fa-IR-DilaraNeural,-15%,draft,ST08.F4.s1,راوی
+ST08.S.story.table4b.nr,narr,,میز چهار نفره است. دو نفر نشسته‌اند. چند جای خالی؟,fa-IR-DilaraNeural,-15%,draft,ST08.F4.s2,راوی
+ST08.S.story.table4c.nr,narr,,میز چهار نفره است. یکی دیگر آمد. جا شد؟,fa-IR-DilaraNeural,-15%,draft,ST08.F4.s3,راوی تناظر
+ST08.S.story.table3a.nr,narr,,میز سه نفره است. دو نفر نشسته‌اند. چند جای خالی؟,fa-IR-DilaraNeural,-15%,draft,ST08.F4.s4,راوی
+ST08.S.story.table5b.nr,narr,,میز پنج نفره است. چهار نفر نشسته‌اند. چند جای خالی؟,fa-IR-DilaraNeural,-15%,draft,ST08.F4.s5,راوی
+ST08.S.story.table3b.nr,narr,,میز سه نفره است. یک نفر نشسته. چند جای خالی؟,fa-IR-DilaraNeural,-15%,draft,ST08.F4.s6,راوی
+ST08.S.pat.h1,hint,,از اول بلند بگو,fa-IR-DilaraNeural,-15%,draft,T05 بازی,سرنخ یک
+ST08.S.pat.h2,hint,,راهنما یک خانه را پر می‌کند,fa-IR-DilaraNeural,-15%,draft,T05 بازی,سرنخ دو
+ST08.S.pat.h3,hint,,با هم می‌گوییم: قرمز، سبز، قرمز,fa-IR-DilaraNeural,-15%,draft,T05 بازی,سرنخ سه
+ST08.S.unit.pr,pr,,واحدِ تکرار کدام است؟,fa-IR-DilaraNeural,-15%,draft,T05 بازی,واحد
+ST08.S.unit.h1,hint,,کدام قسمت همیشه تکرار می‌شود؟,fa-IR-DilaraNeural,-15%,draft,T05 بازی,سرنخ یک
+ST08.S.unit.h2,hint,,راهنما کادر را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T05 بازی,سرنخ دو
+ST08.S.unit.h3,hint,,با هم از اول می‌گوییم,fa-IR-DilaraNeural,-15%,draft,T05 بازی,سرنخ سه
+ST08.S.build.pr,pr,,ردیف کاشی را کامل کن,fa-IR-DilaraNeural,-15%,draft,T05 بازی,دورها
+ST08.S.build.ok,ok,,ردیف موج کامل شد!,fa-IR-DilaraNeural,-15%,draft,T05 بازی,هر دور
+ST08.S.free.pr,pr,,حالا موج‌های خودت را بچین,fa-IR-DilaraNeural,-15%,draft,ST08.P3.r06,دور آزاد
+ST08.S.magic.pr,pr,,هر سطر و ستون و مربع: یک، دو، سه، چهار,fa-IR-DilaraNeural,-15%,draft,ST08.P5.i04,قانون ۴×۴ عددی
+ST08.S.magic.h1,hint,,سطر و ستون و مربعِ این خانه را ببین,fa-IR-DilaraNeural,-15%,draft,ST08.P5.i04,سرنخ یک
+ST08.S.magic.okstep,ok,,یک خانهٔ درست!,fa-IR-DilaraNeural,-15%,draft,ST08.P5.i04,هر خانه
+ST08.S.review.pr,pr,,این‌ها را یاد داری؟ عددش را بگو,fa-IR-DilaraNeural,-15%,draft,ST08.P5.i05,مرور ST07
+ST08.P2.i01.ok,ok,,درست! سه,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i01,بازخورد
+ST08.P2.i02.ok,ok,,درست! چهار,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i02,بازخورد
+ST08.P2.i03.ok,ok,,درست! سه نقطه، عدد سه,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i03,بازخورد
+ST08.P2.i04.ok,ok,,درست! چهار مربع، عدد چهار,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i04,بازخورد
+ST08.P2.i05.ok,ok,,درست! سه مکعب,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i05,بازخورد
+ST08.P2.i06.ok,ok,,درست! چهار مستطیل,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i06,بازخورد
+ST08.P2.i07.ok,ok,,درست! سه گیره,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i07,بازخورد
+ST08.P2.i08.ok,ok,,درست! یک جای خالی,fa-IR-DilaraNeural,-15%,draft,ST08.P2.i08,بازخورد
+ST08.P5.i01.pr,pr,,این گیاه چند برگ دارد؟,fa-IR-DilaraNeural,-15%,draft,ST08.P5.i01,مصداق واقعی
+ST08.P5.i02.pr,pr,,فقط گوش می‌دهی: عدد را بنویس,fa-IR-DilaraNeural,-15%,draft,ST08.P5.i02,از روی صدا
+ST08.P5.i03.pr,pr,,هر دو را با گیره بسنج. کدام بلندتر است؟,fa-IR-DilaraNeural,-15%,draft,ST08.P5.i03,مقایسهٔ اندازه
