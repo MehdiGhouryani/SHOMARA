@@ -1494,3 +1494,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **لوحه با نام مدرسهٔ واقعی:** تابلو/پرچم رد شد؛ صحنهٔ درِ مدرسه سیلوئتی بی‌نام.
 - **گیت‌ها:** یک count-drift صوتی (۴۹ نه ۵۰) اصلاح شد. نهایی: station-spec 11/11، magic 20/20، pipeline/library PASS، harness VALID، static:all 96/96.
 - **وضعیت: ۱۱/۲۵ authored.** بعد: ST12 (مقایسه و عدد ۹؛ جدول ۹×۹).
+
+### DT-95 · 2026-11-20 · S1 — StationHost V3: صحنه و گذار
+
+- **StationFlowStateMachine (جدید، `ShomaraStationFlow.kt`):** مالک یکتای مکان‌نمای مرحله — گذار فقط با سیگنال `ShomaraStageAdvance` (رأی ارزیاب/سرور)؛ ردِ پرش مرحله، ردِ گذار دوم هم‌زمان (تعمیم گیت celebration)، ردِ advance از مرحلهٔ غیرجاری. UI هرگز داوری نمی‌کند (ناورنی ۱ blueprint).
+- **SceneCanvas (جدید، `ShomaraSceneCanvas.kt`):** قاب صحنهٔ بدون اسکرول (ناورنی ۳ — ستون verticalScroll حذف شد) + جفت لحظهٔ `stageExit` (فید+مقیاس 0٫98 token) و `stageEnter` (اسلاید از سمت شروع خواندن — جهت از LayoutDirection نه هاردکد RTL، §4.2). فازها Exit→Enter→Holding با منطق خالص تست‌پذیر.
+- **FeedbackSlot + BottomCtaSlot پین‌شده (`ShomaraStationBottomSlots`):** بنرها بالای CTAِ یکتا و هرگز اسکرول نمی‌شوند — قبولی ⑤ «دقیقاً یک CTA».
+- **بازآرایی `ShomaraLessonHost`:** `macroStage` متغیر آزاد حذف → خواندن مشتق از ماشین؛ resume و debug-preview hook هم از طریق ماشین advance می‌کنند؛ ساعت گذار در host با token صدا می‌خواند.
+- **reducedMotion:** توالی فاز همان است، حرکت صفر (cut) — قبولی ②؛ تست `exitMs/enterMs == 0` + توکن‌خوانی بدون ms خام.
+- **گیت‌ها:** ۱۴/۱۴ تست واحد جدید سبز (ShomaraStationFlowTest)؛ android:gate PASS؛ design-governance PASS؛ harness VALID؛ static:all 96/96.
+- **باقی‌ماندهٔ S1 (پذیرش ③④):** ویدیوی گام کامل ST07 روی شبیه‌ساز و اثبات بدون‌اسکرول روی دستگاه — همراه اسکرین‌شات‌های S1 در گذار دستگاه‌محور (S6) ثبت می‌شود؛ منطق آن همین‌جا با تست پین شده است.

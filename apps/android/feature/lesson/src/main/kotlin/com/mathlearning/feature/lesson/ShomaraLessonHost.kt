@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.mathlearning.core.datastore.LessonCheckpointStore
+import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraButton
 import com.mathlearning.core.designsystem.ShomaraButtonVariant
 import com.mathlearning.core.designsystem.ShomaraFeedbackBanner
@@ -83,12 +82,19 @@ fun ShomaraLessonHost(
 ) {
     val scope = rememberCoroutineScope()
     var closeState by remember { mutableStateOf<ShomaraCloseConfirmState>(ShomaraCloseConfirmState.NotRequested) }
-    var macroStage by remember { mutableStateOf(MacroStage.P1_DISCOVER) }
+    // S1 (blueprint §3): the stage cursor moved into the flow machine — the ONLY legal source
+    // of a stage change is an evaluator-approved ShomaraStageAdvance; the machine rejects
+    // skipping, mid-transition advances and advances that don't start from the current stage.
+    var stationFlow by remember { mutableStateOf(ShomaraStationFlowMachine(currentStage = MacroStage.P1_DISCOVER)) }
     var resumed by remember { mutableStateOf<Boolean?>(null) }
     var banner by remember { mutableStateOf<String?>(null) }
     var gate by remember { mutableStateOf(ShomaraSubmitGateState()) }
     var awaitingServerStage by remember { mutableStateOf(false) }
     var resultSurface by remember { mutableStateOf<ShomaraResultSurface?>(null) }
+    // S1: every stage read/write goes through the flow machine — one owner, no drift. The
+    // historical `macroStage` var is now a derived read so all existing references keep
+    // compiling against the machine's current stage.
+    val macroStage: MacroStage = stationFlow.currentStage
     // DT-55: the session's start time is captured ONCE. It used to be read inline for every attempt, so
     // each recorded attempt carried a later `startedAtMs` than the previous one and the session appeared
     // to restart on every check — any duration computed from it was wrong. `updatedAtMs` stays live,
@@ -112,7 +118,8 @@ fun ShomaraLessonHost(
             val resumedStep = journey?.resume()
             if (resumedStep != null) {
                 resumed = true
-                macroStage = resumedStep.macroStage
+                // S1: a recovered checkpoint lands in the flow machine (same owner as advances).
+                stationFlow = ShomaraStationFlowMachine(currentStage = resumedStep.macroStage)
             } else {
                 resumed = false
             }
@@ -120,6 +127,21 @@ fun ShomaraLessonHost(
     }
     LaunchedEffect(closeState) {
         if (closeState == ShomaraCloseConfirmState.ConfirmedExit) onExitToShell()
+    }
+
+    // S1 §3: when the flow machine enters Transitioning, the SceneCanvas plays the exit→enter
+    // pair keyed on the stage; the machine settles as soon as the canvas is holding the new
+    // scene again. Under reduced motion the pair is zero-length, so this resolves immediately.
+    // (The reduced-motion read stays OUTSIDE the effect lambda: it is a composition read.)
+    val reducedMotion = LocalShomaraReducedMotion.current
+    LaunchedEffect(stationFlow.isTransitioning) {
+        if (stationFlow.isTransitioning) {
+            kotlinx.coroutines.delay(
+                ShomaraStageMotionLogic.exitMs(reducedMotion).toLong() +
+                    ShomaraStageMotionLogic.enterMs(reducedMotion).toLong(),
+            )
+            stationFlow = stationFlow.finishTransition()
+        }
     }
 
     // N08-05: back must ask before throwing away the child's place. Consuming the gesture while the
@@ -144,12 +166,17 @@ fun ShomaraLessonHost(
     }
 
     // Stage 5: screen inset unified with Stage 4 language (24dp / 16dp).
+    // S1 (blueprint §2): the lesson body is now the V3 frame — TopBar / SceneCanvas (NO scroll,
+    // invariant 3) / FeedbackSlot + BottomCtaSlot (pinned). The old inner `verticalScroll`
+    // column is gone: scroll belonged to parent dialogs, and a scene the child must never
+    // lose sight of was previously a scroll target. In-stage items that genuinely need more
+    // room than the canvas gives are a stage-content contract (S2 templates size to fit).
     Column(
         modifier = modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(ShomaraTokens.Space24),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
         // S0 (STATION_EXPERIENCE_BLUEPRINT §2): the exit affordance is a 48dp icon pinned
-        // OUTSIDE the scrolling column, and the stage chips replace the removed progress bar
+        // OUTSIDE the scene, and the stage chips replace the removed progress bar
         // (F-05) with a position sentence — no fraction, no percentage. The full-width exit
         // text button and its in-flow banner confirmation are gone (audit A1/A2): a secondary
         // action no longer competes with the single primary CTA, and confirmation became the
@@ -158,24 +185,27 @@ fun ShomaraLessonHost(
             macroStage = macroStage,
             onExitRequest = { closeState = ShomaraCloseConfirmLogic.request(closeState) },
         )
-        Column(
-            modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+        // F-05: the indeterminate progress bar is gone. It never had a fraction (the
+        // server gives no total yet), so it rendered motion without meaning — a bar
+        // that fills nothing teaches the child nothing. The top-bar chips above now
+        // carry the position; a «مرحلهٔ N از ۵» bar remains an open owner decision.
+        // S1: the stage header rides INSIDE the scene canvas so it participates in the
+        // stageEnter/stageExit moments (§4.1) instead of flickering outside them.
+        ShomaraSceneCanvas(
+            stageKey = macroStage,
+            modifier = Modifier.weight(1f).fillMaxWidth(),
         ) {
-            // F-05: the indeterminate progress bar is gone. It never had a fraction (the
-            // server gives no total yet), so it rendered motion without meaning — a bar
-            // that fills nothing teaches the child nothing. The top-bar chips above now
-            // carry the position; a «مرحلهٔ N از ۵» bar remains an open owner decision.
-            ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
-            val closeRequested = closeState == ShomaraCloseConfirmState.AwaitingConfirmation
-            // A1/A2 fix: neither the exit button nor its banner confirmation renders in the
-            // scrolling lesson column anymore. The sheet below owns the whole question.
-            if (resultSurface != null) {
-                ShomaraLessonResultSurface(
-                    surface = resultSurface!!,
-                    onExitToShell = onExitToShell,
-                )
-            } else if (macroStage == MacroStage.P2_GUIDED && guidedItems.isNotEmpty() && guidedEvaluator != null) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
+            ) {
+                ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
+                if (resultSurface != null) {
+                    ShomaraLessonResultSurface(
+                        surface = resultSurface!!,
+                        onExitToShell = onExitToShell,
+                    )
+                } else if (macroStage == MacroStage.P2_GUIDED && guidedItems.isNotEmpty() && guidedEvaluator != null) {
                 // N08R-09: the guided loop renders its real projected items; the evaluator
                 // layer (debug draft / future local evaluator) judges, never this UI.
                 ShomaraGuidedStage(
@@ -214,7 +244,16 @@ fun ShomaraLessonHost(
                 ShomaraDiscoverStage(
                     steps = discoverSteps,
                     onAllStepsComplete = {
-                        if (previewAdvanceToNextStage) macroStage = MacroStage.P2_GUIDED
+                        if (previewAdvanceToNextStage) {
+                            // S1: the debug preview hook also advances THROUGH the machine —
+                            // no caller may mutate the stage cursor behind its back.
+                            val next = ShomaraLessonStageWalk.next(macroStage)
+                            if (next != null) {
+                                stationFlow = stationFlow.advance(
+                                    ShomaraStageAdvance(from = macroStage, to = next),
+                                )
+                            }
+                        }
                     },
                 )
             } else if (activeJourney != null && !awaitingServerStage && choiceId == null) {
@@ -234,35 +273,37 @@ fun ShomaraLessonHost(
                     onCheck = { awaitingServerStage = true },
                 )
             }
+            }
         }
-        // E-04: feedback banners live in a fixed slot above the pinned CTA — the child
-        // always sees the feedback, even scrolled to the bottom, and the banner never
-        // scrolls away with the content. The close-confirm question moved to the modal
-        // exit sheet (S0) — it no longer shares this slot at all.
-        // R-04: the gateway-missing and awaiting-server banners join this fixed slot —
-        // they used to scroll away with the content (E-04 was incomplete for them).
-        if (activeJourney == null) {
-            // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
-            ShomaraFeedbackBanner(
-                kind = ShomaraFeedbackKind.Recovery,
-                text = ShomaraLessonStrings.GatewayMissing,
-            )
-        } else if (awaitingServerStage) {
-            // The child finished every macro stage the client can walk. Mastery and the next
-            // station belong to the server, so this is an honest wait, not a fabricated completion.
-            ShomaraFeedbackBanner(
-                kind = ShomaraFeedbackKind.Recovery,
-                text = ShomaraLessonStrings.AwaitingServer,
-            )
-        }
-        banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
-        if (resumed == true) {
-            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraLessonStrings.Resumed)
-        }
-        // Pinned bottom slot: the one primary CTA, only when a real option exists to
-        // submit. Every other state leaves the slot empty — no inert button, no fake
-        // action — and the result surface keeps its own single CTA above.
-        if (resultSurface == null && activeJourney != null && !awaitingServerStage && choiceId != null) {
+        // S1 §2: the pinned FeedbackSlot + BottomCtaSlot. E-04/R-04 unchanged in intent: the
+        // banners live ABOVE the CTA and never scroll away (there is no scroll anymore); the
+        // close-confirm question stays in the modal exit sheet (S0), not this slot.
+        ShomaraStationBottomSlots(
+            feedback = {
+                if (activeJourney == null) {
+                    // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
+                    ShomaraFeedbackBanner(
+                        kind = ShomaraFeedbackKind.Recovery,
+                        text = ShomaraLessonStrings.GatewayMissing,
+                    )
+                } else if (awaitingServerStage) {
+                    // The child finished every macro stage the client can walk. Mastery and the next
+                    // station belong to the server, so this is an honest wait, not a fabricated completion.
+                    ShomaraFeedbackBanner(
+                        kind = ShomaraFeedbackKind.Recovery,
+                        text = ShomaraLessonStrings.AwaitingServer,
+                    )
+                }
+                banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
+                if (resumed == true) {
+                    ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraLessonStrings.Resumed)
+                }
+            },
+            cta = {
+                // Pinned bottom slot: the one primary CTA, only when a real option exists to
+                // submit. Every other state leaves the slot empty — no inert button, no fake
+                // action — and the result surface keeps its own single CTA above (acceptance ⑤).
+                if (resultSurface == null && activeJourney != null && !awaitingServerStage && choiceId != null) {
             ShomaraButton(
                 text = ShomaraLessonStrings.SubmitAnswer,
                 onClick = {
@@ -289,7 +330,13 @@ fun ShomaraLessonHost(
                                         if (next == null) {
                                             awaitingServerStage = true
                                         } else {
-                                            macroStage = next
+                                            // S1 §3: the stage change goes through the flow
+                                            // machine as an evaluator-approved advance — the
+                                            // server PASS here IS that verdict; the machine
+                                            // plays the exit→enter scene pair, then settles.
+                                            stationFlow = stationFlow.advance(
+                                                ShomaraStageAdvance(from = macroStage, to = next),
+                                            )
                                             activeJourney.enterStage(next)
                                         }
                                     }
@@ -308,7 +355,9 @@ fun ShomaraLessonHost(
                 loading = gate.inFlight,
                 modifier = Modifier.fillMaxWidth(),
             )
-        }
+            }
+        },
+        )
     }
     // S0: the modal exit sheet renders only while the (unchanged, unit-tested) close state is
     // AwaitingConfirmation. Dismiss (scrim/drag) and the primary button both mean «می‌مانم»;
