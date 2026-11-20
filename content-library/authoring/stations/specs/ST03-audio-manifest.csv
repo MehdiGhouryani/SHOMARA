@@ -1,0 +1,45 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST03.P1.s00.pr,pr,ایستگاه اتوبوس,به ایستگاه اتوبوس مدرسه رسیدیم,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s00,پردهٔ آغاز
+ST03.P1.s01.pr,pr,,سه دوچرخه بود. دوتای دیگر آمد,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s01,ادامهٔ شمارش
+ST03.P1.s01.a,rv,,سه… چهار، پنج. پنج تا شد,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s01,آشکارسازی
+ST03.P1.s01.done,done,,دیدی؟ از سه ادامه دادیم,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s01,پایان قدم
+ST03.P1.s02.pr,pr,,یک انگشت از دست چپ به راست ببر,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s02,انتقال انگشت
+ST03.P1.s02.a,rv,,عدد عوض نشد. همیشه چهار تا است,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s02,هم‌ارزی
+ST03.P1.s02.done,done,,جابه‌جا می‌شود، ولی کم و زیاد نمی‌شود,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s02,پایان قدم
+ST03.P1.s03.pr,pr,,این بالن‌ها از شکل‌های کوچک ساخته شده‌اند,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s03,تجزیهٔ کل
+ST03.P1.s03.a,rv,,این یکی از سه مثلث,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s03,مثال یک
+ST03.P1.s03.b,rv,,این یکی از چهار دایره,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s03,مثال دو
+ST03.P1.s03.done,done,,حالا خودت بشمار,fa-IR-DilaraNeural,-15%,draft,ST03.P1.s03,پایان کشف
+ST03.S.add.pr,pr,,اگر بیاید، چند تا می‌شود؟,fa-IR-DilaraNeural,-15%,draft,T01 add,افزودن
+ST03.S.add.h1,hint,,از همان‌جا ادامه بده,fa-IR-DilaraNeural,-15%,draft,T01 add,سرنخ یک
+ST03.S.add.h2,hint,,راهنما یکی را اضافه می‌کند,fa-IR-DilaraNeural,-15%,draft,T01 add,سرنخ دو
+ST03.S.add.h3,hint,,با هم اضافه می‌کنیم,fa-IR-DilaraNeural,-15%,draft,T01 add,سرنخ سه
+ST03.S.transfer.pr,pr,,انگشت‌ها را جابه‌جا کن و عدد را نشان بده,fa-IR-DilaraNeural,-15%,draft,T03,انتقال
+ST03.S.transfer.h1,hint,,انگشت‌های باز را بشمار,fa-IR-DilaraNeural,-15%,draft,T03,سرنخ یک
+ST03.S.transfer.h2,hint,,راهنما یکی را جابه‌جا می‌کند,fa-IR-DilaraNeural,-15%,draft,T03,سرنخ دو
+ST03.S.transfer.h3,hint,,با هم جابه‌جا می‌کنیم,fa-IR-DilaraNeural,-15%,draft,T03,سرنخ سه
+ST03.S.parts.pr,pr,,از چند شکل ساخته شده؟,fa-IR-DilaraNeural,-15%,draft,T01 parts,اجزا
+ST03.S.parts.h1,hint,,هر بخش را لمس کن,fa-IR-DilaraNeural,-15%,draft,T01 parts,سرنخ یک
+ST03.S.parts.h2,hint,,راهنما یکی را جدا می‌کند,fa-IR-DilaraNeural,-15%,draft,T01 parts,سرنخ دو
+ST03.S.parts.h3,hint,,با هم جدا و می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T01 parts,سرنخ سه
+ST03.S.comb.pr,pr,,برای این سطر و ستون، کدام خانه؟,fa-IR-DilaraNeural,-15%,draft,T15 comb,جدول ترکیبی
+ST03.S.comb.h1,hint,,به سطر و ستونِ خانهٔ روشن نگاه کن,fa-IR-DilaraNeural,-15%,draft,T15 comb,سرنخ یک
+ST03.S.comb.h2,hint,,راهنما یک ستون را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T15 comb,سرنخ دو
+ST03.S.comb.h3,hint,,با هم سطر و ستون را می‌گوییم,fa-IR-DilaraNeural,-15%,draft,T15 comb,سرنخ سه
+ST03.S.magic.pr,pr,,هر سطر، هر ستون، هر مربع کوچک: هر چهار رنگ,fa-IR-DilaraNeural,-15%,draft,T08,قانون ۴×۴
+ST03.S.magic.h1,hint,,سطر و ستون و مربعِ این خانه را ببین,fa-IR-DilaraNeural,-15%,draft,T08,سرنخ یک
+ST03.S.magic.h2,hint,,راهنما یک خانه را پر می‌کند,fa-IR-DilaraNeural,-15%,draft,T08,سرنخ دو
+ST03.S.magic.h3,hint,,به این سطر نگاه کن. کدام رنگ کم است؟,fa-IR-DilaraNeural,-15%,draft,T08,سرنخ سه
+ST03.S.magic.okstep,ok,,یک خانهٔ درست!,fa-IR-DilaraNeural,-15%,draft,T08,هر خانهٔ درست
+ST03.S.review.after.pr,pr,,اگر یکی بیاید، چند تا می‌شود؟,fa-IR-DilaraNeural,-15%,draft,ST03.P5.i05,مرور ST02
+ST03.S.review.after.h1,hint,,از همان‌جا ادامه بده,fa-IR-DilaraNeural,-15%,draft,ST03.P5.i05,سرنخ مرور
+ST03.P2.i01.ok,ok,,درست! سه می‌شود,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i01,بازخورد
+ST03.P2.i02.ok,ok,,درست! پنج می‌شود,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i02,بازخورد
+ST03.P2.i03.ok,ok,,درست! چهار می‌شود,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i03,بازخورد
+ST03.P2.i04.ok,ok,,درست! چهار می‌ماند,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i04,بازخورد
+ST03.P2.i05.ok,ok,,درست! پنج می‌ماند,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i05,بازخورد
+ST03.P2.i06.ok,ok,,درست! سه مثلث,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i06,بازخورد
+ST03.P2.i07.ok,ok,,درست! چهار دایره,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i07,بازخورد
+ST03.P2.i08.ok,ok,,درست! خانهٔ سطر قرمز و ستون سبز,fa-IR-DilaraNeural,-15%,draft,ST03.P2.i08,بازخورد
+ST03.P5.i01.pr,pr,,خوب نگاه کن! بعد پنهان می‌شود,fa-IR-DilaraNeural,-15%,draft,ST03.P5.i01,گروه پنهان
+ST03.P5.i01.ok,ok,,درست! پنج می‌شود,fa-IR-DilaraNeural,-15%,draft,ST03.P5.i01,بازخورد

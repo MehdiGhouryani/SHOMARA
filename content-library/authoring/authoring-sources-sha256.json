@@ -3,6 +3,7 @@
   "note": "Hash registry for AUTHORED station specs (content-library/authoring/stations/specs/*.md). These are new authored works, NOT byte-protected research originals; originals keep their own registry in derived/source-sha256.json. Update the hash here whenever a spec is deliberately revised (the validator compares).",
   "sha256": {
     "authoring/stations/specs/ST01.md": "1cc46e1e1cddec6102bd2e7eb17d2c923e0291f4ebe00b109005d49d57f0235a",
-    "authoring/stations/specs/ST02.md": "d966332f40317580a03e64ff4982bd4487b7c688711e7a4909e5f81a7c0edc01"
+    "authoring/stations/specs/ST02.md": "d966332f40317580a03e64ff4982bd4487b7c688711e7a4909e5f81a7c0edc01",
+    "authoring/stations/specs/ST03.md": "38c37b695f3e37f20aa6746139d6de7d34504b8a3911fe575c6bebb9ac4ecfb2"
   }
 }

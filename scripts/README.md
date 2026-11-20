@@ -63,6 +63,7 @@
 | `verify-content-library.mjs` | — |
 | `verify-content-pipeline.mjs` | Content pipeline verifier (P7) — joins verify:static:all. |
 | `verify-station-spec.mjs` | Station-spec validator (DT-81) — stage6 §5 rules by machine: TTS/display budgets, no digits for ST01–ST06, forbidden words/art, id/audio/asset reference integrity, pool ≥ 12, declared-count drift. Joins verify:static:all. |
+| `verify-magic-squares.mjs` | Magic-square uniqueness gate (DT-82) — every T08 block in authored specs must admit exactly one solution (3×3 rows+cols; 4×4 rows+cols+2×2 boxes) via full backtracking solver; kills guess-requiring rounds at authoring time. |
 | `verify-media-pipeline.mjs` | Media pipeline verifier (P9) — joins verify:static:all. |
 | `verify-migrations-static.mjs` | B0 extended guards — challenge runtime + presentation enrichment (0055/0056/0072/0073) |
 
@@ -167,6 +168,6 @@
 
 ---
 
-مجموع: **103** فایل `.mjs` در ریشهٔ `scripts/`.
+مجموع: **104** فایل `.mjs` در ریشهٔ `scripts/`.
 
 اجرای همه: `npm run verify:static:all` (کشف خودکار، با فهرست استثناهای ثابت در `verify-static-all.mjs`).
