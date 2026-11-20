@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -161,22 +162,24 @@ private fun ShomaraT02TrayObject(
  */
 @Composable
 private fun ShomaraTallyLane(strokes: List<String>) {
+    // The lane cells are derived ONCE per stroke list, outside the draw scope: the draw lambda
+    // runs on every frame and must not re-run the grouping logic.
+    val cells = remember(strokes) { T02TallyLogic(strokes).laneCells(strokes) }
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
             .height(ShomaraTokens.Space40)
             .padding(vertical = ShomaraTokens.Space4),
     ) {
-        if (strokes.isEmpty()) return@Canvas
+        if (cells.isEmpty()) return@Canvas
         val strokeColor = ShomaraTokens.ColorInk
         val width = ShomaraTokens.Space4.toPx()
         val gap = ShomaraTokens.Space8.toPx()
         val laneHeight = size.height
         val groupWidth = 5 * (width + gap)
         val groupGap = ShomaraTokens.Space16.toPx()
-        // The cells come from the LOGIC, never from render-side counters: every stroke in the
-        // list is drawn, including the ones past the first five-group.
-        T02TallyLogic(strokes).laneCells(strokes).forEach { cell ->
+        // Every stroke in the list is drawn, including the ones past the first five-group.
+        cells.forEach { cell ->
             val cellX = cell.groupIndex * (groupWidth + groupGap) + cell.slotInGroup * (width + gap)
             if (!cell.isDiagonal) {
                 drawLine(

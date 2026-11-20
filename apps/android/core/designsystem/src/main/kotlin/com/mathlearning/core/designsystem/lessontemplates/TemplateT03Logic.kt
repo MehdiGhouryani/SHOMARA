@@ -81,13 +81,13 @@ data class T03Hands(
     }
 
     private fun closeOne(hand: T03Hand): T03Hands = when (hand) {
-        T03Hand.Left -> copy(left = left.withFirstOpenSet(false))
-        T03Hand.Right -> copy(right = right.withFirstOpenSet(false))
+        T03Hand.Left -> copy(left = left.withFirstSet(false))
+        T03Hand.Right -> copy(right = right.withFirstSet(false))
     }
 
     private fun openOne(hand: T03Hand): T03Hands = when (hand) {
-        T03Hand.Left -> copy(left = left.withFirstClosedSet(true))
-        T03Hand.Right -> copy(right = right.withFirstClosedSet(true))
+        T03Hand.Left -> copy(left = left.withFirstSet(true))
+        T03Hand.Right -> copy(right = right.withFirstSet(true))
     }
 
     companion object {
@@ -108,12 +108,8 @@ object T03FiveOnShoulder {
 private fun List<Boolean>.toggleAt(index: Int): List<Boolean> =
     toMutableList().also { it[index] = !it[index] }
 
-private fun List<Boolean>.withFirstOpenSet(value: Boolean): List<Boolean> {
-    val target = indexOfFirst { it != value }
-    return if (target < 0) this else toMutableList().also { it[target] = value }
-}
-
-private fun List<Boolean>.withFirstClosedSet(value: Boolean): List<Boolean> {
+/** Flip the FIRST finger whose state differs from [value] — one helper for open and close. */
+private fun List<Boolean>.withFirstSet(value: Boolean): List<Boolean> {
     val target = indexOfFirst { it != value }
     return if (target < 0) this else toMutableList().also { it[target] = value }
 }

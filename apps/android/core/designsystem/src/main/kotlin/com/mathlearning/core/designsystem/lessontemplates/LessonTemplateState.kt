@@ -63,4 +63,15 @@ object LessonTemplateSizing {
             "manipulative $dp outside the 72-80dp band"
         }
     }
+
+    /**
+     * The cell size of a square grid with [cells] per side. ONE rule for every grid template
+     * (T07 symmetry, T08 magic square), derived from the token scale so a 9×9 still fits a
+     * 360dp phone — the two templates used to carry private copies of this function.
+     */
+    fun cellDp(cells: Int): androidx.compose.ui.unit.Dp = when {
+        cells <= 4 -> ShomaraTokens.Space40
+        cells <= 6 -> ShomaraTokens.Space32
+        else -> ShomaraTokens.Space24
+    }
 }

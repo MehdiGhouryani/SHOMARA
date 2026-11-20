@@ -47,7 +47,7 @@ fun TemplateT08(
     selectedSymbol: String? = null,
     highlightCell: Pair<Int, Int>? = null,
 ) {
-    val cell: Dp = gridCell(logic.size)
+    val cell: Dp = LessonTemplateSizing.cellDp(logic.size)
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4)) {
@@ -142,11 +142,4 @@ fun TemplateT08(
             }
         }
     }
-}
-
-/** Cell size from the canonical spacing scale so a 9×9 still fits a 360dp phone. */
-private fun gridCell(size: Int): Dp = when {
-    size <= 4 -> ShomaraTokens.Space40
-    size <= 6 -> ShomaraTokens.Space32
-    else -> ShomaraTokens.Space24
 }

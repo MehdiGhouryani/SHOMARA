@@ -24,19 +24,25 @@ object ShomaraTraceGlyphs {
     )
 
     /** «۰» — a closed loop, started at the top-right and drawn counter-clockwise. */
-    fun zero(): TraceStroke = TraceStroke(
-        listOf(
-            TracePoint(BOX / 2f + 50f, 60f),
-            TracePoint(BOX / 2f + 20f, 40f),
-            TracePoint(BOX / 2f - 50f, 60f),
-            TracePoint(BOX / 2f - 60f, BOX / 2f),
-            TracePoint(TracePoint(BOX / 2f - 50f, BOX - 60f).x, BOX - 60f),
-            TracePoint(BOX / 2f + 20f, BOX - 40f),
-            TracePoint(BOX / 2f + 50f, BOX - 60f),
-            TracePoint(BOX / 2f + 60f, BOX / 2f),
-            TracePoint(BOX / 2f + 50f, 60f),
-        ),
-    )
+    fun zero(): TraceStroke {
+        val cx = BOX / 2f
+        val top = 60f
+        val bottom = BOX - 60f
+        return TraceStroke(
+            listOf(
+                TracePoint(cx + 50f, top),
+                TracePoint(cx + 20f, top - 20f),
+                TracePoint(cx - 50f, top),
+                TracePoint(cx - 60f, cx),
+                TracePoint(cx - 50f, bottom),
+                TracePoint(cx + 20f, bottom + 20f),
+                TracePoint(cx + 50f, bottom),
+                TracePoint(cx + 60f, cx),
+                // The loop closes on its start point — a closed stroke, not a second shape.
+                TracePoint(cx + 50f, top),
+            ),
+        )
+    }
 
     /** The glyph for a numeral key (content supplies the key; unknown keys have no stroke). */
     fun forNumeral(numeral: String): TraceStroke? = when (numeral) {

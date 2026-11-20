@@ -1,5 +1,6 @@
 package com.mathlearning.core.designsystem.lessontemplates
 
+import com.mathlearning.core.designsystem.ShomaraTokens
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -244,5 +245,24 @@ class LessonTemplatesLogicTest {
         assertEquals(0, ShomaraCountPulseLogic.pulseMs(reducedMotion = true))
         assertEquals(600, ShomaraCountPulseLogic.staticRingMs(reducedMotion = true))
         assertTrue(ShomaraCountPulseLogic.showsRing(reducedMotion = true))
+    }
+
+    // ---------------------------------------------------------------- shared sizing (one rule)
+
+    @Test
+    fun `the manipulative band and grid cells come from one canonical rule`() {
+        LessonTemplateSizing.requireManipulativeDp(LessonTemplateSizing.MinManipulativeDp)
+        LessonTemplateSizing.requireManipulativeDp(LessonTemplateSizing.MaxManipulativeDp)
+        // 4x4 and 6x6 use the large cell, 9x9 the small one — one function, no per-template copy.
+        assertEquals(ShomaraTokens.Space40, LessonTemplateSizing.cellDp(4))
+        assertEquals(ShomaraTokens.Space32, LessonTemplateSizing.cellDp(6))
+        assertEquals(ShomaraTokens.Space24, LessonTemplateSizing.cellDp(9))
+        var threw = false
+        try {
+            LessonTemplateSizing.requireManipulativeDp(48)
+        } catch (e: IllegalArgumentException) {
+            threw = true
+        }
+        assertTrue("a 48dp manipulative is outside the child band", threw)
     }
 }

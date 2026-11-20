@@ -84,7 +84,6 @@ class LessonTemplatesS3bLogicTest {
     @Test
     fun `t11 the passengers story resolves to 12`() {
         val story = T11Story.passengersExample()
-        assertNull(story.resolve()?.let { if (it == 12) null else it })
         assertEquals(12, story.resolve())
         assertTrue(story.acceptsNumeric(12))
         assertFalse(story.acceptsNumeric(16))

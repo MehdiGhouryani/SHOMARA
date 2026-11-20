@@ -77,8 +77,12 @@ fun TemplateT01(
         // The SEED permutes which cell an object occupies, so the scatter really is seeded —
         // not merely a seeded function that the render ignores.
         val (cols, rows) = T01ScatterLayout.gridFor(objects.size)
-        val slotOf = remember(objects, seed) {
-            objects.indices.associateWith { it to T01ScatterLayout.slotFor(objects.size, it, seed) }
+        // One O(n) map built once per (objects, seed): the grid lookup is then O(1) per cell
+        // instead of scanning the assignment list for every cell of every recomposition.
+        val indexAtSlot: Map<Pair<Int, Int>, Int> = remember(objects, seed) {
+            objects.indices.associate { index ->
+                T01ScatterLayout.slotFor(objects.size, index, seed) to index
+            }
         }
         Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
             repeat(rows) { row ->
@@ -87,8 +91,8 @@ fun TemplateT01(
                     horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12, Alignment.CenterHorizontally),
                 ) {
                     repeat(cols) { col ->
-                        val index = slotOf.entries.firstOrNull { it.value.second == (col to row) }?.value?.first
-                        if (index != null && index < objects.size) {
+                        val index = indexAtSlot[col to row]
+                        if (index != null) {
                             val id = objects[index]
                             val order = tappedIds.indexOf(id)
                             ShomaraT01Object(

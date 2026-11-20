@@ -67,7 +67,7 @@ fun TemplateT07(
         foldProgress.snapTo(0f)
         folding = false
     }
-    val cell = gridCellSize(logic.width)
+    val cell = LessonTemplateSizing.cellDp(logic.width)
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
         Box(
             modifier = Modifier
@@ -182,17 +182,6 @@ fun TemplateT07(
 
 /** The trailing half in reading order: the half that folds onto the axis. */
 private fun isTrailing(index: Int, size: Int): Boolean = index >= size / 2
-
-/**
- * Cell size from the canonical spacing scale. A 6-wide grid must still fit a 360dp phone, and
- * the size never comes from an arithmetic expression on a token (Int division there produced
- * 12dp cells, a real bug in the first draft).
- */
-private fun gridCellSize(width: Int): Dp = when {
-    width <= 4 -> ShomaraTokens.Space40
-    width <= 6 -> ShomaraTokens.Space40
-    else -> ShomaraTokens.Space32
-}
 
 private fun T07Axis.label(): String = when (this) {
     T07Axis.Vertical -> "محور عمودی"
