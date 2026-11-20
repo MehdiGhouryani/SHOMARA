@@ -43,8 +43,10 @@ class ShomaraLessonCoreTest {
         state = ShomaraCloseConfirmLogic.confirmExit(state)
         assertEquals(ShomaraCloseConfirmState.ConfirmedExit, state)
         assertEquals(ShomaraCloseConfirmState.ConfirmedExit, ShomaraCloseConfirmLogic.confirmExit(state))
-        // The copy is fail-safe: progress is kept.
-        assertTrue(ShomaraCloseConfirmLogic.ExitQuestion.contains("ذخیره"))
+        // The copy is fail-safe: progress is kept. S0: the question itself moved to the exit
+        // sheet title; the save promise lives in the sheet body — both must stay child-facing.
+        assertTrue(ShomaraLessonStrings.ExitBody.contains("ذخیره"))
+        assertTrue(ShomaraCloseConfirmLogic.ExitQuestion == ShomaraLessonStrings.ExitTitle)
     }
 
     // ---- P1 teach ----

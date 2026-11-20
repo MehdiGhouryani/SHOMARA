@@ -144,7 +144,7 @@ fun ShomaraDiscoverStage(
             if (next != null) {
                 ShomaraButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "ادامه",
+                    text = ShomaraLessonStrings.Continue,
                     onClick = {
                         stepIndex = next
                         touched = setOf()
@@ -155,7 +155,7 @@ fun ShomaraDiscoverStage(
                 // Last step done: the preview/loop ends honestly — mastery and stage
                 // advance belong to the evaluator layer (O1/Phase 1), never to this UI.
                 Text(
-                    text = "این پیش‌نمایش همین‌جا تمام می‌شود؛ ادامهٔ درس به‌زودی فعال می‌شود.",
+                    text = ShomaraLessonStrings.PreviewEnd,
                     style = ShomaraTypography.Caption,
                     color = ShomaraTokens.ColorMuted,
                     modifier = Modifier
@@ -207,8 +207,8 @@ private fun ShomaraDiscoverCardTile(
             )
             .semantics(mergeDescendants = true) {
                 role = Role.Button
-                contentDescription = "شیء شمارش ${ShomaraDigits.toFa(ordinal)}"
-                stateDescription = if (touched) "شمرده شد" else "لمس نکرده"
+                contentDescription = ShomaraLessonStrings.countObjectLabel(ordinal)
+                stateDescription = if (touched) ShomaraLessonStrings.CountedState else ShomaraLessonStrings.NotCountedState
             }
             .clickable(
                 interactionSource = interactionSource,

@@ -13,25 +13,29 @@ import androidx.compose.ui.graphics.graphicsLayer
 import kotlin.math.sqrt
 
 /**
- * N08-04 motion contract.
+ * N08-04 motion contract — revised S0 (DT-90) per design/playbook/STATION_EXPERIENCE_BLUEPRINT §4.
  *
- * The Native client deliberately ships no DECORATIVE motion: no `AnimatedVisibility`, no infinite
- * celebration transition, no ambient looping animation anywhere in `apps/android`. The REAL motion
- * that does exist is the indeterminate progress indicator, and — like every Compose
- * `rememberInfiniteTransition` — it ignores the platform animator duration scale unless the app
- * checks it. That is the defect this task fixes.
+ * The Native client deliberately ships no DECORATIVE motion: no looping ambient animation, no
+ * celebratory transition that stacks on itself, no movement whose only job is to entertain
+ * while the child is trying to think. The REAL motion that does exist is functional — the
+ * indeterminate progress indicator and the press feedback (`shomaraPressScale`) — and — like
+ * every Compose `rememberInfiniteTransition` — it ignores the platform animator duration scale
+ * unless the app checks it. That is the defect N08-04 fixed.
  *
- * N08R-01 adds the one functional motion layer the Duolingo-level interaction contract asks for:
- * press feedback (`shomaraPressScale`). It is interaction feedback, not decoration — it tells the
- * child the touch registered — and it obeys the same reduced-motion rule as everything else.
+ * S0 policy revision: motion is allowed a second, NARRATIVE layer. A narrative moment
+ * (stage enter/exit, item ok/retry, discover reveal, count pulse, clay snap, symmetry fold,
+ * sheet up, celebration) is INFORMATION, not decoration — it tells the child WHAT changed and
+ * WHERE to look, exactly like a state color does. Every narrative moment must be:
+ *  1. token-driven (durations/easings from [ShomaraTokens]; no raw ms in call sites),
+ *  2. single-owner (two concurrent moments on one surface are a bug; the celebration gate is
+ *     the template for owning a sequence),
+ *  3. short (<= 400ms base, celebration <= 1500ms), and
+ *  4. reduced-motion-aware: reduced motion removes MOVEMENT, never INFORMATION — every moment
+ *     has a state-cut fallback that keeps the same facts visible.
  *
  * Two independent signals reduce motion, and either one is sufficient:
  *  1. the child/guardian preference persisted in settings (`reducedMotion`), and
  *  2. the system-wide "Remove animations" / animator duration scale = 0 setting.
- *
- * Reduced motion never removes INFORMATION — it removes MOVEMENT. A determinate bar keeps showing
- * its fraction, an indeterminate bar becomes a static placeholder, every state label stays, and a
- * press feedback becomes an instant state cut instead of a spring.
  */
 object ShomaraMotionLogic {
     /** System animator duration scale that means "animations off" (Developer options / A11y). */

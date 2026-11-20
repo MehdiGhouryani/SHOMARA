@@ -17,9 +17,9 @@ object ShomaraLessonChromeLogic {
     fun progressAnnouncement(stepIndex: Int?, totalSteps: Int?): String {
         val fraction = progressFraction(stepIndex, totalSteps)
         return if (fraction == null) {
-            "در حال همگام‌سازی با سرور"
+            ShomaraLessonStrings.SyncingWithServer
         } else {
-            "گام ${com.mathlearning.core.designsystem.ShomaraDigits.toFa(stepIndex ?: 0)} از ${com.mathlearning.core.designsystem.ShomaraDigits.toFa(totalSteps ?: 0)}"
+            ShomaraLessonStrings.progressStepAnnouncement(stepIndex ?: 0, totalSteps ?: 0)
         }
     }
 }
@@ -33,9 +33,9 @@ sealed class ShomaraCloseConfirmState {
 }
 
 object ShomaraCloseConfirmLogic {
-    const val ExitQuestion: String = "آیا می‌خواهی از ایستگاه خارج شوی؟ پیشرفتت ذخیره می‌ماند"
-    const val ConfirmLabel: String = "خروج"
-    const val StayLabel: String = "می‌مانم"
+    const val ExitQuestion: String = ShomaraLessonStrings.ExitTitle
+    const val ConfirmLabel: String = ShomaraLessonStrings.ExitSecondary
+    const val StayLabel: String = ShomaraLessonStrings.ExitStayPrimary
 
     fun request(current: ShomaraCloseConfirmState): ShomaraCloseConfirmState =
         if (current == ShomaraCloseConfirmState.ConfirmedExit) current else ShomaraCloseConfirmState.AwaitingConfirmation

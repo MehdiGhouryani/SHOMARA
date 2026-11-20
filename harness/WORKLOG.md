@@ -1449,3 +1449,13 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **سیاست حرکت اصلاح و مستند شد:** «هیچ حرکت تزئینی» → «حرکت روایی = اطلاعات» (stageEnter/itemOk/fold/sheetUp/...) — هم‌چنان token-دار، تک‌مالک و کاهش‌حرکت‌پذیر؛ بازنویسی doc-comment ShomaraMotion در S0.
 - **Backlog اجرایی:** ۸ ردیف UX-001..UX-008 (S0..S6) به NATIVE_IMPLEMENTATION_BACKLOG.csv اضافه شد؛ validate-pack PASS.
 - تصمیم باز برای مالک در پایان S6: شروع فاز دارایی/گرافیک یا هم‌زمانی با آن.
+
+### DT-90 · 2026-11-20 · S0 اجرا شد — بازطراحی خروج + کروم ایستگاه + رشته‌های کانونی (فرمان مالک: «شروع کن»)
+
+- **UX-001 (S0) پیاده شد:** دکمهٔ خروجِ تمام‌عرض درون اسکرول و بنر تأیید جایگزینش **حذف شدند**؛ جای آن‌ها: آیکون × ۴۸dp در TopBar ثابت (بیرون اسکرول) + `ShomaraStationExitSheet` (bottom-sheet روی بازی) با «ادامه می‌دهم» primary و «خروج به نقشه» ثانویه + هشدار ویژهٔ مرحلهٔ ارزیابی. ماشین حالت `ShomaraCloseConfirmLogic` و تست‌های N06-02 دست‌نخورده ماندند — فقط رندر عوض شد؛ بک‌ژست همان شیت را باز می‌کند.
+- **StageChips (جای progress حذف‌شدهٔ F-05):** پنج خانهٔ جای‌یاب بدون عدد/درصد؛ کل ردیف یک ایستگاه TalkBack: «مرحلهٔ دوم از پنج: تمرین هدایت‌شده».
+- **رشته‌های کانونی (A3):** شیء `ShomaraLessonStrings` — همهٔ کپی فارسی درس در یک فهرست قابل‌بازبینی/تست؛ ~۲۰ literal پراکنده از Host/Guided/Discover/Skeletons/Core به آن منتقل شد (wording بدون تغییر). ممیزی نهایی: فقط اشیای رشته/لیبل کپی دارند.
+- **سیاست حرکت (A4):** doc-comment ShomaraMotion بازنویسی شد — «هیچ حرکت تزئینی» → لایهٔ دوم «حرکت روایی = اطلاعات» با ۴ قید: توکن‌دار، تک‌مالک، ≤۴۰۰ms، fallback کاهش‌حرکت.
+- **اسناد کانونی غایب (A6) بازسازی شدند:** `design/MASTER.md`، `design/INSPIRATION_GUARDRAILS.md`، `design/playbook/PAGE_UIUX_BLUEPRINT.md` (جدول قفل ۱۷ خانواده: ترکیب/CTA/عمق/حالت‌ها).
+- **شواهد:** `:feature:lesson:testDebugUnitTest` سبز (ChromeLogicTest ۵/۵؛ CoreTest به‌روز شد)؛ `:feature:lesson:compileDebugAndroidTestKotlin` سبز (شیت semantics test آمادهٔ دستگاه)؛ `:app:compileDebugKotlin` + `:core:designsystem:testDebugUnitTest` سبز؛ harness VALID؛ validate-pack PASS. backlog UX-001 با شواهد ثبت شد — اجرای on-device + اسکرین‌شات در S6.
+- بعد: S1 (StationHost V3 صحنه/گذار) طبق STATION_BUILD_PHASES؛ محتوای ST09 موازی.

@@ -148,47 +148,28 @@ fun ShomaraLessonHost(
         modifier = modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(ShomaraTokens.Space24),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
+        // S0 (STATION_EXPERIENCE_BLUEPRINT §2): the exit affordance is a 48dp icon pinned
+        // OUTSIDE the scrolling column, and the stage chips replace the removed progress bar
+        // (F-05) with a position sentence — no fraction, no percentage. The full-width exit
+        // text button and its in-flow banner confirmation are gone (audit A1/A2): a secondary
+        // action no longer competes with the single primary CTA, and confirmation became the
+        // modal sheet below, over the game instead of reflowing the lesson.
+        ShomaraStationTopBar(
+            macroStage = macroStage,
+            onExitRequest = { closeState = ShomaraCloseConfirmLogic.request(closeState) },
+        )
         Column(
             modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
         ) {
             // F-05: the indeterminate progress bar is gone. It never had a fraction (the
             // server gives no total yet), so it rendered motion without meaning — a bar
-            // that fills nothing teaches the child nothing. The stage header below already
-            // names the current stage in words; a «مرحلهٔ N از ۵» bar is option ب and
-            // stays an open owner decision, not an invented fraction.
+            // that fills nothing teaches the child nothing. The top-bar chips above now
+            // carry the position; a «مرحلهٔ N از ۵» bar remains an open owner decision.
             ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
             val closeRequested = closeState == ShomaraCloseConfirmState.AwaitingConfirmation
-            if (closeRequested) {
-                ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraCloseConfirmLogic.ExitQuestion)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8),
-                ) {
-                    // Batch 2: at 200% font the two confirm buttons share the
-                    // row equally instead of overflowing a 360dp screen —
-                    // each grows in height with its label, never clips it.
-                    ShomaraButton(
-                        text = ShomaraCloseConfirmLogic.ConfirmLabel,
-                        onClick = { closeState = ShomaraCloseConfirmLogic.confirmExit(closeState) },
-                        variant = ShomaraButtonVariant.Primary,
-                        modifier = Modifier.weight(1f),
-                    )
-                    ShomaraButton(
-                        text = ShomaraCloseConfirmLogic.StayLabel,
-                        onClick = { closeState = ShomaraCloseConfirmLogic.stay(closeState) },
-                        variant = ShomaraButtonVariant.Ghost,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-            } else if (resultSurface == null) {
-                ShomaraButton(
-                    text = "خروج از ایستگاه",
-                    onClick = { closeState = ShomaraCloseConfirmLogic.request(closeState) },
-                    variant = ShomaraButtonVariant.Ghost,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            // A1/A2 fix: neither the exit button nor its banner confirmation renders in the
+            // scrolling lesson column anymore. The sheet below owns the whole question.
             if (resultSurface != null) {
                 ShomaraLessonResultSurface(
                     surface = resultSurface!!,
@@ -256,34 +237,34 @@ fun ShomaraLessonHost(
         }
         // E-04: feedback banners live in a fixed slot above the pinned CTA — the child
         // always sees the feedback, even scrolled to the bottom, and the banner never
-        // scrolls away with the content. The close-confirm question, the result surface
-        // and the exit button stay in the scrolling column above.
+        // scrolls away with the content. The close-confirm question moved to the modal
+        // exit sheet (S0) — it no longer shares this slot at all.
         // R-04: the gateway-missing and awaiting-server banners join this fixed slot —
         // they used to scroll away with the content (E-04 was incomplete for them).
         if (activeJourney == null) {
             // Fail-closed: no gateway configured (backend not set up yet) — honest, warm surface.
             ShomaraFeedbackBanner(
                 kind = ShomaraFeedbackKind.Recovery,
-                text = "سرور آموزش هنوز وصل نیست؛ درس به‌زودی فعال می‌شود.",
+                text = ShomaraLessonStrings.GatewayMissing,
             )
         } else if (awaitingServerStage) {
             // The child finished every macro stage the client can walk. Mastery and the next
             // station belong to the server, so this is an honest wait, not a fabricated completion.
             ShomaraFeedbackBanner(
                 kind = ShomaraFeedbackKind.Recovery,
-                text = "منتظر تأیید سرور هستیم؛ همین‌جا می‌مانیم.",
+                text = ShomaraLessonStrings.AwaitingServer,
             )
         }
         banner?.let { ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = it) }
         if (resumed == true) {
-            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = "از همون‌جا ادامه می‌دهیم.")
+            ShomaraFeedbackBanner(kind = ShomaraFeedbackKind.Recovery, text = ShomaraLessonStrings.Resumed)
         }
         // Pinned bottom slot: the one primary CTA, only when a real option exists to
         // submit. Every other state leaves the slot empty — no inert button, no fake
         // action — and the result surface keeps its own single CTA above.
         if (resultSurface == null && activeJourney != null && !awaitingServerStage && choiceId != null) {
             ShomaraButton(
-                text = "ثبت پاسخ",
+                text = ShomaraLessonStrings.SubmitAnswer,
                 onClick = {
                     // The gate is checked again inside the coroutine because a fast double tap
                     // can queue two lambdas before recomposition disables the button.
@@ -329,6 +310,16 @@ fun ShomaraLessonHost(
             )
         }
     }
+    // S0: the modal exit sheet renders only while the (unchanged, unit-tested) close state is
+    // AwaitingConfirmation. Dismiss (scrim/drag) and the primary button both mean «می‌مانم»;
+    // only the secondary reaches confirmExit. The assessment warning appears only in P4.
+    if (closeState == ShomaraCloseConfirmState.AwaitingConfirmation) {
+        ShomaraStationExitSheet(
+            onStay = { closeState = ShomaraCloseConfirmLogic.stay(closeState) },
+            onExit = { closeState = ShomaraCloseConfirmLogic.confirmExit(closeState) },
+            assessmentStage = macroStage == MacroStage.P4_ASSESSMENT,
+        )
+    }
 }
 
 /**
@@ -340,8 +331,7 @@ fun ShomaraLessonHost(
  * dependency. The confirmed-exit path stays available above, so the child is never trapped.
  */
 object ShomaraLessonOptions {
-    const val UnavailableMessage: String =
-        "گزینه‌های این تمرین هنوز از سرور نیامده‌اند؛ به‌زودی فعال می‌شود."
+    const val UnavailableMessage: String = ShomaraLessonStrings.OptionsUnavailable
 
     private val known = mapOf<MacroStage, List<String>>(
         MacroStage.P1_DISCOVER to emptyList(),

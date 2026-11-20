@@ -55,17 +55,17 @@ import com.mathlearning.core.model.MacroStage
  * test. Wording is unchanged — this is a move, not a copy edit.
  */
 object ShomaraTemplateSkeletonStrings {
-    const val Check: String = "بررسی"
+    const val Check: String = ShomaraLessonStrings.Check
     /** The empty option row of the T01 discover skeleton. */
-    const val OptionsPlaceholder: String = "جای گزینه‌ها"
+    const val OptionsPlaceholder: String = ShomaraLessonStrings.OptionsPlaceholder
     /** The empty answer slot of the T01 skeleton. */
-    const val AnswerPlaceholder: String = "جای پاسخ"
+    const val AnswerPlaceholder: String = ShomaraLessonStrings.AnswerPlaceholder
     /** The empty pattern slot. */
-    const val PatternPlaceholder: String = "جای الگو"
+    const val PatternPlaceholder: String = ShomaraLessonStrings.PatternPlaceholder
     /** The option tray of the T15 skeleton. */
-    const val OptionTray: String = "سینی گزینه‌ها"
+    const val OptionTray: String = ShomaraLessonStrings.OptionTray
     /** The empty number-line slot. */
-    const val NumberLinePlaceholder: String = "محل نوشتن مسیر"
+    const val NumberLinePlaceholder: String = ShomaraLessonStrings.NumberLinePlaceholder
 }
 
 @Composable

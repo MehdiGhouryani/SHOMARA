@@ -193,7 +193,7 @@ fun ShomaraGuidedStage(
             if (next != null) {
                 ShomaraButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "ادامه",
+                    text = ShomaraLessonStrings.Continue,
                     onClick = {
                         itemIndex = next
                         selectedId = null
@@ -205,7 +205,7 @@ fun ShomaraGuidedStage(
                 )
             } else {
                 Text(
-                    text = "این پیش‌نمایش همین‌جا تمام می‌شود؛ ادامهٔ درس به‌زودی فعال می‌شود.",
+                    text = ShomaraLessonStrings.PreviewEnd,
                     style = ShomaraTypography.Caption,
                     color = ShomaraTokens.ColorMuted,
                     modifier = Modifier.fillMaxWidth(),
@@ -216,7 +216,7 @@ fun ShomaraGuidedStage(
             // The pinned ask of this family: exactly one «بررسی», gated on a real selection.
             ShomaraButton(
                 modifier = Modifier.fillMaxWidth(),
-                text = "بررسی",
+                text = ShomaraLessonStrings.Check,
                 onClick = {
                     val choice = selectedId ?: return@ShomaraButton
                     when (val outcome = evaluator.evaluate(item.itemId, choice)) {
@@ -340,10 +340,10 @@ private fun ShomaraGuidedOptionTile(
             )
             .semantics(mergeDescendants = true) {
                 role = Role.Button
-                stateDescription = if (selected) "انتخاب شد" else "انتخاب نشده"
+                stateDescription = if (selected) ShomaraLessonStrings.SelectedState else ShomaraLessonStrings.UnselectedState
                 contentDescription = when (display) {
-                    is ShomaraGuidedOptionDisplay.Numeral -> "عدد ${ShomaraDigits.toFa(display.value)}"
-                    is ShomaraGuidedOptionDisplay.Pictures -> "${ShomaraDigits.toFa(display.count)} شیء"
+                    is ShomaraGuidedOptionDisplay.Numeral -> ShomaraLessonStrings.numeralOptionLabel(display.value)
+                    is ShomaraGuidedOptionDisplay.Pictures -> ShomaraLessonStrings.picturesOptionLabel(display.count)
                 }
             }
             .clickable(
@@ -378,7 +378,7 @@ private fun ShomaraGuidedOptionTile(
         if (selected) {
             // The visible selection mark beyond colour (ADR-0040 evidence pattern).
             Text(
-                text = "✓",
+                text = ShomaraLessonStrings.SelectedMarkGlyph,
                 style = ShomaraTypography.Caption,
                 color = ShomaraTokens.ColorPrimary,
                 modifier = Modifier
