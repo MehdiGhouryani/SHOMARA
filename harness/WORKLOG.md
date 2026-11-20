@@ -1474,3 +1474,5 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **جدول ۴×۴ با ۰–۳:** دومین جدول عددی — نماد صفر وارد T08 شد؛ گیت تک‌راه‌حل را پاس کرد (17/17).
 - **گیت‌ها در راه ایراد گرفتند و اصلاح شد:** forbidden-art (شکل پنج‌پر → خانهٔ پنج‌کبریتی هم‌ارز شد — تصمیم تألیف در §۱۴)، asset/رفرنس UI.hand، شمار استخر ۲۲→۲۴ (دو آیتم t7 لوبیا۵ و a7 چهار+هیچ)، ۶ هشدار ارجاع صدا، دو-راه‌حل بودن گیفن‌های جدول (جعبهٔ کامل + دو خانه). نهایی: station-spec 9/9، magic 17/17، pipeline/library PASS، harness VALID، **static:all 96/96**.
 - **وضعیت: ۹/۲۵ authored.** بعد: ST10 (عددهای ۶ و ۷).
+
+- **DT-91 تکمیل:** AGENTS §6 مسیر `design/INSPIRATION_GUARDRAILS.md` و `design/playbook/PAGE_UIUX_BLUEPRINT.md` را زنده می‌داند؛ برای حفظ اعتبار مسیر مطالعهٔ قرارداد ثابت، سه فایل به‌صورت **stub اشاره‌گر** به canonical (`docs/DESIGN_RULES.md`) بازگشتند — بدون محتوا، بدون تکرار؛ یک canonical برقرار ماند.
