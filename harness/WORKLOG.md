@@ -1441,3 +1441,11 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **گسترش ابزار:** verify-magic-squares حالا نمادهای عددی NUM.* را هم می‌پذیرد — نخستین جدول ۴×۴ عددی تک‌راه‌حل شد (16/16).
 - **گیت‌ها در راه اصلاح شدند:** سه tts-too-long، num.h2 مفقود، pat.pr بی‌ارجاع، count-drift. نهایی: station-spec 8/8 PASS؛ magic-squares 16/16؛ pipeline/library PASS؛ harness VALID؛ static:all **96/96**.
 - **وضعیت: ۸/۲۵ authored.** بعد: ST09 (صفر و ۵).
+
+### DT-89 · 2026-11-20 · نقشهٔ زیرساخت UX ایستگاه + فازبندی ساخت (فرمان مالک: «دکمه خروج جالب نیست؛ UI/UX ضعیف است»)
+
+- **بازرسی شواهدمحور داخل ایستگاه انجام شد** (نه حدس): دکمهٔ خروجِ تمام‌عرض در `ShomaraLessonHost.kt:186` با CTA اصلی رقابت می‌کند؛ تأیید خروج بنر درون اسکرول است؛ رشته‌های فارسی هاردکد در Kotlin؛ صفر ترنزیشن بین مراحل (فقط press-scale موجود)؛ صحنه/مانیپولاتیو hero غایب؛ و سه سند کانونی ارجاع‌شده (`PAGE_UIUX_BLUEPRINT.md`، `MASTER.md`، `INSPIRATION_GUARDRAILS.md`) اصلاً در مخزن نیستند — «V3 lock» به هیچی قفل نبود.
+- **دو سند canonical جدید:** `design/playbook/STATION_EXPERIENCE_BLUEPRINT.md` (معماری StationHost V3: TopBar با آیکون ×، SceneCanvas بدون اسکرول، CTA تک‌مhebosa، ExitSheet با «ادامه می‌دهم» primary، ماشین StationFlowStateMachine، سیستم حرکت روایی ۱۰لحظه‌ایِ token-دار با fallback کاهش‌حرکت، قرارداد کامپوننت الگوها) + `design/playbook/STATION_BUILD_PHASES.md` (S0–S6 با معیار پذیرش ماشینی هر فاز؛ محتوا موازی؛ دارایی نهایی همچنان بعد از قطعییت محتوا طبق تصمیم مالک).
+- **سیاست حرکت اصلاح و مستند شد:** «هیچ حرکت تزئینی» → «حرکت روایی = اطلاعات» (stageEnter/itemOk/fold/sheetUp/...) — هم‌چنان token-دار، تک‌مالک و کاهش‌حرکت‌پذیر؛ بازنویسی doc-comment ShomaraMotion در S0.
+- **Backlog اجرایی:** ۸ ردیف UX-001..UX-008 (S0..S6) به NATIVE_IMPLEMENTATION_BACKLOG.csv اضافه شد؛ validate-pack PASS.
+- تصمیم باز برای مالک در پایان S6: شروع فاز دارایی/گرافیک یا هم‌زمانی با آن.

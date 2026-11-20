@@ -19,3 +19,11 @@ UI-017,U5,settings,15,feature:settings,Card/Choice+AudioControl+Dialog,ready|sav
 UI-018,U5,guardian surface,15+16,feature:guardian,TextField/OTP+Dialog+Feedback,re-auth|loading|ready|empty|offline|error,RETIRED_GUARDIAN_REMOVED,ADR-0050,surface removed by owner decision; ADR-0050
 UI-019,U6,cross-route system states,16,core:designsystem,Progress+Feedback+Dialog,loading|empty|offline|error|missing-asset|pending-sync,NATIVE_PENDING,UI-001..018,negative-path+semantics+screenshot+device
 UI-020,U6,full child journey,01-17,app,all,fresh|returning|learn|practice|profile|offline|resume|process-death,NATIVE_PENDING,UI-001..019,e2e+TalkBack+200%-font+predictive-back+child-QA
+UX-001,S0,station chrome + exit redesign,07+08,feature:lesson,StationExitSheet+TopBar+StageChips,exit-confirm|back-gesture|scrim-dismiss|reduced-motion,NATIVE_PENDING,evidence-gap:unit+semantics+screenshot,unit+semantics+screenshot
+UX-002,S1,station host v3 scene flow,07-11,feature:lesson,SceneCanvas+FlowStateMachine+BottomCtaSlot,stage-enter|stage-exit|single-cta|reduced-motion-cut,NATIVE_PENDING,UX-001,unit+semantics+screenshot+video
+UX-003,S2,templates batch 1 counting+choice,08+09,core:designsystem,T01+T02+T03+T15+countPulse,count-touch|tally|finger-transfer|card-options|retry|hints,NATIVE_PENDING,UX-002,unit+semantics+screenshot
+UX-004,S3a,templates batch 2 builders,08+09,core:designsystem,T04+T05+T07+snapIn+fold,clay-snap|multi-valid-rule|fold-symmetry,NATIVE_PENDING,UX-003,unit+semantics+screenshot
+UX-005,S3b,templates batch 3 grid+story+trace,08-10,core:designsystem,T08+T11+T13+reveal,conflict-pulse|scene-events|trace-tolerance-28dp,NATIVE_PENDING,UX-004,unit+semantics+screenshot
+UX-006,S4,audio queue + hint ladder UI,08-10,feature:lesson,AudioQueue+ReplayButton+HintLadderUI,queue-cut-450ms|replay-no-penalty|silent-s13,NATIVE_PENDING,UX-003,unit+semantics+screenshot
+UX-007,S5,motion polish + celebration,11,core:designsystem,StationIntroCard+CelebrationGate,single-owner|particles-symmetric|reduced-motion-static,NATIVE_PENDING,UX-005+UX-006,unit+video
+UX-008,S6,device gates + ledger closeout,16,app,androidTest sweep,font200|talkback|360/390/412dp|process-death,NATIVE_PENDING,UX-007,device-evidence+ledger
