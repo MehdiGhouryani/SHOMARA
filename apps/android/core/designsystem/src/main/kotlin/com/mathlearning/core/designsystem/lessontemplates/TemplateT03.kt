@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -126,7 +127,9 @@ private fun ShomaraT03Hand(
                 val interactionSource = androidx.compose.runtime.remember { MutableInteractionSource() }
                 Box(
                     modifier = Modifier
-                        .size(ShomaraTokens.ComponentManipulativeMin / 2 + ShomaraTokens.Space8)
+                        // stage5: «محدودهٔ لمس هر انگشت ≥ ۵۶ dp» — the finger hit area is the
+                        // canonical finger token, never a fraction of the manipulative band.
+                        .size(LessonTemplateSizing.FingerTargetDp.dp)
                         .background(
                             if (open) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface,
                             RoundedCornerShape(ShomaraTokens.Space8),

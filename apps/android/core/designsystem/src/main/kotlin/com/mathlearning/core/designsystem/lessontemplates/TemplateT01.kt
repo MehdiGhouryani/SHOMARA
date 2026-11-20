@@ -96,8 +96,10 @@ fun TemplateT01(
                                 counted = order >= 0,
                                 order = if (order >= 0) order + 1 else 0,
                                 reducedMotion = reducedMotion,
+                                // h1/h2 are about the objects NOT yet counted (stage5: «نبض
+                                // اشیای نشمرده»), never a pulse on already-counted objects.
                                 hintPulse = state is LessonTemplateState.Hint &&
-                                    state.level >= 1 && (state.level != 2 || order < 0),
+                                    state.level >= 1 && order < 0,
                                 enabled = state !is LessonTemplateState.Correct,
                                 onTap = { onObjectTap(id) },
                             )

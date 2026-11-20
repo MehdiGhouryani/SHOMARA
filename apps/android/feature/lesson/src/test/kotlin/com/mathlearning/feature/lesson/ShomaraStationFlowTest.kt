@@ -155,4 +155,24 @@ class ShomaraStationFlowTest {
             assertEquals(next, machine.enteringStage)
         }
     }
+
+    // S1 regression: the canvas never blanks the scene, and the swap boundary is exactly the
+    // Exiting to Entering edge (that is where the host commits the new stage).
+    @Test
+    fun `scene renders in every phase and swaps only at the enter boundary`() {
+        assertEquals(
+            listOf(
+                ShomaraScenePhase.Exiting,
+                ShomaraScenePhase.Entering,
+                ShomaraScenePhase.Holding,
+            ),
+            ShomaraScenePhaseLogic.advanceSequence(),
+        )
+        ShomaraScenePhase.entries.forEach { phase ->
+            assertTrue("phase $phase must show the scene", ShomaraScenePhaseLogic.showsScene(phase))
+        }
+        assertTrue(ShomaraScenePhaseLogic.isSwapBoundary(ShomaraScenePhase.Entering))
+        assertFalse(ShomaraScenePhaseLogic.isSwapBoundary(ShomaraScenePhase.Exiting))
+        assertFalse(ShomaraScenePhaseLogic.isSwapBoundary(ShomaraScenePhase.Holding))
+    }
 }

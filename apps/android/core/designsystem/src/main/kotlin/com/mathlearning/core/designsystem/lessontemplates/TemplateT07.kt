@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +30,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import com.mathlearning.core.designsystem.LocalShomaraReducedMotion
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
@@ -36,10 +38,11 @@ import com.mathlearning.core.designsystem.ShomaraTypography
 /**
  * S3a · stage5 §T07 «قرینه‌ساز» — the symmetry template with the `fold` verification moment.
  *
- * The grid renders the given cells and the child's coloured cells, with the symmetry axis
- * drawn EXPLICITLY as a line (the interface must never imply the axis by mirroring itself).
- * «تا زدن» plays the fold: the half rotates onto the axis (400ms); under reduced motion the
- * same comparison CROSS-FADES. Both modes show the same check, only the presentation differs.
+ * The grid renders the given cells and the child's coloured cells. The symmetry axis is drawn
+ * as an OVERLAY at the true centre of the grid — never as an extra row/column element, which
+ * would shift one half and quietly break the very symmetry the child is asked to complete
+ * (the bug this replaced). «تا زدن» plays the fold: the trailing half rotates onto the axis
+ * (400ms); under reduced motion the same halves cross-fade. Both modes show the same check.
  */
 @Composable
 fun TemplateT07(
@@ -59,83 +62,90 @@ fun TemplateT07(
         if (!folding) return@LaunchedEffect
         foldProgress.snapTo(0f)
         val ms = ShomaraFoldLogic.foldMs(reducedMotion)
-        if (ms > 0) {
-            foldProgress.animateTo(1f, tween(ms))
-        } else {
-            foldProgress.snapTo(1f)
-        }
-        // The verified state is HELD long enough to read in both modes, then released.
+        if (ms > 0) foldProgress.animateTo(1f, tween(ms)) else foldProgress.snapTo(1f)
         kotlinx.coroutines.delay(ShomaraFoldLogic.holdMs(reducedMotion).toLong())
         foldProgress.snapTo(0f)
         folding = false
     }
-    val cellSize = gridCellSize(logic.width)
+    val cell = gridCellSize(logic.width)
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .semantics(mergeDescendants = true) {
-                    contentDescription = "جدول قرینه، " + logic.axis.label()
-                },
-            verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
+                .semantics(mergeDescendants = true) { contentDescription = "جدول قرینه، " + logic.axis.label() },
+            contentAlignment = Alignment.Center,
         ) {
-            repeat(logic.height) { row ->
-                // Horizontal axis: an explicit divider between the two halves.
-                if (logic.axis != T07Axis.Vertical && isAfterAxis(row, logic.height)) {
-                    AxisLine(horizontal = true, widthDp = gridWidthDp(logic.width, cellSize))
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4, Alignment.CenterHorizontally),
-                ) {
-                    repeat(logic.width) { col ->
-                        // Vertical axis: an explicit divider between the two halves.
-                        if (logic.axis != T07Axis.Horizontal && isAfterAxis(col, logic.width)) {
-                            AxisLine(horizontal = false, heightDp = cellSize)
-                        }
-                        val cell = row to col
-                        val isGiven = cell in given
-                        val isColored = cell in colored
-                        Box(
-                            modifier = Modifier
-                                .size(cellSize)
-                                .graphicsLayer {
-                                    if (mode == T07FoldMode.Fold) {
-                                        // The trailing half rotates onto the axis.
-                                        if (isAfterAxis(col, logic.width)) {
-                                            rotationY = -90f * foldProgress.value
+            Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4)) {
+                repeat(logic.height) { row ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space4),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        repeat(logic.width) { col ->
+                            val here = row to col
+                            val isGiven = here in given
+                            val isColored = here in colored
+                            Box(
+                                modifier = Modifier
+                                    .size(cell)
+                                    .graphicsLayer {
+                                        if (mode == T07FoldMode.Fold) {
+                                            // The trailing half folds toward the axis: the origin
+                                            // is its inner edge, not the cell centre.
+                                            if (isTrailing(col, logic.width)) {
+                                                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 0.5f)
+                                                rotationY = -90f * foldProgress.value
+                                            }
+                                        } else {
+                                            // Reduced motion: the halves cross-fade, no travel.
+                                            alpha = 1f - 0.35f * foldProgress.value
                                         }
-                                    } else {
-                                        // Reduced motion: the same halves cross-fade.
-                                        alpha = 1f - 0.35f * foldProgress.value
                                     }
-                                }
-                                .background(
-                                    when {
-                                        isColored -> ShomaraTokens.ColorPrimarySoft
-                                        isGiven -> ShomaraTokens.ColorAmberSoft
-                                        else -> ShomaraTokens.ColorSurface
-                                    },
-                                    RoundedCornerShape(ShomaraTokens.Space4),
-                                )
-                                .border(
-                                    width = ShomaraTokens.ClaySoftBorderWidth,
-                                    color = ShomaraTokens.ColorLine,
-                                    shape = RoundedCornerShape(ShomaraTokens.Space4),
-                                )
-                                .semantics(mergeDescendants = true) {
-                                    role = Role.Button
-                                    contentDescription = "خانهٔ " + (row + 1) + "، " + (col + 1)
-                                }
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    enabled = !isGiven && !folding && state !is LessonTemplateState.Correct,
-                                    role = Role.Button,
-                                    onClick = { onCellTap(row, col) },
-                                ),
-                        )
+                                    .background(
+                                        when {
+                                            isColored -> ShomaraTokens.ColorPrimarySoft
+                                            isGiven -> ShomaraTokens.ColorAmberSoft
+                                            else -> ShomaraTokens.ColorSurface
+                                        },
+                                        RoundedCornerShape(ShomaraTokens.Space4),
+                                    )
+                                    .border(
+                                        width = ShomaraTokens.ClaySoftBorderWidth,
+                                        color = ShomaraTokens.ColorLine,
+                                        shape = RoundedCornerShape(ShomaraTokens.Space4),
+                                    )
+                                    .semantics(mergeDescendants = true) {
+                                        role = Role.Button
+                                        contentDescription = "خانهٔ " + (row + 1) + "، " + (col + 1)
+                                    }
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
+                                        enabled = !isGiven && !folding && state !is LessonTemplateState.Correct,
+                                        role = Role.Button,
+                                        onClick = { onCellTap(row, col) },
+                                    ),
+                            )
+                        }
                     }
+                }
+            }
+            // The explicit axis: an overlay at the exact centre, so both halves stay equal.
+            if (logic.axis != T07Axis.Both) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .semantics { contentDescription = "خط تقارن" },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Box(
+                        modifier = (if (logic.axis == T07Axis.Vertical) {
+                            Modifier.width(ShomaraTokens.ClayAnswerTileBorderWidth).height(cell * logic.height)
+                        } else {
+                            Modifier.height(ShomaraTokens.ClayAnswerTileBorderWidth)
+                                .width(cell * logic.width)
+                        }).background(ShomaraTokens.ColorAmber),
+                    )
                 }
             }
         }
@@ -170,33 +180,19 @@ fun TemplateT07(
     }
 }
 
-/** The explicit symmetry-axis divider — behaviour, not decoration: the axis is never implied. */
-@Composable
-private fun AxisLine(horizontal: Boolean, widthDp: androidx.compose.ui.unit.Dp = ShomaraTokens.Space24, heightDp: androidx.compose.ui.unit.Dp = ShomaraTokens.Space24) {
-    Box(
-        modifier = (if (horizontal) Modifier.width(widthDp).height(ShomaraTokens.ClayAnswerTileBorderWidth)
-        else Modifier.width(ShomaraTokens.ClayAnswerTileBorderWidth).height(heightDp))
-            .background(ShomaraTokens.ColorAmber)
-            .semantics { contentDescription = "خط تقارن" },
-    )
-}
+/** The trailing half in reading order: the half that folds onto the axis. */
+private fun isTrailing(index: Int, size: Int): Boolean = index >= size / 2
 
 /**
- * The axis sits BETWEEN two cells, so the trailing half starts at the first index whose
- * distance to the start edge exceeds half the grid. Even and odd widths both land on a
- * real boundary (odd widths get the centre cell on the left side of the divider).
+ * Cell size from the canonical spacing scale. A 6-wide grid must still fit a 360dp phone, and
+ * the size never comes from an arithmetic expression on a token (Int division there produced
+ * 12dp cells, a real bug in the first draft).
  */
-private fun isAfterAxis(index: Int, size: Int): Boolean = index == size / 2 && size % 2 == 0
-
-private fun gridCellSize(width: Int): androidx.compose.ui.unit.Dp =
-    when {
-        width <= 4 -> ShomaraTokens.Space40
-        width <= 6 -> ShomaraTokens.Space40
-        else -> ShomaraTokens.Space32
-    }
-
-private fun gridWidthDp(width: Int, cell: androidx.compose.ui.unit.Dp): androidx.compose.ui.unit.Dp =
-    cell * width + ShomaraTokens.Space4 * (width - 1)
+private fun gridCellSize(width: Int): Dp = when {
+    width <= 4 -> ShomaraTokens.Space40
+    width <= 6 -> ShomaraTokens.Space40
+    else -> ShomaraTokens.Space32
+}
 
 private fun T07Axis.label(): String = when (this) {
     T07Axis.Vertical -> "محور عمودی"

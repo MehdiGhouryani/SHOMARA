@@ -129,19 +129,13 @@ fun ShomaraLessonHost(
         if (closeState == ShomaraCloseConfirmState.ConfirmedExit) onExitToShell()
     }
 
-    // S1 §3: when the flow machine enters Transitioning, the SceneCanvas plays the exit→enter
-    // pair keyed on the stage; the machine settles as soon as the canvas is holding the new
-    // scene again. Under reduced motion the pair is zero-length, so this resolves immediately.
-    // (The reduced-motion read stays OUTSIDE the effect lambda: it is a composition read.)
-    val reducedMotion = LocalShomaraReducedMotion.current
-    LaunchedEffect(stationFlow.isTransitioning) {
-        if (stationFlow.isTransitioning) {
-            kotlinx.coroutines.delay(
-                ShomaraStageMotionLogic.exitMs(reducedMotion).toLong() +
-                    ShomaraStageMotionLogic.enterMs(reducedMotion).toLong(),
-            )
-            stationFlow = stationFlow.finishTransition()
-        }
+    // S1 §3: the SceneCanvas is the ONE clock for the exit→enter pair. It calls back at the
+    // exit→enter boundary; that is where the flow machine commits the new stage, so the exit
+    // animates the outgoing scene and the enter animates the incoming one. There is no second
+    // timer here on purpose: two clocks desynchronise the pair (the bug this replaced).
+    val sceneStageKey: MacroStage = stationFlow.enteringStage ?: stationFlow.currentStage
+    val commitSceneSwap: () -> Unit = {
+        if (stationFlow.isTransitioning) stationFlow = stationFlow.finishTransition()
     }
 
     // N08-05: back must ask before throwing away the child's place. Consuming the gesture while the
@@ -192,7 +186,11 @@ fun ShomaraLessonHost(
         // S1: the stage header rides INSIDE the scene canvas so it participates in the
         // stageEnter/stageExit moments (§4.1) instead of flickering outside them.
         ShomaraSceneCanvas(
-            stageKey = macroStage,
+            // The key is the INCOMING stage, so the moment starts the instant the evaluator's
+            // advance is accepted; the content below still renders the OUTGOING stage until
+            // the canvas reports the swap boundary and the machine commits.
+            stageKey = sceneStageKey,
+            onSceneSwapped = commitSceneSwap,
             modifier = Modifier.weight(1f).fillMaxWidth(),
         ) {
             Column(
