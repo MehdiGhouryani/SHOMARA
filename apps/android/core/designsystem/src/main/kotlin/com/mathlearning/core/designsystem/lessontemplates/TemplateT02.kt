@@ -173,14 +173,12 @@ private fun ShomaraTallyLane(strokes: List<String>) {
         val gap = ShomaraTokens.Space8.toPx()
         val laneHeight = size.height
         val groupWidth = 5 * (width + gap)
-        var index = 0
-        strokes.indices.forEach { i ->
-            val group = i / 5
-            val within = i % 5
-            if (group != index) return@forEach
-            val cellX = group * (groupWidth + ShomaraTokens.Space16.toPx()) + within * (width + gap)
-            if (within < 4) {
-                // vertical stroke
+        val groupGap = ShomaraTokens.Space16.toPx()
+        // The cells come from the LOGIC, never from render-side counters: every stroke in the
+        // list is drawn, including the ones past the first five-group.
+        T02TallyLogic(strokes).laneCells(strokes).forEach { cell ->
+            val cellX = cell.groupIndex * (groupWidth + groupGap) + cell.slotInGroup * (width + gap)
+            if (!cell.isDiagonal) {
                 drawLine(
                     color = strokeColor,
                     start = Offset(cellX, laneHeight),
@@ -188,7 +186,7 @@ private fun ShomaraTallyLane(strokes: List<String>) {
                     strokeWidth = width,
                 )
             } else {
-                // the diagonal fifth: bottom of the first cell to top of the fifth
+                // The diagonal fifth: bottom of the group's first cell to the top of this one.
                 drawLine(
                     color = strokeColor,
                     start = Offset(cellX - 4 * (width + gap), laneHeight),

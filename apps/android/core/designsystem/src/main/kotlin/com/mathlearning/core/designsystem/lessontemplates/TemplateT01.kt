@@ -74,7 +74,12 @@ fun TemplateT01(
     val tapped = remember(tappedIds) { tappedIds.toSet() }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         // The objects: a deterministic grid, each cell one object (no overlap by construction).
+        // The SEED permutes which cell an object occupies, so the scatter really is seeded —
+        // not merely a seeded function that the render ignores.
         val (cols, rows) = T01ScatterLayout.gridFor(objects.size)
+        val slotOf = remember(objects, seed) {
+            objects.indices.associateWith { it to T01ScatterLayout.slotFor(objects.size, it, seed) }
+        }
         Column(verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
             repeat(rows) { row ->
                 Row(
@@ -82,8 +87,8 @@ fun TemplateT01(
                     horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12, Alignment.CenterHorizontally),
                 ) {
                     repeat(cols) { col ->
-                        val index = row * cols + col
-                        if (index < objects.size) {
+                        val index = slotOf.entries.firstOrNull { it.value.second == (col to row) }?.value?.first
+                        if (index != null && index < objects.size) {
                             val id = objects[index]
                             val order = tappedIds.indexOf(id)
                             ShomaraT01Object(

@@ -61,9 +61,24 @@ data class T03Hands(
     /** The number the hands show (total open fingers, 0..10). */
     fun showsNumber(number: Int): Boolean = number == total()
 
-    /** Target acceptance: any decomposition is valid, as long as the total matches. */
-    fun acceptsTarget(target: Int, anyDecomposition: Boolean): Boolean =
-        if (anyDecomposition) total() == target else total() == target
+    /**
+     * Target acceptance. With [anyDecomposition] every shape of the same total is valid
+     * (7 = 4+3 or 5+2). Without it the item asks for the CANONICAL shape — all on one hand up
+     * to five, and «۵ روی شانه» beyond — which is a different, stricter task, not a different
+     * total.
+     */
+    fun acceptsTarget(target: Int, anyDecomposition: Boolean): Boolean {
+        if (total() != target) return false
+        if (anyDecomposition) return true
+        val canonical = T03FiveOnShoulder.decomposition(target)
+        return if (canonical == null) {
+            // 0..5: one hand holds everything, the other is closed.
+            (openLeft() == target && openRight() == 0) || (openRight() == target && openLeft() == 0)
+        } else {
+            (openLeft() == canonical.first && openRight() == canonical.second) ||
+                (openRight() == canonical.first && openLeft() == canonical.second)
+        }
+    }
 
     private fun closeOne(hand: T03Hand): T03Hands = when (hand) {
         T03Hand.Left -> copy(left = left.withFirstOpenSet(false))

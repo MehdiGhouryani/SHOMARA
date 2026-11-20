@@ -54,6 +54,20 @@ data class T02TallyLogic(
         return zeroBasedIndex % 5 == 4
     }
 
+    /**
+     * Every stroke's CELL in the lane: which five-group, which slot inside it, and whether it
+     * is the diagonal. The renderer draws strictly from this list, so "stroke 6 and 7 of a
+     * seven-stroke tally" can never be dropped by render-side bookkeeping — the bug class
+     * that only appears past the first group.
+     */
+    fun laneCells(strokes: List<String>): List<T02LaneCell> = strokes.indices.map { index ->
+        T02LaneCell(
+            groupIndex = index / 5,
+            slotInGroup = index % 5,
+            isDiagonal = isDiagonalFifth(index),
+        )
+    }
+
     /** `make` mode: the target is inside the tray capacity (never beyond it). */
     fun canMakeTarget(target: Int, trayCapacity: Int): Boolean =
         target in 0..trayCapacity && trayCapacity in 1..20
@@ -65,3 +79,6 @@ data class T02TallyLogic(
 enum class T02TallyMode { Count, Make, Sum }
 
 data class T02TallyGroup(val groupNumber: Int, val size: Int, val closed: Boolean)
+
+/** One stroke's place in the lane: its five-group, its slot, and whether it is the diagonal. */
+data class T02LaneCell(val groupIndex: Int, val slotInGroup: Int, val isDiagonal: Boolean)
