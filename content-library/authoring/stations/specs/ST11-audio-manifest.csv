@@ -1,0 +1,50 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST11.P1.s00.pr,pr,درِ مدرسه,زنگ خورد. به درِ مدرسه نگاه کن,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s00,پردهٔ آغاز
+ST11.P1.s01.pr,pr,,پنج پرندهٔ روشن و پنج تیره. جفت‌جفت وصل کن,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s01,تناظر یک‌به‌یک
+ST11.P1.s01.a,rv,,یکی، یکی، یکی. هیچ اضافه‌ای نماند,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s01,آشکارسازی
+ST11.P1.s01.done,done,,دو دسته مساوی‌اند,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s01,مفهوم برابر
+ST11.P1.s02.pr,pr,,چهار زنبور و چهار گل. چه علامتی می‌خواهد؟,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s02,معرفی =
+ST11.P1.s02.a,rv,,این علامت مساوی است. دو خط هم‌اندازه,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s02,شکل نماد
+ST11.P1.s02.done,done,,چهار مساوی چهار!,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s02,۴=۴
+ST11.P1.s03.pr,pr,,پنج انگشت و سه انگشت: هشت. هشت‌پا را ببین,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s03,۵ و ۳
+ST11.P1.s03.a,rv,,پنج و سه: هشت. حالا خط‌هایش را ببین,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s03,نمایش ردگیری
+ST11.P1.s03.done,done,,این هم هشت!,fa-IR-DilaraNeural,-15%,draft,ST11.P1.s03,پایان کشف
+ST11.S.trace.pr,pr,,عدد را روی مسیر بکش,fa-IR-DilaraNeural,-15%,draft,T13,ردگیری
+ST11.S.trace.h1,hint,,از نقطهٔ شروع شروع کن,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ یک
+ST11.S.trace.h2,hint,,راهنما قلم را حرکت می‌دهد,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ دو
+ST11.S.trace.h3,hint,,حالا با هم، از اول,fa-IR-DilaraNeural,-15%,draft,T13,سرنخ سه
+ST11.S.eq.pr,pr,,مساوی است یا نه؟,fa-IR-DilaraNeural,-15%,draft,T14,مساوی
+ST11.S.eq.h1,hint,,جفت‌جفت وصل کن؛ اضافه را ببین,fa-IR-DilaraNeural,-15%,draft,T14,سرنخ یک
+ST11.S.eq.h2,hint,,راهنما یک جفت را وصل می‌کند,fa-IR-DilaraNeural,-15%,draft,T14,سرنخ دو
+ST11.S.eq.h3,hint,,با هم می‌شماریم و نگاه می‌کنیم,fa-IR-DilaraNeural,-15%,draft,T14,سرنخ سه
+ST11.S.tally.pr,pr,,هر لمس، یک چوب خط,fa-IR-DilaraNeural,-15%,draft,T02,چوب‌خط
+ST11.S.tally.h1,hint,,شیء بعدی را لمس کن,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ یک
+ST11.S.tally.h2,hint,,راهنما یک خط می‌زند,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ دو
+ST11.S.tally.h3,hint,,با هم تا آخر می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T02,سرنخ سه
+ST11.S.sym.pr,pr,,دو نیمه باید مثل هم شوند,fa-IR-DilaraNeural,-15%,draft,T07,تقارن
+ST11.S.sym.h1,hint,,خانهٔ روبرویش بالا یا پایین مثل خودش است,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ یک افقی
+ST11.S.sym.h2,hint,,راهنما یک خانه را نشان می‌دهد,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ دو
+ST11.S.sym.h3,hint,,با هم تا می‌زنیم و می‌بینیم,fa-IR-DilaraNeural,-15%,draft,T07,سرنخ سه
+ST11.S.big.pr,pr,,نقشهٔ کوچک را بزرگ بکش,fa-IR-DilaraNeural,-15%,draft,T07 بزرگ‌نمایی,P07
+ST11.S.big.h1,hint,,هر خانهٔ کوچک، چهار خانهٔ بزرگ می‌شود,fa-IR-DilaraNeural,-15%,draft,T07 بزرگ‌نمایی,سرنخ یک
+ST11.S.big.h2,hint,,راهنما یک خانه را بزرگ می‌کند,fa-IR-DilaraNeural,-15%,draft,T07 بزرگ‌نمایی,سرنخ دو
+ST11.S.big.h3,hint,,با هم خانه‌به‌خانه می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T07 بزرگ‌نمایی,سرنخ سه
+ST11.S.bigfree.pr,pr,,نقشهٔ خودت را بساز و بزرگ کن,fa-IR-DilaraNeural,-15%,draft,ST11.P3.r06,ساخت آزاد
+ST11.S.free.pr,pr,,نیمهٔ بالا هر شکلی، پایین قرینه‌اش,fa-IR-DilaraNeural,-15%,draft,ST11.F4.s5,ساخت افقی
+ST11.S.census.pr,pr,,جدول طبیعت: هر ردیف را بشمار و بنویس,fa-IR-DilaraNeural,-15%,draft,ST11.P5.i04,census
+ST11.S.mirror.ok,ok,,مثل هم شد!,fa-IR-DilaraNeural,-15%,draft,T07 بازی,هر دور
+ST11.S.mirror.done,done,,همهٔ آینه‌ها تمام شد,fa-IR-DilaraNeural,-15%,draft,T07 بازی,پایان بازی
+ST11.S.pat.pr,pr,,الگو را ادامه بده,fa-IR-DilaraNeural,-15%,draft,T05,الگو
+ST11.S.pat.h1,hint,,اولین واحد را ببین,fa-IR-DilaraNeural,-15%,draft,T05,سرنخ یک
+ST11.S.pat.h2,hint,,راهنما یک خانه را پر می‌کند,fa-IR-DilaraNeural,-15%,draft,T05,سرنخ دو
+ST11.S.pat.h3,hint,,با هم کل الگو را اجرا کنیم,fa-IR-DilaraNeural,-15%,draft,T05,سرنخ سه
+ST11.S.review.pr,pr,,این را یاد داری؟ کدام بیشتر است؟,fa-IR-DilaraNeural,-15%,draft,ST11.P5.i05,مرور ST10
+ST11.P2.i01.ok,ok,,درست! هشت,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i01,بازخورد
+ST11.P2.i02.ok,ok,,درست! سه مساوی سه,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i02,بازخورد
+ST11.P2.i03.ok,ok,,درست! شش پروانه,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i03,بازخورد
+ST11.P2.i04.ok,ok,,درست! سه مساوی سه,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i04,بازخورد
+ST11.P2.i05.ok,ok,,درست! پنج و سه: هشت,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i05,بازخورد
+ST11.P2.i06.ok,ok,,درست! مساوی نیست,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i06,بازخورد
+ST11.P2.i07.ok,ok,,درست! دو نیمه مثل هم,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i07,بازخورد
+ST11.P2.i08.ok,ok,,درست! الگو ادامه یافت,fa-IR-DilaraNeural,-15%,draft,ST11.P2.i08,بازخورد
+ST11.P5.i01.pr,pr,,فقط گوش می‌دهی: هشت را بنویس,fa-IR-DilaraNeural,-15%,draft,ST11.P5.i01,از روی صدا

@@ -122,6 +122,16 @@
       "evidence": {
         "kind": "tool-run"
       }
+    },
+    {
+      "stationId": "ST11",
+      "from": "SOURCE_ONLY",
+      "to": "MAPPED_TO_REPO",
+      "at": "2026-11-20T18:01:01.577Z",
+      "actor": "dt94-station-authoring-batch-c",
+      "evidence": {
+        "kind": "tool-run"
+      }
     }
   ]
 }
