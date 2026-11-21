@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,8 +54,10 @@ fun TemplateT13(
 
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12)) {
         Box(
+            // The writing box is the stage5 minimum SQUARE (a fixed 240dp), so the old
+            // `fillMaxWidth().size(...)` chain was contradictory: `size` always won and the
+            // fillMaxWidth step only misled the reader.
             modifier = Modifier
-                .fillMaxWidth()
                 .size(TraceSession.MIN_BOX_DP.dp)
                 .background(ShomaraTokens.ColorSurface, RoundedCornerShape(ShomaraTokens.RadiusMd))
                 .border(
@@ -91,7 +94,7 @@ fun TemplateT13(
                     }
                 },
         ) {
-            Canvas(modifier = Modifier.fillMaxWidth().size(TraceSession.MIN_BOX_DP.dp)) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
                 val scaleX = size.width / 240f
                 val scaleY = size.height / 240f
                 fun toCanvas(p: TracePoint) = Offset(p.x * scaleX, p.y * scaleY)

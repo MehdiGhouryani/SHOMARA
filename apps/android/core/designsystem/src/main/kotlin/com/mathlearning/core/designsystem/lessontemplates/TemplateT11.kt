@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -95,9 +96,11 @@ fun TemplateT11(
                 horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space8, Alignment.CenterHorizontally),
             ) {
                 sceneObjects.take(10).forEach { id ->
+                    // The scene object is a SQUARE token-size chip: height alone left it with
+                    // zero width, i.e. invisible (a real layout bug fixed here).
                     Box(
                         modifier = Modifier
-                            .height(ShomaraTokens.Space40)
+                            .size(ShomaraTokens.Space40)
                             .background(ShomaraTokens.ColorPrimarySoft, RoundedCornerShape(ShomaraTokens.Space8))
                             .semantics(mergeDescendants = true) { contentDescription = id },
                     )
@@ -137,44 +140,18 @@ fun TemplateT11(
                 Text(text = "نمی‌شود حل کرد", style = ShomaraTypography.Body, color = ShomaraTokens.ColorInk2)
             }
         } else {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16, Alignment.CenterHorizontally),
-            ) {
+            // The answer cards are the shared tile in its text form: the number is shown in
+            // Persian digits, and a selected card is one border-weight step stronger.
+            LessonTemplateTray(modifier = Modifier.fillMaxWidth(), spacing = ShomaraTokens.Space16) {
                 answerOptions.forEach { option ->
-                    val selected = option == selectedAnswer
-                    Box(
-                        modifier = Modifier
-                            .height(ShomaraTokens.ComponentManipulativeMin)
-                            .background(
-                                if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface,
-                                RoundedCornerShape(ShomaraTokens.RadiusMd),
-                            )
-                            .border(
-                                width = if (selected) {
-                                    ShomaraTokens.ClayAnswerTileBorderWidth
-                                } else {
-                                    ShomaraTokens.ClaySoftBorderWidth
-                                },
-                                color = if (selected) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine,
-                                shape = RoundedCornerShape(ShomaraTokens.RadiusMd),
-                            )
-                            .semantics(mergeDescendants = true) {
-                                role = Role.Button
-                                contentDescription = ShomaraDigits.toFa(option)
-                            }
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                enabled = state !is LessonTemplateState.Correct,
-                                role = Role.Button,
-                                onClick = { onAnswerTap(option) },
-                            )
-                            .padding(horizontal = ShomaraTokens.Space24),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(text = ShomaraDigits.toFa(option), style = ShomaraTypography.BigNum, color = ShomaraTokens.ColorInk)
-                    }
+                    LessonTemplateTile(
+                        label = ShomaraDigits.toFa(option),
+                        onClick = { onAnswerTap(option) },
+                        selected = option == selectedAnswer,
+                        enabled = state !is LessonTemplateState.Correct,
+                        selectedStateText = "انتخاب شد",
+                        idleStateText = "انتخاب نشده",
+                    )
                 }
             }
         }

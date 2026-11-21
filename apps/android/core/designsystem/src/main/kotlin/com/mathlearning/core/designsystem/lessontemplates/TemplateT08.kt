@@ -56,7 +56,7 @@ fun TemplateT08(
                         repeat(logic.size) { col ->
                             val here = row to col
                             val value = board[here]
-                            val isGiven = here in given.keys
+                            val isGiven = given.containsKey(here)
                             val isConflict = here in conflictCells
                             val isHighlighted = highlightCell != null &&
                                 (here.first == highlightCell.first || here.second == highlightCell.second)
@@ -106,39 +106,14 @@ fun TemplateT08(
             }
         }
         // The symbol tray: what may be placed (each symbol once per row/column/block).
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12, Alignment.CenterHorizontally),
-        ) {
+        LessonTemplateTray(modifier = Modifier.fillMaxWidth()) {
             symbols.forEach { symbol ->
-                val selected = symbol == selectedSymbol
-                Box(
-                    modifier = Modifier
-                        .size(cell)
-                        .background(
-                            if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurfaceAlt,
-                            RoundedCornerShape(ShomaraTokens.Space4),
-                        )
-                        .border(
-                            width = if (selected) ShomaraTokens.ClayAnswerTileBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
-                            color = if (selected) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine,
-                            shape = RoundedCornerShape(ShomaraTokens.Space4),
-                        )
-                        .semantics(mergeDescendants = true) {
-                            role = Role.Button
-                            contentDescription = "نماد " + symbol
-                            stateDescription = if (selected) "انتخاب شد" else "انتخاب نشده"
-                        }
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            role = Role.Button,
-                            onClick = { onSymbolTap(symbol) },
-                        ),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(text = symbol, style = ShomaraTypography.BigNum, color = ShomaraTokens.ColorInk)
-                }
+                LessonTemplateTile(
+                    label = symbol,
+                    onClick = { onSymbolTap(symbol) },
+                    selected = symbol == selectedSymbol,
+                    size = cell,
+                )
             }
         }
     }

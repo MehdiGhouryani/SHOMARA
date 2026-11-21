@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +20,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import com.mathlearning.core.designsystem.ShomaraTokens
 import com.mathlearning.core.designsystem.ShomaraTypography
 
@@ -153,32 +151,13 @@ private fun ShomaraT05TrayElement(
     enabled: Boolean,
     onTap: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .size(ShomaraTokens.ComponentManipulativeMin)
-            .background(
-                if (selected) ShomaraTokens.ColorPrimarySoft else ShomaraTokens.ColorSurface,
-                RoundedCornerShape(ShomaraTokens.Space8),
-            )
-            .border(
-                width = if (selected) ShomaraTokens.ClayAnswerTileBorderWidth else ShomaraTokens.ClaySoftBorderWidth,
-                color = if (selected) ShomaraTokens.ColorPrimary else ShomaraTokens.ColorLine,
-                shape = RoundedCornerShape(ShomaraTokens.Space8),
-            )
-            .semantics(mergeDescendants = true) {
-                role = Role.Button
-                contentDescription = element
-                stateDescription = if (selected) "انتخاب شد" else "انتخاب نشده"
-            }
-            .clickable(
-                interactionSource = androidx.compose.runtime.remember { MutableInteractionSource() },
-                indication = null,
-                enabled = enabled,
-                role = Role.Button,
-                onClick = onTap,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(text = element, style = ShomaraTypography.BigNum, color = ShomaraTokens.ColorInk)
-    }
+    // One shared tile primitive: the surface, selected border, button role and the Persian
+    // state description used to be re-written here (and in three other templates).
+    LessonTemplateTile(
+        label = element,
+        onClick = onTap,
+        selected = selected,
+        enabled = enabled,
+        size = ShomaraTokens.ComponentManipulativeMin,
+    )
 }

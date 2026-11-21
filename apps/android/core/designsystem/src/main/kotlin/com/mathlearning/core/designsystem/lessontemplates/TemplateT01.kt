@@ -70,8 +70,16 @@ fun TemplateT01(
     selectedOptionId: String? = null,
 ) {
     val reducedMotion = LocalShomaraReducedMotion.current
+    // The hint level is read through the canonical helper once, instead of every call site
+    // re-testing `state is Hint && level >= 1`.
+    val hintLevel = state.hintLevelOrNull()
     val logic = remember(objects) { T01CountLogic(objects) }
     val tapped = remember(tappedIds) { tappedIds.toSet() }
+    // id -> 1-based touch order, built once: `tappedIds.indexOf(id)` per object was O(n^2) on
+    // every recomposition of the scene.
+    val orderOf: Map<String, Int> = remember(tappedIds) {
+        tappedIds.withIndex().associate { (index, id) -> id to index + 1 }
+    }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         // The objects: a deterministic grid, each cell one object (no overlap by construction).
         // The SEED permutes which cell an object occupies, so the scatter really is seeded —
@@ -94,16 +102,15 @@ fun TemplateT01(
                         val index = indexAtSlot[col to row]
                         if (index != null) {
                             val id = objects[index]
-                            val order = tappedIds.indexOf(id)
+                            val order = orderOf[id] ?: 0
                             ShomaraT01Object(
                                 objectId = id,
-                                counted = order >= 0,
-                                order = if (order >= 0) order + 1 else 0,
+                                counted = order > 0,
+                                order = order,
                                 reducedMotion = reducedMotion,
                                 // h1/h2 are about the objects NOT yet counted (stage5: «نبض
                                 // اشیای نشمرده»), never a pulse on already-counted objects.
-                                hintPulse = state is LessonTemplateState.Hint &&
-                                    state.level >= 1 && order < 0,
+                                hintPulse = hintLevel != null && order == 0,
                                 enabled = state !is LessonTemplateState.Correct,
                                 onTap = { onObjectTap(id) },
                             )

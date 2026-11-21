@@ -1553,3 +1553,14 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **تست‌ها:** assertion پیچیدهٔ T11 ساده شد؛ تست تازه «اندازهٔ دست‌کاری‌شده و خانهٔ جدول از یک قاعدهٔ کانونی» اضافه شد (۵۶/۵۶).
 - **گیت‌ها:** compile بدون warning؛ NATIVE_DESIGN_GUARD PASS (118 فایل)؛ static:all 96/96؛ android:gate PASS؛ harness VALID.
 - **رفتار تغییر نکرده:** هیچ قاعدهٔ آموزشی/پذیرشی عوض نشده؛ فقط ساختار، حافظه و خوانایی.
+
+### DT-101 · 2026-11-21 · کاشی مشترک قالب‌ها + رفع باگ نامرئی‌بودن اشیای صحنه
+
+- **`LessonTemplatePrimitives.kt` (تازه):** یک `LessonTemplateTile` و یک `LessonTemplateTray` کانونی؛ سطح، حاشیهٔ selected/given، role دکمه، و توضیح وضعیت فارسی یک‌جا. قبلاً چهار قالب هر کدام نسخهٔ خودشان را داشتند (و یکی stateDescription نداشت).
+- **رفع باگ (T11):** چیپ‌های شیء صحنه فقط `height` داشتند و **عرض صفر** ⇒ نامرئی بودند؛ به `size(Space40)` تبدیل شد (مربع).
+- **بازآرایی (T05/T08/T11):** کاشی چوب‌خط، سینی نمادهای جدول و کارت‌های پاسخ داستان از کد تکراری ~۳۰ خطی به primitive مشترک منتقل شدند.
+- **T08:** `here in given.keys` → `given.containsKey(here)`.
+- **T02:** `id in strokes` برای هر شیء (O(n) در هر recomposition) → یک `Set` از پیش‌محاسبه‌شده.
+- **T01:** `tappedIds.indexOf(id)` برای هر شیء (O(n²)) → نقشهٔ `orderOf`؛ سطح راهنما یک‌بار با `hintLevelOrNull()` خوانده می‌شود.
+- **T13:** زنجیرهٔ متناقض `fillMaxWidth().size(240dp)` (که در آن همیشه size برنده می‌شد) → یک `.size()` و بوم `fillMaxSize()`.
+- **گیت‌ها:** کامپایل بدون خطا؛ ۵۶/۵۶ تست قالب؛ NATIVE_DESIGN_GUARD PASS (۱۱۹ فایل)؛ static:all 96/96؛ android:gate PASS؛ harness VALID.

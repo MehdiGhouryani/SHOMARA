@@ -51,6 +51,8 @@ fun TemplateT02(
     showNumeral: Boolean = false,
     trayObjects: List<String> = objectIds,
 ) {
+    // One set for the whole tray: `id in strokes` per object was O(n) for every recomposition.
+    val strokeSet = remember(strokes) { strokes.toSet() }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16)) {
         // Tray: the uncounted objects to tap (one stroke each).
         Row(
@@ -58,7 +60,7 @@ fun TemplateT02(
             horizontalArrangement = Arrangement.spacedBy(ShomaraTokens.Space12, Alignment.CenterHorizontally),
         ) {
             trayObjects.forEach { id ->
-                val counted = id in strokes
+                val counted = id in strokeSet
                 ShomaraT02TrayObject(
                     objectId = id,
                     counted = counted,
