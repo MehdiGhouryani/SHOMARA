@@ -74,6 +74,16 @@ object ShomaraLessonStrings {
     const val CountedState: String = "شمرده شد"
     const val NotCountedState: String = "لمس نکرده"
 
+    // ------------------------------------------------------------------ S4 audio + hint copy
+    /** «دوباره بشنو» — replay is a hearing aid, so the label states the action, not a penalty. */
+    const val ReplayNarration: String = "دوباره بشنو"
+    const val ReplayNarrationState: String = "پرسش دوباره خوانده می‌شود"
+    /** The hint control names what it gives («یک راهنما»), never what the child failed at. */
+    const val HintRequest: String = "یک راهنما"
+    const val HintRequestState: String = "راهنما نمایش داده می‌شود"
+    /** Silence is announced too: no sound is not the same as a broken button. */
+    const val AudioSilentState: String = "این ایستگاه صدا ندارد"
+
     // ------------------------------------------------------------------ skeleton region labels
     // Owned here since S0 so the whole lesson copy is one reviewable list; the skeleton's own
     // label object delegates to these constants (wording unchanged — a move, not an edit).
