@@ -41,4 +41,9 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.ext.junit)
+    // The instrumented tests launch createAndroidComposeRule<ComponentActivity>(); without the
+    // test manifest the runner cannot resolve that activity and every test fails before it
+    // starts (found on the emulator, 2026-11-22). core:designsystem and feature:path already
+    // declare it — this module was the only one missing it.
+    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
 }

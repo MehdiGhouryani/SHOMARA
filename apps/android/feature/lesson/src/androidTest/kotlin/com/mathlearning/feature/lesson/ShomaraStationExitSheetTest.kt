@@ -2,6 +2,7 @@ package com.mathlearning.feature.lesson
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -46,8 +47,15 @@ class ShomaraStationExitSheetTest {
             }
         }
         // The whole row is one semantics node with the position sentence — five pills are
-        // never five decorative stops.
-        compose.onNodeWithText("مرحلهٔ سوم از پنج: بازی").assertExists()
+        // never five decorative stops. The sentence is the row's contentDescription (deliberate:
+        // the pills themselves are decorative), so the assertion queries that, and the exact
+        // count of 1 is what proves the merge.
+        compose.onAllNodesWithContentDescription(
+            ShomaraLessonStrings.stageChipsAnnouncement(
+                stageIndex = 2,
+                stageLabel = ShomaraLessonStageLabels.Game,
+            ),
+        ).assertCountEquals(1)
     }
 
     @Test
@@ -80,7 +88,13 @@ class ShomaraStationExitSheetTest {
             }
         }
         compose.onNodeWithText(ShomaraLessonStrings.ExitAssessmentWarning).assertExists()
+    }
 
+    @Test
+    fun exitSheetOmitsTheAssessmentWarningOutsideTheAssessmentStage() {
+        // Split from the test above: a Compose test rule accepts setContent() exactly once, so
+        // the "no warning" half must be its own case (this pair had never run before the module
+        // gained its test manifest on 2026-11-22).
         compose.setContent {
             ShomaraTheme {
                 ShomaraStationExitSheet(onStay = {}, onExit = {}, assessmentStage = false)

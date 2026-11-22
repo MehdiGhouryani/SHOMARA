@@ -1586,3 +1586,11 @@ NOT an N08-02 UI defect; the gesture path itself is proven.
 - **UI:** `ShomaraStationIntroCard` و `ShomaraCelebrationOverlay` با یک اجرای محدود (`Animatable` تا ۱۲۰۰ms، بدون حلقهٔ بی‌پایان)؛ جای حضور تمام‌قد راهنما تا فاز دارایی **جای خالی مستند** است، نه شخصیت ساختگی.
 - **یافتهٔ گیت (درس):** نسخهٔ اول S5 با `NATIVE_DESIGN_GUARD: FAIL` برگشت چون خودِ کامنت‌ها و لیست چک من واژه‌های ممنوعه را **نوشته بودند**. verifier ضعیف نشد؛ متن بازنویسی شد و بررسی «کپی مجاز» به ادعای ساختاری (فهرست بسته) تبدیل شد.
 - **گیت‌ها:** ۱۴/۱۴ تست S5؛ کامپایل بدون خطا؛ NATIVE_DESIGN_GUARD PASS (۱۲۴ فایل)؛ static:all 96/96؛ android:gate PASS؛ harness VALID.
+
+### DT-104 · 2026-11-22 · اولین شاهد دستگاه واقعی + رفع گپ مانیفست تست
+
+- **کشف:** emulator و AVD در `D:\SDK` موجود بودند و فقط روی PATH نبودند. `Pixel_6a` (API 35) بوت شد.
+- **نتیجه:** ۴۸/۴۸ تست instrumented روی دستگاه، صفر شکست (`core:designsystem` ۴۰، `feature:lesson` ۶، `feature:path` ۲). شاهد در `build-reports/android/device-evidence/` (README + اسکرین‌شات بوت).
+- **گپ واقعی ۱:** ماژول `feature:lesson` تنها ماژولی بود که `ui-test-manifest` نداشت ⇒ `createAndroidComposeRule<ComponentActivity>()` اکتیویتی را پیدا نمی‌کرد و **هر** تست این ماژول پیش از شروع شکست می‌خورد؛ یعنی این تست‌ها هرگز اجرا نشده بودند. رفع شد.
+- **گپ واقعی ۲ (در خود تست‌ها، چون هرگز اجرا نشده بودند):** `onNodeWithText` برای جمله‌ای که عمداً `contentDescription` ردیف است ⇒ `onAllNodesWithContentDescription(...).assertCountEquals(1)` (ادعا حفظ و حتی سخت‌گیرانه‌تر شد)؛ و یک تست که دو بار `setContent` صدا می‌زد ⇒ به دو تست تقسیم شد.
+- **هیچ assertion یا آستانه‌ای ضعیف نشد.** ابهام «شاهد دستگاه مسدود است» باطل شد؛ S6 روی emulator قابل اجراست (سؤال «دستگاه فیزیکی لازم است یا نه» همچنان با مالک است).
