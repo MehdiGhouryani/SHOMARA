@@ -1,6 +1,7 @@
 package com.mathlearning.feature.lesson
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import com.mathlearning.core.designsystem.ShomaraTypography
 import com.mathlearning.core.designsystem.ShomaraBackHandler
 import com.mathlearning.core.model.MacroStage
 import com.mathlearning.core.network.LessonGateway
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -91,6 +93,14 @@ fun ShomaraLessonHost(
     var gate by remember { mutableStateOf(ShomaraSubmitGateState()) }
     var awaitingServerStage by remember { mutableStateOf(false) }
     var resultSurface by remember { mutableStateOf<ShomaraResultSurface?>(null) }
+    // S5 (blueprint S5 / stage5 §4.1): the stage-entry card and the celebration are ONE state
+    // object behind ONE gate. Before this wiring the gate, the card and the overlay were
+    // tested components that nothing rendered — real logic, dead in production.
+    var celebration by remember { mutableStateOf(ShomaraCelebrationState()) }
+    // S4: the narration queue. Nothing plays yet (TTS/audio assets land in the asset phase),
+    // but the cut-on-exit rule must be LIVE: a narrator still talking after the child left the
+    // station is precisely the defect this seam exists to prevent.
+    var audioQueue by remember { mutableStateOf(ShomaraAudioQueue()) }
     // S1: every stage read/write goes through the flow machine — one owner, no drift. The
     // historical `macroStage` var is now a derived read so all existing references keep
     // compiling against the machine's current stage.
@@ -126,7 +136,33 @@ fun ShomaraLessonHost(
         }
     }
     LaunchedEffect(closeState) {
-        if (closeState == ShomaraCloseConfirmState.ConfirmedExit) onExitToShell()
+        if (closeState == ShomaraCloseConfirmState.ConfirmedExit) {
+            // S4: leaving the station silences the narrator at once (cutNow, not a fade tail).
+            audioQueue = audioQueue.cutNow()
+            onExitToShell()
+        }
+    }
+
+    // S5: the intro card appears once per stage entry — and only when no celebration is on
+    // screen, because the gate refuses to overlap the two. Keying on the celebration kind too
+    // means the card is retried the moment a celebration ends, so a stage that follows a round
+    // celebration still gets its card instead of silently losing it.
+    LaunchedEffect(macroStage, celebration.kind) {
+        if (celebration.kind == ShomaraCelebrationKind.None && celebration.intro == null) {
+            celebration = ShomaraCelebrationGate.showIntro(
+                celebration,
+                macroStage,
+                System.currentTimeMillis(),
+            )
+        }
+    }
+    // S5: ONE ticker, and only while something is actually on screen — no idle polling loop
+    // running for the whole lesson.
+    LaunchedEffect(celebration.isBusy) {
+        while (celebration.isBusy) {
+            delay(ShomaraLessonHostTickMs)
+            celebration = ShomaraCelebrationGate.tick(celebration, System.currentTimeMillis())
+        }
     }
 
     // S1 §3: the SceneCanvas is the ONE clock for the exit→enter pair. It calls back at the
@@ -165,8 +201,11 @@ fun ShomaraLessonHost(
     // column is gone: scroll belonged to parent dialogs, and a scene the child must never
     // lose sight of was previously a scroll target. In-stage items that genuinely need more
     // room than the canvas gives are a stage-content contract (S2 templates size to fit).
+    // S5: the celebration paints OVER the lesson frame (never inside a slot), so showing it can
+    // never reflow or shift the scene the child is looking at.
+    Box(modifier = modifier.fillMaxSize()) {
     Column(
-        modifier = modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(ShomaraTokens.Space24),
+        modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(ShomaraTokens.Space24),
         verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
     ) {
         // S0 (STATION_EXPERIENCE_BLUEPRINT §2): the exit affordance is a 48dp icon pinned
@@ -197,6 +236,19 @@ fun ShomaraLessonHost(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(ShomaraTokens.Space16),
             ) {
+                // S5 (§4.1 stage entry): the intro card names the stage the child is entering
+                // and leaves on its own after ≤1.5s; a tap dismisses it early. It renders as the
+                // first thing inside the scene, so it belongs to the stage it announces.
+                celebration.intro?.let { _ ->
+                    ShomaraStationIntroCard(
+                        stageIndex = ShomaraStationChromeLogic.stageOrder.indexOf(macroStage)
+                            .coerceAtLeast(0),
+                        stageLabel = ShomaraLessonStageLabels.labelFor(macroStage),
+                        onDismiss = {
+                            celebration = ShomaraCelebrationGate.dismissIntro(celebration)
+                        },
+                    )
+                }
                 ShomaraLessonStageHeader(macroStage = macroStage, stationId = stationId)
                 if (resultSurface != null) {
                     ShomaraLessonResultSurface(
@@ -323,6 +375,17 @@ fun ShomaraLessonHost(
                                         // instead of exiting silently. The CTA and the
                                         // existing close-confirm path both return to shell.
                                         resultSurface = surface
+                                        // S5: only a PASS is celebrated. A needs-practice
+                                        // result is a recovery surface — celebrating it would
+                                        // tell the child they succeeded when the evaluator just
+                                        // said they did not (the gate also allows it once).
+                                        if (surface == ShomaraResultSurface.CompletePass) {
+                                            celebration = ShomaraCelebrationGate.celebrate(
+                                                celebration,
+                                                ShomaraCelebrationKind.StationEnd,
+                                                System.currentTimeMillis(),
+                                            )
+                                        }
                                     } else {
                                         val next = ShomaraLessonStageWalk.next(macroStage)
                                         if (next == null) {
@@ -336,6 +399,15 @@ fun ShomaraLessonHost(
                                                 ShomaraStageAdvance(from = macroStage, to = next),
                                             )
                                             activeJourney.enterStage(next)
+                                            // S5: a finished round gets the short round
+                                            // celebration (≤1.6s), not the station one — the
+                                            // two are different moments and the gate allows the
+                                            // station moment only once per station.
+                                            celebration = ShomaraCelebrationGate.celebrate(
+                                                celebration,
+                                                ShomaraCelebrationKind.RoundEnd,
+                                                System.currentTimeMillis(),
+                                            )
                                         }
                                     }
                                 }
@@ -356,6 +428,27 @@ fun ShomaraLessonHost(
             }
         },
         )
+        // S5: rendered last so it paints over the frame; the gate guarantees at most one kind
+        // and at most one station-end moment per station.
+        if (celebration.kind != ShomaraCelebrationKind.None) {
+            ShomaraCelebrationOverlay(
+                kind = celebration.kind,
+                copyLine = when (celebration.kind) {
+                    ShomaraCelebrationKind.StationEnd ->
+                        ShomaraCelebrationCopy.winLine(stationId.hashCode())
+                    ShomaraCelebrationKind.RoundEnd ->
+                        ShomaraCelebrationCopy.winLine(stationId.hashCode() + celebration.kind.ordinal)
+                    ShomaraCelebrationKind.None -> ""
+                },
+                // The overlay owns only its animation; the GATE owns the state, so closing the
+                // card is a tick — never an ad-hoc null write that could skip the once-per-
+                // station rule.
+                onDone = {
+                    celebration = ShomaraCelebrationGate.tick(celebration, Long.MAX_VALUE)
+                },
+            )
+        }
+    }
     }
     // S0: the modal exit sheet renders only while the (unchanged, unit-tested) close state is
     // AwaitingConfirmation. Dismiss (scrim/drag) and the primary button both mean «می‌مانم»;
@@ -391,6 +484,13 @@ object ShomaraLessonOptions {
     /** First real option id for the stage, or null when the surface has none to offer. */
     fun firstOptionId(stage: MacroStage): String? = known[stage]?.firstOrNull()
 }
+
+/**
+ * S5 tick interval for the celebration clock. 50ms is well below the shortest moment a child can
+ * perceive (the intro card's 1.5s), and the loop existst only while something is on screen, so it
+ * is a bounded 20 wake-ups per second during a celebration — never an idle timer.
+ */
+private const val ShomaraLessonHostTickMs = 50L
 
 private object NoCheckpoints : LessonCheckpointStore {
     override suspend fun save(checkpoint: com.mathlearning.core.datastore.LessonCheckpoint) {}
