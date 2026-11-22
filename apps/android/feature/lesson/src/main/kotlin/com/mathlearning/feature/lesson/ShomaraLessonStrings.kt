@@ -74,6 +74,11 @@ object ShomaraLessonStrings {
     const val CountedState: String = "شمرده شد"
     const val NotCountedState: String = "لمس نکرده"
 
+    // ------------------------------------------------------------------ S5 celebration copy
+    /** The only mark the celebration may show (stage5: the check mark and the retry arrow). */
+    const val CelebrationMark: String = "✓"
+    const val IntroCardHint: String = "برای شروع، یک بار ضربه بزن"
+
     // ------------------------------------------------------------------ S4 audio + hint copy
     /** «دوباره بشنو» — replay is a hearing aid, so the label states the action, not a penalty. */
     const val ReplayNarration: String = "دوباره بشنو"
