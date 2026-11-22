@@ -1,0 +1,53 @@
+id,kind,text_display,text_tts,voice,rate,status,used_by,notes
+ST12.P1.s00.pr,pr,پارک,به پارک نگاه کن. امروز عددها را با هم می‌سنجیم,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s00,پردهٔ آغاز
+ST12.P1.s01.pr,pr,,برگ‌ها و پروانه‌ها را بشمار. کدام دسته کمتر است؟,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s01,نمایشی: دسته کمتر
+ST12.P1.s01.a,rv,شش برگ، هشت پروانه,شش برگ و هشت پروانه. برگ‌ها کمترند,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s01,آشکارسازی
+ST12.P1.s01.done,done,,دستهٔ کمتر پیدا شد,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s01,جمع‌بندی
+ST12.P1.s02.pr,pr,,پنج و هفت. کدام بیشتر است؟,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s02,معرفی نماد
+ST12.P1.s02.a,rv,,دهانهٔ باز رو به هفت. پس پنج کمتر از هفت,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s02,خوانش اول
+ST12.P1.s02.done,done,,و از آن طرف: هفت بیشتر از پنج,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s02,خوانش دوسویه
+ST12.P1.s03.pr,pr,,پنج انگشت و چهار انگشت: نه,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s03,ترکیب ۹
+ST12.P1.s03.a,rv,,نه همان پنج و چهار است,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s03,ستون رنگی
+ST12.P1.s03.done,done,,این هم نه!,fa-IR-DilaraNeural,-15%,draft,ST12.P1.s03,نماد ۹
+ST12.S.trace.pr,pr,,عدد را روی مسیر بکش,fa-IR-DilaraNeural,-15%,draft,T13,ردگیری عمومی
+ST12.S.trace.h1,h1,,از نقطهٔ شروع شروع کن,fa-IR-DilaraNeural,-15%,draft,T13,h1: بازگردانی توجه
+ST12.S.trace.h2,h2,,راهنما قلم را حرکت می‌دهد,fa-IR-DilaraNeural,-15%,draft,T13,h2: حرکت هدایت‌شده
+ST12.S.trace.h3,h3,,حالا با هم از اول,fa-IR-DilaraNeural,-15%,draft,T13,h3: اجرای مشترک
+ST12.S.nine.pr,pr,,نه را روی مسیر بکش,fa-IR-DilaraNeural,-15%,draft,T13,ردگیری ۹
+ST12.S.nine.h1,h1,,از بالا شروع کن، بعد پایین بیا,fa-IR-DilaraNeural,-15%,draft,T13,h1: مسیر ۹
+ST12.S.cmp.pr,pr,,دهانهٔ باز رو به بیشتر,fa-IR-DilaraNeural,-15%,draft,T14,مقایسه عمومی
+ST12.S.cmp.h1,h1,,جفت‌جفت وصل کن؛ اضافه را ببین,fa-IR-DilaraNeural,-15%,draft,T14,h1: تناظر یک‌به‌یک
+ST12.S.cmp.h2,h2,,راهنما یک جفت را وصل می‌کند,fa-IR-DilaraNeural,-15%,draft,T14,h2: نمونه
+ST12.S.cmp.h3,h3,,با هم می‌شماریم و نماد را می‌گذاریم,fa-IR-DilaraNeural,-15%,draft,T14,h3: اجرای مشترک
+ST12.S.same.pr,pr,,این دو طرف مساوی‌اند؟,fa-IR-DilaraNeural,-15%,draft,T14,مرور مساوی ST11
+ST12.S.same.h1,h1,,هر طرف را جدا بشمار,fa-IR-DilaraNeural,-15%,draft,T14,مرور مساوی: h1
+ST12.S.col.pr,pr,,به تعداد عدد، خانه رنگ کن,fa-IR-DilaraNeural,-15%,draft,T07,ستون رنگی
+ST12.S.col.h1,h1,,از پایین ستون شروع کن,fa-IR-DilaraNeural,-15%,draft,T07,h1
+ST12.S.col.h2,h2,,راهنما یک خانه را رنگ می‌کند,fa-IR-DilaraNeural,-15%,draft,T07,h2
+ST12.S.col.h3,h3,,با هم خانه‌ها را می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T07,h3
+ST12.S.colcmp.pr,pr,,کدام ستون بلندتر است؟,fa-IR-DilaraNeural,-15%,draft,T07,مقایسهٔ ستون
+ST12.S.colfree.pr,pr,,ستون خودت را بساز و مقایسه کن,fa-IR-DilaraNeural,-15%,draft,T07,ستون آزاد
+ST12.S.magic.pr,pr,جدول بزرگ ۹×۹,هر ردیف و ستون و مربع: یک تا نه,fa-IR-DilaraNeural,-15%,draft,T08,قاعدهٔ جدول
+ST12.S.magic.h1,h1,,ردیف و ستون این خانه را ببین,fa-IR-DilaraNeural,-15%,draft,T08,h1: دامنهٔ نامزد
+ST12.S.magic.h2,h2,,یک خانهٔ ساده را با هم پر می‌کنیم,fa-IR-DilaraNeural,-15%,draft,T08,h2: استدلال نمایشی
+ST12.S.magic.h3,h3,,استدلال یک خانه را با هم می‌گوییم,fa-IR-DilaraNeural,-15%,draft,T08,h3: اجرای مشترک
+ST12.S.magic.okstep,ok,,درست! جدول یک قدم جلو رفت,fa-IR-DilaraNeural,-15%,draft,T08,هر خانهٔ درست
+ST12.S.magic.done,done,,همهٔ دورهای جدول تمام شد,fa-IR-DilaraNeural,-15%,draft,T08,پایان دورها
+ST12.S.bidir.pr,pr,,همان دو عدد را از دو طرف بخوان,fa-IR-DilaraNeural,-15%,draft,T14,خواندن دوسویه
+ST12.S.bidir.h1,h1,,اول دهانهٔ باز را پیدا کن,fa-IR-DilaraNeural,-15%,draft,T14,h1: جهت نماد
+ST12.S.pat.pr,pr,,الگو را ادامه بده,fa-IR-DilaraNeural,-15%,draft,T05,الگوی خطی
+ST12.S.pat.h1,h1,,اولین واحد را ببین,fa-IR-DilaraNeural,-15%,draft,T05,h1
+ST12.S.pat.h2,h2,,راهنما یک خانه را پر می‌کند,fa-IR-DilaraNeural,-15%,draft,T05,h2
+ST12.S.pat.h3,h3,,با هم کل الگو را اجرا کنیم,fa-IR-DilaraNeural,-15%,draft,T05,h3
+ST12.S.ok.sym,ok,,آفرین! دهانهٔ باز رو به بیشتر,fa-IR-DilaraNeural,-15%,draft,F2,پاسخ درست نماد
+ST12.S.ok.col,ok,,آفرین! ستون و عدد یکی شد,fa-IR-DilaraNeural,-15%,draft,F4,پاسخ درست ستون
+ST12.S.ok.nine,ok,,آفرین! نه,fa-IR-DilaraNeural,-15%,draft,F1,پاسخ درست ۹
+ST12.P2.i01.ok,ok,,درست! نه,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i01,
+ST12.P2.i02.ok,ok,,درست! چهار بیشتر از سه,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i02,
+ST12.P2.i03.ok,ok,,درست! پنج کمتر از هفت,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i03,
+ST12.P2.i04.ok,ok,,درست! دو طرف خواندی,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i04,
+ST12.P2.i05.ok,ok,,درست! پنج و چهار: نه,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i05,
+ST12.P2.i06.ok,ok,,درست! شش کمتر از نه,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i06,
+ST12.P2.i07.ok,ok,,درست! ستون نه‌خانه,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i07,
+ST12.P2.i08.ok,ok,,درست! شش و سه: نه,fa-IR-DilaraNeural,-15%,draft,ST12.P2.i08,
+ST12.P5.i01.pr,pr,,فقط گوش می‌دهی: نه را بنویس,fa-IR-DilaraNeural,-15%,draft,ST12.P5.i01,پرش از راه گوش

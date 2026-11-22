@@ -1,0 +1,153 @@
+{
+  "stationId": "ST12",
+  "lifecycle": "MAPPED_TO_REPO",
+  "evaluatorConfig": {
+    "draft": true,
+    "draftSourceRef": "authoring/stations/specs/ST12.md#section-3",
+    "ruleVersionRef": "runtime-policy:phase13-postgres-v1 (DRAFT reference only; CONTENT-014 OPEN)",
+    "items": [
+      {
+        "id": "ST12.P2.i01",
+        "template": "T13",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i01/answer",
+        "correctRef": {
+          "kind": "trace-path",
+          "value": "path9"
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST12.P2.i02",
+        "template": "T14",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i02/answer",
+        "correctRef": {
+          "kind": "symbol",
+          "value": "gt-4-3"
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST12.P2.i03",
+        "template": "T14",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i03/answer",
+        "correctRef": {
+          "kind": "symbol",
+          "value": "lt-5-7"
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST12.P2.i04",
+        "template": "T14",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i04/answer",
+        "correctRef": {
+          "kind": "symbol",
+          "value": "lt-3-5-and-gt-5-3"
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST12.P2.i05",
+        "template": "T02",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i05/answer",
+        "correctRef": {
+          "kind": "numeral",
+          "value": 9
+        }
+      },
+      {
+        "id": "ST12.P2.i06",
+        "template": "T14",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i06/answer",
+        "correctRef": {
+          "kind": "symbol",
+          "value": "lt-6-9"
+        },
+        "gap": "O1 per-template proof required (N08R-09)"
+      },
+      {
+        "id": "ST12.P2.i07",
+        "template": "T07",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i07/answer",
+        "correctRef": {
+          "kind": "rule",
+          "value": "column-count-9"
+        }
+      },
+      {
+        "id": "ST12.P2.i08",
+        "template": "T04",
+        "stage": "P2_GUIDED",
+        "specAnswerAnchor": "section-3/ST12.P2.i08/answer",
+        "correctRef": {
+          "kind": "numeral",
+          "value": 9
+        }
+      }
+    ]
+  },
+  "passThreshold": "spec section-10 (DRAFT — CONTENT-014/011 pending owner decision)",
+  "reviewEvidence": [],
+  "prerequisites": [
+    {
+      "fromStationId": "ST11",
+      "toStationId": "ST12"
+    }
+  ],
+  "provenance": {
+    "sourceFile": "authoring/stations/specs/ST12.md",
+    "sourceSha256File": "content-library/authoring/authoring-sources-sha256.json",
+    "transcribedBy": "dt107-station-authoring",
+    "transcribedAt": "2026-11-22",
+    "taughtNumerals": [
+      9
+    ],
+    "countableRange": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "declaredItemCounts": {
+      "section2_P1_DISCOVER_steps": 4,
+      "section3_P2_GUIDED_items": 8,
+      "section4_P3_GAME_rounds": 6,
+      "section5_P4_pool_items": 24,
+      "section6_P5_items": 5,
+      "section7_S13_items": 4
+    },
+    "stageMappingStatus": "PROTOTYPE — stage names need owner confirmation (CONTENT-014 adjacent)",
+    "audioManifest": "authoring/stations/specs/ST12-audio-manifest.csv",
+    "audioRowCount": 52,
+    "audioStatus": "ALL_DRAFT_NO_BINARIES",
+    "assetPolicy": "all fresh illustrations; no book photos; the comparison symbols are DIRECTION-NEUTRAL ART (two mirrored assets, never a text glyph, because RTL fonts mirror < and > and flip the meaning); the open side of the symbol always faces the larger amount and the same pair is read in both directions (۳ < ۵ and ۵ > ۳); the 9x9 grid keeps its 3x3 boxes visibly bordered and never hides them; the coloured column uses one square per unit and an empty column is zero; tally_while_counting keeps the stroke drawn WHILE counting (P06); the park scene is an unnamed silhouette - no school name, no flag, no real faces",
+    "assetDelivery": "NOT_DELIVERED",
+    "rightsModeration": "PENDING_RIGHTS_REVIEW",
+    "gapsOpen": [
+      "O1",
+      "O2",
+      "O7",
+      "CONTENT-009",
+      "CONTENT-010",
+      "CONTENT-014",
+      "stage-mapping-confirmation",
+      "st12-9x9-cognitive-load"
+    ]
+  },
+  "advanceProse": "پیشروی دستی؛ هر بخش پس از تکمیل، بخش بعدی باز می‌شود (spec section-0)",
+  "interactionProse": "بازخورد گرم؛ نمادهای ۱ تا ۹؛ نماد < و > فقط بین دو مقدار و با خواندن دوسویه؛ نماد = مرور ST11 (spec section-0)",
+  "behaviorId": "tap_select"
+}

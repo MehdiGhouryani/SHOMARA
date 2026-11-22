@@ -132,6 +132,16 @@
       "evidence": {
         "kind": "tool-run"
       }
+    },
+    {
+      "stationId": "ST12",
+      "from": "SOURCE_ONLY",
+      "to": "MAPPED_TO_REPO",
+      "at": "2026-11-22T04:37:41.803Z",
+      "actor": "dt107-station-authoring",
+      "evidence": {
+        "kind": "tool-run"
+      }
     }
   ]
 }
