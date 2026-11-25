@@ -131,7 +131,7 @@
     },
     "stageMappingStatus": "PROTOTYPE — stage names need owner confirmation (CONTENT-014 adjacent)",
     "audioManifest": "authoring/stations/specs/ST12-audio-manifest.csv",
-    "audioRowCount": 52,
+    "audioRowCount": 54,
     "audioStatus": "ALL_DRAFT_NO_BINARIES",
     "assetPolicy": "all fresh illustrations; no book photos; the comparison symbols are DIRECTION-NEUTRAL ART (two mirrored assets, never a text glyph, because RTL fonts mirror < and > and flip the meaning); the open side of the symbol always faces the larger amount and the same pair is read in both directions (۳ < ۵ and ۵ > ۳); the 9x9 grid keeps its 3x3 boxes visibly bordered and never hides them; the coloured column uses one square per unit and an empty column is zero; tally_while_counting keeps the stroke drawn WHILE counting (P06); the park scene is an unnamed silhouette - no school name, no flag, no real faces",
     "assetDelivery": "NOT_DELIVERED",

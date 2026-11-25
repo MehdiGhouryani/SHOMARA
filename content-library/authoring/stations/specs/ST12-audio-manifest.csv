@@ -26,6 +26,7 @@ ST12.S.col.h1,h1,,از پایین ستون شروع کن,fa-IR-DilaraNeural,-15%
 ST12.S.col.h2,h2,,راهنما یک خانه را رنگ می‌کند,fa-IR-DilaraNeural,-15%,draft,T07,h2
 ST12.S.col.h3,h3,,با هم خانه‌ها را می‌شماریم,fa-IR-DilaraNeural,-15%,draft,T07,h3
 ST12.S.colcmp.pr,pr,,کدام ستون بلندتر است؟,fa-IR-DilaraNeural,-15%,draft,T07,مقایسهٔ ستون
+ST12.S.colcmp.ok,ok,,آفرین! این ستون بلندتر است,fa-IR-DilaraNeural,-15%,draft,T07,پاسخ درست مقایسهٔ ستون
 ST12.S.colfree.pr,pr,,ستون خودت را بساز و مقایسه کن,fa-IR-DilaraNeural,-15%,draft,T07,ستون آزاد
 ST12.S.magic.pr,pr,جدول بزرگ ۹×۹,هر ردیف و ستون و مربع: یک تا نه,fa-IR-DilaraNeural,-15%,draft,T08,قاعدهٔ جدول
 ST12.S.magic.h1,h1,,ردیف و ستون این خانه را ببین,fa-IR-DilaraNeural,-15%,draft,T08,h1: دامنهٔ نامزد
@@ -39,6 +40,7 @@ ST12.S.pat.pr,pr,,الگو را ادامه بده,fa-IR-DilaraNeural,-15%,draft,
 ST12.S.pat.h1,h1,,اولین واحد را ببین,fa-IR-DilaraNeural,-15%,draft,T05,h1
 ST12.S.pat.h2,h2,,راهنما یک خانه را پر می‌کند,fa-IR-DilaraNeural,-15%,draft,T05,h2
 ST12.S.pat.h3,h3,,با هم کل الگو را اجرا کنیم,fa-IR-DilaraNeural,-15%,draft,T05,h3
+ST12.S.pat.ok,ok,,آفرین! الگو ادامه پیدا کرد,fa-IR-DilaraNeural,-15%,draft,T05,پاسخ درست الگو
 ST12.S.ok.sym,ok,,آفرین! دهانهٔ باز رو به بیشتر,fa-IR-DilaraNeural,-15%,draft,F2,پاسخ درست نماد
 ST12.S.ok.col,ok,,آفرین! ستون و عدد یکی شد,fa-IR-DilaraNeural,-15%,draft,F4,پاسخ درست ستون
 ST12.S.ok.nine,ok,,آفرین! نه,fa-IR-DilaraNeural,-15%,draft,F1,پاسخ درست ۹
