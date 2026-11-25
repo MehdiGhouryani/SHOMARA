@@ -11,16 +11,33 @@ current_task: N11-05
 
 | مورد | مقدار |
 |---|---|
-| شاخهٔ کار | `work/shomara-deep-transformation` |
-| آخرین commit | `f6b4ee1` (DT-80 تألیف ST01) |
-| `origin/main` | همگام (ff-only) |
+| شاخهٔ کار | `work/shomara-deep-transformation` (نوک آن = `main`؛ برای ادامه شاخهٔ تازه بساز) |
+| آخرین commit | `51d18a3` (DT-108 بازبینی ST12) |
+| `origin/main` | همگام و ff-only؛ `HEAD == main == origin/main` |
 | `android:gate` | exit 0 (`ANDROID_BUILD: PASS`) |
 | `harness validate` | VALID (۱۲۹ task) |
 | `verify:static:all` | PASS 96/96 |
-| instrumented (دستی، همه) | **۶۶/۶۶ PASS** (Pixel_6a) — اولین اجرای کامل بعد از DT-76/77 |
+| instrumented (دستی) | آخرین اجرای کامل `feature:lesson`: **۴۸/۴۸** (DT-104). عدد ۶۶/۶۶ پیش از S5/S6 بود و **از آن پس دوباره اجرا نشده** — ادعا نمی‌شود. |
 | font-scale sweep | ۶/۶ PASS روی امولاتور (360/390/412dp × 1.0/1.3/2.0) |
-| محتوای ایستگاه‌ها | **۱۱ از ۲۵ authored** (بات A: ST01–ST06؛ ST07 پایلوت؛ بات B: ST08–ST09؛ بات C: ST10–ST11؛ همه MAPPED، بدون بازبینی انسانی) — `curriculum-matrix.json` |
+| محتوای ایستگاه‌ها | **۱۲ از ۲۵ authored** (بات A: ST01–ST06؛ ST07 پایلوت؛ بات B: ST08–ST09؛ بات C: ST10–ST12؛ همه MAPPED، بدون بازبینی انسانی) — `curriculum-matrix.json` |
 | هدف بخش‌ها | منشور قطعی: `content-library/authoring/stage-purpose-charter.md` + ماتریس ۲۵×۵: `matrix/stage-goal-matrix.md` |
+
+## ادامه از این نقطه
+
+`main` روی GitHub = `51d18a3` و خودکفاست. برای ادامه:
+
+```bash
+git checkout main && git pull --ff-only
+git checkout -b work/<topic>          # AGENTS §3.1: مستقیم روی main کار نکن
+node tools/harness.mjs validate && npm run verify:static:all
+node scripts/verify-station-spec.mjs && node scripts/verify-magic-squares.mjs
+```
+
+**نکتهٔ مهم برای انتخاب کار بعدی:** `node tools/harness.mjs next` می‌گوید `N11-05`، و آن task
+روی **O5 (هویت پایدار محلی)** بلاک است — یعنی تا تصمیم مالک، مسیر UI جلو نمی‌رود. مسیر مولدی که
+واقعاً باز است **تألیف ۱۳ ایستگاه باقی‌مانده (ST13–ST25)** است که بلاک نیست و همین‌جا متوقف شده.
+ایستگاه بعدی: **ST13 «نشانهٔ جمع»** (طبق ماتریس، `<`/`>` ST12 را مرور می‌کند).
+
 
 ## آخرین کارها
 
@@ -70,7 +87,13 @@ current_task: N11-05
 7. **instrumented در CI** — `android:gate` تست‌های instrumented را اجرا نمی‌کند؛ اجرا دستی است.
    زیرساختش حالا سالم است: `feature:lesson` مانیفست تست نداشت و **هر** تستش بی‌صدا شکست می‌خورد
    (DT-104). آخرین اجرای کامل روی emulator: **۴۸/۴۸**.
-8. **۲۳ ایستگاه بدون authoring** (بعد از DT-80: ST02–ST25 به‌جز ST07) — بات‌های A تا E طبق برنامهٔ `docs/notes/station-step-detail-audit-dt80.md` §۳؛ هر ایستگاه ≈ ۵۰ آیتم با قالب ST01. صوت/دارایی واقعی، بازبینی انسانی و حقوق برای هر دو ایستگاه موجود (ST01/ST07) هم هنوز انجام نشده (CONTENT-009/010؛ O1/O2/O7 باز).
+8. **۱۳ ایستگاه بدون authoring** (ST13–ST25) — ۱۲ ایستگاه ST01–ST12 تألیف و MAPPED شده‌اند
+   (بدون بازبینی انسانی). ایستگاه بعدی **ST13 «نشانهٔ جمع»**. صوت/دارایی واقعی، بازبینی انسانی و
+   حقوق برای هیچ ایستگاهی انجام نشده (CONTENT-009/010؛ O1/O2/O7 باز). الگوی تألیف: `specs/ST11.md`
+   و `specs/ST12.md`؛ گردش کار در `content-library/integration/AUTHORING_CONTRACT_GAPS.md`.
+9. **۹×۹ برای پایهٔ اول — تصمیم باز مالک** — ST12 طبق صفحهٔ U12-P06 و ردیف ماتریس، جدول ۹×۹ را
+   آورد (کاهش‌ها: سه دور، بدون تایمر، مرز مربع‌ها پررنگ، زنجیرهٔ h1–h3). اگر مالک آن را زیاد بداند،
+   جایگزین ۶×۶ با مستطیل ۲×۳ آماده است (زیرساخت ST10). این تصمیم گرفته **نشده** است.
 
 ## تصمیم‌های مالک (۲۰۲۶-۱۱-۱۹)
 

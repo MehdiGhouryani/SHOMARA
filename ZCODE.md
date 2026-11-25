@@ -21,7 +21,7 @@ node tools/harness.mjs resume
 node tools/harness.mjs task <TASK-ID>
 ```
 
-اگر task جاری `N02-07` بود، از مسیر canonical اجرا کن:
+مسیر canonical Android در هر مرحله:
 
 ```bash
 npm run android:doctor
@@ -30,7 +30,16 @@ npm run android:gate
 
 `BLOCKED_ENV` را با static PASS جایگزین نکن. قرارداد محیط در `docs/notes/ANDROID_BUILD_ENVIRONMENT.md` است.
 
-برای ادامه از چت جدید، ابتدا `docs/notes/SHOMARA_FINAL_CHAT_HANDOFF.md` را بخوان. قرارداد نهایی ۱۷ خانواده صفحه در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و صف اجرای ۲۰ work item در `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` است. تا سبزشدن واقعی `N02-07` هیچ ردیف `NATIVE_PENDING` را به IMPLEMENTED/TESTED تغییر نده و N03 را شروع نکن.
+**وضعیت واقعی هنگام این تحویل (۲۰۲۶-۱۱-۲۵، `main` = `51d18a3`):** `harness next` می‌گوید
+`N11-05` و همان task روی **O5 (هویت پایدار محلی)** بلاک است؛ تا تصمیم مالک، مسیر UI جلو نمی‌رود.
+جریان مولدی که باز است **تألیف محتوای ایستگاه‌ها** است: ۱۲/۲۵ تألیف شده (تا ST12) و ایستگاه بعدی
+**ST13 «نشانهٔ جمع»** با الگوی `content-library/authoring/stations/specs/ST12.md`. برای محتوا فقط
+زنجیرهٔ `SOURCE_ONLY → MAPPED_TO_REPO → …` معتبر است و هیچ ایستگاهی بازبینی انسانی نشده است.
+
+برای ادامه از چت جدید، `START_HERE.md` (بخش «ادامه از این نقطه») و `harness/WORKLOG.md` را
+بخوان. قرارداد نهایی ۱۷ خانواده صفحه در `design/playbook/PAGE_UIUX_BLUEPRINT.md` و صف اجرای
+۲۰ work item در `design/playbook/quality/NATIVE_IMPLEMENTATION_BACKLOG.csv` است. هیچ ردیف
+`NATIVE_PENDING` به IMPLEMENTED/TESTED تغییر نمی‌کند مگر با شاهد اجراشده روی دستگاه یا تست.
 
 ## routing مهارت‌ها
 
@@ -61,13 +70,24 @@ npm run android:gate
 ```bash
 node tools/harness.mjs validate
 npm run verify:repository
-npm run verify:project-skills
 npm run verify:design-governance
+npm run verify:static:all
+npm run content:indexes:check
 npm run build:packages
 npm run typecheck:all
 npm run test:unit
 git diff --check
 git status --short
 ```
+
+برای کار روی محتوا/ایستگاه، این دو هم اجباری‌اند:
+
+```bash
+node scripts/verify-station-spec.mjs      # ساختار ایستگاه‌ها (بدون شناسه = همه)
+node scripts/verify-magic-squares.mjs     # یکتایی حل جدول‌های T08
+```
+
+تست‌های واحد هر ماژول Android جدا اجرا می‌شوند (مثلاً `gradlew :feature:lesson:testDebugUnitTest`)؛
+`npm run android:gate` فقط build است و instrumented را اجرا **نمی‌کند** (اجرا دستی است).
 
 اگر Chromium/Android SDK/device موجود نبود، نتیجه را `BLOCKED_ENV` ثبت کن؛ هرگز browser check را Native QA یا برعکس اعلام نکن.
