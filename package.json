@@ -107,11 +107,11 @@
     "content:indexes:write": "node scripts/generate-content-indexes.mjs --write"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.65.1",
     "pixelmatch": "^7.2.0",
     "pngjs": "^7.0.0",
     "typescript": "^5.9.2",
     "vite": "^7.3.6",
-    "vitest": "^5.0.2"
+    "vitest": "^5.1.1"
   }
 }
